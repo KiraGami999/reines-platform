@@ -1,0 +1,35 @@
+# Secrets — never commit
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Next.js (reines-web)
+reines-web/.next/
+reines-web/out/
+reines-web/build/
+
+# Expo (reines-mobile)
+reines-mobile/.expo/
+reines-mobile/dist/
+reines-mobile/web-build/
+reines-mobile/expo-env.d.ts
+reines-mobile/ios/
+reines-mobile/android/
+
+# Logs & OS
+*.log
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+
+# TypeScript
+*.tsbuildinfo
+
+# Vercel
+reines-web/.vercel/

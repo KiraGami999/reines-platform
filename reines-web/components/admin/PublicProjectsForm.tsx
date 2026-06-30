@@ -1,0 +1,393 @@
+"use client";
+
+import Image from "next/image";
+import { useMemo, useState } from "react";
+import {
+  ArrowDown,
+  ArrowUp,
+  CheckCircle2,
+  Copy,
+  Eye,
+  EyeOff,
+  Loader2,
+  Plus,
+  Save,
+  Trash2,
+} from "lucide-react";
+import {
+  AVAILABLE_PUBLIC_PROJECT_IMAGES,
+  PUBLIC_PROJECT_STATUS_OPTIONS,
+  type AvailablePublicProjectImage,
+  type PublicProjectItem,
+  type PublicProjectStatus,
+} from "@/lib/public-projects-data";
+
+type Props = {
+  initialProjects: PublicProjectItem[];
+  availableImages: AvailablePublicProjectImage[];
+  usingFallback: boolean;
+};
+
+const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
+const LABEL = "mb-1.5 block text-xs font-semibold uppercase tracking-widest text-zinc-400";
+
+function buildBlankProject(sortOrder: number): PublicProjectItem {
+  const image = AVAILABLE_PUBLIC_PROJECT_IMAGES[0];
+
+  return {
+    id: `draft-${Date.now()}`,
+    title: "New Public Project",
+    location: "Blantyre, Malawi",
+    type: "Property Development",
+    status: "PLANNING",
+    description: "Add a public-facing project description before saving.",
+    year: String(new Date().getFullYear()),
+    imageUrl: image.imageUrl,
+    active: true,
+    sortOrder,
+  };
+}
+
+export default function PublicProjectsForm({ initialProjects, availableImages, usingFallback }: Props) {
+  const [projects, setProjects] = useState<PublicProjectItem[]>(
+    initialProjects.map((project, sortOrder) => ({ ...project, sortOrder }))
+  );
+  const [selectedId, setSelectedId] = useState(initialProjects[0]?.id ?? "");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const selectedProject = useMemo(
+    () => projects.find((project) => project.id === selectedId) ?? projects[0],
+    [projects, selectedId]
+  );
+
+  function clearStatus() {
+    setMessage("");
+    setError("");
+  }
+
+  function updateProject(id: string, patch: Partial<PublicProjectItem>) {
+    clearStatus();
+    setProjects((current) =>
+      current.map((project) => (project.id === id ? { ...project, ...patch } : project))
+    );
+  }
+
+  function addProject() {
+    clearStatus();
+    const project = buildBlankProject(projects.length);
+    setProjects((current) => [...current, project]);
+    setSelectedId(project.id);
+  }
+
+  function duplicateProject(project: PublicProjectItem) {
+    clearStatus();
+    const copy = {
+      ...project,
+      id: `draft-copy-${Date.now()}`,
+      title: `${project.title} Copy`,
+      sortOrder: projects.length,
+    };
+    setProjects((current) => [...current, copy]);
+    setSelectedId(copy.id);
+  }
+
+  function removeProject(id: string) {
+    clearStatus();
+    setProjects((current) => {
+      const next = current.filter((project) => project.id !== id).map((project, sortOrder) => ({ ...project, sortOrder }));
+      if (selectedId === id) setSelectedId(next[0]?.id ?? "");
+      return next;
+    });
+  }
+
+  function moveProject(id: string, direction: -1 | 1) {
+    clearStatus();
+    setProjects((current) => {
+      const index = current.findIndex((project) => project.id === id);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= current.length) return current;
+
+      const next = [...current];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next.map((project, sortOrder) => ({ ...project, sortOrder }));
+    });
+  }
+
+  async function save() {
+    if (projects.length === 0) {
+      setError("Add at least one project before saving.");
+      return;
+    }
+
+    setSaving(true);
+    setMessage("");
+    setError("");
+
+    const payload = {
+      projects: projects.map((project, sortOrder) => ({
+        title: project.title.trim(),
+        location: project.location.trim(),
+        type: project.type.trim(),
+        status: project.status,
+        description: project.description.trim(),
+        year: project.year.trim(),
+        imageUrl: project.imageUrl,
+        active: project.active,
+        sortOrder,
+      })),
+    };
+
+    try {
+      const res = await fetch("/api/admin/public-projects", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error ?? "Could not save public projects.");
+        return;
+      }
+
+      const saved = data.projects ?? projects;
+      setProjects(saved);
+      setSelectedId(saved[0]?.id ?? "");
+      setMessage("Public projects saved successfully.");
+    } catch {
+      setError("Could not save public projects. Check your connection and try again.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      {usingFallback && (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+          Showing starter project data until the saved public project list is available.
+        </div>
+      )}
+
+      {message && (
+        <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+          <CheckCircle2 size={16} />
+          {message}
+        </div>
+      )}
+
+      {error && (
+        <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+          {error}
+        </div>
+      )}
+
+      <div className="grid gap-6 lg:grid-cols-[330px_1fr]">
+        <section className="rounded-2xl border border-zinc-200 bg-white p-5">
+          <div className="mb-4 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-900">Public Projects</h2>
+              <p className="mt-1 text-xs text-zinc-400">Add, reorder, hide, or edit project cards.</p>
+            </div>
+            <button
+              type="button"
+              onClick={addProject}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+            >
+              <Plus size={14} /> Add
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            {projects.map((project, index) => (
+              <button
+                type="button"
+                key={project.id}
+                onClick={() => setSelectedId(project.id)}
+                className={`w-full rounded-xl border p-3 text-left transition-colors ${
+                  selectedProject?.id === project.id
+                    ? "border-[#2d4a6b] bg-blue-50"
+                    : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className="relative h-12 w-14 overflow-hidden rounded-lg bg-zinc-100">
+                    <Image src={project.imageUrl} alt={project.title} fill className="object-cover" sizes="56px" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-zinc-900">{project.title}</p>
+                    <p className="mt-0.5 truncate text-xs text-zinc-500">{project.type}</p>
+                    <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
+                      <span>#{index + 1}</span>
+                      <span>{project.status.replace("_", " ")}</span>
+                      {!project.active && <span className="font-semibold text-blue-700">Hidden</span>}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        {selectedProject ? (
+          <section className="rounded-2xl border border-zinc-200 bg-white p-6">
+            <div className="mb-6 flex flex-col gap-3 border-b border-zinc-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h2 className="text-lg font-bold text-[#2d4a6b]">Edit Project</h2>
+                <p className="mt-1 text-sm text-zinc-500">This controls what appears on the public Projects page.</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => moveProject(selectedProject.id, -1)}
+                  className="rounded-lg border border-zinc-200 p-2 text-zinc-500 hover:bg-zinc-50"
+                  aria-label="Move up"
+                >
+                  <ArrowUp size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => moveProject(selectedProject.id, 1)}
+                  className="rounded-lg border border-zinc-200 p-2 text-zinc-500 hover:bg-zinc-50"
+                  aria-label="Move down"
+                >
+                  <ArrowDown size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => duplicateProject(selectedProject)}
+                  className="rounded-lg border border-zinc-200 p-2 text-zinc-500 hover:bg-zinc-50"
+                  aria-label="Duplicate project"
+                >
+                  <Copy size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => updateProject(selectedProject.id, { active: !selectedProject.active })}
+                  className="rounded-lg border border-zinc-200 p-2 text-zinc-500 hover:bg-zinc-50"
+                  aria-label={selectedProject.active ? "Hide project" : "Show project"}
+                >
+                  {selectedProject.active ? <Eye size={15} /> : <EyeOff size={15} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => removeProject(selectedProject.id)}
+                  className="rounded-lg border border-zinc-200 p-2 text-blue-700 hover:bg-blue-50"
+                  aria-label="Remove project"
+                >
+                  <Trash2 size={15} />
+                </button>
+              </div>
+            </div>
+
+            <div className="grid gap-5 lg:grid-cols-[1fr_280px]">
+              <div className="space-y-4">
+                <div>
+                  <label className={LABEL}>Project title</label>
+                  <input
+                    value={selectedProject.title}
+                    onChange={(event) => updateProject(selectedProject.id, { title: event.target.value })}
+                    className={FIELD}
+                  />
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={LABEL}>Location</label>
+                    <input
+                      value={selectedProject.location}
+                      onChange={(event) => updateProject(selectedProject.id, { location: event.target.value })}
+                      className={FIELD}
+                    />
+                  </div>
+                  <div>
+                    <label className={LABEL}>Project type</label>
+                    <input
+                      value={selectedProject.type}
+                      onChange={(event) => updateProject(selectedProject.id, { type: event.target.value })}
+                      className={FIELD}
+                    />
+                  </div>
+                </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <label className={LABEL}>Status</label>
+                    <select
+                      value={selectedProject.status}
+                      onChange={(event) => updateProject(selectedProject.id, { status: event.target.value as PublicProjectStatus })}
+                      className={FIELD}
+                    >
+                      {PUBLIC_PROJECT_STATUS_OPTIONS.map((status) => (
+                        <option key={status.value} value={status.value}>{status.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={LABEL}>Year / date range</label>
+                    <input
+                      value={selectedProject.year}
+                      onChange={(event) => updateProject(selectedProject.id, { year: event.target.value })}
+                      className={FIELD}
+                      placeholder="2025 or 2025-2026"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className={LABEL}>Description</label>
+                  <textarea
+                    value={selectedProject.description}
+                    onChange={(event) => updateProject(selectedProject.id, { description: event.target.value })}
+                    className={`${FIELD} min-h-32 resize-y`}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className={LABEL}>Selected image</label>
+                  <div className="relative h-44 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
+                    <Image src={selectedProject.imageUrl} alt={selectedProject.title} fill className="object-cover" sizes="280px" />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {availableImages.map((image) => (
+                    <button
+                      type="button"
+                      key={image.imageUrl}
+                      onClick={() => updateProject(selectedProject.id, { imageUrl: image.imageUrl })}
+                      className={`overflow-hidden rounded-xl border text-left ${
+                        selectedProject.imageUrl === image.imageUrl ? "border-[#2d4a6b] ring-2 ring-blue-100" : "border-zinc-200"
+                      }`}
+                    >
+                      <div className="relative h-20 bg-zinc-100">
+                        <Image src={image.imageUrl} alt={image.alt} fill className="object-cover" sizes="120px" />
+                      </div>
+                      <p className="truncate px-2 py-1.5 text-[11px] text-zinc-500">{image.defaultTitle}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : (
+          <section className="rounded-2xl border border-dashed border-zinc-200 bg-white p-10 text-center">
+            <p className="text-sm text-zinc-500">Add a project to begin.</p>
+          </section>
+        )}
+      </div>
+
+      <div className="sticky bottom-4 flex justify-end">
+        <button
+          type="button"
+          onClick={save}
+          disabled={saving}
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-zinc-900/10 hover:bg-[#1a2f4a] disabled:opacity-60"
+        >
+          {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
+          Save public projects
+        </button>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-montserrat);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+html {
+  overflow-x: clip;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-montserrat), Arial, Helvetica, sans-serif;
+  overflow-x: clip;
+  min-width: 0;
+}
+
+input,
+textarea,
+select {
+  color: #18181b;
+  background-color: #ffffff;
+  caret-color: #2d4a6b;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #a1a1aa;
+  opacity: 1;
+}
+
+input:disabled,
+textarea:disabled,
+select:disabled {
+  color: #52525b;
+  -webkit-text-fill-color: #52525b;
+}
+
+@keyframes reines-loader-bar {
+  0%,
+  100% {
+    height: 0.5rem;
+    opacity: 0.45;
+  }
+  50% {
+    height: 2rem;
+    opacity: 1;
+  }
+}
+
+@keyframes reines-loader-wordmark {
+  0%,
+  100% {
+    opacity: 0.88;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.reines-loader-bar {
+  height: 0.5rem;
+  animation: reines-loader-bar 1.1s ease-in-out infinite;
+}
+
+.reines-loader-wordmark {
+  animation: reines-loader-wordmark 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reines-loader-bar,
+  .reines-loader-wordmark {
+    animation: none;
+  }
+
+  .reines-loader-bar {
+    height: 1.25rem;
+    opacity: 0.85;
+  }
+}

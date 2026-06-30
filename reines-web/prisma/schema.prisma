@@ -1,0 +1,540 @@
+// Prisma schema — Reines Property Development Platform
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum Role {
+  ADMIN
+  PROJECT_MANAGER
+  CLIENT
+}
+
+enum ProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+enum PublicProjectStatus {
+  PLANNING
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum MilestoneStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// ---------------------------------------------------------------------------
+// Auth models — required by NextAuth / Auth.js PrismaAdapter
+// ---------------------------------------------------------------------------
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ---------------------------------------------------------------------------
+// User
+// A single table for all roles. Role field controls access level.
+// password is nullable to support OAuth sign-in alongside Credentials.
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String    @unique
+  password      String?   // hashed with bcrypt; null for OAuth-only users
+  emailVerified DateTime?
+  image         String?
+  role          Role      @default(CLIENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // NextAuth adapter relations
+  accounts Account[]
+  sessions Session[]
+
+  // Application relations
+  // Named relations are required because User is referenced twice in Project
+  projectsAsClient  Project[]  @relation("ClientProjects")
+  projectsAsManager Project[]  @relation("ManagerProjects")
+  sentMessages      Message[]
+  payments          Payment[]
+  clientPointEntries ClientPointEntry[] @relation("ClientPointEntries")
+  awardedPointEntries ClientPointEntry[] @relation("AwardedPointEntries")
+  rewardRedemptions  RewardRedemption[]
+  pushDevices        PushDevice[]
+}
+
+// ---------------------------------------------------------------------------
+// Project
+// clientId  → the User (CLIENT) who owns this project
+// managerId → the User (PROJECT_MANAGER) responsible for delivery
+// ---------------------------------------------------------------------------
+
+model Project {
+  id          String        @id @default(cuid())
+  title       String
+  description String?       @db.Text
+  status      ProjectStatus @default(PLANNING)
+  budget      Decimal?      @db.Decimal(15, 2) // MWK amounts can be large
+  startDate   DateTime?
+  endDate     DateTime?
+  managerAccepted   Boolean   @default(false)
+  managerAcceptedAt DateTime?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Foreign keys
+  clientId  String
+  managerId String
+
+  // Relations
+  client  User @relation("ClientProjects",  fields: [clientId],  references: [id])
+  manager User @relation("ManagerProjects", fields: [managerId], references: [id])
+
+  updates      ProjectUpdate[]
+  milestones   Milestone[]
+  messages     Message[]
+  payments     Payment[]
+  pointEntries ClientPointEntry[]
+}
+
+// ---------------------------------------------------------------------------
+// PointRule
+// Global configuration for the loyalty points system.
+// There is only one row (id = "global").
+// ---------------------------------------------------------------------------
+
+model PointRule {
+  id             String   @id @default("global")
+  pointsPerUnit  Int      @default(1)      // points awarded per unit of spend
+  unitAmount     Int      @default(100000) // MWK per point (default 1 pt per MK 100,000)
+  minSpendToEarn Int      @default(2000000) // minimum lifetime spend (MWK) before auto-earning starts
+  updatedAt      DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Reward
+// Admin-managed catalogue of rewards clients can redeem with points.
+// ---------------------------------------------------------------------------
+
+model Reward {
+  id          String   @id @default(cuid())
+  name        String
+  description String   @db.Text
+  pointsCost  Int
+  category    String   @default("DISCOUNT") // DISCOUNT, PRODUCT, SERVICE, OTHER
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  redemptions RewardRedemption[]
+
+  @@index([active, sortOrder])
+}
+
+// ---------------------------------------------------------------------------
+// RewardRedemption
+// Tracks when a client redeems a reward using their points.
+// ---------------------------------------------------------------------------
+
+model RewardRedemption {
+  id         String   @id @default(cuid())
+  pointsUsed Int
+  notes      String?  @db.Text
+  status     String   @default("PENDING") // PENDING, FULFILLED, CANCELLED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  clientId String
+  rewardId String
+
+  client User   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  reward Reward @relation(fields: [rewardId], references: [id])
+
+  @@index([clientId, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// ClientPointEntry
+// Loyalty/reward points earned by clients for projects, investments, or promos.
+// Use positive points for awards and negative points for corrections/redemptions.
+// ---------------------------------------------------------------------------
+
+model ClientPointEntry {
+  id          String   @id @default(cuid())
+  points      Int
+  reason      String   @db.Text
+  rewardType  String   @default("PROJECT")
+  createdAt   DateTime @default(now())
+
+  clientId    String
+  projectId   String?
+  awardedById String?
+
+  client    User     @relation("ClientPointEntries", fields: [clientId], references: [id], onDelete: Cascade)
+  project   Project? @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  awardedBy User?    @relation("AwardedPointEntries", fields: [awardedById], references: [id], onDelete: SetNull)
+
+  @@index([clientId, createdAt])
+  @@index([projectId])
+  @@index([awardedById])
+}
+
+// ---------------------------------------------------------------------------
+// PublicProject
+// Admin-controlled portfolio entries shown on the public Projects page.
+// This is separate from authenticated client projects.
+// ---------------------------------------------------------------------------
+
+model PublicProject {
+  id          String              @id @default(cuid())
+  title       String
+  location    String
+  type        String
+  status      PublicProjectStatus @default(PLANNING)
+  description String              @db.Text
+  year        String
+  imageUrl    String
+  active      Boolean             @default(true)
+  sortOrder   Int                 @default(0)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([active, sortOrder])
+  @@index([status])
+}
+
+// ---------------------------------------------------------------------------
+// PublicService
+// Admin-controlled service entries shown on the public Services page.
+// ---------------------------------------------------------------------------
+
+model PublicService {
+  id          String   @id @default(cuid())
+  title       String
+  tagline     String
+  description String   @db.Text
+  features    String[]
+  iconKey     String   @default("Building2")
+  active      Boolean  @default(true)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active, sortOrder])
+}
+
+// ---------------------------------------------------------------------------
+// ProjectUpdate
+// Each update represents a progress milestone entry with an optional photo.
+// Deleting a project cascades and removes all its updates.
+// ---------------------------------------------------------------------------
+
+model ProjectUpdate {
+  id        String   @id @default(cuid())
+  note      String   @db.Text
+  imageUrl  String?  // URL to uploaded image (cloud storage or local)
+  documentUrl String?
+  documentName String?
+  documentType String?
+  progressPercent Int?
+  createdAt DateTime @default(now())
+
+  // Foreign key
+  projectId String
+
+  // Relation
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+// ---------------------------------------------------------------------------
+// Milestone
+// Discrete deliverable targets created by the project manager.
+// Each milestone has a status, an optional due date, and sort order.
+// Clients see read-only status; managers can create / update / delete.
+// ---------------------------------------------------------------------------
+
+model Milestone {
+  id          String          @id @default(cuid())
+  title       String
+  description String?         @db.Text
+  status      MilestoneStatus @default(PENDING)
+  dueDate     DateTime?
+  completedAt DateTime?
+  sortOrder   Int             @default(0)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId, sortOrder])
+  @@index([projectId, status])
+}
+
+// ---------------------------------------------------------------------------
+// Message
+// Per-project chat thread between a client and their project manager.
+// Deleting a project cascades and removes all its messages.
+// ---------------------------------------------------------------------------
+
+model Message {
+  id        String   @id @default(cuid())
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  // Foreign keys
+  projectId String
+  senderId  String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  sender  User    @relation(fields: [senderId],  references: [id])
+}
+
+// ---------------------------------------------------------------------------
+// Payment
+// Tracks Paychangu payment sessions for project billing.
+// One payment = one charge attempt (clients can make multiple payments per project).
+// ---------------------------------------------------------------------------
+
+enum PaymentStatus {
+  PENDING    // Session created, awaiting customer payment / awaiting admin approval for cash
+  SUCCESS    // Confirmed by webhook / callback verification, or approved by admin for cash
+  FAILED     // Payment failed or was declined / rejected by admin for cash
+  CANCELLED  // Customer cancelled before completing
+}
+
+enum PaymentMethod {
+  PAYCHANGU  // Online payment via Paychangu gateway
+  CASH       // Cash payment submitted offline, requires admin approval
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  txRef       String        @unique            // Our unique reference
+  amount      Decimal       @db.Decimal(15, 2) // Amount in MWK
+  currency    String        @default("MWK")
+  status      PaymentStatus @default(PENDING)
+  method      PaymentMethod @default(PAYCHANGU)
+  description String?                          // What this payment covers
+
+  // Paychangu-specific fields
+  checkoutUrl String?       @db.Text           // Paychangu hosted checkout URL
+  paychanguId String?                          // charge_id returned by Paychangu
+  paidAt      DateTime?                        // When payment was confirmed (auto for online, admin-set for cash)
+
+  // Cash payment fields
+  receiptUrl       String?   @db.Text          // URL of uploaded payment receipt image
+  adminApprovedBy  String?                     // User ID of admin who approved/rejected
+  adminApprovedAt  DateTime?                   // When admin reviewed the cash payment
+  adminNotes       String?   @db.Text          // Admin notes on approval or rejection
+
+  // Foreign keys
+  projectId String
+  userId    String
+
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId],    references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// Enquiry
+// Submitted via the public Contact page. No auth required.
+// ---------------------------------------------------------------------------
+
+model Enquiry {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  subject   String
+  message   String   @db.Text
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// ---------------------------------------------------------------------------
+// QuotationRequest
+// Submitted via the public Get a Quote page. Full project brief from a
+// prospective client. No auth required.
+// ---------------------------------------------------------------------------
+
+model QuotationRequest {
+  id          String   @id @default(cuid())
+
+  // Applicant contact info
+  name        String
+  email       String
+  phone       String?
+  company     String?
+
+  // Project details
+  projectType   String            // e.g. Property Development, Building Contracting…
+  description   String   @db.Text // Full project brief
+  location      String            // Site / city
+  budgetRange   String?           // e.g. MK 5M – 10M
+  timeline      String?           // Preferred start / duration
+  projectSize   String?           // e.g. Small, Medium, Large / area in m²
+
+  // Additional
+  specialRequirements String? @db.Text
+  howHeardAboutUs     String?
+
+  // Status (admin managed)
+  read       Boolean  @default(false)
+  status     String   @default("NEW")  // NEW, REVIEWED, QUOTED, CLOSED
+  adminNotes String?  @db.Text
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+// ---------------------------------------------------------------------------
+// HomepageAd
+// Admin-managed promotional images displayed on the public homepage.
+// ---------------------------------------------------------------------------
+model HomepageAd {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  title     String
+  subtitle  String?  @db.Text
+  ctaLabel  String?
+  ctaHref   String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([active, sortOrder])
+}
+
+// ---------------------------------------------------------------------------
+// Product
+// Admin-managed product catalogue displayed on the public Products page.
+// ---------------------------------------------------------------------------
+model Product {
+  id           String   @id @default(cuid())
+  name         String
+  subsidiary   String
+  description  String   @db.Text
+  sizes        String[]
+  applications String[]
+  imageUrl     String
+  badge        String?
+  priceLabel   String?
+  promoLabel   String?
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([active, sortOrder])
+  @@index([subsidiary])
+}
+
+// ---------------------------------------------------------------------------
+// HomepageAdSetting
+// Stores admin preferences for the homepage ad image library.
+// ---------------------------------------------------------------------------
+model HomepageAdSetting {
+  id              String   @id @default("global")
+  hiddenImageUrls String[]
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// ProductCatalogSetting
+// Stores admin preferences for the product image library (hidden presets, etc.).
+// ---------------------------------------------------------------------------
+model ProductCatalogSetting {
+  id              String   @id @default("global")
+  hiddenImageUrls String[]
+  updatedAt       DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// AdminOverviewPreference
+// Stores admin dashboard display preferences such as the recent activity clear point.
+// ---------------------------------------------------------------------------
+model AdminOverviewPreference {
+  id                      String   @id @default("global")
+  recentActivityClearedAt DateTime?
+  updatedAt               DateTime @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// PushDevice
+// Stores Expo push tokens for mobile clients and project managers.
+// One user can have multiple devices (phone + tablet, etc.).
+// Token is unique — upsert on re-registration is safe.
+// ---------------------------------------------------------------------------
+model PushDevice {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique   // Expo push token (ExponentPushToken[...])
+  platform  String             // "ios" | "android"
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

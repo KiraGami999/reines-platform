@@ -1,0 +1,67 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { verifyPassword } from "@/lib/password";
+import { signToken } from "@/lib/jwt";
+import { z } from "zod";
+
+const schema = z.object({
+  email:    z.string().email("Invalid email address."),
+  password: z.string().min(1, "Password is required."),
+});
+
+/**
+ * POST /api/mobile/login
+ *
+ * Authenticates a CLIENT or PROJECT_MANAGER and returns a JWT.
+ * Uses the same User table and bcrypt passwords as the web portal.
+ * ADMIN accounts are intentionally excluded from mobile access.
+ */
+export async function POST(req: NextRequest) {
+  const body   = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: "Validation failed.", issues: parsed.error.flatten().fieldErrors },
+      { status: 422 }
+    );
+  }
+
+  const { email, password } = parsed.data;
+
+  const user = await prisma.user.findUnique({
+    where:  { email: email.toLowerCase().trim() },
+    select: { id: true, name: true, email: true, password: true, role: true, image: true },
+  });
+
+  if (!user || !user.password) {
+    return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
+  }
+
+  if (user.role === "ADMIN") {
+    return NextResponse.json({ error: "Admin accounts must use the web portal." }, { status: 403 });
+  }
+
+  const valid = await verifyPassword(password, user.password);
+  if (!valid) {
+    return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
+  }
+
+  const token = await signToken({
+    id:    user.id,
+    email: user.email,
+    role:  user.role,
+    name:  user.name,
+  });
+
+  return NextResponse.json({
+    token,
+    user: {
+      id:    user.id,
+      name:  user.name,
+      email: user.email,
+      role:  user.role,
+      image: user.image,
+    },
+  });
+}

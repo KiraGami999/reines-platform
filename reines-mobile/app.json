@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Reines Portal",
+    "slug": "reines-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "reines",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#2d4a6b"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "mw.co.reines.portal",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Reines Portal uses your camera to upload project progress photos.",
+        "NSPhotoLibraryUsageDescription": "Reines Portal accesses your photo library to upload project progress photos and payment receipts."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png"
+      },
+      "package": "mw.co.reines.portal",
+      "permissions": [
+        "CAMERA",
+        "READ_MEDIA_IMAGES",
+        "READ_MEDIA_VIDEO",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Reines Portal accesses your photo library to upload progress photos and payment receipts.",
+          "cameraPermission": "Reines Portal uses your camera to upload project progress photos."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/android-icon-monochrome.png",
+          "color": "#2d4a6b",
+          "sounds": []
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
