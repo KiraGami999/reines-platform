@@ -43,7 +43,8 @@ export async function GET(req: NextRequest) {
       project:     p.project,
       user:        p.user,
     })));
-  } catch {
+  } catch (err) {
+    console.error("[GET /api/payments]", err);
     return ok([]);
   }
 }

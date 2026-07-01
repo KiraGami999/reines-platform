@@ -31,8 +31,11 @@ export async function GET(req: NextRequest) {
         ...(newStatus === "SUCCESS" ? { paidAt: new Date() } : {}),
       },
     });
-  } catch {
-    // If DB is unavailable, still redirect gracefully
+
+    console.info(`[callback] ${txRef} → ${newStatus}`);
+  } catch (err) {
+    // DB update failed — still redirect so the user isn't stranded
+    console.error("[callback] Failed to update payment status:", err);
   }
 
   const destination = status === "successful" || status === "success"

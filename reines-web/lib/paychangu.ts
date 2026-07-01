@@ -4,8 +4,9 @@
  *
  * Environment variables required:
  *   PAYCHANGU_SECRET_KEY     — from https://in.paychangu.com/user/api
- *   PAYCHANGU_WEBHOOK_SECRET — from the same dashboard page
- *   NEXTAUTH_URL             — public base URL of this app
+ *                              Prefix with "test-" for test keys, "live-" for live keys.
+ *   PAYCHANGU_WEBHOOK_SECRET — from the same dashboard page (set after going live)
+ *   NEXTAUTH_URL             — public base URL of this app (e.g. https://yourapp.com)
  */
 
 import crypto from "crypto";
@@ -71,7 +72,13 @@ function secretKey(): string {
 }
 
 function appBaseUrl(): string {
-  return process.env.NEXTAUTH_URL ?? "http://localhost:3000";
+  return (process.env.NEXTAUTH_URL ?? "http://localhost:3000").replace(/\/$/, "");
+}
+
+/** Returns true when running with a test key (safe to log more info). */
+export function isTestMode(): boolean {
+  const key = process.env.PAYCHANGU_SECRET_KEY ?? "";
+  return key.startsWith("test-") || key === "your-paychangu-secret-key-here";
 }
 
 // ─── Initiate a payment session ───────────────────────────────────────────────
@@ -89,8 +96,10 @@ export async function initiatePayment(
     email:        params.email,
     first_name:   params.firstName,
     last_name:    params.lastName,
+    // Both successful payments and cancellations are routed through /api/payments/callback.
+    // PayChangu appends ?tx_ref=xxx&status=... so the handler can update the DB correctly.
     callback_url: `${baseUrl}/api/payments/callback`,
-    return_url:   `${baseUrl}/dashboard/payments?status=cancelled`,
+    return_url:   `${baseUrl}/api/payments/callback`,
     customization: {
       title:       params.title,
       description: params.description,
