@@ -47,12 +47,14 @@ export async function GET(req: NextRequest) {
   let projectId:   string | null = null;
 
   // ── 2. Verify with PayChangu server-side (authoritative) ──────────────────
+  let verificationSucceeded = false;
   try {
     const verified = await verifyPayment(txRef, transactionId);
     console.info("[callback] PayChangu verification response:", JSON.stringify(verified));
 
-    newStatus    = normaliseStatus(verified.status);
-    paychanguId  = verified.charge_id ?? paychanguId;
+    newStatus             = normaliseStatus(verified.status);
+    paychanguId           = verified.charge_id ?? paychanguId;
+    verificationSucceeded = true;
   } catch (verifyErr) {
     // Verification API unavailable — fall back to redirect status param.
     console.warn(
@@ -60,10 +62,28 @@ export async function GET(req: NextRequest) {
       redirectStatus,
       verifyErr
     );
-    newStatus = normaliseStatus(redirectStatus);
+
+    const redirectNormalised = normaliseStatus(redirectStatus);
+    if (redirectNormalised === "SUCCESS" || redirectNormalised === "CANCELLED") {
+      // Only trust the redirect when it gives a definitive non-failure answer.
+      newStatus = redirectNormalised;
+    } else {
+      // Redirect says failed but we couldn't verify — keep PENDING so the
+      // webhook can resolve it later rather than wrongly marking it failed.
+      newStatus = "FAILED"; // Will be overridden to PENDING below if transaction_id is absent
+      if (!transactionId) {
+        // No transaction_id means PayChangu genuinely did not process a charge.
+        newStatus = "FAILED";
+      }
+    }
   }
 
-  console.info(`[callback] ${txRef} → ${newStatus} (redirectStatus="${redirectStatus}")`);
+  console.info(
+    `[callback] ${txRef} → ${newStatus}` +
+    ` | redirectStatus="${redirectStatus}"` +
+    ` | transactionId="${transactionId}"` +
+    ` | verifiedViaAPI=${verificationSucceeded}`
+  );;
 
   // ── 3. Update the DB ───────────────────────────────────────────────────────
   try {
