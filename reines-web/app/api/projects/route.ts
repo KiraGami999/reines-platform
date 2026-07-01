@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getMockProjects } from "@/lib/mock-data";
 
 /**
  * GET /api/projects
  * Returns projects scoped to the authenticated user's role:
- *  - CLIENT        → own projects only
- *  - PROJECT_MANAGER / ADMIN → all projects (or managed ones)
+ *  - CLIENT          → own projects where manager has accepted
+ *  - PROJECT_MANAGER → all assigned projects (accepted and pending)
+ *  - ADMIN           → all projects
  */
 export async function GET() {
   const session = await auth();
@@ -20,7 +20,7 @@ export async function GET() {
   try {
     if (role === "CLIENT") {
       const projects = await prisma.project.findMany({
-        where: { clientId: userId },
+        where:   { clientId: userId, managerAccepted: true },
         include: { manager: { select: { id: true, name: true, email: true } } },
         orderBy: { createdAt: "desc" },
       });
@@ -29,7 +29,7 @@ export async function GET() {
 
     if (role === "PROJECT_MANAGER") {
       const projects = await prisma.project.findMany({
-        where: { managerId: userId },
+        where:   { managerId: userId },
         include: { manager: { select: { id: true, name: true, email: true } } },
         orderBy: { createdAt: "desc" },
       });
@@ -42,9 +42,11 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return NextResponse.json({ projects });
-  } catch {
-    // Database not yet connected — return mock data so the UI remains functional
-    const mockProjects = getMockProjects("client_001");
-    return NextResponse.json({ projects: mockProjects, _source: "mock" });
+  } catch (err) {
+    console.error("[GET /api/projects]", err);
+    return NextResponse.json(
+      { error: "Failed to load projects. Please try again." },
+      { status: 500 }
+    );
   }
 }

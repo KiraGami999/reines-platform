@@ -1,10 +1,9 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { createUserSchema } from "@/lib/validations";
 import { ok, created, forbidden, conflict, validationError } from "@/lib/api-response";
-import { MOCK_USERS } from "@/lib/mock-admin";
 
 async function requireAdmin() {
   const session = await auth();
@@ -23,8 +22,12 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return ok(users);
-  } catch {
-    return ok(MOCK_USERS);
+  } catch (err) {
+    console.error("[GET /api/admin/users]", err);
+    return NextResponse.json(
+      { error: "Failed to load users. Please try again." },
+      { status: 500 }
+    );
   }
 }
 
@@ -44,18 +47,15 @@ export async function POST(req: NextRequest) {
 
     const hashed = await hashPassword(password);
     const user = await prisma.user.create({
-      data: { name, email, password: hashed, role },
+      data:   { name, email, password: hashed, role },
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
     return created(user);
-  } catch {
-    // Simulate creation for demo (DB not connected)
-    return created({
-      id: `usr_${Date.now()}`,
-      name,
-      email,
-      role,
-      createdAt: new Date().toISOString(),
-    });
+  } catch (err) {
+    console.error("[POST /api/admin/users]", err);
+    const msg = err instanceof Error && err.message.includes("Unique constraint")
+      ? "An account with this email already exists."
+      : "Failed to create user. Please try again.";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

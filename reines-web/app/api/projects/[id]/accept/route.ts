@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { forbidden, notFound, ok } from "@/lib/api-response";
@@ -11,29 +12,39 @@ export async function PATCH(_req: Request, { params }: { params: Promise<{ id: s
 
   const { id } = await params;
 
-  const project = await prisma.project.findFirst({
-    where: { id, managerId: session.user.id },
-    select: { id: true },
-  });
+  try {
+    const project = await prisma.project.findFirst({
+      where: { id, managerId: session.user.id },
+      select: { id: true },
+    });
 
-  if (!project) return notFound("Project");
+    if (!project) return notFound("Project");
 
-  const acceptedProject = await prisma.project.update({
-    where: { id },
-    data: {
-      managerAccepted: true,
-      managerAcceptedAt: new Date(),
-    },
-    select: {
-      id: true,
-      managerAccepted: true,
-      managerAcceptedAt: true,
-    },
-  });
+    const acceptedProject = await prisma.project.update({
+      where: { id },
+      data: {
+        managerAccepted:   true,
+        managerAcceptedAt: new Date(),
+      },
+      select: {
+        id:                true,
+        managerAccepted:   true,
+        managerAcceptedAt: true,
+      },
+    });
 
-  return ok({
-    id: acceptedProject.id,
-    managerAccepted: acceptedProject.managerAccepted,
-    managerAcceptedAt: acceptedProject.managerAcceptedAt?.toISOString() ?? null,
-  });
+    console.info(`[accept] Project ${id} accepted by manager ${session.user.id}`);
+
+    return ok({
+      id:                acceptedProject.id,
+      managerAccepted:   acceptedProject.managerAccepted,
+      managerAcceptedAt: acceptedProject.managerAcceptedAt?.toISOString() ?? null,
+    });
+  } catch (err) {
+    console.error("[PATCH /api/projects/[id]/accept]", err);
+    return NextResponse.json(
+      { error: "Failed to accept project. Please try again." },
+      { status: 500 }
+    );
+  }
 }

@@ -68,8 +68,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
         alert(data.error ?? "Failed to delete user.");
       }
     } catch {
-      // Simulate delete in dev
-      setUsers((prev) => prev.filter((u) => u.id !== deleteId));
+      alert("A network error occurred. Please check your connection and try again.");
     } finally {
       setDeleting(false);
       setDeleteId(null);
@@ -214,6 +213,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
         }
       >
         <CreateUserForm
+          key={editUser?.id ?? "new"}
           editUser={editUser}
           onSuccess={onSuccess}
           onCancel={() => setPanelOpen(false)}

@@ -102,16 +102,9 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
       const data = await res.json();
       if (!res.ok) { setServerError(data.error ?? "Something went wrong."); return; }
       onSuccess(data as AdminUser);
-    } catch {
-      // Simulate success when DB is not connected
-      const mockUser: AdminUser = {
-        id:        editUser?.id ?? `usr_${Date.now()}`,
-        name:      form.name.trim(),
-        email:     form.email.trim(),
-        role:      form.role,
-        createdAt: editUser?.createdAt ?? new Date().toISOString(),
-      };
-      onSuccess(mockUser);
+    } catch (err) {
+      console.error("[CreateUserForm] network error:", err);
+      setServerError("A network error occurred. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
