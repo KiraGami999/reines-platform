@@ -25,6 +25,10 @@ import PaymentButton from "@/components/dashboard/PaymentButton";
 import { AcceptProjectButton } from "@/components/dashboard/AcceptProjectButton";
 import { ClientPointsCard } from "@/components/dashboard/ClientPointsCard";
 
+// Force fresh DB reads on every request so payment data (budget balance) is
+// always up to date after a Paychangu callback.
+export const dynamic = "force-dynamic";
+
 export const metadata = { title: "Project Details – Reines Portal" };
 
 // ─── Section wrapper ───────────────────────────────────────────────────────────

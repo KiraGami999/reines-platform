@@ -6,6 +6,8 @@ import PaymentsTable, { type PaymentRow } from "@/components/dashboard/PaymentsT
 import { fmtPaymentAmount } from "@/lib/paychangu";
 import { CheckCircle2, Clock, XCircle, Wallet } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
 async function getPayments(userId: string, role: string): Promise<PaymentRow[]> {
   try {
     const where = role === "CLIENT" ? { userId } : {};
