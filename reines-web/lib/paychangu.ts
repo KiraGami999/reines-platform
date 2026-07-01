@@ -150,6 +150,80 @@ export function verifyWebhookSignature(
   );
 }
 
+// ─── Server-side payment verification ────────────────────────────────────────
+
+export interface PaychanguVerifyResponse {
+  status:     "success" | "failed" | "pending" | string;
+  charge_id?: string;
+  amount?:    number;
+  currency?:  string;
+  tx_ref?:    string;
+}
+
+/**
+ * Calls PayChangu's verification API to get the authoritative payment status.
+ * Must always be called server-side — never trust the redirect URL's status param alone.
+ *
+ * Tries both the `tx_ref` and `transaction_id` lookup patterns.
+ */
+export async function verifyPayment(
+  txRef: string,
+  transactionId?: string | null
+): Promise<PaychanguVerifyResponse> {
+  const key = secretKey();
+  const headers = {
+    "Accept":        "application/json",
+    "Authorization": `Bearer ${key}`,
+  };
+
+  // PayChangu's verification endpoint — try both known patterns.
+  const endpoints = [
+    `${PAYCHANGU_API}/verify-payment/${txRef}`,
+    `${PAYCHANGU_API}/payment/verify/${txRef}`,
+    ...(transactionId ? [`${PAYCHANGU_API}/verify-payment/${transactionId}`] : []),
+  ];
+
+  let lastError: unknown;
+  for (const url of endpoints) {
+    try {
+      const res = await fetch(url, { method: "GET", headers });
+      if (!res.ok) {
+        lastError = new Error(`HTTP ${res.status}`);
+        continue;
+      }
+      const json = await res.json();
+      // PayChangu wraps the payload in a `data` object
+      const inner = json?.data ?? json;
+      return {
+        status:    inner?.status     ?? json?.status    ?? "pending",
+        charge_id: inner?.charge_id  ?? inner?.id,
+        amount:    inner?.amount,
+        currency:  inner?.currency,
+        tx_ref:    inner?.tx_ref     ?? inner?.reference,
+      };
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  throw lastError ?? new Error("PayChangu verification failed");
+}
+
+// ─── Normalise a raw PayChangu status string ─────────────────────────────────
+
+/**
+ * Maps any status string PayChangu might send (case-insensitive, various spellings)
+ * to one of our three canonical DB values.
+ */
+export function normaliseStatus(
+  raw: string | null | undefined
+): "SUCCESS" | "FAILED" | "CANCELLED" {
+  const s = (raw ?? "").toLowerCase().trim();
+  if (["success", "successful", "completed", "approved", "paid"].includes(s)) return "SUCCESS";
+  if (["cancelled", "canceled", "cancel"].includes(s))                        return "CANCELLED";
+  return "FAILED";
+}
+
 // ─── Generate a unique transaction reference ───────────────────────────────
 
 export function generateTxRef(prefix = "REI"): string {
