@@ -2,15 +2,14 @@
 
 Monorepo for **Reines Property Development Limited**:
 
-| Folder | Description |
-|--------|-------------|
-| `reines-web/` | Next.js website, admin/client portals, and `/api/mobile/*` backend |
-| `reines-mobile/` | Expo React Native app (CLIENT + PROJECT_MANAGER) |
+- `reines-web` — Next.js website, admin/client portals, and mobile API
+- `reines-mobile` — Expo React Native app (CLIENT + PROJECT_MANAGER)
 
 ## Prerequisites
 
 - Node.js 20+
-- PostgreSQL (Neon) — connection string in `reines-web/.env`
+- npm
+- Neon PostgreSQL database (or local Postgres for development)
 
 ## Web (`reines-web`)
 
@@ -19,33 +18,45 @@ cd reines-web
 cp .env.example .env   # fill in DATABASE_URL, AUTH_SECRET, etc.
 npm install
 npx prisma generate
+npx prisma db push     # first-time setup or after schema changes
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
 
-**Deploy:** set host **root directory** to `reines-web`.
+### Required environment variables
+
+| Variable | Purpose |
+|----------|---------|
+| `DATABASE_URL` | Neon Postgres connection string |
+| `AUTH_SECRET` | JWT + session signing (`openssl rand -base64 32`) |
+| `NEXTAUTH_URL` | `http://localhost:3000` locally; your domain in production |
+
+### Deploy (Vercel / similar)
+
+Set **Root directory** to `reines-web` and add the same env vars in the host dashboard.
 
 ## Mobile (`reines-mobile`)
 
 ```bash
 cd reines-mobile
-# create .env with EXPO_PUBLIC_API_URL pointing at your API (local IP or production domain)
-npm install
+cp .env.example .env   # set EXPO_PUBLIC_API_URL to your backend URL
+npm install --legacy-peer-deps
 npm start
 ```
 
-## Environment variables
+For local dev, point the API at your machine's LAN IP (not `localhost`):
 
-### Web (`reines-web/.env`)
+```env
+EXPO_PUBLIC_API_URL=http://192.168.x.x:3000
+```
 
-- `DATABASE_URL` — Neon Postgres
-- `AUTH_SECRET` — JWT / NextAuth secret
-- `NEXTAUTH_URL` — `http://localhost:3000` locally, `https://yourdomain.com` in production
-- `PAYCHANGU_*`, `GROQ_*` — as needed
+Scan the QR code with **Expo Go** (Android/iOS).
 
-### Mobile (`reines-mobile/.env`)
+## WSL note
 
-- `EXPO_PUBLIC_API_URL` — e.g. `http://192.168.x.x:3000` (dev) or `https://yourdomain.com` (prod)
+If the repo lives under `/mnt/c/...`, prefer cloning to `~/reines-platform` for faster `npm install`. Paths are equivalent:
 
-Do not commit `.env` files.
+```bash
+cd ~/reines-platform/reines-web
+```
