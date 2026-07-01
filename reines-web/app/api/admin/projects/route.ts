@@ -1,9 +1,8 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createProjectSchema } from "@/lib/validations";
 import { ok, created, forbidden, validationError } from "@/lib/api-response";
-import { MOCK_ADMIN_PROJECTS } from "@/lib/mock-admin";
 
 async function requireAdminOrManager() {
   const session = await auth();
@@ -26,8 +25,12 @@ export async function GET() {
       orderBy: { createdAt: "desc" },
     });
     return ok(projects);
-  } catch {
-    return ok(MOCK_ADMIN_PROJECTS);
+  } catch (err) {
+    console.error("[GET /api/admin/projects]", err);
+    return NextResponse.json(
+      { error: "Failed to load projects. Please try again." },
+      { status: 500 }
+    );
   }
 }
 
@@ -64,16 +67,11 @@ export async function POST(req: NextRequest) {
       },
     });
     return created(project);
-  } catch {
-    return created({
-      id: `proj_${Date.now()}`,
-      title, description, clientId, managerId, status,
-      managerAccepted: false,
-      managerAcceptedAt: null,
-      budget: budget ?? 0,
-      startDate: startDate ?? null,
-      endDate: endDate ?? null,
-      createdAt: new Date().toISOString(),
-    });
+  } catch (err) {
+    console.error("[POST /api/admin/projects]", err);
+    const msg = err instanceof Error && err.message.includes("Foreign key constraint")
+      ? "Invalid client or manager ID — make sure both users exist."
+      : "Failed to create project. Please try again.";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -1,8 +1,12 @@
-import { MOCK_ADMIN_PROJECTS, getClients, getManagers, type AdminUser, type AdminProject } from "@/lib/mock-admin";
+import { type AdminUser, type AdminProject } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import ProjectsTable from "@/components/admin/ProjectsTable";
 
-async function getData(): Promise<{ projects: AdminProject[]; clients: AdminUser[]; managers: AdminUser[] }> {
+type DataResult =
+  | { ok: true;  projects: AdminProject[]; clients: AdminUser[]; managers: AdminUser[] }
+  | { ok: false; error: string };
+
+async function getData(): Promise<DataResult> {
   try {
     const [rawProjects, rawUsers] = await Promise.all([
       prisma.project.findMany({
@@ -20,7 +24,7 @@ async function getData(): Promise<{ projects: AdminProject[]; clients: AdminUser
     const users: AdminUser[] = rawUsers.map((u) => ({
       id:        u.id,
       name:      u.name  ?? "Unknown",
-      email:     u.email ?? "�",
+      email:     u.email ?? "",
       role:      u.role  as AdminUser["role"],
       createdAt: u.createdAt instanceof Date ? u.createdAt.toISOString() : String(u.createdAt),
     }));
@@ -43,23 +47,24 @@ async function getData(): Promise<{ projects: AdminProject[]; clients: AdminUser
     }));
 
     return {
+      ok:       true,
       projects,
       clients:  users.filter((u) => u.role === "CLIENT"),
       managers: users.filter((u) => ["ADMIN", "PROJECT_MANAGER"].includes(u.role)),
     };
-  } catch {
+  } catch (err) {
+    console.error("[AdminProjectsPage] DB error:", err);
     return {
-      projects: MOCK_ADMIN_PROJECTS,
-      clients:  getClients(),
-      managers: getManagers(),
+      ok:    false,
+      error: err instanceof Error ? err.message : "Failed to load projects from the database.",
     };
   }
 }
 
-export const metadata = { title: "Project Management � Reines Admin" };
+export const metadata = { title: "Project Management | Reines Admin" };
 
 export default async function AdminProjectsPage() {
-  const { projects, clients, managers } = await getData();
+  const data = await getData();
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -70,12 +75,19 @@ export default async function AdminProjectsPage() {
         </p>
       </div>
 
-      <ProjectsTable
-        initialProjects={projects}
-        clients={clients}
-        managers={managers}
-        isAdmin={true}
-      />
+      {!data.ok ? (
+        <div className="rounded-xl border border-orange-200 bg-orange-50 px-5 py-4 text-sm text-orange-800">
+          <p className="font-semibold">Could not load projects</p>
+          <p className="mt-1 text-xs text-orange-700">{data.error}</p>
+        </div>
+      ) : (
+        <ProjectsTable
+          initialProjects={data.projects}
+          clients={data.clients}
+          managers={data.managers}
+          isAdmin={true}
+        />
+      )}
     </div>
   );
 }

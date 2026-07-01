@@ -318,6 +318,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
         width="xl"
       >
         <CreateProjectForm
+          key={editProject?.id ?? "new"}
           clients={clients}
           managers={managers}
           editProject={editProject}

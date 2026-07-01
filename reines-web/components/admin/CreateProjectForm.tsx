@@ -116,27 +116,9 @@ export default function CreateProjectForm({
       const data = await res.json();
       if (!res.ok) { setServerError(data.error ?? "Something went wrong."); return; }
       onSuccess(data as AdminProject);
-    } catch {
-      // Simulate success when DB is not connected
-      const clientUser  = clients.find((c)  => c.id === form.clientId);
-      const managerUser = managers.find((m) => m.id === form.managerId);
-      const mockProject: AdminProject = {
-        id:          editProject?.id ?? `proj_${Date.now()}`,
-        title:       form.title.trim(),
-        description: form.description.trim(),
-        clientId:    form.clientId,
-        clientName:  clientUser?.name  ?? "Unknown",
-        managerId:   form.managerId,
-        managerName: managerUser?.name ?? "Unknown",
-        managerAccepted: editProject?.managerAccepted ?? false,
-        managerAcceptedAt: editProject?.managerAcceptedAt ?? null,
-        status:      form.status,
-        budget:      rawBudget ? Number(rawBudget) : 0,
-        startDate:   form.startDate || null,
-        endDate:     form.endDate   || null,
-        createdAt:   editProject?.createdAt ?? new Date().toISOString(),
-      };
-      onSuccess(mockProject);
+    } catch (err) {
+      console.error("[CreateProjectForm] network error:", err);
+      setServerError("A network error occurred. Please check your connection and try again.");
     } finally {
       setLoading(false);
     }
