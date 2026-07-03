@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { isSafeUploadUrl } from "@/lib/storage";
 import { createGalleryUpdateSchema } from "@/lib/validations";
 import { notifyGalleryUpload } from "@/lib/push";
+import { revalidatePath } from "next/cache";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -32,11 +33,9 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
     });
 
     return NextResponse.json({ updates });
-  } catch {
-    // DB not connected — return mock gallery from project mock data
-    const { getMockProjectById } = await import("@/lib/mock-data");
-    const mock = getMockProjectById(id, "client_001");
-    return NextResponse.json({ updates: mock?.updates ?? [], _source: "mock" });
+  } catch (err) {
+    console.error("[GET /api/projects/[id]/gallery]", err);
+    return NextResponse.json({ error: "Failed to load gallery updates." }, { status: 500 });
   }
 }
 
@@ -102,6 +101,12 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       updateId:    update.id,
       progressPct: update.progressPercent,
     }).catch(console.warn);
+
+    // Bust the cache so the gallery page and project detail page reflect
+    // the new update immediately (for both the uploader and the client).
+    revalidatePath(`/dashboard/projects/${id}/gallery`);
+    revalidatePath(`/dashboard/projects/${id}`);
+    revalidatePath("/dashboard/gallery");
 
     return NextResponse.json({ update }, { status: 201 });
   } catch (err) {

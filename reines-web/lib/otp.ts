@@ -39,12 +39,18 @@ function hashOtpCode(code: string): string {
   return crypto.createHmac("sha256", pepper()).update(code).digest("hex");
 }
 
-// ─── Create a login OTP ───────────────────────────────────────────────────────
+// ─── Shared result types ──────────────────────────────────────────────────────
 
 export type CreateOtpResult =
   | { ok: true; code: string }
   | { ok: false; reason: "cooldown"; retryAfterSeconds: number }
   | { ok: false; reason: "rate_limited" };
+
+export type VerifyOtpResult =
+  | { ok: true }
+  | { ok: false; reason: "no_code" | "expired" | "too_many_attempts" | "invalid" };
+
+// ─── Create a login OTP ───────────────────────────────────────────────────────
 
 export async function createLoginOtp(email: string): Promise<CreateOtpResult> {
   const normalized = normaliseEmail(email);
@@ -94,11 +100,107 @@ export async function createLoginOtp(email: string): Promise<CreateOtpResult> {
   return { ok: true, code };
 }
 
-// ─── Verify a login OTP ───────────────────────────────────────────────────────
+// ─── Generic createOtp / verifyOtp (used by reset & email-verify) ────────────
 
-export type VerifyOtpResult =
-  | { ok: true }
-  | { ok: false; reason: "no_code" | "expired" | "too_many_attempts" | "invalid" };
+/**
+ * Creates an OTP for any purpose (RESET, EMAIL_VERIFY, …).
+ * Uses the same anti-abuse window as LOGIN but with configurable TTL.
+ */
+export async function createOtp(
+  email:      string,
+  purpose:    string,
+  ttlMinutes: number
+): Promise<CreateOtpResult> {
+  const normalized = normaliseEmail(email);
+  const now = new Date();
+
+  const latest = await prisma.emailOtp.findFirst({
+    where:   { email: normalized, purpose },
+    orderBy: { createdAt: "desc" },
+  });
+  if (latest && !latest.consumedAt) {
+    const ageSeconds = (now.getTime() - latest.createdAt.getTime()) / 1000;
+    if (ageSeconds < RESEND_COOLDOWN_SECONDS) {
+      return {
+        ok: false,
+        reason: "cooldown",
+        retryAfterSeconds: Math.ceil(RESEND_COOLDOWN_SECONDS - ageSeconds),
+      };
+    }
+  }
+
+  const windowStart = new Date(now.getTime() - WINDOW_MINUTES * 60_000);
+  const recentCount = await prisma.emailOtp.count({
+    where: { email: normalized, purpose, createdAt: { gte: windowStart } },
+  });
+  if (recentCount >= MAX_REQUESTS_PER_WINDOW) {
+    return { ok: false, reason: "rate_limited" };
+  }
+
+  await prisma.emailOtp.updateMany({
+    where: { email: normalized, purpose, consumedAt: null },
+    data:  { consumedAt: now },
+  });
+
+  const code = generateOtpCode();
+  await prisma.emailOtp.create({
+    data: {
+      email:     normalized,
+      codeHash:  hashOtpCode(code),
+      purpose,
+      expiresAt: new Date(now.getTime() + ttlMinutes * 60_000),
+    },
+  });
+
+  return { ok: true, code };
+}
+
+export async function verifyOtp(
+  email:   string,
+  code:    string,
+  purpose: string
+): Promise<VerifyOtpResult> {
+  const normalized = normaliseEmail(email);
+  const now = new Date();
+
+  const otp = await prisma.emailOtp.findFirst({
+    where:   { email: normalized, purpose, consumedAt: null },
+    orderBy: { createdAt: "desc" },
+  });
+
+  if (!otp) return { ok: false, reason: "no_code" };
+  if (otp.expiresAt < now) return { ok: false, reason: "expired" };
+  if (otp.attempts >= MAX_ATTEMPTS) return { ok: false, reason: "too_many_attempts" };
+
+  const provided = hashOtpCode(code);
+  const matches = crypto.timingSafeEqual(
+    Buffer.from(otp.codeHash, "hex"),
+    Buffer.from(provided, "hex")
+  );
+
+  if (!matches) {
+    await prisma.emailOtp.update({ where: { id: otp.id }, data: { attempts: { increment: 1 } } });
+    return { ok: false, reason: "invalid" };
+  }
+
+  await prisma.emailOtp.update({ where: { id: otp.id }, data: { consumedAt: now } });
+  return { ok: true };
+}
+
+// Convenience aliases with purpose constants
+export const createPasswordResetOtp = (email: string) =>
+  createOtp(email, "RESET", 15);
+
+export const verifyPasswordResetOtp = (email: string, code: string) =>
+  verifyOtp(email, code, "RESET");
+
+export const createEmailVerifyOtp = (email: string) =>
+  createOtp(email, "EMAIL_VERIFY", 60 * 24); // 24 hours
+
+export const verifyEmailVerifyOtp = (email: string, code: string) =>
+  verifyOtp(email, code, "EMAIL_VERIFY");
+
+// ─── Verify a login OTP ───────────────────────────────────────────────────────
 
 export async function verifyLoginOtp(email: string, code: string): Promise<VerifyOtpResult> {
   const normalized = normaliseEmail(email);

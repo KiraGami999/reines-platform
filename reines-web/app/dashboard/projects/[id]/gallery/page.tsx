@@ -6,6 +6,7 @@ import { GalleryGrid } from "@/components/dashboard/GalleryGrid";
 import { UploadForm } from "@/components/dashboard/UploadForm";
 import { ArrowLeft, Images, Upload, Camera, FileText, Info } from "lucide-react";
 
+export const dynamic = "force-dynamic";
 export const metadata = { title: "Project Gallery – Reines Portal" };
 
 interface PageProps {

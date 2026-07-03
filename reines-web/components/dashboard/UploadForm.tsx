@@ -144,11 +144,9 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
 
     setState("success");
 
-    // Refresh server component data so gallery re-renders with the new update
+    // Refresh the server component cache so the gallery page shows the new
+    // update immediately when the user navigates there.
     router.refresh();
-    if (galleryHref) {
-      router.push(galleryHref);
-    }
   }
 
   // ── Success view ────────────────────────────────────────────────────────────

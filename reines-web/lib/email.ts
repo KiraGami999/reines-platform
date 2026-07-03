@@ -17,9 +17,16 @@ import nodemailer, { type Transporter } from "nodemailer";
 let cachedTransport: Transporter | null = null;
 
 export function isEmailConfigured(): boolean {
-  return Boolean(
-    process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS
-  );
+  const host = process.env.SMTP_HOST;
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  // Reject obviously unfilled placeholder values so the dev console fallback
+  // kicks in even when the .env has template text rather than real credentials.
+  const isPlaceholder = (v?: string) =>
+    !v || v.startsWith("your-") || v.includes("example.com");
+
+  return Boolean(host && !isPlaceholder(user) && !isPlaceholder(pass));
 }
 
 function getTransport(): Transporter {
@@ -116,5 +123,117 @@ export async function sendLoginOtpEmail(to: string, code: string, name?: string)
       `${name ? `Hi ${name},\n\n` : ""}Your Reines verification code is ${code}. ` +
       `It expires in 10 minutes.\n\nIf you didn't try to sign in, ignore this email. ` +
       `Never share this code with anyone.`,
+  });
+}
+
+// ─── Password reset email ────────────────────────────────────────────────────
+
+function resetEmailHtml(code: string, name?: string): string {
+  const greeting = name ? `Hi ${name},` : "Hi,";
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Properties</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                We received a request to reset your Reines portal password. Use the code below
+                to set a new password. It expires in <strong>15 minutes</strong>.
+              </p>
+              <div style="text-align:center;margin:0 0 24px;">
+                <div style="display:inline-block;background:#f0f5fc;border:1px solid ${BRAND_BLUE};border-radius:12px;padding:16px 28px;">
+                  <span style="font-size:34px;font-weight:800;letter-spacing:10px;color:${BRAND_NAVY};">${code}</span>
+                </div>
+              </div>
+              <p style="margin:0;color:#a1a1aa;font-size:12px;line-height:1.6;">
+                If you didn't request a password reset, you can safely ignore this email.
+                Your password has <strong>not</strong> been changed.
+                Never share this code with anyone.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendPasswordResetEmail(to: string, code: string, name?: string): Promise<void> {
+  await sendMail({
+    to,
+    subject: "Reset your Reines portal password",
+    html: resetEmailHtml(code, name),
+    text:
+      `${name ? `Hi ${name},\n\n` : ""}Your Reines password reset code is ${code}. ` +
+      `It expires in 15 minutes.\n\nIf you didn't request a reset, ignore this email. ` +
+      `Your password has not been changed.`,
+  });
+}
+
+// ─── Email verification email ────────────────────────────────────────────────
+
+function verifyEmailHtml(code: string, name?: string): string {
+  const greeting = name ? `Hi ${name},` : "Hi,";
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Properties</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
+              <p style="margin:0 0 8px;color:#52525b;font-size:14px;line-height:1.6;">
+                Welcome to the Reines client portal. Enter the code below to verify your
+                email address and activate your account.
+              </p>
+              <p style="margin:0 0 24px;color:#a1a1aa;font-size:12px;">
+                This code expires in <strong>24 hours</strong>.
+              </p>
+              <div style="text-align:center;margin:0 0 24px;">
+                <div style="display:inline-block;background:#f0f5fc;border:1px solid ${BRAND_BLUE};border-radius:12px;padding:16px 28px;">
+                  <span style="font-size:34px;font-weight:800;letter-spacing:10px;color:${BRAND_NAVY};">${code}</span>
+                </div>
+              </div>
+              <p style="margin:0;color:#a1a1aa;font-size:12px;line-height:1.6;">
+                If you didn't create a Reines account, you can safely ignore this email.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendVerifyEmail(to: string, code: string, name?: string): Promise<void> {
+  await sendMail({
+    to,
+    subject: "Verify your Reines portal email",
+    html: verifyEmailHtml(code, name),
+    text:
+      `${name ? `Hi ${name},\n\n` : ""}Welcome to Reines! Your email verification code is ${code}. ` +
+      `It expires in 24 hours.`,
   });
 }

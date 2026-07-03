@@ -20,8 +20,10 @@ export default NextAuth(authConfig).auth(
     const session   = req.auth;
     const isLoggedIn = !!session?.user;
 
-    const isDashboard    = nextUrl.pathname.startsWith("/dashboard");
-    const isAuthPage     = ["/login", "/register"].includes(nextUrl.pathname);
+    const isDashboard = nextUrl.pathname.startsWith("/dashboard");
+    const isAuthPage  = ["/login", "/register", "/forgot-password", "/verify-email"].includes(
+      nextUrl.pathname
+    );
 
     // Already logged in — bounce away from auth pages
     if (isLoggedIn && isAuthPage) {
@@ -39,5 +41,5 @@ export default NextAuth(authConfig).auth(
 );
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/login", "/register"],
+  matcher: ["/dashboard/:path*", "/login", "/register", "/forgot-password", "/verify-email"],
 };

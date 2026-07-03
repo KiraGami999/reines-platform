@@ -31,9 +31,33 @@ export const credentialsSchema = z.object({
   otp:      z.string().regex(/^\d{6}$/, "Enter the 6-digit code").optional(),
 });
 
-export type RegisterInput = z.infer<typeof registerSchema>;
-export type LoginInput = z.infer<typeof loginSchema>;
-export type CredentialsInput = z.infer<typeof credentialsSchema>;
+const passwordField = z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+  .regex(/[0-9]/, "Must contain at least one number");
+
+export const resetPasswordRequestSchema = z.object({
+  email: z.string().email("Invalid email address"),
+});
+
+export const resetPasswordConfirmSchema = z.object({
+  email:    z.string().email("Invalid email address"),
+  code:     z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
+  password: passwordField,
+});
+
+export const verifyEmailSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  code:  z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
+});
+
+export type RegisterInput        = z.infer<typeof registerSchema>;
+export type LoginInput           = z.infer<typeof loginSchema>;
+export type CredentialsInput     = z.infer<typeof credentialsSchema>;
+export type ResetPasswordRequest = z.infer<typeof resetPasswordRequestSchema>;
+export type ResetPasswordConfirm = z.infer<typeof resetPasswordConfirmSchema>;
+export type VerifyEmailInput     = z.infer<typeof verifyEmailSchema>;
 
 export const enquirySchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),

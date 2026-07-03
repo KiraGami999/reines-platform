@@ -7,7 +7,7 @@ import Link from "next/link";
 import { loginSchema } from "@/lib/validations";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { Eye, EyeOff, AlertCircle, MailCheck, ArrowLeft } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, MailCheck, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { useReinesLoader } from "@/components/layout/ReinesLoaderProvider";
 
 type Phase = "credentials" | "otp";
@@ -26,6 +26,9 @@ export function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl  = searchParams.get("callbackUrl") ?? "/dashboard";
   const { triggerSignInLoader } = useReinesLoader();
+
+  const verified  = searchParams.get("verified") === "1";
+  const wasReset  = searchParams.get("reset")    === "1";
 
   const [phase, setPhase]       = useState<Phase>("credentials");
   const [form, setForm]         = useState({ email: "", password: "" });
@@ -210,6 +213,16 @@ export function LoginForm() {
   // ── Credentials phase UI ──────────────────────────────────────────────────
   return (
     <form onSubmit={handleCredentialsSubmit} className="space-y-4" noValidate>
+      {(verified || wasReset) && (
+        <div className="flex items-start gap-2 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+          <CheckCircle2 size={15} className="mt-0.5 shrink-0" />
+          <span>
+            {verified
+              ? "Email verified! You can now sign in."
+              : "Password updated! Sign in with your new password."}
+          </span>
+        </div>
+      )}
       <Input
         id="email"
         type="email"
@@ -224,7 +237,12 @@ export function LoginForm() {
       />
 
       <div className="space-y-1">
-        <label htmlFor="password" className="block text-sm font-medium text-zinc-700">Password</label>
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="block text-sm font-medium text-zinc-700">Password</label>
+          <Link href="/forgot-password" className="text-xs text-[#2d4a6b] hover:underline">
+            Forgot password?
+          </Link>
+        </div>
         <div className="relative">
           <input
             id="password"

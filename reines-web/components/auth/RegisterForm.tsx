@@ -101,7 +101,7 @@ export function RegisterForm() {
         return;
       }
 
-      router.push("/login?registered=1");
+      router.push(`/verify-email?email=${encodeURIComponent(form.email)}`);
     } catch {
       setServerError("Network error. Please check your connection and try again.");
     } finally {

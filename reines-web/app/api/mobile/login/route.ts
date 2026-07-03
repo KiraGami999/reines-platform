@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
 import { signToken } from "@/lib/jwt";
 import { z } from "zod";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 const schema = z.object({
   email:    z.string().email("Invalid email address."),
@@ -17,6 +18,16 @@ const schema = z.object({
  * ADMIN accounts are intentionally excluded from mobile access.
  */
 export async function POST(req: NextRequest) {
+  // 10 login attempts per IP per 15 minutes.
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(`mobile-login:${ip}`, 10, 15 * 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many login attempts. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   const body   = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
 

@@ -115,7 +115,30 @@ export default function CreateProjectForm({
       });
       const data = await res.json();
       if (!res.ok) { setServerError(data.error ?? "Something went wrong."); return; }
-      onSuccess(data as AdminProject);
+
+      // The API returns Prisma's shape (nested `client` / `manager` relations).
+      // Normalise into the flat AdminProject shape the table expects.
+      const project: AdminProject = {
+        id:          data.id,
+        title:       data.title,
+        description: data.description ?? "",
+        status:      data.status,
+        budget:      data.budget ? Number(data.budget) : 0,
+        clientId:    data.clientId,
+        clientName:  data.client?.name  ?? form.clientId,
+        managerId:   data.managerId,
+        managerName: data.manager?.name ?? form.managerId,
+        managerAccepted:   data.managerAccepted   ?? false,
+        managerAcceptedAt: data.managerAcceptedAt ?? null,
+        startDate:   data.startDate
+          ? new Date(data.startDate).toISOString().split("T")[0]
+          : null,
+        endDate: data.endDate
+          ? new Date(data.endDate).toISOString().split("T")[0]
+          : null,
+        createdAt: data.createdAt ?? new Date().toISOString(),
+      };
+      onSuccess(project);
     } catch (err) {
       console.error("[CreateProjectForm] network error:", err);
       setServerError("A network error occurred. Please check your connection and try again.");

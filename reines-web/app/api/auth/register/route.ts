@@ -2,8 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { registerSchema } from "@/lib/validations";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
+import { createEmailVerifyOtp } from "@/lib/otp";
+import { sendVerifyEmail, isEmailConfigured } from "@/lib/email";
 
 export async function POST(req: NextRequest) {
+  // 5 registrations per IP per hour.
+  const ip = getClientIp(req);
+  const rl = checkRateLimit(`register:${ip}`, 5, 60 * 60_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   try {
     const body = await req.json();
 
@@ -37,6 +50,19 @@ export async function POST(req: NextRequest) {
       data: { name, email, password: hashed, role },
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
+
+    // Send email-verification code in the background (best-effort).
+    if (isEmailConfigured()) {
+      createEmailVerifyOtp(email)
+        .then((result) => {
+          if (result.ok) {
+            return sendVerifyEmail(email, result.code, name);
+          }
+        })
+        .catch((err) =>
+          console.error("[REGISTER] Failed to send verification email:", err)
+        );
+    }
 
     return NextResponse.json({ user }, { status: 201 });
   } catch (error) {

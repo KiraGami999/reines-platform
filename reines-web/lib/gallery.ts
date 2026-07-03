@@ -4,12 +4,9 @@
  * - ADMIN           → sees all projects
  * - PROJECT_MANAGER → sees only projects they manage
  * - CLIENT          → sees only their own projects
- *
- * Falls back to mock data when the database is not yet connected.
  */
 
-import { prisma }           from "@/lib/prisma";
-import { getMockProjects, getMockProjectById } from "@/lib/mock-data";
+import { prisma } from "@/lib/prisma";
 import type { ProjectUpdate } from "@/models/project";
 
 // ─── Gallery types ────────────────────────────────────────────────────────────
@@ -68,17 +65,6 @@ function mapRow(row: {
   };
 }
 
-function mockToGalleryProject(p: ReturnType<typeof getMockProjects>[number]): GalleryProject {
-  return {
-    id:        p.id,
-    title:     p.title,
-    clientId:  p.clientId,
-    managerId: p.managerId,
-    manager:   p.manager,
-    updates:   p.updates,
-  };
-}
-
 // ─── Public API ───────────────────────────────────────────────────────────────
 
 /**
@@ -102,8 +88,9 @@ export async function getGalleryProjects(
     });
 
     return rows.map(mapRow);
-  } catch {
-    return getMockProjects("client_001").map(mockToGalleryProject);
+  } catch (err) {
+    console.error("[getGalleryProjects]", err);
+    return [];
   }
 }
 
@@ -128,8 +115,8 @@ export async function getProjectForGallery(
     });
 
     return row ? mapRow(row) : null;
-  } catch {
-    const mock = getMockProjectById(id, "client_001");
-    return mock ? mockToGalleryProject(mock) : null;
+  } catch (err) {
+    console.error("[getProjectForGallery]", err);
+    return null;
   }
 }
