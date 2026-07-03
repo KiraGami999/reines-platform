@@ -63,7 +63,7 @@ export function ReinesPageLoader({ phase, progress, onExitComplete }: ReinesPage
           alt="Reines Property Development"
           width={120}
           height={120}
-          className="select-none drop-shadow-[0_0_24px_rgba(143,185,232,0.25)]"
+          className="select-none [mix-blend-mode:screen] drop-shadow-[0_0_32px_rgba(143,185,232,0.35)]"
           priority
         />
 

@@ -67,6 +67,17 @@ function docLabel(mimeType: string): string {
   return "Document";
 }
 
+async function getUploadError(res: Response): Promise<string> {
+  const contentType = res.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const data = await res.json().catch(() => ({}));
+    return data.error ?? `Upload failed (${res.status}).`;
+  }
+
+  const text = await res.text().catch(() => "");
+  return text.trim() || `Upload failed (${res.status}).`;
+}
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormProps) {
@@ -153,58 +164,66 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
       return;
     }
 
-    // ── Step 1: Upload all files in parallel ─────────────────────────────────
+    // ── Step 1: Upload files one by one ──────────────────────────────────────
+    // Keeping this sequential avoids failed batches caused by multiple large
+    // multipart requests competing for bandwidth/serverless resources.
     setFormState("uploading");
     setUploadedCount(0);
 
-    // Mark all as uploading
-    setQueue((prev) => prev.map((e) => ({ ...e, status: "uploading" as FileStatus })));
+    const uploadResults: { entry: QueueEntry; result: BatchFile | null; err: string | null }[] = [];
 
-    const uploadResults = await Promise.all(
-      queue.map(async (entry): Promise<{ entry: QueueEntry; result: BatchFile | null; err: string | null }> => {
-        const fd = new FormData();
-        fd.append("file", entry.file);
+    for (const entry of queue) {
+      setQueue((prev) =>
+        prev.map((e) => e.uid === entry.uid ? { ...e, status: "uploading", error: undefined } : e)
+      );
 
-        try {
-          const res  = await fetch("/api/upload", { method: "POST", body: fd });
-          const data = await res.json().catch(() => ({}));
+      const fd = new FormData();
+      fd.append("file", entry.file);
 
-          if (!res.ok) {
-            return { entry, result: null, err: data.error ?? "Upload failed." };
-          }
+      try {
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
 
-          setUploadedCount((n) => n + 1);
-
-          return {
-            entry,
-            result: {
-              url:  data.url,
-              name: data.originalName ?? entry.file.name,
-              type: data.mimeType ?? entry.file.type,
-              kind: entry.kind,
-            },
-            err: null,
-          };
-        } catch {
-          return { entry, result: null, err: "Network error — upload failed." };
+        if (!res.ok) {
+          const err = await getUploadError(res);
+          uploadResults.push({ entry, result: null, err });
+          setQueue((prev) =>
+            prev.map((e) => e.uid === entry.uid ? { ...e, status: "error", error: err } : e)
+          );
+          continue;
         }
-      })
-    );
 
-    // Update queue status per result
-    setQueue((prev) =>
-      prev.map((e) => {
-        const r = uploadResults.find((r) => r.entry.uid === e.uid);
-        if (!r) return e;
-        return { ...e, status: r.err ? ("error" as FileStatus) : ("done" as FileStatus), error: r.err ?? undefined };
-      })
-    );
+        const data = await res.json().catch(() => ({}));
+        const result: BatchFile = {
+          url:  data.url,
+          name: data.originalName ?? entry.file.name,
+          type: data.mimeType ?? entry.file.type,
+          kind: entry.kind,
+        };
+
+        uploadResults.push({ entry, result, err: null });
+        setUploadedCount((n) => n + 1);
+        setQueue((prev) =>
+          prev.map((e) => e.uid === entry.uid ? { ...e, status: "done" } : e)
+        );
+      } catch {
+        const err = "Network error while uploading this file.";
+        uploadResults.push({ entry, result: null, err });
+        setQueue((prev) =>
+          prev.map((e) => e.uid === entry.uid ? { ...e, status: "error", error: err } : e)
+        );
+      }
+    }
 
     const succeeded = uploadResults.filter((r) => r.result !== null);
     const failed    = uploadResults.filter((r) => r.result === null);
 
     if (succeeded.length === 0) {
-      setGlobalError("All file uploads failed. Please check your connection and try again.");
+      const firstError = failed[0]?.err;
+      setGlobalError(
+        firstError
+          ? `All file uploads failed. First error: ${firstError}`
+          : "All file uploads failed. Please check your connection and try again."
+      );
       setFormState("error");
       return;
     }
