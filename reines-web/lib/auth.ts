@@ -4,8 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
-import { credentialsSchema } from "@/lib/validations";
-import { verifyLoginOtp } from "@/lib/otp";
+import { loginSchema } from "@/lib/validations";
 import { authConfig } from "@/auth.config";
 
 declare module "next-auth" {
@@ -44,23 +43,16 @@ const fullAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const parsed = credentialsSchema.safeParse(credentials);
+        const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        const { email, password, otp } = parsed.data;
+        const { email, password } = parsed.data;
 
         const user = await prisma.user.findUnique({ where: { email } });
-
         if (!user || !user.password) return null;
 
         const passwordValid = await verifyPassword(password, user.password);
         if (!passwordValid) return null;
-
-        // Second factor: a valid, unexpired email OTP is required for every login.
-        // The OTP was emailed in step 1 via /api/auth/otp/request.
-        if (!otp) return null;
-        const otpResult = await verifyLoginOtp(email, otp);
-        if (!otpResult.ok) return null;
 
         return {
           id:    user.id,

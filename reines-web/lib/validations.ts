@@ -20,16 +20,6 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-/**
- * Credentials submitted to NextAuth's authorize() — includes the email OTP
- * required as the second factor. The OTP is validated server-side against the
- * hashed code stored in the EmailOtp table.
- */
-export const credentialsSchema = z.object({
-  email:    z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-  otp:      z.string().regex(/^\d{6}$/, "Enter the 6-digit code").optional(),
-});
 
 const passwordField = z
   .string()
@@ -54,7 +44,6 @@ export const verifyEmailSchema = z.object({
 
 export type RegisterInput        = z.infer<typeof registerSchema>;
 export type LoginInput           = z.infer<typeof loginSchema>;
-export type CredentialsInput     = z.infer<typeof credentialsSchema>;
 export type ResetPasswordRequest = z.infer<typeof resetPasswordRequestSchema>;
 export type ResetPasswordConfirm = z.infer<typeof resetPasswordConfirmSchema>;
 export type VerifyEmailInput     = z.infer<typeof verifyEmailSchema>;
