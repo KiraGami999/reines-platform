@@ -16,6 +16,14 @@ export interface BudgetBreakdown {
   paid: boolean;
 }
 
+/** A single file inside a multi-file batch upload. */
+export interface BatchFile {
+  url:  string;
+  name: string;
+  type: string;  // MIME type
+  kind: "image" | "document";
+}
+
 export interface ProjectUpdate {
   id: string;
   note: string;
@@ -23,6 +31,8 @@ export interface ProjectUpdate {
   documentUrl: string | null;
   documentName: string | null;
   documentType: string | null;
+  /** Populated for batch uploads — takes priority over the legacy single-file fields. */
+  files?: BatchFile[] | null;
   progressPercent: number | null;
   createdAt: string;
 }

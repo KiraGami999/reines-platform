@@ -54,7 +54,7 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
   const body   = await req.json().catch(() => null);
-  // Validate note; additionally verify imageUrl is a safe upload path if present
+  // Validate note; additionally verify imageUrl / documentUrl / each batch file URL is a safe upload path
   const parsed = createGalleryUpdateSchema
     .refine(
       (d) => !d.imageUrl || isSafeUploadUrl(d.imageUrl),
@@ -63,6 +63,10 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
     .refine(
       (d) => !d.documentUrl || isSafeUploadUrl(d.documentUrl),
       { message: "Invalid document URL", path: ["documentUrl"] }
+    )
+    .refine(
+      (d) => !d.files || d.files.every((f) => isSafeUploadUrl(f.url)),
+      { message: "One or more file URLs are invalid", path: ["files"] }
     )
     .safeParse(body);
   if (!parsed.success) {
@@ -77,19 +81,27 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
+    const hasBatchFiles = parsed.data.files && parsed.data.files.length > 0;
+
     const update = await prisma.projectUpdate.create({
       data: {
         projectId: id,
         note:            parsed.data.note,
-        imageUrl:        parsed.data.imageUrl ?? null,
-        ...(parsed.data.documentUrl
-          ? {
-              documentUrl:  parsed.data.documentUrl,
-              documentName: parsed.data.documentName ?? null,
-              documentType: parsed.data.documentType ?? null,
-            }
-          : {}),
         progressPercent: parsed.data.progressPercent ?? null,
+        // Batch mode — store everything in the files JSON array
+        ...(hasBatchFiles
+          ? { files: parsed.data.files }
+          : {
+              // Legacy single-file mode — keep old fields for backward compat
+              imageUrl: parsed.data.imageUrl ?? null,
+              ...(parsed.data.documentUrl
+                ? {
+                    documentUrl:  parsed.data.documentUrl,
+                    documentName: parsed.data.documentName ?? null,
+                    documentType: parsed.data.documentType ?? null,
+                  }
+                : {}),
+            }),
       },
     });
 
