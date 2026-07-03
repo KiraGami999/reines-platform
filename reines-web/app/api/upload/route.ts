@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { saveUpload, StorageError } from "@/lib/storage";
 
-export const runtime = "nodejs";
-
 /**
  * POST /api/upload
  * Accepts multipart/form-data with a single `file` field.

@@ -5,19 +5,15 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   UploadCloud, X, CheckCircle2, AlertCircle,
-  FileImage, FileText, Loader2, Images,
+  FileImage, FileText, Loader2, Images, File as FileIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import type { BatchFile } from "@/models/project";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const NOTE_MAX        = 1000;
-const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // Images are compressed before upload.
-const MAX_DOCUMENT_BYTES = 4 * 1024 * 1024; // Vercel serverless payload limit is ~4.5 MB.
-const TARGET_UPLOAD_BYTES = 3.5 * 1024 * 1024; // Leave room for multipart overhead.
-const MAX_IMAGE_DIMENSION = 1800;
+const NOTE_MAX       = 500;
+const MAX_FILE_BYTES = 15 * 1024 * 1024;
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const ALLOWED_DOC_TYPES   = [
@@ -31,11 +27,12 @@ const ALLOWED_DOC_TYPES   = [
 type FileKind   = "image" | "document";
 type FileStatus = "pending" | "uploading" | "done" | "error";
 
-interface QueueEntry {
+interface FileEntry {
   uid:     string;
   file:    File;
   kind:    FileKind;
   preview: string | null;
+  note:    string;           // per-file description
   status:  FileStatus;
   error?:  string;
 }
@@ -46,7 +43,7 @@ interface UploadFormProps {
   galleryHref?: string;
 }
 
-type FormState = "idle" | "uploading" | "saving" | "success" | "error";
+type FormState = "idle" | "submitting" | "success" | "error";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -64,138 +61,121 @@ function readPreview(file: File): Promise<string> {
   });
 }
 
-function compressedImageName(name: string): string {
-  return name.replace(/\.[^.]+$/, "") + ".jpg";
-}
-
-async function compressImageForUpload(file: File): Promise<File> {
-  if (file.size <= TARGET_UPLOAD_BYTES) return file;
-
-  if (file.type === "image/gif") {
-    throw new Error("GIF files above 3.5 MB are too large for upload. Please use a smaller GIF or convert it to JPG/PNG.");
-  }
-
-  const objectUrl = URL.createObjectURL(file);
-  try {
-    const img = document.createElement("img");
-    img.decoding = "async";
-
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error("Could not read this image for compression."));
-      img.src = objectUrl;
-    });
-
-    const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height));
-    const width = Math.max(1, Math.round(img.width * scale));
-    const height = Math.max(1, Math.round(img.height * scale));
-
-    const canvas = document.createElement("canvas");
-    canvas.width = width;
-    canvas.height = height;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Could not prepare this image for upload.");
-
-    // White background prevents transparent PNGs from becoming black when saved as JPG.
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, width, height);
-    ctx.drawImage(img, 0, 0, width, height);
-
-    for (const quality of [0.82, 0.72, 0.62, 0.52, 0.42]) {
-      const blob = await new Promise<Blob | null>((resolve) =>
-        canvas.toBlob(resolve, "image/jpeg", quality)
-      );
-      if (blob && blob.size <= TARGET_UPLOAD_BYTES) {
-        return new File([blob], compressedImageName(file.name), {
-          type: "image/jpeg",
-          lastModified: Date.now(),
-        });
-      }
-    }
-
-    throw new Error("This image is still too large after compression. Please choose a smaller image.");
-  } finally {
-    URL.revokeObjectURL(objectUrl);
-  }
-}
-
 function docLabel(mimeType: string): string {
   if (mimeType.includes("pdf"))  return "PDF";
   if (mimeType.includes("word") || mimeType.includes("wordprocessing")) return "Word";
   return "Document";
 }
 
-async function getUploadError(res: Response): Promise<string> {
-  const contentType = res.headers.get("content-type") ?? "";
-  if (contentType.includes("application/json")) {
-    const data = await res.json().catch(() => ({}));
-    return data.error ?? `Upload failed (${res.status}).`;
-  }
-
-  const text = await res.text().catch(() => "");
-  return text.trim() || `Upload failed (${res.status}).`;
-}
-
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormProps) {
   const router   = useRouter();
-  const uid      = useId();
+  const formId   = useId();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const [queue,           setQueue]           = useState<QueueEntry[]>([]);
-  const [note,            setNote]            = useState("");
+  const [files,           setFiles]           = useState<FileEntry[]>([]);
+  const [textNote,        setTextNote]        = useState("");    // used only for text-only updates
   const [progressPercent, setProgressPercent] = useState(0);
   const [dragging,        setDragging]        = useState(false);
   const [formState,       setFormState]       = useState<FormState>("idle");
   const [globalError,     setGlobalError]     = useState<string | null>(null);
-  const [uploadedCount,   setUploadedCount]   = useState(0);
+  const [doneCount,       setDoneCount]       = useState(0);
+
+  const isSubmitting = formState === "submitting";
+  const hasFiles     = files.length > 0;
 
   // ── File queue management ────────────────────────────────────────────────────
 
-  async function enqueueFiles(incoming: FileList | File[]) {
+  async function addFiles(incoming: FileList | File[]) {
     setGlobalError(null);
-    const arr     = Array.from(incoming);
-    const entries: QueueEntry[] = [];
+    const arr: FileEntry[] = [];
 
-    for (const f of arr) {
+    for (const f of Array.from(incoming)) {
       const kind = detectKind(f);
       if (!kind) {
         setGlobalError("Some files were skipped — only images, PDF, and Word documents are accepted.");
         continue;
       }
-      if (kind === "image" && f.size > MAX_IMAGE_BYTES) {
-        setGlobalError(`"${f.name}" exceeds the 15 MB image limit and was skipped.`);
-        continue;
-      }
-      if (kind === "document" && f.size > MAX_DOCUMENT_BYTES) {
-        setGlobalError(`"${f.name}" exceeds the 4 MB document limit for Vercel uploads and was skipped.`);
+      if (f.size > MAX_FILE_BYTES) {
+        setGlobalError(`"${f.name}" exceeds the 15 MB limit and was skipped.`);
         continue;
       }
       const preview = kind === "image" ? await readPreview(f) : null;
-      entries.push({
-        uid:     `${uid}-${Date.now()}-${f.name}`,
+      arr.push({
+        uid:     `${formId}-${Date.now()}-${f.name}`,
         file:    f,
         kind,
         preview,
+        note:    "",
         status:  "pending",
       });
     }
 
-    setQueue((prev) => [...prev, ...entries]);
+    setFiles((prev) => [...prev, ...arr]);
   }
 
-  function removeFromQueue(uid: string) {
-    setQueue((prev) => prev.filter((e) => e.uid !== uid));
+  function removeFile(uid: string) {
+    setFiles((prev) => prev.filter((f) => f.uid !== uid));
+  }
+
+  function updateNote(uid: string, value: string) {
+    setFiles((prev) =>
+      prev.map((f) => f.uid === uid ? { ...f, note: value } : f)
+    );
   }
 
   const onDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
-    if (e.dataTransfer.files.length) enqueueFiles(e.dataTransfer.files);
+    if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // ── Upload + save a single file ──────────────────────────────────────────────
+
+  async function uploadOne(entry: FileEntry): Promise<"done" | "error"> {
+    setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "uploading" } : f));
+
+    const fd = new FormData();
+    fd.append("file", entry.file);
+
+    const uploadRes  = await fetch("/api/upload", { method: "POST", body: fd });
+    const uploadData = await uploadRes.json().catch(() => ({}));
+
+    if (!uploadRes.ok) {
+      const msg = uploadData.error ?? "Upload failed.";
+      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
+      return "error";
+    }
+
+    const isImage = entry.kind === "image";
+    const body = {
+      note:         entry.note.trim(),
+      progressPercent,
+      imageUrl:     isImage ? uploadData.url : null,
+      documentUrl:  isImage ? null : uploadData.url,
+      documentName: isImage ? null : (uploadData.originalName ?? entry.file.name),
+      documentType: isImage ? null : (uploadData.mimeType ?? entry.file.type),
+    };
+
+    const saveRes = await fetch(`/api/projects/${projectId}/gallery`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify(body),
+    });
+
+    if (!saveRes.ok) {
+      const d = await saveRes.json().catch(() => ({}));
+      const msg = d.error ?? "Could not save update.";
+      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
+      return "error";
+    }
+
+    setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "done" } : f));
+    setDoneCount((n) => n + 1);
+    return "done";
+  }
 
   // ── Submit ───────────────────────────────────────────────────────────────────
 
@@ -203,158 +183,84 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     e.preventDefault();
     setGlobalError(null);
 
-    if (!note.trim()) {
-      setGlobalError("Please add a progress note for this update.");
-      return;
-    }
-
-    // ── Text-only update (no files) ──────────────────────────────────────────
-    if (queue.length === 0) {
-      setFormState("saving");
+    // Text-only path
+    if (!hasFiles) {
+      if (!textNote.trim()) {
+        setGlobalError("Please write a progress note.");
+        return;
+      }
+      setFormState("submitting");
       const res = await fetch(`/api/projects/${projectId}/gallery`, {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ note: note.trim(), progressPercent }),
+        body:    JSON.stringify({ note: textNote.trim(), progressPercent }),
       });
       if (res.ok) {
         router.refresh();
         setFormState("success");
       } else {
         const d = await res.json().catch(() => ({}));
-        setGlobalError(d.error ?? "Could not save update. Please try again.");
+        setGlobalError(d.error ?? "Could not save update.");
         setFormState("error");
       }
       return;
     }
 
-    // ── Step 1: Upload files one by one ──────────────────────────────────────
-    // Keeping this sequential avoids failed batches caused by multiple large
-    // multipart requests competing for bandwidth/serverless resources.
-    setFormState("uploading");
-    setUploadedCount(0);
-
-    const uploadResults: { entry: QueueEntry; result: BatchFile | null; err: string | null }[] = [];
-
-    for (const entry of queue) {
-      setQueue((prev) =>
-        prev.map((e) => e.uid === entry.uid ? { ...e, status: "uploading", error: undefined } : e)
-      );
-
-      const fd = new FormData();
-
-      try {
-        const fileForUpload =
-          entry.kind === "image" ? await compressImageForUpload(entry.file) : entry.file;
-        fd.append("file", fileForUpload);
-
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-
-        if (!res.ok) {
-          const err = await getUploadError(res);
-          uploadResults.push({ entry, result: null, err });
-          setQueue((prev) =>
-            prev.map((e) => e.uid === entry.uid ? { ...e, status: "error", error: err } : e)
-          );
-          continue;
-        }
-
-        const data = await res.json().catch(() => ({}));
-        const result: BatchFile = {
-          url:  data.url,
-          name: entry.file.name,
-          type: data.mimeType ?? fileForUpload.type,
-          kind: entry.kind,
-        };
-
-        uploadResults.push({ entry, result, err: null });
-        setUploadedCount((n) => n + 1);
-        setQueue((prev) =>
-          prev.map((e) => e.uid === entry.uid ? { ...e, status: "done" } : e)
-        );
-      } catch (error) {
-        const err = error instanceof Error
-          ? error.message
-          : "Network error while uploading this file.";
-        uploadResults.push({ entry, result: null, err });
-        setQueue((prev) =>
-          prev.map((e) => e.uid === entry.uid ? { ...e, status: "error", error: err } : e)
-        );
-      }
-    }
-
-    const succeeded = uploadResults.filter((r) => r.result !== null);
-    const failed    = uploadResults.filter((r) => r.result === null);
-
-    if (succeeded.length === 0) {
-      const firstError = failed[0]?.err;
+    // Validate every file has a description
+    const missing = files.filter((f) => !f.note.trim());
+    if (missing.length > 0) {
       setGlobalError(
-        firstError
-          ? `All file uploads failed. First error: ${firstError}`
-          : "All file uploads failed. Please check your connection and try again."
+        missing.length === 1
+          ? `Please add a description for "${missing[0].file.name}".`
+          : `Please add descriptions for all ${missing.length} files before posting.`
       );
-      setFormState("error");
       return;
     }
-    if (failed.length > 0) {
-      setGlobalError(`${failed.length} file(s) failed to upload and were excluded from the batch.`);
-    }
 
-    // ── Step 2: Save ONE gallery record with all uploaded files ──────────────
-    setFormState("saving");
+    setFormState("submitting");
+    setDoneCount(0);
 
-    const batchFiles: BatchFile[] = succeeded.map((r) => r.result!);
-
-    const saveRes  = await fetch(`/api/projects/${projectId}/gallery`, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({
-        note:            note.trim(),
-        progressPercent,
-        files:           batchFiles,
-      }),
-    });
-
-    if (!saveRes.ok) {
-      const d = await saveRes.json().catch(() => ({}));
-      setGlobalError((prev) =>
-        [prev, d.error ?? "Could not save the batch update."].filter(Boolean).join(" · ")
-      );
-      setFormState("error");
-      return;
+    let hadError = false;
+    for (const entry of files) {
+      const result = await uploadOne(entry);
+      if (result === "error") hadError = true;
     }
 
     router.refresh();
-    setFormState("success");
+    setFormState(hadError ? "error" : "success");
+    if (hadError) {
+      setGlobalError("Some files failed. The ones that succeeded have been saved.");
+    }
   }
 
   // ── Reset ────────────────────────────────────────────────────────────────────
 
   function reset() {
-    setQueue([]);
-    setNote("");
+    setFiles([]);
+    setTextNote("");
     setProgressPercent(0);
     setGlobalError(null);
-    setUploadedCount(0);
+    setDoneCount(0);
     setFormState("idle");
     if (inputRef.current) inputRef.current.value = "";
   }
 
-  // ── Success view ─────────────────────────────────────────────────────────────
+  // ── Success screen ───────────────────────────────────────────────────────────
 
   if (formState === "success") {
-    const count = queue.filter((e) => e.status === "done").length || (queue.length === 0 ? 0 : 1);
+    const count = files.filter((f) => f.status === "done").length || (!hasFiles ? 1 : 0);
     return (
       <div className="flex flex-col items-center rounded-2xl border border-green-100 bg-green-50 p-8 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
           <CheckCircle2 size={32} className="text-green-500" />
         </div>
         <h3 className="mt-4 text-base font-semibold text-green-800">
-          {count === 0 ? "Note posted!" : count === 1 ? "Update posted!" : `Batch update posted (${count} files)!`}
+          {count === 1 ? "Update posted!" : `${count} updates posted!`}
         </h3>
         <p className="mt-1.5 max-w-xs text-sm text-green-700">
-          {count <= 1
-            ? "The progress update is now visible to your client in the gallery."
-            : `All ${count} files appear as a single update in the client's gallery.`}
+          {count === 1
+            ? "Your client can now see the update in their gallery."
+            : `All ${count} files are now visible to your client.`}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {galleryHref && (
@@ -376,8 +282,9 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     );
   }
 
-  const isBusy      = formState === "uploading" || formState === "saving";
-  const noteLeft    = NOTE_MAX - note.length;
+  const uploadingIdx = files.findIndex((f) => f.status === "uploading");
+
+  // ── Form ─────────────────────────────────────────────────────────────────────
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
@@ -391,11 +298,11 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
       <div className="rounded-xl border border-zinc-200 bg-white p-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <label htmlFor={`${uid}-progress`} className="text-sm font-medium text-zinc-700">
+            <label htmlFor={`${formId}-progress`} className="text-sm font-medium text-zinc-700">
               Estimated site progress
             </label>
             <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-              Applies to this entire update batch.
+              Applies to this entire batch of updates.
             </p>
           </div>
           <span className="shrink-0 rounded-full bg-[#8fb9e8]/10 px-3 py-1 text-sm font-bold text-[#2d4a6b]">
@@ -404,10 +311,13 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         </div>
         <div className="mt-4">
           <div className="mb-2 h-2 overflow-hidden rounded-full bg-zinc-100">
-            <div className="h-full rounded-full bg-[#8fb9e8] transition-all" style={{ width: `${progressPercent}%` }} />
+            <div
+              className="h-full rounded-full bg-[#8fb9e8] transition-all"
+              style={{ width: `${progressPercent}%` }}
+            />
           </div>
           <input
-            id={`${uid}-progress`}
+            id={`${formId}-progress`}
             type="range" min={0} max={100} step={1}
             value={progressPercent}
             onChange={(ev) => setProgressPercent(Number(ev.target.value))}
@@ -423,29 +333,28 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
       <div>
         <label className="mb-1.5 block text-sm font-medium text-zinc-700">
           Attachments{" "}
-          <span className="font-normal text-zinc-400">(optional — add multiple photos and/or documents)</span>
+          <span className="font-normal text-zinc-400">(optional — photos, PDFs, Word docs)</span>
         </label>
 
         <div
           onDrop={onDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          onClick={() => !isBusy && inputRef.current?.click()}
+          onClick={() => inputRef.current?.click()}
           className={cn(
             "flex cursor-pointer flex-col items-center gap-2.5 rounded-xl border-2 border-dashed py-8 transition-colors",
             dragging
               ? "border-[#8fb9e8] bg-[#8fb9e8]/5"
-              : "border-zinc-300 bg-white hover:border-zinc-400 hover:bg-zinc-50",
-            isBusy && "pointer-events-none opacity-50"
+              : "border-zinc-300 bg-white hover:border-zinc-400 hover:bg-zinc-50"
           )}
         >
           <UploadCloud size={32} className={dragging ? "text-[#8fb9e8]" : "text-zinc-300"} />
           <div className="text-center">
             <p className="text-sm font-medium text-zinc-600">
-              {dragging ? "Drop files here" : "Drag & drop files, or click to browse"}
+              {dragging ? "Drop files here" : "Drag & drop, or click to browse"}
             </p>
             <p className="mt-0.5 text-xs text-zinc-400">
-              Photos up to 15 MB are compressed automatically · Documents max 4 MB · Multiple files OK
+              JPEG · PNG · WEBP · GIF · PDF · DOC · DOCX · Max 15 MB each · Multiple files OK
             </p>
           </div>
           <input
@@ -454,119 +363,158 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
             multiple
             accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
             className="hidden"
-            onChange={(e) => { if (e.target.files?.length) enqueueFiles(e.target.files); }}
+            onChange={(e) => { if (e.target.files?.length) addFiles(e.target.files); }}
           />
         </div>
 
-        {/* File queue */}
-        {queue.length > 0 && (
-          <ul className="mt-3 space-y-2">
-            {queue.map((entry) => (
-              <li
-                key={entry.uid}
-                className={cn(
-                  "flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm transition-colors",
-                  entry.status === "done"      && "border-green-200 bg-green-50",
-                  entry.status === "error"     && "border-red-200   bg-red-50",
-                  entry.status === "uploading" && "border-[#8fb9e8]/40 bg-[#8fb9e8]/5",
-                  entry.status === "pending"   && "border-zinc-200  bg-white"
-                )}
-              >
-                {/* Thumbnail / icon */}
-                {entry.kind === "image" && entry.preview ? (
-                  <div className="relative h-10 w-10 shrink-0 overflow-hidden rounded-lg">
-                    <Image src={entry.preview} alt="" fill className="object-cover" sizes="40px" />
-                  </div>
-                ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10 text-[#2d4a6b]">
-                    {entry.kind === "image" ? <FileImage size={18} /> : <FileText size={18} />}
-                  </div>
-                )}
+        {/* ── Per-file cards ── */}
+        {files.length > 0 && (
+          <ul className="mt-3 space-y-3">
+            {files.map((entry, idx) => {
+              const isPending   = entry.status === "pending";
+              const isUploading = entry.status === "uploading";
+              const isDone      = entry.status === "done";
+              const isError     = entry.status === "error";
+              const noteLeft    = NOTE_MAX - entry.note.length;
 
-                {/* Name + meta */}
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-zinc-800">{entry.file.name}</p>
-                  <p className="text-xs text-zinc-400">
-                    {entry.kind === "image" ? "Photo" : docLabel(entry.file.type)}
-                    {" · "}{(entry.file.size / 1024).toFixed(0)} KB
-                    {entry.status === "error" && (
-                      <span className="ml-1 text-red-500"> · {entry.error}</span>
+              return (
+                <li
+                  key={entry.uid}
+                  className={cn(
+                    "rounded-xl border p-3 transition-colors",
+                    isDone      && "border-green-200 bg-green-50",
+                    isError     && "border-red-200 bg-red-50",
+                    isUploading && "border-[#8fb9e8]/50 bg-[#8fb9e8]/5",
+                    isPending   && "border-zinc-200 bg-white"
+                  )}
+                >
+                  {/* ── Header row ── */}
+                  <div className="flex items-start gap-3">
+                    {/* Thumbnail */}
+                    {entry.kind === "image" && entry.preview ? (
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg">
+                        <Image src={entry.preview} alt="" fill className="object-cover" sizes="48px" />
+                      </div>
+                    ) : (
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10 text-[#2d4a6b]">
+                        {entry.kind === "image" ? <FileImage size={20} /> : <FileText size={20} />}
+                      </div>
                     )}
-                  </p>
-                </div>
 
-                {/* Status indicator */}
-                {entry.status === "uploading" && (
-                  <Loader2 size={16} className="shrink-0 animate-spin text-[#2d4a6b]" />
-                )}
-                {entry.status === "done" && (
-                  <CheckCircle2 size={16} className="shrink-0 text-green-500" />
-                )}
-                {entry.status === "error" && (
-                  <AlertCircle size={16} className="shrink-0 text-red-500" />
-                )}
-                {entry.status === "pending" && !isBusy && (
-                  <button
-                    type="button"
-                    onClick={() => removeFromQueue(entry.uid)}
-                    className="shrink-0 rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors"
-                    aria-label="Remove file"
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </li>
-            ))}
+                    {/* Filename + type */}
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-zinc-800">
+                        <span className="mr-1.5 text-xs font-medium text-zinc-400">#{idx + 1}</span>
+                        {entry.file.name}
+                      </p>
+                      <p className="mt-0.5 text-xs text-zinc-400">
+                        {entry.kind === "image" ? "Photo" : docLabel(entry.file.type)}
+                        {" · "}{(entry.file.size / 1024).toFixed(0)} KB
+                      </p>
+                      {isError && entry.error && (
+                        <p className="mt-1 text-xs font-medium text-red-500">{entry.error}</p>
+                      )}
+                    </div>
+
+                    {/* Status / remove */}
+                    <div className="shrink-0">
+                      {isUploading && <Loader2 size={16} className="animate-spin text-[#2d4a6b]" />}
+                      {isDone      && <CheckCircle2 size={16} className="text-green-500" />}
+                      {isError     && <AlertCircle  size={16} className="text-red-500" />}
+                      {isPending && !isSubmitting && (
+                        <button
+                          type="button"
+                          onClick={() => removeFile(entry.uid)}
+                          className="rounded-md p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 transition-colors"
+                          aria-label="Remove file"
+                        >
+                          <X size={14} />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ── Per-file description ── */}
+                  {!isDone && (
+                    <div className="mt-3">
+                      <label
+                        htmlFor={`${formId}-note-${entry.uid}`}
+                        className="mb-1 block text-xs font-medium text-zinc-600"
+                      >
+                        Description{" "}
+                        <span className="font-normal text-zinc-400">
+                          — what does this {entry.kind === "image" ? "photo" : "document"} show?
+                        </span>
+                        <span className="ml-1 text-red-400">*</span>
+                      </label>
+                      <textarea
+                        id={`${formId}-note-${entry.uid}`}
+                        rows={2}
+                        placeholder={
+                          entry.kind === "image"
+                            ? "e.g. Foundation slab poured and levelled on the east wing."
+                            : "e.g. Structural engineer's sign-off report for ground floor."
+                        }
+                        value={entry.note}
+                        onChange={(ev) => { updateNote(entry.uid, ev.target.value); setGlobalError(null); }}
+                        disabled={isSubmitting || isUploading}
+                        maxLength={NOTE_MAX}
+                        className="block w-full resize-none rounded-lg border border-zinc-200 px-3 py-2 text-xs text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100 disabled:opacity-60"
+                      />
+                      <p className={cn("mt-1 text-right text-[11px]", noteLeft < 80 ? "text-amber-500" : "text-zinc-400")}>
+                        {noteLeft} left
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Show the saved description once done */}
+                  {isDone && entry.note && (
+                    <p className="mt-2 text-xs text-green-700 leading-relaxed">
+                      "{entry.note}"
+                    </p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
 
         {/* Upload progress summary */}
-        {formState === "uploading" && (
+        {isSubmitting && files.length > 0 && (
           <p className="mt-2 text-center text-xs text-zinc-500">
-            Uploading {uploadedCount} of {queue.length} file{queue.length !== 1 ? "s" : ""}…
-          </p>
-        )}
-        {formState === "saving" && (
-          <p className="mt-2 text-center text-xs text-zinc-500">
-            Saving batch update…
+            {uploadingIdx >= 0
+              ? `Uploading file ${uploadingIdx + 1} of ${files.length}…`
+              : `Saving ${doneCount} of ${files.length} update${files.length !== 1 ? "s" : ""}…`}
           </p>
         )}
       </div>
 
-      {/* ── Note ── */}
-      <div className="space-y-1.5">
-        <label htmlFor={`${uid}-note`} className="block text-sm font-medium text-zinc-700">
-          Progress Note <span className="text-red-400">*</span>
-          {queue.length > 0 && (
-            <span className="ml-1 font-normal text-zinc-400">
-              — one description for all {queue.length} file{queue.length !== 1 ? "s" : ""}
-            </span>
-          )}
-        </label>
-        <textarea
-          id={`${uid}-note`}
-          rows={4}
-          placeholder="Describe what was completed — e.g. 'Foundation poured. DPC laid. Ready for brickwork Monday.'"
-          value={note}
-          onChange={(e) => { setNote(e.target.value); setGlobalError(null); }}
-          disabled={isBusy}
-          className="block w-full resize-none rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100 disabled:opacity-60"
-          maxLength={NOTE_MAX}
-          required
-        />
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-400">
-            {queue.length > 1
-              ? "This single note will be shown above all files in the batch."
-              : "Visible to your client alongside the update."}
-          </p>
-          <p className={cn("text-xs font-medium", noteLeft < 100 ? "text-amber-500" : "text-zinc-400")}>
-            {noteLeft} left
-          </p>
+      {/* ── Text-only note (shown only when no files are queued) ── */}
+      {!hasFiles && (
+        <div className="space-y-1.5">
+          <label htmlFor={`${formId}-textnote`} className="block text-sm font-medium text-zinc-700">
+            Progress Note <span className="text-red-400">*</span>
+          </label>
+          <textarea
+            id={`${formId}-textnote`}
+            rows={4}
+            placeholder="Describe what was completed — e.g. 'Foundation poured. DPC laid. Ready for brickwork Monday.'"
+            value={textNote}
+            onChange={(e) => { setTextNote(e.target.value); setGlobalError(null); }}
+            disabled={isSubmitting}
+            className="block w-full resize-none rounded-xl border border-zinc-200 px-4 py-3 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100 disabled:opacity-60"
+            maxLength={NOTE_MAX}
+          />
+          <div className="flex items-center justify-between">
+            <p className="text-xs text-zinc-400">Visible to your client in their gallery.</p>
+            <p className={cn("text-xs font-medium", NOTE_MAX - textNote.length < 100 ? "text-amber-500" : "text-zinc-400")}>
+              {NOTE_MAX - textNote.length} left
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
-      {/* ── Error ── */}
+      {/* ── Global error ── */}
       {globalError && (
         <div className="flex items-start gap-2.5 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm text-red-700">
           <AlertCircle size={15} className="mt-0.5 shrink-0" />
@@ -575,21 +523,27 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
       )}
 
       {/* ── Submit ── */}
-      <Button type="submit" className="w-full" size="lg" disabled={isBusy}>
-        {formState === "uploading" && (
-          <><Loader2 size={16} className="mr-2 animate-spin" /> Uploading {uploadedCount}/{queue.length}…</>
-        )}
-        {formState === "saving" && (
-          <><Loader2 size={16} className="mr-2 animate-spin" /> Saving batch update…</>
-        )}
-        {!isBusy && (
-          queue.length === 0
-            ? "Post text update"
-            : queue.length === 1
-            ? "Post update with attachment"
-            : `Post batch update (${queue.length} files)`
+      <Button type="submit" className="w-full" size="lg" disabled={isSubmitting}>
+        {isSubmitting ? (
+          <>
+            <Loader2 size={16} className="mr-2 animate-spin" />
+            {files.length > 0 ? `Uploading… (${doneCount}/${files.length})` : "Saving…"}
+          </>
+        ) : !hasFiles ? (
+          "Post text update"
+        ) : files.length === 1 ? (
+          "Post update with attachment"
+        ) : (
+          `Post ${files.length} updates`
         )}
       </Button>
+
+      {files.length > 1 && !isSubmitting && (
+        <p className="text-center text-xs text-zinc-400">
+          <FileIcon size={11} className="inline mr-1" />
+          Each file will be uploaded separately with its own description.
+        </p>
+      )}
     </form>
   );
 }

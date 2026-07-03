@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 // ─── Security headers ─────────────────────────────────────────────────────────
 // Applied globally to every route via the `headers` async function.
@@ -77,6 +78,10 @@ const nextConfig: NextConfig = {
     ];
   },
 
+  turbopack: {
+    root: path.resolve(__dirname),
+  },
+
   images: {
     // Allow Next.js Image to serve files from /public/uploads/gallery (local storage)
     localPatterns: [
@@ -84,7 +89,6 @@ const nextConfig: NextConfig = {
       { pathname: "/uploads/product-images/**" },
       { pathname: "/uploads/homepage-ads/**" },
       { pathname: "/uploads/receipts/**" },
-      { pathname: "/logo.png" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },
@@ -94,10 +98,10 @@ const nextConfig: NextConfig = {
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
     ],
-    remotePatterns: [
-      // Cloudinary CDN — used for gallery, product images, and other uploads in production.
-      { protocol: "https", hostname: "res.cloudinary.com" },
-    ],
+    // Add Cloudinary (or other CDN) domains here when you migrate from local storage:
+    // remotePatterns: [
+    //   { protocol: "https", hostname: "res.cloudinary.com" },
+    // ],
   },
 };
 

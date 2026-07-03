@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type ReinesPageLoaderProps = {
@@ -58,14 +57,14 @@ export function ReinesPageLoader({ phase, progress, onExitComplete }: ReinesPage
       <div className="pointer-events-none absolute -top-32 right-1/4 h-[420px] w-[420px] rounded-full bg-[#8fb9e8]/10 blur-[100px]" aria-hidden />
 
       <div className="relative flex flex-col items-center gap-10 px-6">
-        <Image
-          src="/logo.png"
-          alt="Reines Property Development"
-          width={120}
-          height={120}
-          className="select-none [mix-blend-mode:screen] drop-shadow-[0_0_32px_rgba(143,185,232,0.35)]"
-          priority
-        />
+        <div className="text-center">
+          <p className="reines-loader-wordmark text-4xl font-extrabold tracking-[0.28em] text-white sm:text-5xl">
+            REINES
+          </p>
+          <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.32em] text-[#9eb3c9] sm:text-xs">
+            Property Development
+          </p>
+        </div>
 
         <div className="flex flex-col items-center gap-5">
           <div className="flex h-10 items-end justify-center gap-2" aria-hidden>

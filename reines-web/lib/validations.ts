@@ -103,22 +103,12 @@ export const sendMessageSchema = z.object({
  * imageUrl accepts either a relative `/uploads/…` path or an absolute https URL.
  * Validation of the relative path is enforced server-side via isSafeUploadUrl.
  */
-const batchFileSchema = z.object({
-  url:  z.string().min(1).max(2000),
-  name: z.string().trim().max(255),
-  type: z.string().trim().max(120),
-  kind: z.enum(["image", "document"]),
-});
-
 export const createGalleryUpdateSchema = z.object({
   note:            z.string().min(1, "Please add a note for this update").max(1000, "Note is too long (max 1 000 chars)"),
-  // Legacy single-file fields (kept for backward compat)
   imageUrl:        z.string().optional().nullable(),
   documentUrl:     z.string().optional().nullable(),
   documentName:    z.string().trim().max(180).optional().nullable(),
   documentType:    z.string().trim().max(120).optional().nullable(),
-  // Multi-file batch (new)
-  files:           z.array(batchFileSchema).max(20).optional().nullable(),
   progressPercent: z.number().int().min(0).max(100).optional().nullable(),
 });
 

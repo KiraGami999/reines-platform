@@ -16,7 +16,7 @@ import {
   ClipboardList,
   FileText,
 } from "lucide-react";
-import type { ProjectUpdate, BatchFile } from "@/models/project";
+import type { ProjectUpdate } from "@/models/project";
 import { cn } from "@/lib/utils";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -342,210 +342,6 @@ function GalleryCard({
   );
 }
 
-// ─── Batch card ───────────────────────────────────────────────────────────────
-// Renders a single ProjectUpdate that carries multiple files (BatchFile[]).
-
-function SimpleBatchLightbox({
-  files,
-  startIndex,
-  onClose,
-}: {
-  files:      BatchFile[];
-  startIndex: number;
-  onClose:    () => void;
-}) {
-  const [current, setCurrent] = useState(startIndex);
-  const item = files[current];
-
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape")      onClose();
-      if (e.key === "ArrowLeft")   setCurrent((i) => Math.max(0, i - 1));
-      if (e.key === "ArrowRight")  setCurrent((i) => Math.min(files.length - 1, i + 1));
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [files.length, onClose]);
-
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      <div
-        className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-[#2d4a6b] shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close */}
-        <button
-          onClick={onClose}
-          className="absolute right-3 top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors"
-        >
-          <X size={16} />
-        </button>
-
-        {/* Image */}
-        <div className="relative flex aspect-video w-full items-center justify-center overflow-hidden">
-          <Image
-            src={item.url}
-            alt={item.name}
-            fill
-            className="object-contain"
-            sizes="(max-width: 896px) 100vw, 896px"
-          />
-        </div>
-
-        {/* Caption */}
-        <div className="border-t border-white/10 px-6 py-4">
-          <p className="text-sm text-zinc-300 truncate">{item.name}</p>
-          {files.length > 1 && (
-            <p className="mt-1 text-xs text-zinc-500">{current + 1} / {files.length}</p>
-          )}
-        </div>
-
-        {/* Prev / Next */}
-        {files.length > 1 && (
-          <>
-            <button
-              onClick={() => setCurrent((i) => Math.max(0, i - 1))}
-              disabled={current === 0}
-              className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 disabled:opacity-30 transition-colors"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => setCurrent((i) => Math.min(files.length - 1, i + 1))}
-              disabled={current === files.length - 1}
-              className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 disabled:opacity-30 transition-colors"
-            >
-              <ChevronRight size={18} />
-            </button>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function BatchCard({
-  u,
-  projectId,
-  canDelete,
-  onDeleted,
-}: {
-  u:          ProjectUpdate;
-  projectId?: string;
-  canDelete:  boolean;
-  onDeleted:  (id: string) => void;
-}) {
-  const files     = (u.files ?? []) as BatchFile[];
-  const images    = files.filter((f) => f.kind === "image");
-  const documents = files.filter((f) => f.kind === "document");
-  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null);
-
-  // Grid column count for the image strip
-  const cols = images.length === 1 ? 1 : images.length === 2 ? 2 : images.length <= 4 ? 2 : 3;
-
-  return (
-    <>
-      <div className="overflow-hidden rounded-xl border border-zinc-100 bg-white">
-        {/* Note + meta header */}
-        <div className="px-4 pt-4 pb-3">
-          <p className="text-sm leading-relaxed text-zinc-800">{u.note}</p>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-zinc-400">
-            <span className="flex items-center gap-1">
-              <Calendar size={11} />
-              {fmtDate(u.createdAt)}
-            </span>
-            {u.progressPercent !== null && (
-              <span className="font-semibold text-[#2d4a6b]">{u.progressPercent}% complete</span>
-            )}
-            {files.length > 0 && (
-              <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[11px] font-medium text-zinc-500">
-                {files.length} file{files.length !== 1 ? "s" : ""}
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Image grid */}
-        {images.length > 0 && (
-          <div
-            className={cn(
-              "grid gap-0.5",
-              cols === 1 && "grid-cols-1",
-              cols === 2 && "grid-cols-2",
-              cols === 3 && "grid-cols-3"
-            )}
-          >
-            {images.map((img, i) => (
-              <button
-                key={img.url}
-                onClick={() => setLightboxIdx(i)}
-                className="group relative aspect-video overflow-hidden bg-zinc-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8fb9e8]"
-              >
-                <Image
-                  src={img.url}
-                  alt={img.name}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/20">
-                  <ZoomIn size={20} className="text-white opacity-0 drop-shadow group-hover:opacity-100 transition-opacity" />
-                </div>
-              </button>
-            ))}
-          </div>
-        )}
-
-        {/* Document links */}
-        {documents.length > 0 && (
-          <div className={cn("space-y-1 px-4 pb-3", images.length > 0 && "pt-3")}>
-            {documents.map((doc) => (
-              <a
-                key={doc.url}
-                href={doc.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-lg border border-zinc-100 bg-zinc-50 px-3 py-2 text-sm font-medium text-[#2d4a6b] hover:bg-[#8fb9e8]/10 transition-colors"
-              >
-                <FileText size={14} className="shrink-0 text-[#2d4a6b]" />
-                <span className="truncate">{doc.name}</span>
-              </a>
-            ))}
-          </div>
-        )}
-
-        {/* Delete */}
-        {canDelete && projectId && (
-          <div className={cn("flex justify-end px-4 pb-3", images.length === 0 && documents.length === 0 && "pt-0")}>
-            <button
-              onClick={async () => {
-                if (!confirm("Delete this batch update? All files in it will be removed.")) return;
-                const res = await fetch(`/api/projects/${projectId}/gallery/${u.id}`, { method: "DELETE" });
-                if (res.ok) onDeleted(u.id);
-              }}
-              className="flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs text-zinc-400 hover:bg-red-50 hover:text-red-500 transition-colors"
-              aria-label="Delete batch update"
-            >
-              <Trash2 size={13} /> Delete
-            </button>
-          </div>
-        )}
-      </div>
-
-      {lightboxIdx !== null && (
-        <SimpleBatchLightbox
-          files={images}
-          startIndex={lightboxIdx}
-          onClose={() => setLightboxIdx(null)}
-        />
-      )}
-    </>
-  );
-}
-
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type GalleryTab = "all" | "photos" | "documents" | "notes";
@@ -740,54 +536,21 @@ export function GalleryGrid({
     );
   }
 
-  // ── Classify each update ─────────────────────────────────────────────────────
-  // A "batch" update has a non-empty files[] array (new format).
-  // "Legacy" updates use the old imageUrl / documentUrl fields.
+  const withImages    = updates.filter((u) => u.imageUrl);
+  const withDocuments = updates.filter((u) => u.documentUrl);
+  const textOnly      = updates.filter((u) => !u.imageUrl && !u.documentUrl);
 
-  const batchUpdates   = updates.filter((u) => u.files && (u.files as BatchFile[]).length > 0);
-  const legacyUpdates  = updates.filter((u) => !u.files || (u.files as BatchFile[]).length === 0);
+  // Derive which items to show based on active tab
+  const showPhotos    = activeTab === "all" || activeTab === "photos";
+  const showDocuments = activeTab === "all" || activeTab === "documents";
+  const showNotes     = activeTab === "all" || activeTab === "notes";
 
-  // For legacy single-image updates (strip lightbox)
-  const legacyImages    = legacyUpdates.filter((u) => u.imageUrl);
-  const legacyDocuments = legacyUpdates.filter((u) => u.documentUrl);
-  const legacyNotes     = legacyUpdates.filter((u) => !u.imageUrl && !u.documentUrl);
-
-  // Tab counts — batches containing images/docs count toward those tabs too
-  const batchWithImages    = batchUpdates.filter((u) => (u.files as BatchFile[]).some((f) => f.kind === "image"));
-  const batchWithDocuments = batchUpdates.filter((u) => (u.files as BatchFile[]).some((f) => f.kind === "document"));
-
-  const totalPhotoCount = legacyImages.length + batchWithImages.length;
-  const totalDocCount   = legacyDocuments.length + batchWithDocuments.length;
-  const totalNoteCount  = legacyNotes.length;
-
-  // Derive visible sets per tab
-  const showAll  = activeTab === "all";
-  const showPhotos    = activeTab === "photos";
-  const showDocuments = activeTab === "documents";
-  const showNotes     = activeTab === "notes";
-
-  // Which batch updates appear in the current tab?
-  const visibleBatches =
-    showAll       ? batchUpdates :
-    showPhotos    ? batchWithImages :
-    showDocuments ? batchWithDocuments :
-    [];
-
-  // Which legacy updates appear?
-  const visibleLegacyImages    = (showAll || showPhotos)    ? legacyImages    : [];
-  const visibleLegacyDocuments = (showAll || showDocuments) ? legacyDocuments : [];
-  const visibleLegacyNotes     = (showAll || showNotes)     ? legacyNotes     : [];
+  const visiblePhotos    = showPhotos    ? withImages    : [];
+  const visibleDocuments = showDocuments ? withDocuments : [];
+  const visibleNotes     = showNotes     ? textOnly      : [];
 
   const nothingVisible =
-    visibleBatches.length === 0 &&
-    visibleLegacyImages.length === 0 &&
-    visibleLegacyDocuments.length === 0 &&
-    visibleLegacyNotes.length === 0;
-
-  // All updates in chronological order (newest first) for rendering "All" tab
-  const allSorted = [...updates].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+    visiblePhotos.length === 0 && visibleDocuments.length === 0 && visibleNotes.length === 0;
 
   return (
     <div className="space-y-5">
@@ -795,9 +558,9 @@ export function GalleryGrid({
       <TabBar
         tab={activeTab}
         onChange={(t) => { setActiveTab(t); setLightboxIndex(null); }}
-        photoCount={totalPhotoCount}
-        docCount={totalDocCount}
-        noteCount={totalNoteCount}
+        photoCount={withImages.length}
+        docCount={withDocuments.length}
+        noteCount={textOnly.length}
       />
 
       {/* ── Empty state for active tab ── */}
@@ -810,128 +573,70 @@ export function GalleryGrid({
         </div>
       )}
 
-      {/* ── "All" tab — chronological mixed feed ── */}
-      {showAll && !nothingVisible && (
-        <div className="space-y-4">
-          {allSorted.map((u, legacyIdx) => {
-            const isBatch = u.files && (u.files as BatchFile[]).length > 0;
+      {/* ── Photo grid ── */}
+      {visiblePhotos.length > 0 && (
+        <section>
+          {activeTab === "all" && (
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+              Photos
+            </h3>
+          )}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {visiblePhotos.map((u, i) => (
+              <GalleryCard key={u.id} update={u} index={i} onOpen={setLightboxIndex} />
+            ))}
+          </div>
+        </section>
+      )}
 
-            if (isBatch) {
-              return (
-                <BatchCard
-                  key={u.id}
-                  u={u}
-                  projectId={projectId}
-                  canDelete={canDelete}
-                  onDeleted={handleDeleted}
-                />
-              );
-            }
+      {/* ── Document list ── */}
+      {visibleDocuments.length > 0 && (
+        <section>
+          {activeTab === "all" && (
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+              Documents
+            </h3>
+          )}
+          <div className="space-y-3">
+            {visibleDocuments.map((u) => (
+              <DocumentItem
+                key={u.id}
+                u={u}
+                projectId={projectId}
+                canDelete={canDelete}
+                onDeleted={handleDeleted}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-            if (u.imageUrl) {
-              // Index within legacy images only (for the strip lightbox)
-              const stripIdx = legacyImages.findIndex((li) => li.id === u.id);
-              return (
-                <div key={u.id} className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-                  <GalleryCard update={u} index={stripIdx} onOpen={setLightboxIndex} />
-                </div>
-              );
-            }
-
-            if (u.documentUrl) {
-              return (
-                <DocumentItem
-                  key={u.id}
-                  u={u}
-                  projectId={projectId}
-                  canDelete={canDelete}
-                  onDeleted={handleDeleted}
-                />
-              );
-            }
-
-            return (
+      {/* ── Notes list ── */}
+      {visibleNotes.length > 0 && (
+        <section>
+          {activeTab === "all" && (
+            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+              Text Updates
+            </h3>
+          )}
+          <div className="space-y-3">
+            {visibleNotes.map((u) => (
               <NoteItem
                 key={u.id}
                 u={u}
                 projectId={projectId}
                 canDelete={canDelete}
-                onDeleted={legacyIdx === 0 ? handleDeleted : handleDeleted}
+                onDeleted={handleDeleted}
               />
-            );
-          })}
-        </div>
+            ))}
+          </div>
+        </section>
       )}
 
-      {/* ── "Photos" tab ── */}
-      {showPhotos && !nothingVisible && (
-        <div className="space-y-4">
-          {/* Batch updates that have images */}
-          {visibleBatches.map((u) => (
-            <BatchCard
-              key={u.id}
-              u={u}
-              projectId={projectId}
-              canDelete={canDelete}
-              onDeleted={handleDeleted}
-            />
-          ))}
-          {/* Legacy single-image grid */}
-          {visibleLegacyImages.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-              {visibleLegacyImages.map((u, i) => (
-                <GalleryCard key={u.id} update={u} index={i} onOpen={setLightboxIndex} />
-              ))}
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── "Documents" tab ── */}
-      {showDocuments && !nothingVisible && (
-        <div className="space-y-4">
-          {/* Batch updates that have documents */}
-          {visibleBatches.map((u) => (
-            <BatchCard
-              key={u.id}
-              u={u}
-              projectId={projectId}
-              canDelete={canDelete}
-              onDeleted={handleDeleted}
-            />
-          ))}
-          {/* Legacy single-document list */}
-          {visibleLegacyDocuments.map((u) => (
-            <DocumentItem
-              key={u.id}
-              u={u}
-              projectId={projectId}
-              canDelete={canDelete}
-              onDeleted={handleDeleted}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* ── "Notes" tab ── */}
-      {showNotes && !nothingVisible && (
-        <div className="space-y-3">
-          {visibleLegacyNotes.map((u) => (
-            <NoteItem
-              key={u.id}
-              u={u}
-              projectId={projectId}
-              canDelete={canDelete}
-              onDeleted={handleDeleted}
-            />
-          ))}
-        </div>
-      )}
-
-      {/* ── Lightbox for legacy single-image updates ── */}
-      {lightboxIndex !== null && legacyImages.length > 0 && (
+      {/* ── Lightbox (always based on full photo list so indices stay valid) ── */}
+      {lightboxIndex !== null && withImages.length > 0 && (
         <Lightbox
-          updates={legacyImages}
+          updates={withImages}
           index={lightboxIndex}
           projectId={projectId}
           canDelete={canDelete}

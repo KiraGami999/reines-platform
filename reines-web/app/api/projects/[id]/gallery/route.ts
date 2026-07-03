@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isSafeUploadUrl } from "@/lib/storage";
@@ -55,7 +54,7 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   const { id } = await params;
 
   const body   = await req.json().catch(() => null);
-  // Validate note; additionally verify imageUrl / documentUrl / each batch file URL is a safe upload path
+  // Validate note; additionally verify imageUrl is a safe upload path if present
   const parsed = createGalleryUpdateSchema
     .refine(
       (d) => !d.imageUrl || isSafeUploadUrl(d.imageUrl),
@@ -64,10 +63,6 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
     .refine(
       (d) => !d.documentUrl || isSafeUploadUrl(d.documentUrl),
       { message: "Invalid document URL", path: ["documentUrl"] }
-    )
-    .refine(
-      (d) => !d.files || d.files.every((f) => isSafeUploadUrl(f.url)),
-      { message: "One or more file URLs are invalid", path: ["files"] }
     )
     .safeParse(body);
   if (!parsed.success) {
@@ -82,31 +77,21 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const hasBatchFiles = Boolean(parsed.data.files && parsed.data.files.length > 0);
-
-    // Build the create payload with an explicit Prisma type so the conditional
-    // fields don't get inferred into a fragile union (which broke the Vercel build).
-    const data: Prisma.ProjectUpdateUncheckedCreateInput = {
-      projectId:       id,
-      note:            parsed.data.note,
-      progressPercent: parsed.data.progressPercent ?? null,
-    };
-
-    if (hasBatchFiles) {
-      // Prisma's Json? field only accepts InputJsonValue (never plain `null`);
-      // the array is guaranteed non-null here.
-      data.files = parsed.data.files as Prisma.InputJsonValue;
-    } else {
-      // Legacy single-file mode — keep old fields for backward compat.
-      data.imageUrl = parsed.data.imageUrl ?? null;
-      if (parsed.data.documentUrl) {
-        data.documentUrl  = parsed.data.documentUrl;
-        data.documentName = parsed.data.documentName ?? null;
-        data.documentType = parsed.data.documentType ?? null;
-      }
-    }
-
-    const update = await prisma.projectUpdate.create({ data });
+    const update = await prisma.projectUpdate.create({
+      data: {
+        projectId: id,
+        note:            parsed.data.note,
+        imageUrl:        parsed.data.imageUrl ?? null,
+        ...(parsed.data.documentUrl
+          ? {
+              documentUrl:  parsed.data.documentUrl,
+              documentName: parsed.data.documentName ?? null,
+              documentType: parsed.data.documentType ?? null,
+            }
+          : {}),
+        progressPercent: parsed.data.progressPercent ?? null,
+      },
+    });
 
     // Notify the client that a new progress update was posted (fire-and-forget)
     notifyGalleryUpload({

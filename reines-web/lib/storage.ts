@@ -1,7 +1,6 @@
 import { writeFile, mkdir, unlink } from "fs/promises";
 import path from "path";
 import { randomUUID } from "crypto";
-import { cloudinary, isCloudinaryConfigured } from "@/lib/cloudinary";
 
 const IMAGE_TYPES = [
   "image/jpeg",
@@ -67,54 +66,13 @@ async function saveFileToPublicDir(
 }
 
 /**
- * Save an uploaded File to Cloudinary (production) or /public/uploads/gallery/ (local dev).
+ * Save an uploaded File to /public/uploads/gallery/.
+ * Returns the public URL path.
  *
- * Cloudinary is used whenever CLOUDINARY_CLOUD_NAME / API_KEY / API_SECRET are set.
- * In local development without those vars, files are written to the local filesystem.
+ * When moving to cloud storage (e.g. Cloudinary, AWS S3, Supabase Storage),
+ * replace the body of this function — the callers stay the same.
  */
 export async function saveUpload(file: File): Promise<StorageResult> {
-  if (!ALLOWED_TYPES.includes(file.type)) {
-    throw new StorageError(
-      `Unsupported file type. Allowed: ${ALLOWED_TYPES.join(", ")}`
-    );
-  }
-  if (file.size > MAX_BYTES) {
-    throw new StorageError(`File too large. Maximum size is ${MAX_SIZE_MB} MB.`);
-  }
-
-  // ── Cloudinary (production) ──────────────────────────────────────────────────
-  if (isCloudinaryConfigured()) {
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-
-    // Cloudinary upload_stream wrapped in a promise
-    const result = await new Promise<{ secure_url: string; original_filename: string }>((resolve, reject) => {
-      const isRaw = !file.type.startsWith("image/");
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder:        "reines-gallery",
-          resource_type: isRaw ? "raw" : "image",
-          use_filename:  false,
-          unique_filename: true,
-        },
-        (error, result) => {
-          if (error || !result) return reject(error ?? new Error("Cloudinary upload failed"));
-          resolve(result as { secure_url: string; original_filename: string });
-        }
-      );
-      stream.end(buffer);
-    });
-
-    return {
-      url:          result.secure_url,
-      filename:     result.secure_url.split("/").pop() ?? file.name,
-      sizeBytes:    file.size,
-      mimeType:     file.type,
-      originalName: file.name,
-    };
-  }
-
-  // ── Local filesystem (dev only) ──────────────────────────────────────────────
   return saveFileToPublicDir(file, "uploads/gallery", ALLOWED_TYPES);
 }
 
@@ -132,16 +90,9 @@ export async function saveHomepageAdImageUpload(file: File): Promise<StorageResu
   return saveFileToPublicDir(file, "uploads/homepage-ads", IMAGE_TYPES);
 }
 
-/** Validate that a string is a safe gallery upload URL (prevents open redirect).
- *  Accepts Cloudinary CDN URLs and legacy local paths. */
+/** Validate that a string is a safe internal upload URL (prevents open redirect). */
 export function isSafeUploadUrl(url: string): boolean {
-  if (url.startsWith("/uploads/gallery/") && !url.includes("..")) return true;
-  try {
-    const u = new URL(url);
-    return u.protocol === "https:" && u.hostname === "res.cloudinary.com";
-  } catch {
-    return false;
-  }
+  return url.startsWith("/uploads/gallery/") && !url.includes("..");
 }
 
 /** Validate uploaded product image paths saved by saveProductImageUpload. */

@@ -304,10 +304,9 @@ model ProjectUpdate {
   id        String   @id @default(cuid())
   note      String   @db.Text
   imageUrl  String?  // URL to uploaded image (cloud storage or local)
-  documentUrl  String?
+  documentUrl String?
   documentName String?
   documentType String?
-  files     Json?    // BatchFile[] — populated for multi-file batch uploads
   progressPercent Int?
   createdAt DateTime @default(now())
 
