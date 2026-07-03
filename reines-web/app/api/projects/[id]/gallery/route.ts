@@ -82,30 +82,31 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const hasBatchFiles = parsed.data.files && parsed.data.files.length > 0;
+    const hasBatchFiles = Boolean(parsed.data.files && parsed.data.files.length > 0);
 
-    const update = await prisma.projectUpdate.create({
-      data: {
-        projectId: id,
-        note:            parsed.data.note,
-        progressPercent: parsed.data.progressPercent ?? null,
-        // Batch mode — cast to InputJsonValue because Prisma's Json? field
-        // does not accept the plain `null` that Zod's type includes.
-        ...(hasBatchFiles
-          ? { files: parsed.data.files as Prisma.InputJsonValue }
-          : {
-              // Legacy single-file mode — keep old fields for backward compat
-              imageUrl: parsed.data.imageUrl ?? null,
-              ...(parsed.data.documentUrl
-                ? {
-                    documentUrl:  parsed.data.documentUrl,
-                    documentName: parsed.data.documentName ?? null,
-                    documentType: parsed.data.documentType ?? null,
-                  }
-                : {}),
-            }),
-      },
-    });
+    // Build the create payload with an explicit Prisma type so the conditional
+    // fields don't get inferred into a fragile union (which broke the Vercel build).
+    const data: Prisma.ProjectUpdateUncheckedCreateInput = {
+      projectId:       id,
+      note:            parsed.data.note,
+      progressPercent: parsed.data.progressPercent ?? null,
+    };
+
+    if (hasBatchFiles) {
+      // Prisma's Json? field only accepts InputJsonValue (never plain `null`);
+      // the array is guaranteed non-null here.
+      data.files = parsed.data.files as Prisma.InputJsonValue;
+    } else {
+      // Legacy single-file mode — keep old fields for backward compat.
+      data.imageUrl = parsed.data.imageUrl ?? null;
+      if (parsed.data.documentUrl) {
+        data.documentUrl  = parsed.data.documentUrl;
+        data.documentName = parsed.data.documentName ?? null;
+        data.documentType = parsed.data.documentType ?? null;
+      }
+    }
+
+    const update = await prisma.projectUpdate.create({ data });
 
     // Notify the client that a new progress update was posted (fire-and-forget)
     notifyGalleryUpload({
