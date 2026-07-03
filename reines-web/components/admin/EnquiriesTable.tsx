@@ -78,7 +78,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-2 mb-6 sm:gap-4">
         <StatCard label="Total Enquiries" value={total}  icon={<MessageSquare className="w-5 h-5" />} />
         <StatCard label="Unread"          value={unread} icon={<MailX className="w-5 h-5" />}          accent="bg-blue-50 text-blue-600" />
         <StatCard label="Read"            value={read}   icon={<MailCheck className="w-5 h-5" />}       accent="bg-blue-50 text-blue-600" />
