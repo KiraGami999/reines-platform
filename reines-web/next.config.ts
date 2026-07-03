@@ -94,10 +94,10 @@ const nextConfig: NextConfig = {
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
     ],
-    // Add Cloudinary (or other CDN) domains here when you migrate from local storage:
-    // remotePatterns: [
-    //   { protocol: "https", hostname: "res.cloudinary.com" },
-    // ],
+    remotePatterns: [
+      // Cloudinary CDN — used for gallery, product images, and other uploads in production.
+      { protocol: "https", hostname: "res.cloudinary.com" },
+    ],
   },
 };
 

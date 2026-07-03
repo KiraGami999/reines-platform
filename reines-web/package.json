@@ -19,6 +19,7 @@
     "@types/bcryptjs": "^2.4.6",
     "@types/pg": "^8.20.0",
     "bcryptjs": "^3.0.3",
+    "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "jose": "^6.2.3",
     "lucide-react": "^1.14.0",
