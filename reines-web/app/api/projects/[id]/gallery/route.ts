@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isSafeUploadUrl } from "@/lib/storage";
@@ -88,9 +89,10 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
         projectId: id,
         note:            parsed.data.note,
         progressPercent: parsed.data.progressPercent ?? null,
-        // Batch mode — store everything in the files JSON array
+        // Batch mode — cast to InputJsonValue because Prisma's Json? field
+        // does not accept the plain `null` that Zod's type includes.
         ...(hasBatchFiles
-          ? { files: parsed.data.files }
+          ? { files: parsed.data.files as Prisma.InputJsonValue }
           : {
               // Legacy single-file mode — keep old fields for backward compat
               imageUrl: parsed.data.imageUrl ?? null,
