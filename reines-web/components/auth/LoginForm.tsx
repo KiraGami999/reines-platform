@@ -1,14 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { loginSchema } from "@/lib/validations";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, AlertCircle, MailCheck, ArrowLeft } from "lucide-react";
 import { useReinesLoader } from "@/components/layout/ReinesLoaderProvider";
+
+type Phase = "credentials" | "otp";
+
+const RESEND_COOLDOWN = 45;
+
+function maskEmail(email: string): string {
+  const [name, domain] = email.split("@");
+  if (!domain) return email;
+  const shown = name.slice(0, 2);
+  return `${shown}${"•".repeat(Math.max(name.length - 2, 1))}@${domain}`;
+}
 
 export function LoginForm() {
   const router       = useRouter();
@@ -16,11 +27,28 @@ export function LoginForm() {
   const callbackUrl  = searchParams.get("callbackUrl") ?? "/dashboard";
   const { triggerSignInLoader } = useReinesLoader();
 
+  const [phase, setPhase]       = useState<Phase>("credentials");
   const [form, setForm]         = useState({ email: "", password: "" });
+  const [otp, setOtp]           = useState("");
   const [errors, setErrors]     = useState<{ email?: string; password?: string }>({});
   const [serverError, setServerError] = useState("");
   const [loading, setLoading]   = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [cooldown, setCooldown] = useState(0);
+
+  const otpInputRef = useRef<HTMLInputElement>(null);
+
+  // Resend cooldown countdown.
+  useEffect(() => {
+    if (cooldown <= 0) return;
+    const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
+    return () => clearTimeout(t);
+  }, [cooldown]);
+
+  // Autofocus the OTP field when we enter the OTP phase.
+  useEffect(() => {
+    if (phase === "otp") otpInputRef.current?.focus();
+  }, [phase]);
 
   function update(field: keyof typeof form) {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +58,35 @@ export function LoginForm() {
     };
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  // ── Phase 1: verify password, request an emailed OTP ────────────────────────
+  async function requestOtp(isResend = false) {
+    setLoading(true);
+    setServerError("");
+
+    try {
+      const res  = await fetch("/api/auth/otp/request", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify({ email: form.email, password: form.password }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setServerError(data.error ?? "Something went wrong. Please try again.");
+        return;
+      }
+
+      setPhase("otp");
+      setCooldown(RESEND_COOLDOWN);
+      if (isResend) setOtp("");
+    } catch {
+      setServerError("Network error. Please check your connection and try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleCredentialsSubmit(e: React.FormEvent) {
     e.preventDefault();
 
     const parsed = loginSchema.safeParse(form);
@@ -43,19 +99,32 @@ export function LoginForm() {
       return;
     }
 
+    await requestOtp(false);
+  }
+
+  // ── Phase 2: verify the OTP via NextAuth and create the session ─────────────
+  async function handleOtpSubmit(e: React.FormEvent) {
+    e.preventDefault();
+
+    if (!/^\d{6}$/.test(otp)) {
+      setServerError("Enter the 6-digit code from your email.");
+      return;
+    }
+
     setLoading(true);
     setServerError("");
 
     const result = await signIn("credentials", {
       email:    form.email,
       password: form.password,
+      otp,
       redirect: false,
     });
 
     setLoading(false);
 
     if (result?.error) {
-      setServerError("Invalid email or password. Please check your details and try again.");
+      setServerError("That code is invalid or has expired. Request a new one and try again.");
       return;
     }
 
@@ -64,8 +133,83 @@ export function LoginForm() {
     router.refresh();
   }
 
+  function backToCredentials() {
+    setPhase("credentials");
+    setOtp("");
+    setServerError("");
+    setCooldown(0);
+  }
+
+  // ── OTP phase UI ────────────────────────────────────────────────────────────
+  if (phase === "otp") {
+    return (
+      <form onSubmit={handleOtpSubmit} className="space-y-5" noValidate>
+        <div className="flex flex-col items-center text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#8fb9e8]/15 text-[#2d4a6b]">
+            <MailCheck size={22} />
+          </div>
+          <h2 className="mt-3 text-base font-semibold text-[#2d4a6b]">Check your email</h2>
+          <p className="mt-1 text-sm text-zinc-500">
+            We sent a 6-digit code to <span className="font-medium text-zinc-700">{maskEmail(form.email)}</span>.
+            It expires in 10 minutes.
+          </p>
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor="otp" className="block text-sm font-medium text-zinc-700">
+            Verification code
+          </label>
+          <input
+            id="otp"
+            ref={otpInputRef}
+            inputMode="numeric"
+            autoComplete="one-time-code"
+            maxLength={6}
+            placeholder="000000"
+            value={otp}
+            onChange={(e) => {
+              setOtp(e.target.value.replace(/\D/g, "").slice(0, 6));
+              setServerError("");
+            }}
+            className="block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-center text-2xl font-semibold tracking-[0.5em] text-zinc-900 caret-[#2d4a6b] placeholder:text-zinc-300 placeholder:tracking-[0.5em] focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200"
+          />
+        </div>
+
+        {serverError && (
+          <div className="flex items-start gap-2 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
+            <AlertCircle size={15} className="mt-0.5 shrink-0" />
+            <span>{serverError}</span>
+          </div>
+        )}
+
+        <Button type="submit" className="w-full" disabled={loading || otp.length !== 6}>
+          {loading ? "Verifying…" : "Verify & sign in"}
+        </Button>
+
+        <div className="flex items-center justify-between text-sm">
+          <button
+            type="button"
+            onClick={backToCredentials}
+            className="inline-flex items-center gap-1 text-zinc-500 hover:text-zinc-700"
+          >
+            <ArrowLeft size={14} /> Back
+          </button>
+          <button
+            type="button"
+            onClick={() => requestOtp(true)}
+            disabled={cooldown > 0 || loading}
+            className="font-medium text-[#2d4a6b] hover:underline disabled:text-zinc-400 disabled:no-underline"
+          >
+            {cooldown > 0 ? `Resend code in ${cooldown}s` : "Resend code"}
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  // ── Credentials phase UI ──────────────────────────────────────────────────
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+    <form onSubmit={handleCredentialsSubmit} className="space-y-4" noValidate>
       <Input
         id="email"
         type="email"
@@ -116,8 +260,12 @@ export function LoginForm() {
       )}
 
       <Button type="submit" className="w-full" disabled={loading}>
-        {loading ? "Signing in…" : "Sign in"}
+        {loading ? "Sending code…" : "Continue"}
       </Button>
+
+      <p className="flex items-center justify-center gap-1.5 text-center text-xs text-zinc-400">
+        <MailCheck size={13} /> We'll email you a one-time code to confirm it's you.
+      </p>
 
       <p className="text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}

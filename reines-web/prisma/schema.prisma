@@ -82,6 +82,25 @@ model VerificationToken {
 }
 
 // ---------------------------------------------------------------------------
+// EmailOtp — one-time 6-digit codes for email-based two-factor login.
+// Only a HMAC hash of the code is stored, never the plaintext.
+// ---------------------------------------------------------------------------
+
+model EmailOtp {
+  id         String    @id @default(cuid())
+  email      String
+  codeHash   String
+  purpose    String    @default("LOGIN")
+  attempts   Int       @default(0)
+  expiresAt  DateTime
+  consumedAt DateTime?
+  createdAt  DateTime  @default(now())
+
+  @@index([email, purpose])
+  @@index([createdAt])
+}
+
+// ---------------------------------------------------------------------------
 // User
 // A single table for all roles. Role field controls access level.
 // password is nullable to support OAuth sign-in alongside Credentials.
