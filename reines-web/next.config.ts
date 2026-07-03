@@ -1,5 +1,4 @@
 import type { NextConfig } from "next";
-import path from "path";
 
 // ─── Security headers ─────────────────────────────────────────────────────────
 // Applied globally to every route via the `headers` async function.
@@ -78,10 +77,6 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  turbopack: {
-    root: path.resolve(__dirname),
-  },
-
   images: {
     // Allow Next.js Image to serve files from /public/uploads/gallery (local storage)
     localPatterns: [
@@ -89,6 +84,7 @@ const nextConfig: NextConfig = {
       { pathname: "/uploads/product-images/**" },
       { pathname: "/uploads/homepage-ads/**" },
       { pathname: "/uploads/receipts/**" },
+      { pathname: "/logo.png" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },
