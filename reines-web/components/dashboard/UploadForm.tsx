@@ -14,7 +14,10 @@ import type { BatchFile } from "@/models/project";
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const NOTE_MAX        = 1000;
-const MAX_FILE_BYTES  = 15 * 1024 * 1024; // 15 MB
+const MAX_IMAGE_BYTES = 15 * 1024 * 1024; // Images are compressed before upload.
+const MAX_DOCUMENT_BYTES = 4 * 1024 * 1024; // Vercel serverless payload limit is ~4.5 MB.
+const TARGET_UPLOAD_BYTES = 3.5 * 1024 * 1024; // Leave room for multipart overhead.
+const MAX_IMAGE_DIMENSION = 1800;
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const ALLOWED_DOC_TYPES   = [
@@ -59,6 +62,62 @@ function readPreview(file: File): Promise<string> {
     reader.onload = (e) => resolve(e.target?.result as string);
     reader.readAsDataURL(file);
   });
+}
+
+function compressedImageName(name: string): string {
+  return name.replace(/\.[^.]+$/, "") + ".jpg";
+}
+
+async function compressImageForUpload(file: File): Promise<File> {
+  if (file.size <= TARGET_UPLOAD_BYTES) return file;
+
+  if (file.type === "image/gif") {
+    throw new Error("GIF files above 3.5 MB are too large for upload. Please use a smaller GIF or convert it to JPG/PNG.");
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    const img = document.createElement("img");
+    img.decoding = "async";
+
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error("Could not read this image for compression."));
+      img.src = objectUrl;
+    });
+
+    const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height));
+    const width = Math.max(1, Math.round(img.width * scale));
+    const height = Math.max(1, Math.round(img.height * scale));
+
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not prepare this image for upload.");
+
+    // White background prevents transparent PNGs from becoming black when saved as JPG.
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(img, 0, 0, width, height);
+
+    for (const quality of [0.82, 0.72, 0.62, 0.52, 0.42]) {
+      const blob = await new Promise<Blob | null>((resolve) =>
+        canvas.toBlob(resolve, "image/jpeg", quality)
+      );
+      if (blob && blob.size <= TARGET_UPLOAD_BYTES) {
+        return new File([blob], compressedImageName(file.name), {
+          type: "image/jpeg",
+          lastModified: Date.now(),
+        });
+      }
+    }
+
+    throw new Error("This image is still too large after compression. Please choose a smaller image.");
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
 }
 
 function docLabel(mimeType: string): string {
@@ -106,8 +165,12 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         setGlobalError("Some files were skipped — only images, PDF, and Word documents are accepted.");
         continue;
       }
-      if (f.size > MAX_FILE_BYTES) {
-        setGlobalError(`"${f.name}" exceeds the 15 MB limit and was skipped.`);
+      if (kind === "image" && f.size > MAX_IMAGE_BYTES) {
+        setGlobalError(`"${f.name}" exceeds the 15 MB image limit and was skipped.`);
+        continue;
+      }
+      if (kind === "document" && f.size > MAX_DOCUMENT_BYTES) {
+        setGlobalError(`"${f.name}" exceeds the 4 MB document limit for Vercel uploads and was skipped.`);
         continue;
       }
       const preview = kind === "image" ? await readPreview(f) : null;
@@ -178,9 +241,12 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
       );
 
       const fd = new FormData();
-      fd.append("file", entry.file);
 
       try {
+        const fileForUpload =
+          entry.kind === "image" ? await compressImageForUpload(entry.file) : entry.file;
+        fd.append("file", fileForUpload);
+
         const res = await fetch("/api/upload", { method: "POST", body: fd });
 
         if (!res.ok) {
@@ -195,8 +261,8 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         const data = await res.json().catch(() => ({}));
         const result: BatchFile = {
           url:  data.url,
-          name: data.originalName ?? entry.file.name,
-          type: data.mimeType ?? entry.file.type,
+          name: entry.file.name,
+          type: data.mimeType ?? fileForUpload.type,
           kind: entry.kind,
         };
 
@@ -205,8 +271,10 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         setQueue((prev) =>
           prev.map((e) => e.uid === entry.uid ? { ...e, status: "done" } : e)
         );
-      } catch {
-        const err = "Network error while uploading this file.";
+      } catch (error) {
+        const err = error instanceof Error
+          ? error.message
+          : "Network error while uploading this file.";
         uploadResults.push({ entry, result: null, err });
         setQueue((prev) =>
           prev.map((e) => e.uid === entry.uid ? { ...e, status: "error", error: err } : e)
@@ -377,7 +445,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               {dragging ? "Drop files here" : "Drag & drop files, or click to browse"}
             </p>
             <p className="mt-0.5 text-xs text-zinc-400">
-              JPEG · PNG · WEBP · GIF · PDF · DOC · DOCX · Max 15 MB each · Multiple files OK
+              Photos up to 15 MB are compressed automatically · Documents max 4 MB · Multiple files OK
             </p>
           </div>
           <input
