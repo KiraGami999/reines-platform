@@ -46,14 +46,14 @@ function Section({
 }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-      <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+      <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-6 sm:py-4">
         <div>
           <h2 className="text-sm font-semibold text-zinc-900">{title}</h2>
           {subtitle && <p className="mt-0.5 text-xs text-zinc-400">{subtitle}</p>}
         </div>
         {action}
       </div>
-      <div className="p-6">{children}</div>
+      <div className="p-4 sm:p-6">{children}</div>
     </div>
   );
 }
@@ -77,7 +77,7 @@ function HeroBar({ project }: { project: Project }) {
         }`}
       />
 
-      <div className="p-6 text-white">
+      <div className="p-4 text-white sm:p-6">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
           {/* Left — title + dates */}
           <div className="min-w-0 flex-1">
@@ -129,17 +129,19 @@ function HeroBar({ project }: { project: Project }) {
         </div>
 
         {/* Manager strip */}
-        <div className="mt-5 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#8fb9e8]/20 text-sm font-bold text-[#8fb9e8]">
-            {project.manager.name.charAt(0)}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[11px] uppercase tracking-wider text-zinc-500">Your Project Manager</p>
-            <p className="text-sm font-semibold text-white">{project.manager.name}</p>
+        <div className="mt-5 flex flex-col gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 sm:flex-row sm:items-center">
+          <div className="flex min-w-0 flex-1 items-center gap-3">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#8fb9e8]/20 text-sm font-bold text-[#8fb9e8]">
+              {project.manager.name.charAt(0)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-[11px] uppercase tracking-wider text-zinc-500">Your Project Manager</p>
+              <p className="truncate text-sm font-semibold text-white">{project.manager.name}</p>
+            </div>
           </div>
           <Link
             href="/dashboard/messages"
-            className="flex shrink-0 items-center gap-1.5 rounded-lg bg-[#8fb9e8]/15 px-3 py-1.5 text-xs font-medium text-[#8fb9e8] transition-colors hover:bg-[#8fb9e8]/25"
+            className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#8fb9e8]/15 px-3 py-2 text-xs font-medium text-[#8fb9e8] transition-colors hover:bg-[#8fb9e8]/25 sm:w-auto sm:py-1.5"
           >
             <MessageSquare size={12} />
             Message

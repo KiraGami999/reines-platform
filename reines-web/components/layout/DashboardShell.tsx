@@ -49,7 +49,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           onMenuClick={() => setSidebarOpen(true)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6">{children}</main>
       </div>
     </div>
   );

@@ -42,7 +42,7 @@ export default function AboutPage() {
       <AboutStoryHero />
 
       {/* Mission & Vision */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="rounded-2xl border border-zinc-100 p-8">
@@ -68,7 +68,7 @@ export default function AboutPage() {
       </section>
 
       {/* Core Values */}
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">What We Stand For</span>
@@ -92,7 +92,7 @@ export default function AboutPage() {
       </section>
 
       {/* Products & Services */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Products & Services</span>
@@ -145,7 +145,7 @@ export default function AboutPage() {
       </section>
 
       {/* Company Information */}
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Company Information</span>

@@ -211,7 +211,7 @@ export function Sidebar({
           "fixed inset-y-0 left-0 z-30 flex flex-col bg-[#2d4a6b]",
           "transition-all duration-200 ease-in-out",
           /* Mobile: slides in/out as a full 256px panel */
-          "w-64",
+          "w-64 max-w-[calc(100vw-3.5rem)]",
           open ? "translate-x-0" : "-translate-x-full",
           /* Desktop: always visible, width driven by collapsed state */
           "lg:static lg:translate-x-0",
@@ -353,7 +353,7 @@ export function Sidebar({
             <Link
               href="/"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
+              className="flex items-center gap-2 rounded-lg px-3 py-3 text-xs text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
             >
               <ChevronLeft size={13} />
               Back to public site

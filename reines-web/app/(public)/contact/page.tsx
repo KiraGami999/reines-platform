@@ -43,10 +43,10 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-24">
+      <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Get In Touch</span>
-          <h1 className="mt-3 max-w-2xl text-5xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Let&apos;s talk about your project.
           </h1>
           <p className="mt-4 max-w-xl text-zinc-400">
@@ -56,7 +56,7 @@ export default function ContactPage() {
       </section>
 
       {/* Main content */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-3">
 
@@ -132,7 +132,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-8">
+              <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4 sm:p-8">
                 <h2 className="text-xl font-bold text-[#2d4a6b]">Send us a message</h2>
                 <p className="mt-1 text-sm text-zinc-500">For general enquiries, questions, or feedback. All messages are responded to within 24 hours.</p>
                 <div className="mt-6">

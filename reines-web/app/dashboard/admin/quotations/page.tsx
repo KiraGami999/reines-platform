@@ -59,13 +59,13 @@ function StatusBadge({ status }: { status: string }) {
 
 function StatCard({ icon, label, value, color }: { icon: React.ReactNode; label: string; value: number; color: string }) {
   return (
-    <div className="rounded-xl border border-zinc-100 bg-white p-5 flex items-center gap-4">
-      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg ${color}`}>
+    <div className="rounded-xl border border-zinc-100 bg-white p-3 sm:p-5 flex items-center gap-3 sm:gap-4">
+      <div className={`flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg ${color}`}>
         {icon}
       </div>
-      <div>
-        <p className="text-xs text-zinc-400">{label}</p>
-        <p className="text-xl font-bold text-zinc-900">{value}</p>
+      <div className="min-w-0">
+        <p className="text-xs text-zinc-400 truncate">{label}</p>
+        <p className="text-lg sm:text-xl font-bold text-zinc-900">{value}</p>
       </div>
     </div>
   );
@@ -131,14 +131,14 @@ export default function AdminQuotationsPage() {
   };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-zinc-900">Quotation Requests</h1>
           <p className="mt-0.5 text-sm text-zinc-500">Review and manage inbound project quotation requests.</p>
         </div>
-        <button onClick={load} className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50">
+        <button onClick={load} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50 self-start">
           <RefreshCw size={14} /> Refresh
         </button>
       </div>

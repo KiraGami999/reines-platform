@@ -185,7 +185,7 @@ export default function CreateProjectForm({
           {errors.description && <p className="mt-1 text-xs text-blue-600">{errors.description}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className={LABEL}>Status</label>
             <select
@@ -222,7 +222,7 @@ export default function CreateProjectForm({
       <div className="space-y-4 rounded-xl border border-zinc-100 bg-zinc-50/60 p-4">
         <SectionHeading icon={<Users size={13} />} title="Assign People" />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className={LABEL}>Client <span className="text-blue-500">*</span></label>
             {clients.length === 0 ? (
@@ -274,7 +274,7 @@ export default function CreateProjectForm({
       <div className="space-y-4 rounded-xl border border-zinc-100 bg-zinc-50/60 p-4">
         <SectionHeading icon={<CalendarDays size={13} />} title="Timeline" />
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <div>
             <label className={LABEL}>Start Date</label>
             <input

@@ -17,7 +17,7 @@ export default async function ProductsPage() {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-[#2d4a6b] py-24">
+      <section className="relative overflow-hidden bg-[#2d4a6b] py-14 sm:py-24">
         <div className="pointer-events-none absolute -right-32 top-10 h-96 w-96 rounded-full bg-[#8fb9e8]/10 blur-3xl" />
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl">
@@ -25,7 +25,7 @@ export default async function ProductsPage() {
               <Blocks size={13} />
               Product Catalogue
             </span>
-            <h1 className="mt-6 text-5xl font-extrabold tracking-tight text-white">
+            <h1 className="mt-6 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
               Building products ready for your next project.
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-7 text-zinc-300">
@@ -47,7 +47,7 @@ export default async function ProductsPage() {
         <ProductCatalog products={products} />
       </section>
 
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-5xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <PackageCheck size={26} strokeWidth={1.8} />

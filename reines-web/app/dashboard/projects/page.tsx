@@ -283,10 +283,10 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
                   : "border-zinc-200 bg-white"
               }`}
             >
-              <p className={`text-2xl font-extrabold ${s.accent ? "text-white" : "text-[#2d4a6b]"}`}>
+              <p className={`text-lg sm:text-2xl font-extrabold truncate ${s.accent ? "text-white" : "text-[#2d4a6b]"}`}>
                 {s.value}
               </p>
-              <p className={`mt-0.5 text-xs font-medium ${s.accent ? "text-zinc-400" : "text-zinc-400"}`}>
+              <p className={`mt-0.5 text-[10px] sm:text-xs font-medium ${s.accent ? "text-zinc-400" : "text-zinc-400"}`}>
                 {s.label}
               </p>
             </div>

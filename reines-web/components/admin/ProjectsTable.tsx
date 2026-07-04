@@ -108,7 +108,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
   return (
     <>
       {/* Stats strip */}
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mb-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
         <StatCard label="Total Projects" value={counts.ALL}         icon={<FolderKanban className="w-5 h-5" />} />
         <StatCard label="In Progress"    value={counts.IN_PROGRESS} icon={<Clock4       className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
         <StatCard label="Completed"      value={counts.COMPLETED}   icon={<CheckCircle2 className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
@@ -200,13 +200,13 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                <th className="px-4 py-3">Project</th>
-                <th className="px-4 py-3">Client</th>
-                <th className="px-4 py-3">Manager</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Budget</th>
-                <th className="px-4 py-3">Timeline</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Project</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Client</th>
+                <th className="hidden px-2.5 py-2 md:table-cell sm:px-4 sm:py-3">Manager</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Status</th>
+                <th className="hidden px-2.5 py-2 lg:table-cell sm:px-4 sm:py-3">Budget</th>
+                <th className="hidden px-2.5 py-2 lg:table-cell sm:px-4 sm:py-3">Timeline</th>
+                <th className="px-2.5 py-2 text-right sm:px-4 sm:py-3">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
@@ -223,7 +223,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
               ) : (
                 filtered.map((project) => (
                   <tr key={project.id} className="group transition-colors hover:bg-zinc-50">
-                    <td className="px-4 py-3">
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                       <div className="max-w-[200px]">
                         <Link
                           href={`/dashboard/projects/${project.id}`}
@@ -234,31 +234,31 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                         <p className="mt-0.5 truncate text-xs text-zinc-400">{project.description}</p>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                       <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
                           {project.clientName.charAt(0)}
                         </div>
-                        <span className="text-zinc-700">{project.clientName}</span>
+                        <span className="truncate text-zinc-700">{project.clientName}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="hidden px-2.5 py-2 md:table-cell sm:px-4 sm:py-3">
                       <div className="flex items-center gap-2">
                         <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
                           {project.managerName.charAt(0)}
                         </div>
-                        <span className="text-zinc-700">{project.managerName}</span>
+                        <span className="truncate text-zinc-700">{project.managerName}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                       <StatusBadge status={project.status} />
                     </td>
-                    <td className="px-4 py-3 font-medium text-zinc-700">
+                    <td className="hidden px-2.5 py-2 font-medium text-zinc-700 lg:table-cell sm:px-4 sm:py-3">
                       {project.budget
                         ? fmtMWK(project.budget)
                         : <span className="text-zinc-300">—</span>}
                     </td>
-                    <td className="px-4 py-3 text-xs text-zinc-500">
+                    <td className="hidden px-2.5 py-2 text-xs text-zinc-500 lg:table-cell sm:px-4 sm:py-3">
                       {project.startDate ? (
                         <span>
                           {fmtAdmin(project.startDate)}
@@ -269,8 +269,8 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                         <span className="text-zinc-300">Not set</span>
                       )}
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
+                      <div className="flex items-center justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100">
                         {(isAdmin || project.managerAccepted) && (
                           <button
                             onClick={() => openEdit(project)}

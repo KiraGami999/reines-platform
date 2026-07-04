@@ -98,12 +98,12 @@ const planningNotes = [
 export default function MarketInsightsPage() {
   return (
     <>
-      <section className="bg-[#2d4a6b] py-24">
+      <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
             Market Intelligence
           </span>
-          <h1 className="mt-3 max-w-3xl text-5xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Market insights for confident property decisions.
           </h1>
           <p className="mt-4 max-w-2xl text-zinc-400">
@@ -113,13 +113,13 @@ export default function MarketInsightsPage() {
         </div>
       </section>
 
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
               <Lightbulb size={24} strokeWidth={1.8} />
             </div>
-            <h2 className="mt-4 text-4xl font-bold tracking-tight text-[#2d4a6b]">
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl lg:text-4xl">
               Current Market Snapshot
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500">
@@ -169,7 +169,7 @@ export default function MarketInsightsPage() {
         </div>
       </section>
 
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">

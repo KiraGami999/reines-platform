@@ -97,7 +97,7 @@ export default async function AdminPaymentsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
         <StatCard
           label="Total Collected"
           value={fmtPaymentAmount(totalCollected)}
@@ -144,7 +144,7 @@ export default async function AdminPaymentsPage() {
       )}
 
       {/* Info callout */}
-      <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-5 py-4 text-sm text-zinc-600 space-y-1">
+      <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-3 sm:px-5 sm:py-4 text-sm text-zinc-600 space-y-1 overflow-hidden">
         <p>
           <span className="font-semibold text-zinc-800">Online payments</span> are processed via Paychangu and confirmed
           automatically via webhooks. Set up your webhook URL in the{" "}
@@ -156,7 +156,7 @@ export default async function AdminPaymentsPage() {
           >
             Paychangu Dashboard
           </a>{" "}
-          to: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-xs">{`{YOUR_DOMAIN}/api/payments/webhook`}</code>
+          to: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-xs break-all">{`{YOUR_DOMAIN}/api/payments/webhook`}</code>
         </p>
         <p>
           <span className="font-semibold text-zinc-800">Cash payments</span> require manual admin approval above before

@@ -58,7 +58,7 @@ export default async function ClientLoyaltyPage() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Your Balance</p>
-            <p className="mt-2 text-5xl font-extrabold">{summary.totalPoints.toLocaleString()}</p>
+            <p className="mt-2 text-3xl font-extrabold sm:text-5xl">{summary.totalPoints.toLocaleString()}</p>
             <p className="mt-1 text-sm text-zinc-300">points</p>
           </div>
           <div className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-bold ${tier.color}`}>

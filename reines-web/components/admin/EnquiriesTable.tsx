@@ -78,19 +78,19 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 mb-6">
         <StatCard label="Total Enquiries" value={total}  icon={<MessageSquare className="w-5 h-5" />} />
         <StatCard label="Unread"          value={unread} icon={<MailX className="w-5 h-5" />}          accent="bg-blue-50 text-blue-600" />
         <StatCard label="Read"            value={read}   icon={<MailCheck className="w-5 h-5" />}       accent="bg-blue-50 text-blue-600" />
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="mb-4 flex gap-2 overflow-x-auto pb-1">
         {(["all", "unread", "read"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
-            className={`px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-colors ${
+            className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-colors ${
               filter === f
                 ? "bg-[#2d4a6b] text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
@@ -120,7 +120,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
             >
               {/* Header row */}
               <div
-                className="flex items-start gap-4 px-5 py-4 cursor-pointer hover:bg-zinc-50 rounded-xl transition-colors"
+                className="flex items-start gap-2 px-3 py-3 cursor-pointer hover:bg-zinc-50 rounded-xl transition-colors sm:gap-4 sm:px-5 sm:py-4"
                 onClick={() => toggleExpand(enq.id)}
               >
                 <div className={`mt-0.5 shrink-0 ${enq.read ? "text-zinc-400" : "text-[#8fb9e8]"}`}>

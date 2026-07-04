@@ -17,10 +17,10 @@ export default async function ProjectsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-24">
+      <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Our Portfolio</span>
-          <h1 className="mt-3 max-w-2xl text-5xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Projects we&apos;re proud to stand behind.
           </h1>
           <p className="mt-4 max-w-xl text-zinc-400">
@@ -33,7 +33,7 @@ export default async function ProjectsPage() {
       <CurrentProjectsBanner projects={projects} />
 
       {/* Projects grid */}
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <PublicProjectsGallery projects={projects} />
         </div>

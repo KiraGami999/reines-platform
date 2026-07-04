@@ -80,7 +80,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
   return (
     <>
       {/* Stats strip */}
-      <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="mb-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
         <StatCard label="Total Users"      value={counts.ALL}             icon={<Users      className="w-5 h-5" />} />
         <StatCard label="Admins"           value={counts.ADMIN}           icon={<ShieldCheck className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
         <StatCard label="Project Managers" value={counts.PROJECT_MANAGER} icon={<HardHat    className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
@@ -139,11 +139,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Role</th>
-                <th className="px-4 py-3">Joined</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Name</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Email</th>
+                <th className="px-2.5 py-2 sm:px-4 sm:py-3">Role</th>
+                <th className="hidden px-2.5 py-2 sm:table-cell sm:px-4 sm:py-3">Joined</th>
+                <th className="px-2.5 py-2 text-right sm:px-4 sm:py-3">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-100">
@@ -158,7 +158,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
               ) : (
                 filtered.map((user) => (
                   <tr key={user.id} className="group transition-colors hover:bg-zinc-50">
-                    <td className="px-4 py-3">
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold uppercase text-[#8fb9e8]">
                           {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
@@ -166,11 +166,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
                         <span className="font-medium text-zinc-900">{user.name}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-zinc-500">{user.email}</td>
-                    <td className="px-4 py-3"><RoleBadge role={user.role} /></td>
-                    <td className="px-4 py-3 text-zinc-400">{fmtAdmin(user.createdAt)}</td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1 transition-opacity sm:opacity-0 sm:group-hover:opacity-100">
+                    <td className="max-w-[120px] truncate px-2.5 py-2 text-zinc-500 sm:max-w-none sm:px-4 sm:py-3">{user.email}</td>
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3"><RoleBadge role={user.role} /></td>
+                    <td className="hidden px-2.5 py-2 text-zinc-400 sm:table-cell sm:px-4 sm:py-3">{fmtAdmin(user.createdAt)}</td>
+                    <td className="px-2.5 py-2 sm:px-4 sm:py-3">
+                      <div className="flex items-center justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100">
                         <button
                           onClick={() => openEdit(user)}
                           className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#2d4a6b]"

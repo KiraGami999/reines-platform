@@ -43,19 +43,19 @@ export default function QuotationPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="bg-[#2d4a6b] py-24">
+      <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
             Project Quotation
           </span>
-          <h1 className="mt-3 max-w-2xl text-5xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Let&apos;s build something great together.
           </h1>
           <p className="mt-4 max-w-xl text-zinc-400">
             Tell us about your project and we&apos;ll prepare a detailed, itemised quotation tailored
             to your scope, location, and budget — at no cost to you.
           </p>
-          <div className="mt-6 flex items-center gap-4 text-sm text-zinc-400">
+          <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-400">
             <span className="flex items-center gap-1.5">
               <Clock size={14} className="text-[#8fb9e8]" /> Response within 3–5 business days
             </span>
@@ -94,7 +94,7 @@ export default function QuotationPage() {
       </section>
 
       {/* ── Main form ── */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
 

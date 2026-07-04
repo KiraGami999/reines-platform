@@ -22,10 +22,10 @@ export default async function ServicesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-24">
+      <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">What We Offer</span>
-          <h1 className="mt-3 max-w-2xl text-5xl font-extrabold tracking-tight text-white">
+          <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
             Services designed around your confidence.
           </h1>
           <p className="mt-4 max-w-xl text-zinc-400">
@@ -35,7 +35,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* Services grid */}
-      <section className="bg-white py-20">
+      <section className="bg-white py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-12">
             {services.map((service, index) => {
@@ -43,7 +43,7 @@ export default async function ServicesPage() {
               return (
                 <div
                   key={service.id}
-                  className={`flex flex-col gap-8 rounded-2xl border border-zinc-100 p-8 lg:flex-row ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
+                  className={`flex flex-col gap-8 rounded-2xl border border-zinc-100 p-4 sm:p-8 lg:flex-row ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
                 >
                   <div className="flex-1">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
@@ -74,7 +74,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* Our process */}
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">How It Works</span>

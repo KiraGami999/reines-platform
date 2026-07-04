@@ -152,7 +152,7 @@ function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-80 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg">
+        <div className="fixed inset-x-3 top-14 z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
             <h3 className="text-sm font-semibold text-zinc-900">Notifications</h3>
             {unreadCount > 0 && (
@@ -234,7 +234,7 @@ function UserMenu({ user }: UserMenuProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+        className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 sm:gap-2 sm:px-2.5"
         aria-label="User menu"
         aria-expanded={open}
       >
@@ -248,7 +248,7 @@ function UserMenu({ user }: UserMenuProps) {
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-64 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg">
+        <div className="absolute right-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:w-64">
           {/* User info header */}
           <div className="border-b border-zinc-100 px-4 py-3">
             <div className="flex items-center gap-3">
@@ -318,9 +318,9 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const crumbs   = buildBreadcrumbs(pathname);
 
   return (
-    <header className="flex h-16 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-4 sm:px-6">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 sm:h-16 sm:px-6">
       {/* Left — mobile hamburger + breadcrumbs */}
-      <div className="flex min-w-0 items-center gap-3">
+      <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <BrandLogoAnchor className="lg:hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
@@ -338,6 +338,11 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
         >
           <Menu size={18} />
         </button>
+
+        {/* Mobile page title */}
+        <span className="truncate text-sm font-semibold text-zinc-800 sm:hidden">
+          {crumbs[crumbs.length - 1]?.label}
+        </span>
 
         {/* Breadcrumbs */}
         <nav className="hidden min-w-0 items-center gap-1 text-sm sm:flex" aria-label="Breadcrumb">
@@ -362,7 +367,7 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
       </div>
 
       {/* Right — search + notifications + user */}
-      <div className="flex shrink-0 items-center gap-2">
+      <div className="flex shrink-0 items-center gap-1 sm:gap-2">
         <SearchBar />
         <NotificationBell />
         <UserMenu user={user} />

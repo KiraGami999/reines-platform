@@ -26,15 +26,15 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-3 sm:gap-4">
           {[
             { label: "Projects Completed", value: "15+" },
             { label: "Years Experience",   value: "3+"  },
             { label: "Client Satisfaction", value: "98%" },
           ].map((s) => (
             <div key={s.label}>
-              <p className="text-2xl font-extrabold text-[#8fb9e8]">{s.value}</p>
-              <p className="text-xs text-zinc-400 mt-0.5">{s.label}</p>
+              <p className="text-xl sm:text-2xl font-extrabold text-[#8fb9e8]">{s.value}</p>
+              <p className="text-[10px] sm:text-xs text-zinc-400 mt-0.5">{s.label}</p>
             </div>
           ))}
         </div>

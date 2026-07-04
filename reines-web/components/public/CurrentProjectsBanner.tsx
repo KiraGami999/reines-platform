@@ -51,8 +51,8 @@ function AnimatedStat({ value, label }: { value: number; label: string }) {
   const { count, ref } = useCountUp(value);
   return (
     <div ref={ref} className="text-center">
-      <p className="text-4xl font-extrabold text-[#2d4a6b]">{count}+</p>
-      <p className="mt-1 text-sm text-zinc-500">{label}</p>
+      <p className="text-2xl sm:text-4xl font-extrabold text-[#2d4a6b]">{count}+</p>
+      <p className="mt-1 text-xs sm:text-sm text-zinc-500">{label}</p>
     </div>
   );
 }
@@ -126,7 +126,7 @@ export function CurrentProjectsBanner({ projects }: { projects: Project[] }) {
           </div>
 
           {/* Animated counters */}
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-4 sm:gap-8">
             <AnimatedStat value={15} label="Projects Completed" />
             <AnimatedStat value={3}  label="Years Experience" />
             <AnimatedStat value={95} label="% Client Satisfaction" />

@@ -66,7 +66,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
 
   if (products.length === 0) {
     return (
-      <section className="bg-zinc-50 py-20">
+      <section className="bg-zinc-50 py-12 sm:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <PackageCheck size={26} strokeWidth={1.8} />
@@ -89,7 +89,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
   }
 
   return (
-    <section className="bg-zinc-50 py-20">
+    <section className="bg-zinc-50 py-12 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.35fr]">
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">

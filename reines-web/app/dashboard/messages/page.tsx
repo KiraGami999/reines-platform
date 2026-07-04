@@ -16,7 +16,7 @@ export default async function MessagesPage() {
   const totalUnread   = conversations.reduce((s, c) => s + c.unreadCount, 0);
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-[calc(100vh-3.5rem)] flex-col sm:h-[calc(100vh-4rem)]">
       {/* Page header */}
       <div className="shrink-0 px-1 pb-4">
         <div className="flex items-center justify-between">

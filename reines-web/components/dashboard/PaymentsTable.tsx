@@ -71,24 +71,24 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
         <table className="w-full text-sm">
           <thead>
             <tr className="bg-zinc-50 border-b border-zinc-200 text-left text-xs uppercase tracking-wider text-zinc-500">
-              <th className="px-4 py-3 font-semibold">Reference</th>
-              <th className="px-4 py-3 font-semibold">Project</th>
-              {showUser && <th className="px-4 py-3 font-semibold">Client</th>}
-              <th className="px-4 py-3 font-semibold">Description</th>
-              <th className="px-4 py-3 font-semibold">Amount</th>
-              <th className="px-4 py-3 font-semibold">Method</th>
-              <th className="px-4 py-3 font-semibold">Status</th>
-              <th className="px-4 py-3 font-semibold">Date</th>
-              <th className="px-4 py-3 font-semibold"></th>
+              <th className="px-2.5 py-2 font-semibold sm:px-4 sm:py-3">Reference</th>
+              <th className="px-2.5 py-2 font-semibold sm:px-4 sm:py-3">Project</th>
+              {showUser && <th className="hidden px-2.5 py-2 font-semibold sm:table-cell sm:px-4 sm:py-3">Client</th>}
+              <th className="hidden px-2.5 py-2 font-semibold md:table-cell sm:px-4 sm:py-3">Description</th>
+              <th className="px-2.5 py-2 font-semibold sm:px-4 sm:py-3">Amount</th>
+              <th className="hidden px-2.5 py-2 font-semibold md:table-cell sm:px-4 sm:py-3">Method</th>
+              <th className="px-2.5 py-2 font-semibold sm:px-4 sm:py-3">Status</th>
+              <th className="hidden px-2.5 py-2 font-semibold lg:table-cell sm:px-4 sm:py-3">Date</th>
+              <th className="px-2.5 py-2 font-semibold sm:px-4 sm:py-3"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100">
             {payments.map((p) => (
               <tr key={p.id} className="hover:bg-zinc-50 transition-colors">
-                <td className="px-4 py-3">
-                  <span className="font-mono text-xs text-zinc-500">{p.txRef}</span>
+                <td className="px-2.5 py-2 sm:px-4 sm:py-3">
+                  <span className="block max-w-[100px] truncate font-mono text-xs text-zinc-500 sm:max-w-none">{p.txRef}</span>
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                   <Link
                     href={`/dashboard/projects/${p.project.id}`}
                     className="font-medium text-zinc-800 hover:text-[#8fb9e8] transition-colors text-xs"
@@ -97,24 +97,24 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                   </Link>
                 </td>
                 {showUser && p.user && (
-                  <td className="px-4 py-3 text-xs text-zinc-600">{p.user.name}</td>
+                  <td className="hidden px-2.5 py-2 text-xs text-zinc-600 sm:table-cell sm:px-4 sm:py-3">{p.user.name}</td>
                 )}
-                <td className="px-4 py-3 text-xs text-zinc-500 max-w-[180px] truncate">
+                <td className="hidden px-2.5 py-2 text-xs text-zinc-500 md:table-cell sm:px-4 sm:py-3 max-w-[180px] truncate">
                   {p.description ?? "—"}
                 </td>
-                <td className="px-4 py-3 font-semibold text-zinc-900">
+                <td className="whitespace-nowrap px-2.5 py-2 font-semibold text-zinc-900 sm:px-4 sm:py-3">
                   {fmtPaymentAmount(p.amount, p.currency)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="hidden px-2.5 py-2 md:table-cell sm:px-4 sm:py-3">
                   <MethodBadge method={p.method} />
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                   <StatusBadge status={p.status} />
                 </td>
-                <td className="px-4 py-3 text-xs text-zinc-500">
+                <td className="hidden px-2.5 py-2 text-xs text-zinc-500 lg:table-cell sm:px-4 sm:py-3">
                   {fmtDate(p.paidAt ?? p.createdAt)}
                 </td>
-                <td className="px-4 py-3">
+                <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                   <Link
                     href={`/dashboard/payments/${p.txRef}`}
                     className="flex items-center gap-1 text-xs text-zinc-400 hover:text-[#2d4a6b] transition-colors"

@@ -373,7 +373,7 @@ function TabBar({
   ];
 
   return (
-    <div className="flex gap-1 rounded-xl border border-zinc-200 bg-zinc-50 p-1">
+    <div className="flex gap-1 overflow-x-auto rounded-xl border border-zinc-200 bg-zinc-50 p-1">
       {tabs.map((t) => {
         const active = tab === t.id;
         const hidden = t.count === 0 && t.id !== "all";
@@ -383,7 +383,7 @@ function TabBar({
             key={t.id}
             onClick={() => onChange(t.id)}
             className={cn(
-              "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
               active
                 ? "bg-white text-zinc-900 shadow-sm"
                 : "text-zinc-500 hover:text-zinc-700"

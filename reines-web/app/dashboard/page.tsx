@@ -34,15 +34,15 @@ function StatCard({
   accent?: boolean;
 }) {
   return (
-    <div className={`rounded-xl border p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
+    <div className={`rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
       <div className="flex items-start justify-between">
         <div className={`rounded-lg p-2 ${accent ? "bg-[#8fb9e8]/15" : "bg-zinc-100"}`}>
           <Icon size={18} className={accent ? "text-[#8fb9e8]" : "text-zinc-600"} />
         </div>
       </div>
-      <p className={`mt-4 text-3xl font-extrabold ${accent ? "text-white" : "text-zinc-900"}`}>{value}</p>
-      <p className={`mt-0.5 text-sm font-medium ${accent ? "text-zinc-300" : "text-zinc-700"}`}>{label}</p>
-      <p className={`mt-1 text-xs ${accent ? "text-zinc-500" : "text-zinc-400"}`}>{sub}</p>
+      <p className={`mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold ${accent ? "text-white" : "text-zinc-900"}`}>{value}</p>
+      <p className={`mt-0.5 text-xs sm:text-sm font-medium ${accent ? "text-zinc-300" : "text-zinc-700"}`}>{label}</p>
+      <p className={`mt-1 text-[10px] sm:text-xs ${accent ? "text-zinc-500" : "text-zinc-400"}`}>{sub}</p>
     </div>
   );
 }
