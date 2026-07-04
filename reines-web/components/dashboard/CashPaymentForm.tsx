@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { upload } from "@vercel/blob/client";
 import {
   Banknote,
   Upload,
@@ -62,21 +63,18 @@ export function CashPaymentForm({
     reader.readAsDataURL(file);
 
     try {
-      const fd = new FormData();
-      fd.append("receipt", file);
-
-      const res  = await fetch("/api/payments/cash/upload", { method: "POST", body: fd });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? "Upload failed. Please try again.");
-        setPreview(null);
-        setUploading(false);
-        return;
-      }
-      setReceiptUrl(data.url);
-    } catch {
-      setError("Network error uploading receipt. Please try again.");
+      const blob = await upload(
+        `uploads/receipts/${file.name}`,
+        file,
+        {
+          access: "private",
+          handleUploadUrl: "/api/upload/client",
+        },
+      );
+      setReceiptUrl(blob.url);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed. Please try again.";
+      setError(msg);
       setPreview(null);
     } finally {
       setUploading(false);

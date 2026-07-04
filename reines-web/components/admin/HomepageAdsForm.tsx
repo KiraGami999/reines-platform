@@ -3,7 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowUp, CheckCircle2, Loader2, Save, Trash2, Upload } from "lucide-react";
+import { upload } from "@vercel/blob/client";
+import { ArrowDown, ArrowUp, CheckCircle2, Loader2, Save, Trash2, Upload as UploadIcon } from "lucide-react";
 import type { AvailableHomepageImage, HomepageAd } from "@/lib/homepage-ads";
 import { resolveStorageUrl } from "@/lib/storage";
 
@@ -103,23 +104,15 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
     clearStatus();
     setUploadingImage(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const res = await fetch("/api/admin/homepage-ads/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? "Could not upload image.");
-        return;
-      }
+      const blob = await upload(
+        `uploads/homepage-ads/${file.name}`,
+        file,
+        { access: "private", handleUploadUrl: "/api/upload/client" },
+      );
 
       const uploaded: AvailableHomepageImage = {
-        imageUrl: data.url,
+        imageUrl: blob.url,
         alt: titleFromFilename(file.name),
         defaultTitle: titleFromFilename(file.name),
         defaultSubtitle: "Add a subtitle for this homepage ad after selecting it.",
@@ -264,7 +257,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
               onClick={() => fileInputRef.current?.click()}
               className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
             >
-              {uploadingImage ? <Loader2 size={15} className="animate-spin" /> : <Upload size={15} />}
+              {uploadingImage ? <Loader2 size={15} className="animate-spin" /> : <UploadIcon size={15} />}
               {uploadingImage ? "Uploading..." : "Upload Image"}
             </button>
           </div>

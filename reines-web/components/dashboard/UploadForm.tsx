@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback, useId } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { upload } from "@vercel/blob/client";
 import {
   UploadCloud, X, CheckCircle2, AlertCircle,
   FileImage, FileText, Loader2, Images, File as FileIcon,
@@ -142,44 +143,49 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
   async function uploadOne(entry: FileEntry): Promise<"done" | "error"> {
     setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "uploading" } : f));
 
-    const fd = new FormData();
-    fd.append("file", entry.file);
+    try {
+      // Client-side upload: file goes directly from browser to Vercel Blob,
+      // bypassing the serverless function body-size limit.
+      const blob = await upload(
+        `uploads/gallery/${entry.file.name}`,
+        entry.file,
+        {
+          access: "private",
+          handleUploadUrl: "/api/upload/client",
+        },
+      );
 
-    const uploadRes  = await fetch("/api/upload", { method: "POST", body: fd });
-    const uploadData = await uploadRes.json().catch(() => ({}));
+      const isImage = entry.kind === "image";
+      const body = {
+        note:         entry.note.trim(),
+        progressPercent,
+        imageUrl:     isImage ? blob.url : null,
+        documentUrl:  isImage ? null : blob.url,
+        documentName: isImage ? null : entry.file.name,
+        documentType: isImage ? null : (blob.contentType || entry.file.type),
+      };
 
-    if (!uploadRes.ok) {
-      const msg = uploadData.error ?? "Upload failed.";
+      const saveRes = await fetch(`/api/projects/${projectId}/gallery`, {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(body),
+      });
+
+      if (!saveRes.ok) {
+        const d = await saveRes.json().catch(() => ({}));
+        const msg = d.error ?? "Could not save update.";
+        setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
+        return "error";
+      }
+
+      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "done" } : f));
+      setDoneCount((n) => n + 1);
+      return "done";
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Upload failed.";
       setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
       return "error";
     }
-
-    const isImage = entry.kind === "image";
-    const body = {
-      note:         entry.note.trim(),
-      progressPercent,
-      imageUrl:     isImage ? uploadData.url : null,
-      documentUrl:  isImage ? null : uploadData.url,
-      documentName: isImage ? null : (uploadData.originalName ?? entry.file.name),
-      documentType: isImage ? null : (uploadData.mimeType ?? entry.file.type),
-    };
-
-    const saveRes = await fetch(`/api/projects/${projectId}/gallery`, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(body),
-    });
-
-    if (!saveRes.ok) {
-      const d = await saveRes.json().catch(() => ({}));
-      const msg = d.error ?? "Could not save update.";
-      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
-      return "error";
-    }
-
-    setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "done" } : f));
-    setDoneCount((n) => n + 1);
-    return "done";
   }
 
   // ── Submit ───────────────────────────────────────────────────────────────────

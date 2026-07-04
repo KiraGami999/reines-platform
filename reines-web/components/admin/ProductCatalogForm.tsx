@@ -13,8 +13,9 @@ import {
   Save,
   Sparkles,
   Trash2,
-  Upload,
+  Upload as UploadIcon,
 } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 import {
   FALLBACK_PRODUCTS,
   PRODUCT_SUBSIDIARY_OPTIONS,
@@ -151,23 +152,15 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
     clearStatus();
     setUploadingImage(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const res = await fetch("/api/admin/products/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? "Could not upload image.");
-        return;
-      }
+      const blob = await upload(
+        `uploads/product-images/${file.name}`,
+        file,
+        { access: "private", handleUploadUrl: "/api/upload/client" },
+      );
 
       const uploaded: AvailableProductImage = {
-        imageUrl: data.url,
+        imageUrl: blob.url,
         alt: selectedProduct.name,
         defaultTitle: file.name.replace(/\.[^.]+$/, ""),
       };
@@ -176,7 +169,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
         if (current.some((image) => image.imageUrl === uploaded.imageUrl)) return current;
         return [uploaded, ...current];
       });
-      updateProduct(selectedProduct.id, { imageUrl: data.url });
+      updateProduct(selectedProduct.id, { imageUrl: blob.url });
       setMessage("Product image uploaded. Save the catalogue to keep it.");
     } catch {
       setError("Could not upload image. Check your connection and try again.");
@@ -559,7 +552,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                           {uploadingImage ? (
                             <Loader2 size={15} className="animate-spin" />
                           ) : (
-                            <Upload size={15} />
+                            <UploadIcon size={15} />
                           )}
                           {uploadingImage ? "Uploading..." : "Upload Image"}
                         </button>
