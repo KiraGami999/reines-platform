@@ -1,5 +1,17 @@
-import { writeFile, mkdir, unlink } from "fs/promises";
-import path from "path";
+/**
+ * Cloud storage via Vercel Blob.
+ *
+ * All uploads are stored on Vercel Blob's global CDN and returned as full
+ * HTTPS URLs.  The local-filesystem approach that was here before only worked
+ * on the developer's machine; it failed in every server / cloud environment
+ * because the Next.js runtime has no writable filesystem.
+ *
+ * Required env variable:
+ *   BLOB_READ_WRITE_TOKEN  — obtained from the Vercel dashboard (Storage tab).
+ *   Works both locally and in production; just add it to .env.
+ */
+
+import { put, del as blobDel } from "@vercel/blob";
 import { randomUUID } from "crypto";
 
 const IMAGE_TYPES = [
@@ -15,14 +27,17 @@ const ALLOWED_TYPES = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
+
 const MAX_SIZE_MB = 15;
-const MAX_BYTES = MAX_SIZE_MB * 1024 * 1024;
+const MAX_BYTES   = MAX_SIZE_MB * 1024 * 1024;
+
+// ─── Public types ─────────────────────────────────────────────────────────────
 
 export interface StorageResult {
-  url: string;
-  filename: string;
-  sizeBytes: number;
-  mimeType: string;
+  url:          string; // Full HTTPS URL on Vercel Blob's CDN
+  filename:     string;
+  sizeBytes:    number;
+  mimeType:     string;
   originalName: string;
 }
 
@@ -32,14 +47,16 @@ export class StorageError extends Error {
   }
 }
 
-async function saveFileToPublicDir(
-  file: File,
-  publicSubdir: string,
-  allowedTypes: string[]
+// ─── Internal helper ──────────────────────────────────────────────────────────
+
+async function uploadToBlob(
+  file:         File,
+  folder:       string,
+  allowedTypes: string[],
 ): Promise<StorageResult> {
   if (!allowedTypes.includes(file.type)) {
     throw new StorageError(
-      `Unsupported file type. Allowed: ${allowedTypes.join(", ")}`
+      `Unsupported file type "${file.type}". Allowed: ${allowedTypes.join(", ")}`,
     );
   }
 
@@ -47,125 +64,124 @@ async function saveFileToPublicDir(
     throw new StorageError(`File too large. Maximum size is ${MAX_SIZE_MB} MB.`);
   }
 
-  const ext = file.name.split(".").pop()?.toLowerCase() ?? "jpg";
+  const ext      = file.name.split(".").pop()?.toLowerCase() ?? "bin";
   const filename = `${randomUUID()}.${ext}`;
-  const uploadDir = path.join(process.cwd(), "public", publicSubdir);
+  const pathname = `${folder}/${filename}`;
 
-  await mkdir(uploadDir, { recursive: true });
-
-  const bytes = await file.arrayBuffer();
-  await writeFile(path.join(uploadDir, filename), Buffer.from(bytes));
+  // `put` streams the file directly to Vercel Blob.
+  // access: "public" means the URL is publicly readable (no signed URL needed).
+  const { url } = await put(pathname, file, { access: "public" });
 
   return {
-    url: `/${publicSubdir.replace(/\\/g, "/")}/${filename}`,
+    url,
     filename,
-    sizeBytes: file.size,
-    mimeType: file.type,
+    sizeBytes:    file.size,
+    mimeType:     file.type,
     originalName: file.name,
   };
 }
 
-/**
- * Save an uploaded File to /public/uploads/gallery/.
- * Returns the public URL path.
- *
- * When moving to cloud storage (e.g. Cloudinary, AWS S3, Supabase Storage),
- * replace the body of this function — the callers stay the same.
- */
+// ─── Public upload functions ──────────────────────────────────────────────────
+
+/** Gallery updates (photos + documents) posted by admins / project managers. */
 export async function saveUpload(file: File): Promise<StorageResult> {
-  return saveFileToPublicDir(file, "uploads/gallery", ALLOWED_TYPES);
+  return uploadToBlob(file, "uploads/gallery", ALLOWED_TYPES);
 }
 
-/**
- * Save a product catalogue image to /public/uploads/product-images/.
- */
+/** Product catalogue images. */
 export async function saveProductImageUpload(file: File): Promise<StorageResult> {
-  return saveFileToPublicDir(file, "uploads/product-images", IMAGE_TYPES);
+  return uploadToBlob(file, "uploads/product-images", IMAGE_TYPES);
 }
 
-/**
- * Save a homepage ad image to /public/uploads/homepage-ads/.
- */
+/** Homepage advertisement images. */
 export async function saveHomepageAdImageUpload(file: File): Promise<StorageResult> {
-  return saveFileToPublicDir(file, "uploads/homepage-ads", IMAGE_TYPES);
+  return uploadToBlob(file, "uploads/homepage-ads", IMAGE_TYPES);
 }
 
-/** Validate that a string is a safe internal upload URL (prevents open redirect). */
+// ─── URL validation helpers ───────────────────────────────────────────────────
+//
+// After moving to Vercel Blob, all new uploads return full HTTPS URLs like:
+//   https://xxxx.public.blob.vercel-storage.com/uploads/gallery/uuid.jpg
+//
+// The helpers below accept both the new Blob URLs and the old local paths
+// (e.g. /uploads/gallery/…) that may already exist in the database.
+
+function isVercelBlobUrl(url: string): boolean {
+  try {
+    const { protocol, hostname } = new URL(url);
+    return (
+      protocol === "https:" &&
+      hostname.endsWith(".public.blob.vercel-storage.com")
+    );
+  } catch {
+    return false;
+  }
+}
+
 export function isSafeUploadUrl(url: string): boolean {
-  return url.startsWith("/uploads/gallery/") && !url.includes("..");
+  return (
+    isVercelBlobUrl(url) ||
+    (url.startsWith("/uploads/gallery/") && !url.includes(".."))
+  );
 }
 
-/** Validate uploaded product image paths saved by saveProductImageUpload. */
 export function isSafeProductImageUrl(url: string): boolean {
-  return url.startsWith("/uploads/product-images/") && !url.includes("..");
+  return (
+    isVercelBlobUrl(url) ||
+    (url.startsWith("/uploads/product-images/") && !url.includes(".."))
+  );
 }
 
-/** Validate static product images shipped under /public/product-images/. */
 export function isSafeStaticProductImageUrl(url: string): boolean {
   return url.startsWith("/product-images/") && !url.includes("..");
 }
 
-/** Product catalogue images that admins may remove from the library. */
 export function isManagedProductLibraryImageUrl(url: string): boolean {
   return isSafeProductImageUrl(url) || isSafeStaticProductImageUrl(url);
 }
 
-/** Validate any image URL assignable to a catalogue product. */
 export function isAssignableProductImageUrl(url: string): boolean {
   return isManagedProductLibraryImageUrl(url);
 }
 
-export async function deleteProductLibraryImageFile(url: string): Promise<void> {
-  if (!isManagedProductLibraryImageUrl(url)) {
-    throw new StorageError("Only product catalogue images can be deleted.", 400);
-  }
-
-  await deletePublicImageFile(url);
-}
-
-/** Validate uploaded homepage ad image paths. */
 export function isSafeHomepageAdUploadUrl(url: string): boolean {
-  return url.startsWith("/uploads/homepage-ads/") && !url.includes("..");
+  return (
+    isVercelBlobUrl(url) ||
+    (url.startsWith("/uploads/homepage-ads/") && !url.includes(".."))
+  );
 }
 
-/** Validate static homepage ad images under /public/homepage-ads/. */
 export function isSafeStaticHomepageAdUrl(url: string): boolean {
   return url.startsWith("/homepage-ads/") && !url.includes("..");
 }
 
-/** Homepage ad images that admins may manage in the library. */
 export function isManagedHomepageAdLibraryImageUrl(url: string): boolean {
   return isSafeHomepageAdUploadUrl(url) || isSafeStaticHomepageAdUrl(url);
 }
 
-/** Validate any image URL assignable to a homepage ad. */
 export function isAssignableHomepageAdImageUrl(url: string): boolean {
   return isManagedHomepageAdLibraryImageUrl(url);
 }
 
+// ─── Delete helpers ───────────────────────────────────────────────────────────
+
+/** Delete a product catalogue image from Vercel Blob (or silently skip old local paths). */
+export async function deleteProductLibraryImageFile(url: string): Promise<void> {
+  if (!isManagedProductLibraryImageUrl(url)) {
+    throw new StorageError("Only product catalogue images can be deleted.", 400);
+  }
+  if (isVercelBlobUrl(url)) {
+    await blobDel(url);
+  }
+  // Old local-path URLs — the file no longer exists on the server, nothing to delete.
+}
+
+/** Delete a homepage ad image from Vercel Blob (or silently skip old local paths). */
 export async function deleteHomepageAdLibraryImageFile(url: string): Promise<void> {
   if (!isManagedHomepageAdLibraryImageUrl(url)) {
     throw new StorageError("Only homepage ad images can be deleted.", 400);
   }
-
-  await deletePublicImageFile(url);
-}
-
-async function deletePublicImageFile(url: string): Promise<void> {
-  const relative = url.replace(/^\//, "");
-  const filePath = path.join(process.cwd(), "public", ...relative.split("/"));
-  const publicRoot = path.join(process.cwd(), "public");
-
-  if (!filePath.startsWith(publicRoot)) {
-    throw new StorageError("Invalid image path.", 400);
-  }
-
-  try {
-    await unlink(filePath);
-  } catch (err) {
-    const code = (err as NodeJS.ErrnoException).code;
-    if (code !== "ENOENT") {
-      throw new StorageError("Could not delete image file.", 500);
-    }
+  if (isVercelBlobUrl(url)) {
+    await blobDel(url);
   }
 }

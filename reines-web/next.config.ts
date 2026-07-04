@@ -83,12 +83,8 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Allow Next.js Image to serve files from /public/uploads/gallery (local storage)
+    // Local /public assets (logos, static images shipped with the repo)
     localPatterns: [
-      { pathname: "/uploads/gallery/**" },
-      { pathname: "/uploads/product-images/**" },
-      { pathname: "/uploads/homepage-ads/**" },
-      { pathname: "/uploads/receipts/**" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },
@@ -98,10 +94,15 @@ const nextConfig: NextConfig = {
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
     ],
-    // Add Cloudinary (or other CDN) domains here when you migrate from local storage:
-    // remotePatterns: [
-    //   { protocol: "https", hostname: "res.cloudinary.com" },
-    // ],
+    // Vercel Blob CDN — all uploads now live here.
+    // Old local /uploads/… paths kept for backward compat with existing DB records.
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname:  "*.public.blob.vercel-storage.com",
+        pathname:  "/**",
+      },
+    ],
   },
 };
 
