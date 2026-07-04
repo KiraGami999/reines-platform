@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { resolveStorageUrl } from "@/lib/storage-urls";
 import {
   normalizeProductSubsidiary,
   type ProductCatalogItem,
@@ -40,7 +41,7 @@ function serializeProduct(product: {
     description: product.description,
     sizes: product.sizes,
     applications: product.applications,
-    imageUrl: product.imageUrl,
+    imageUrl: resolveStorageUrl(product.imageUrl) ?? product.imageUrl,
     badge: product.badge ?? "Available",
     priceLabel: product.priceLabel ?? "Request quote",
     promoLabel: product.promoLabel ?? "",

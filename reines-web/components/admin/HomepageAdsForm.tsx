@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import { ArrowDown, ArrowUp, CheckCircle2, Loader2, Save, Trash2, Upload } from "lucide-react";
 import type { AvailableHomepageImage, HomepageAd } from "@/lib/homepage-ads";
+import { resolveStorageUrl } from "@/lib/storage-urls";
+
+function mediaSrc(url: string) {
+  return resolveStorageUrl(url) ?? url;
+}
 
 type Props = {
   initialLibraryImages: AvailableHomepageImage[];
@@ -288,7 +293,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
                   >
                     <div className="relative h-44 bg-zinc-100">
                       <Image
-                        src={image.imageUrl}
+                        src={mediaSrc(image.imageUrl)}
                         alt={image.alt}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
@@ -353,7 +358,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
             {ads.map((ad, index) => (
               <div key={ad.imageUrl} className="grid gap-4 rounded-xl border border-zinc-100 bg-zinc-50/60 p-4 lg:grid-cols-[180px_1fr]">
                 <div className="relative h-36 overflow-hidden rounded-xl bg-zinc-100">
-                  <Image src={ad.imageUrl} alt={ad.title} fill sizes="180px" className="object-cover" />
+                  <Image src={mediaSrc(ad.imageUrl)} alt={ad.title} fill sizes="180px" className="object-cover" />
                 </div>
 
                 <div className="space-y-3">

@@ -50,6 +50,11 @@ type FormState = "idle" | "submitting" | "success" | "error";
 function detectKind(file: File): FileKind | null {
   if (ALLOWED_IMAGE_TYPES.includes(file.type)) return "image";
   if (ALLOWED_DOC_TYPES.includes(file.type))   return "document";
+
+  // Windows often sends empty or generic MIME types — fall back to extension.
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  if (ext && ["jpg", "jpeg", "png", "webp", "gif"].includes(ext)) return "image";
+  if (ext && ["pdf", "doc", "docx"].includes(ext)) return "document";
   return null;
 }
 
@@ -229,7 +234,15 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     router.refresh();
     setFormState(hadError ? "error" : "success");
     if (hadError) {
-      setGlobalError("Some files failed. The ones that succeeded have been saved.");
+      const failedNames = files
+        .filter((f) => f.status === "error")
+        .map((f) => f.file.name)
+        .join(", ");
+      setGlobalError(
+        failedNames
+          ? `Some files failed (${failedNames}). Check each file's error below. Successful ones were saved.`
+          : "Some files failed. Successful ones have been saved.",
+      );
     }
   }
 

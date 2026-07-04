@@ -38,7 +38,12 @@ export async function POST(req: NextRequest) {
     if (err instanceof StorageError) {
       return NextResponse.json({ error: err.message }, { status: err.status });
     }
-    console.error("[UPLOAD]", err);
-    return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+    // Log the full error so the exact message appears in the terminal.
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[UPLOAD] Blob storage error:", message, err);
+    return NextResponse.json(
+      { error: `Upload failed: ${message}` },
+      { status: 500 },
+    );
   }
 }

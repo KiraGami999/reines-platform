@@ -85,6 +85,7 @@ const nextConfig: NextConfig = {
   images: {
     // Local /public assets (logos, static images shipped with the repo)
     localPatterns: [
+      { pathname: "/api/media" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },

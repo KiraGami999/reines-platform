@@ -8,6 +8,7 @@
 
 import { prisma } from "@/lib/prisma";
 import type { ProjectUpdate } from "@/models/project";
+import { resolveStorageUrl } from "@/lib/storage-urls";
 
 // ─── Gallery types ────────────────────────────────────────────────────────────
 
@@ -55,8 +56,8 @@ function mapRow(row: {
     updates:   row.updates.map((u) => ({
       id:        u.id,
       note:      u.note,
-      imageUrl:  u.imageUrl ?? null,
-      documentUrl: u.documentUrl ?? null,
+      imageUrl:  resolveStorageUrl(u.imageUrl),
+      documentUrl: resolveStorageUrl(u.documentUrl),
       documentName: u.documentName ?? null,
       documentType: u.documentType ?? null,
       progressPercent: u.progressPercent ?? null,
