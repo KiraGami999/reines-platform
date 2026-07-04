@@ -3,11 +3,26 @@ import { auth } from "@/lib/auth";
 import { verifyToken, extractBearer } from "@/lib/jwt";
 import { readBlob } from "@/lib/storage";
 
+const PUBLIC_PATH_PREFIXES = [
+  "uploads/homepage-ads/",
+  "uploads/product-images/",
+];
+
+function isPublicAsset(blobUrl: string): boolean {
+  try {
+    const { pathname } = new URL(blobUrl);
+    return PUBLIC_PATH_PREFIXES.some((prefix) => pathname.includes(prefix));
+  } catch {
+    return false;
+  }
+}
+
 /**
  * GET /api/media?url=<encoded-blob-url>
  *
  * Proxies files from the private Vercel Blob store to the browser.
- * Accepts authentication via either:
+ * Public assets (homepage ads, product images) are served without auth.
+ * Private files require authentication via:
  *   - NextAuth session cookie (web)
  *   - Bearer token header (mobile)
  */
@@ -18,12 +33,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
   }
 
-  // Old local files still in /public/uploads — redirect directly
   if (blobUrl.startsWith("/uploads/") && !blobUrl.includes("..")) {
     return NextResponse.redirect(new URL(blobUrl, req.url));
   }
 
-  // Only allow Vercel Blob URLs
   try {
     const { hostname } = new URL(blobUrl);
     const isBlobHost =
@@ -36,24 +49,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }
 
-  // Authenticate — try session cookie first, then Bearer token
-  let authenticated = false;
+  const publicAsset = isPublicAsset(blobUrl);
 
-  const session = await auth();
-  if (session?.user) {
-    authenticated = true;
-  }
+  if (!publicAsset) {
+    let authenticated = false;
 
-  if (!authenticated) {
-    const bearer = extractBearer(req.headers.get("authorization"));
-    if (bearer) {
-      const payload = await verifyToken(bearer);
-      if (payload?.id) authenticated = true;
+    const session = await auth();
+    if (session?.user) {
+      authenticated = true;
     }
-  }
 
-  if (!authenticated) {
-    return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+    if (!authenticated) {
+      const bearer = extractBearer(req.headers.get("authorization"));
+      if (bearer) {
+        const payload = await verifyToken(bearer);
+        if (payload?.id) authenticated = true;
+      }
+    }
+
+    if (!authenticated) {
+      return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+    }
   }
 
   try {
@@ -63,11 +79,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
+    const cacheControl = publicAsset
+      ? "public, max-age=3600, stale-while-revalidate=86400"
+      : "private, max-age=3600, stale-while-revalidate=86400";
+
     return new NextResponse(result.stream, {
       headers: {
         "Content-Type":        result.blob.contentType ?? "application/octet-stream",
         "Content-Disposition": result.blob.contentDisposition ?? "inline",
-        "Cache-Control":       "private, max-age=3600, stale-while-revalidate=86400",
+        "Cache-Control":       cacheControl,
       },
     });
   } catch (err) {

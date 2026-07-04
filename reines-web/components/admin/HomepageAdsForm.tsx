@@ -289,6 +289,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
                         src={mediaSrc(image.imageUrl)}
                         alt={image.alt}
                         fill
+                        unoptimized={mediaSrc(image.imageUrl).startsWith("/api/media")}
                         sizes="(max-width: 768px) 100vw, 33vw"
                         className="object-cover transition-transform group-hover:scale-105"
                       />
@@ -351,7 +352,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
             {ads.map((ad, index) => (
               <div key={ad.imageUrl} className="grid gap-4 rounded-xl border border-zinc-100 bg-zinc-50/60 p-4 lg:grid-cols-[180px_1fr]">
                 <div className="relative h-36 overflow-hidden rounded-xl bg-zinc-100">
-                  <Image src={mediaSrc(ad.imageUrl)} alt={ad.title} fill sizes="180px" className="object-cover" />
+                  <Image src={mediaSrc(ad.imageUrl)} alt={ad.title} fill unoptimized={mediaSrc(ad.imageUrl).startsWith("/api/media")} sizes="180px" className="object-cover" />
                 </div>
 
                 <div className="space-y-3">

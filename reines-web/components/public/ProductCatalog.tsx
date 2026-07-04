@@ -223,6 +223,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                       src={product.imageUrl}
                       alt={product.name}
                       fill
+                      unoptimized={product.imageUrl.startsWith("/api/media")}
                       priority={product.id === activeProduct.id}
                       sizes="(max-width: 768px) 100vw, 45vw"
                       className={`object-cover object-center transition-opacity duration-700 ease-out ${
@@ -248,6 +249,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                           src={product.imageUrl}
                           alt={product.name}
                           fill
+                          unoptimized={product.imageUrl.startsWith("/api/media")}
                           sizes="180px"
                           className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                         />

@@ -21,6 +21,10 @@ import { cn } from "@/lib/utils";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
+function isProxyUrl(url: string | null | undefined): boolean {
+  return typeof url === "string" && url.startsWith("/api/media");
+}
+
 function isPlaceholder(url: string | null): url is string {
   return typeof url === "string" && url.startsWith("__placeholder__:");
 }
@@ -182,6 +186,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
                 src={item.imageUrl}
                 alt={item.note}
                 fill
+                unoptimized={isProxyUrl(item.imageUrl)}
                 className="object-contain"
                 sizes="(max-width: 896px) 100vw, 896px"
               />
@@ -236,7 +241,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
                       <div className={`h-12 w-16 bg-gradient-to-br ${getGradientClasses(u.imageUrl)}`} />
                     ) : u.imageUrl ? (
                       <div className="relative h-12 w-16">
-                        <Image src={u.imageUrl} alt="" fill className="object-cover" sizes="64px" />
+                        <Image src={u.imageUrl} alt="" fill unoptimized={isProxyUrl(u.imageUrl)} className="object-cover" sizes="64px" />
                       </div>
                     ) : (
                       <div className="flex h-12 w-16 items-center justify-center bg-zinc-800">
@@ -315,6 +320,7 @@ function GalleryCard({
           src={update.imageUrl}
           alt={update.note}
           fill
+          unoptimized={isProxyUrl(update.imageUrl)}
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />

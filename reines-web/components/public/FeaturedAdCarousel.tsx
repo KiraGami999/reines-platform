@@ -56,6 +56,7 @@ export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouse
             src={ad.imageUrl}
             alt={ad.title}
             fill
+            unoptimized={ad.imageUrl.startsWith("/api/media")}
             priority={index === 0}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 560px"
             className={`object-cover object-center transition-opacity duration-1000 ease-out ${

@@ -49,6 +49,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                   src={project.imageUrl}
                   alt={project.title}
                   fill
+                  unoptimized={project.imageUrl.startsWith("/api/media")}
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                   sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                 />
@@ -114,6 +115,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                   alt={selectedProject.title}
                   fill
                   priority
+                  unoptimized={selectedProject.imageUrl.startsWith("/api/media")}
                   className="object-contain lg:object-cover"
                   sizes="(min-width: 1024px) 60vw, 100vw"
                 />

@@ -214,7 +214,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
               >
                 <div className="flex items-start gap-3">
                   <div className="relative h-12 w-14 overflow-hidden rounded-lg bg-zinc-100">
-                    <Image src={project.imageUrl} alt={project.title} fill className="object-cover" sizes="56px" />
+                    <Image src={project.imageUrl} alt={project.title} fill unoptimized={project.imageUrl.startsWith("/api/media")} className="object-cover" sizes="56px" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-zinc-900">{project.title}</p>
@@ -347,7 +347,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                 <div>
                   <label className={LABEL}>Selected image</label>
                   <div className="relative h-44 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
-                    <Image src={selectedProject.imageUrl} alt={selectedProject.title} fill className="object-cover" sizes="280px" />
+                    <Image src={selectedProject.imageUrl} alt={selectedProject.title} fill unoptimized={selectedProject.imageUrl.startsWith("/api/media")} className="object-cover" sizes="280px" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -361,7 +361,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       }`}
                     >
                       <div className="relative h-20 bg-zinc-100">
-                        <Image src={image.imageUrl} alt={image.alt} fill className="object-cover" sizes="120px" />
+                        <Image src={image.imageUrl} alt={image.alt} fill unoptimized={image.imageUrl.startsWith("/api/media")} className="object-cover" sizes="120px" />
                       </div>
                       <p className="truncate px-2 py-1.5 text-[11px] text-zinc-500">{image.defaultTitle}</p>
                     </button>

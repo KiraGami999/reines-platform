@@ -381,7 +381,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               >
                 <div className="flex gap-3">
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
-                    <Image src={mediaSrc(product.imageUrl)} alt={product.name} fill sizes="56px" className="object-cover" />
+                    <Image src={mediaSrc(product.imageUrl)} alt={product.name} fill unoptimized={mediaSrc(product.imageUrl).startsWith("/api/media")} sizes="56px" className="object-cover" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-zinc-900">{product.name}</p>
@@ -523,6 +523,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                         src={mediaSrc(selectedProduct.imageUrl)}
                         alt={selectedProduct.name}
                         fill
+                        unoptimized={mediaSrc(selectedProduct.imageUrl).startsWith("/api/media")}
                         sizes="160px"
                         className="object-cover"
                       />
@@ -587,7 +588,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                           className="block w-full text-left"
                         >
                           <div className="relative h-32 bg-zinc-100">
-                            <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill sizes="240px" className="object-cover" />
+                            <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill unoptimized={mediaSrc(image.imageUrl).startsWith("/api/media")} sizes="240px" className="object-cover" />
                           </div>
                           <p className="p-3 text-xs font-semibold text-zinc-700">{image.defaultTitle}</p>
                         </button>

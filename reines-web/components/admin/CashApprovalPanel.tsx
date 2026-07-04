@@ -77,6 +77,7 @@ function ReceiptModal({ url, onClose }: { url: string; onClose: () => void }) {
             alt="Payment receipt"
             width={800}
             height={600}
+            unoptimized={url.startsWith("/api/media")}
             className="h-auto w-full object-contain"
           />
         </div>
@@ -201,6 +202,7 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
                 src={payment.receiptUrl}
                 alt="Receipt"
                 fill
+                unoptimized={payment.receiptUrl.startsWith("/api/media")}
                 className="object-cover"
               />
             </div>
