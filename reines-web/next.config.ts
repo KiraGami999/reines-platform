@@ -83,9 +83,11 @@ const nextConfig: NextConfig = {
   },
 
   images: {
-    // Local /public assets (logos, static images shipped with the repo)
     localPatterns: [
-      { pathname: "/api/media" },
+      { pathname: "/uploads/gallery/**" },
+      { pathname: "/uploads/product-images/**" },
+      { pathname: "/uploads/homepage-ads/**" },
+      { pathname: "/uploads/receipts/**" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },
@@ -94,15 +96,6 @@ const nextConfig: NextConfig = {
       { pathname: "/homepage-ads/**" },
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
-    ],
-    // Vercel Blob CDN — all uploads now live here.
-    // Old local /uploads/… paths kept for backward compat with existing DB records.
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname:  "*.public.blob.vercel-storage.com",
-        pathname:  "/**",
-      },
     ],
   },
 };

@@ -1,40 +1,6 @@
-/**
- * Cloud storage via Vercel Blob.
- *
- * Uploads are stored on Vercel Blob and returned as HTTPS URLs.
- * Private stores require authenticated reads — use resolveStorageUrl()
- * from @/lib/storage-urls to convert stored URLs into browser-safe links.
- *
- * Required env:
- *   BLOB_READ_WRITE_TOKEN — from Vercel dashboard → Storage → Blob
- *   BLOB_ACCESS           — "private" (default) or "public"
- */
-
-import { put, del as blobDel } from "@vercel/blob";
+import { writeFile, mkdir, unlink } from "fs/promises";
+import path from "path";
 import { randomUUID } from "crypto";
-import {
-  getBlobAccessMode,
-  isManagedHomepageAdLibraryImageUrl,
-  isManagedProductLibraryImageUrl,
-  isStoredBlobUrl,
-} from "@/lib/storage-urls";
-
-export {
-  getBlobAccessMode,
-  isAssignableHomepageAdImageUrl,
-  isAssignableProductImageUrl,
-  isManagedHomepageAdLibraryImageUrl,
-  isManagedProductLibraryImageUrl,
-  isPublicBlobPath,
-  isSafeHomepageAdUploadUrl,
-  isSafeProductImageUrl,
-  isSafeStaticHomepageAdUrl,
-  isSafeStaticProductImageUrl,
-  isSafeUploadUrl,
-  isStoredBlobUrl,
-  parseBlobPathname,
-  resolveStorageUrl,
-} from "@/lib/storage-urls";
 
 const IMAGE_TYPES = [
   "image/jpeg",
@@ -62,13 +28,13 @@ const EXT_MIME: Record<string, string> = {
 };
 
 const MAX_SIZE_MB = 15;
-const MAX_BYTES   = MAX_SIZE_MB * 1024 * 1024;
+const MAX_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 export interface StorageResult {
-  url:          string;
-  filename:     string;
-  sizeBytes:    number;
-  mimeType:     string;
+  url: string;
+  filename: string;
+  sizeBytes: number;
+  mimeType: string;
   originalName: string;
 }
 
@@ -78,36 +44,23 @@ export class StorageError extends Error {
   }
 }
 
-function isPlaceholderToken(): boolean {
-  const token = process.env.BLOB_READ_WRITE_TOKEN?.trim() ?? "";
-  return !token || token === "your-vercel-blob-token-here";
-}
-
 function resolveMimeType(file: File): string {
   if (file.type && file.type !== "application/octet-stream") return file.type;
   const ext = file.name.split(".").pop()?.toLowerCase();
   if (ext && EXT_MIME[ext]) return EXT_MIME[ext];
-  return file.type;
+  return file.type || "application/octet-stream";
 }
 
-async function uploadToBlob(
-  file:         File,
-  folder:       string,
-  allowedTypes: string[],
+async function saveFileToPublicDir(
+  file: File,
+  publicSubdir: string,
+  allowedTypes: string[]
 ): Promise<StorageResult> {
-  if (isPlaceholderToken()) {
-    throw new StorageError(
-      "File storage is not configured. Add BLOB_READ_WRITE_TOKEN to your .env file.",
-      503,
-    );
-  }
-
   const mimeType = resolveMimeType(file);
 
   if (!mimeType || !allowedTypes.includes(mimeType)) {
     throw new StorageError(
-      `Unsupported file type "${mimeType || "unknown"}". ` +
-      `Allowed: images (JPEG, PNG, WEBP, GIF), PDF, and Word documents.`,
+      `Unsupported file type "${mimeType || "unknown"}". Allowed: images (JPEG, PNG, WEBP, GIF), PDF, and Word documents.`
     );
   }
 
@@ -115,67 +68,101 @@ async function uploadToBlob(
     throw new StorageError(`File too large. Maximum size is ${MAX_SIZE_MB} MB.`);
   }
 
-  const ext      = file.name.split(".").pop()?.toLowerCase() ?? "bin";
+  const ext = file.name.split(".").pop()?.toLowerCase() ?? "bin";
   const filename = `${randomUUID()}.${ext}`;
-  const pathname = `${folder}/${filename}`;
-  const access   = getBlobAccessMode();
+  const uploadDir = path.join(process.cwd(), "public", publicSubdir);
 
-  try {
-    const { url } = await put(pathname, file, {
-      access,
-      contentType: mimeType,
-    });
+  await mkdir(uploadDir, { recursive: true });
 
-    return {
-      url,
-      filename,
-      sizeBytes:    file.size,
-      mimeType,
-      originalName: file.name,
-    };
-  } catch (err) {
-    const msg = err instanceof Error ? err.message : String(err);
+  const bytes = await file.arrayBuffer();
+  await writeFile(path.join(uploadDir, filename), Buffer.from(bytes));
 
-    if (msg.includes("public access on a private store")) {
-      throw new StorageError(
-        "Blob store is private but BLOB_ACCESS is set to public. Set BLOB_ACCESS=private in .env and restart the server.",
-        500,
-      );
-    }
-    if (msg.includes("private access on a public store")) {
-      throw new StorageError(
-        "Blob store is public but BLOB_ACCESS is set to private. Set BLOB_ACCESS=public in .env and restart the server.",
-        500,
-      );
-    }
-
-    console.error("[storage/uploadToBlob]", err);
-    throw new StorageError(`Upload failed: ${msg}`, 500);
-  }
+  return {
+    url: `/${publicSubdir.replace(/\\/g, "/")}/${filename}`,
+    filename,
+    sizeBytes: file.size,
+    mimeType,
+    originalName: file.name,
+  };
 }
 
 export async function saveUpload(file: File): Promise<StorageResult> {
-  return uploadToBlob(file, "uploads/gallery", ALLOWED_TYPES);
+  return saveFileToPublicDir(file, "uploads/gallery", ALLOWED_TYPES);
 }
 
 export async function saveProductImageUpload(file: File): Promise<StorageResult> {
-  return uploadToBlob(file, "uploads/product-images", IMAGE_TYPES);
+  return saveFileToPublicDir(file, "uploads/product-images", IMAGE_TYPES);
 }
 
 export async function saveHomepageAdImageUpload(file: File): Promise<StorageResult> {
-  return uploadToBlob(file, "uploads/homepage-ads", IMAGE_TYPES);
+  return saveFileToPublicDir(file, "uploads/homepage-ads", IMAGE_TYPES);
+}
+
+export function isSafeUploadUrl(url: string): boolean {
+  return url.startsWith("/uploads/gallery/") && !url.includes("..");
+}
+
+export function isSafeProductImageUrl(url: string): boolean {
+  return url.startsWith("/uploads/product-images/") && !url.includes("..");
+}
+
+export function isSafeStaticProductImageUrl(url: string): boolean {
+  return url.startsWith("/product-images/") && !url.includes("..");
+}
+
+export function isManagedProductLibraryImageUrl(url: string): boolean {
+  return isSafeProductImageUrl(url) || isSafeStaticProductImageUrl(url);
+}
+
+export function isAssignableProductImageUrl(url: string): boolean {
+  return isManagedProductLibraryImageUrl(url);
+}
+
+export function isSafeHomepageAdUploadUrl(url: string): boolean {
+  return url.startsWith("/uploads/homepage-ads/") && !url.includes("..");
+}
+
+export function isSafeStaticHomepageAdUrl(url: string): boolean {
+  return url.startsWith("/homepage-ads/") && !url.includes("..");
+}
+
+export function isManagedHomepageAdLibraryImageUrl(url: string): boolean {
+  return isSafeHomepageAdUploadUrl(url) || isSafeStaticHomepageAdUrl(url);
+}
+
+export function isAssignableHomepageAdImageUrl(url: string): boolean {
+  return isManagedHomepageAdLibraryImageUrl(url);
 }
 
 export async function deleteProductLibraryImageFile(url: string): Promise<void> {
   if (!isManagedProductLibraryImageUrl(url)) {
     throw new StorageError("Only product catalogue images can be deleted.", 400);
   }
-  if (isStoredBlobUrl(url)) await blobDel(url);
+  await deletePublicFile(url);
 }
 
 export async function deleteHomepageAdLibraryImageFile(url: string): Promise<void> {
   if (!isManagedHomepageAdLibraryImageUrl(url)) {
     throw new StorageError("Only homepage ad images can be deleted.", 400);
   }
-  if (isStoredBlobUrl(url)) await blobDel(url);
+  await deletePublicFile(url);
+}
+
+async function deletePublicFile(url: string): Promise<void> {
+  const relative = url.replace(/^\//, "");
+  const filePath = path.join(process.cwd(), "public", ...relative.split("/"));
+  const publicRoot = path.join(process.cwd(), "public");
+
+  if (!filePath.startsWith(publicRoot)) {
+    throw new StorageError("Invalid file path.", 400);
+  }
+
+  try {
+    await unlink(filePath);
+  } catch (err) {
+    const code = (err as NodeJS.ErrnoException).code;
+    if (code !== "ENOENT") {
+      throw new StorageError("Could not delete file.", 500);
+    }
+  }
 }

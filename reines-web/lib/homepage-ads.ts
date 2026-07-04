@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { resolveStorageUrl } from "@/lib/storage-urls";
 
 export type HomepageAd = {
   id: string;
@@ -67,7 +66,7 @@ export async function getHomepageAds(): Promise<HomepageAd[]> {
 
     return ads.map((ad) => ({
       id: ad.id,
-      imageUrl: resolveStorageUrl(ad.imageUrl) ?? ad.imageUrl,
+      imageUrl: ad.imageUrl,
       title: ad.title,
       subtitle: ad.subtitle ?? "",
       ctaLabel: ad.ctaLabel ?? "View Projects",
