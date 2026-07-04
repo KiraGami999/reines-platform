@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { resolveStorageUrl } from "@/lib/storage";
 import PaymentsTable, { type PaymentRow } from "@/components/dashboard/PaymentsTable";
 import { fmtPaymentAmount } from "@/lib/paychangu";
 import { Wallet, CheckCircle2, Clock, XCircle, Banknote } from "lucide-react";
@@ -60,7 +61,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       amount:      Number(p.amount),
       currency:    p.currency,
       description: p.description,
-      receiptUrl:  p.receiptUrl,
+      receiptUrl:  resolveStorageUrl(p.receiptUrl),
       createdAt:   p.createdAt.toISOString(),
       project:     p.project,
       user:        p.user!,

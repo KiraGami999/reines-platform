@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { resolveStorageUrl } from "@/lib/storage";
 import {
   FALLBACK_PUBLIC_PROJECTS,
   type PublicProjectItem,
@@ -34,7 +35,7 @@ function serializeProject(project: {
     status: project.status as PublicProjectStatus,
     description: project.description,
     year: project.year,
-    imageUrl: project.imageUrl,
+    imageUrl: resolveStorageUrl(project.imageUrl) ?? project.imageUrl,
     active: project.active,
     sortOrder: project.sortOrder,
   };

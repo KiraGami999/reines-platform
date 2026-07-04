@@ -1,11 +1,10 @@
-import { readdir } from "fs/promises";
-import path from "path";
+import { list } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
 import {
   AVAILABLE_PRODUCT_IMAGES,
   type AvailableProductImage,
 } from "@/lib/product-catalog-data";
-import { isManagedProductLibraryImageUrl } from "@/lib/storage";
+import { isManagedProductLibraryImageUrl, resolveStorageUrl } from "@/lib/storage";
 
 const CATALOG_SETTING_ID = "global";
 const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
@@ -21,30 +20,37 @@ async function getHiddenImageUrls(): Promise<Set<string>> {
   }
 }
 
-async function scanImageDirectory(publicSubdir: string): Promise<AvailableProductImage[]> {
-  const dir = path.join(process.cwd(), "public", publicSubdir);
-  const urlPrefix = `/${publicSubdir.replace(/\\/g, "/")}`;
+async function scanBlobFolder(prefix: string): Promise<AvailableProductImage[]> {
+  const results: AvailableProductImage[] = [];
 
   try {
-    const files = await readdir(dir);
-    return files
-      .filter((file) => IMAGE_EXTENSIONS.has(path.extname(file).toLowerCase()))
-      .map((file) => {
-        const base = file.replace(/\.[^.]+$/, "");
+    let cursor: string | undefined;
+    do {
+      const listing = await list({ prefix, cursor, limit: 100 });
+      for (const blob of listing.blobs) {
+        const ext = blob.pathname.split(".").pop()?.toLowerCase() ?? "";
+        if (!IMAGE_EXTENSIONS.has(`.${ext}`)) continue;
+
+        const filename = blob.pathname.split("/").pop() ?? blob.pathname;
+        const base = filename.replace(/\.[^.]+$/, "");
         const title = base
           .split(/[-_]/)
           .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
           .join(" ");
 
-        return {
-          imageUrl: `${urlPrefix}/${file}`,
+        results.push({
+          imageUrl: blob.url,
           alt: title,
           defaultTitle: title,
-        };
-      });
+        });
+      }
+      cursor = listing.hasMore ? listing.cursor : undefined;
+    } while (cursor);
   } catch {
-    return [];
+    // Blob store may not have this folder yet
   }
+
+  return results;
 }
 
 function mergeImages(...groups: AvailableProductImage[][]): AvailableProductImage[] {
@@ -77,17 +83,18 @@ export async function getProductImageLibrary(): Promise<AvailableProductImage[]>
     )
     .catch(() => [] as AvailableProductImage[]);
 
-  const fromDisk = mergeImages(
-    await scanImageDirectory("product-images"),
-    await scanImageDirectory("uploads/product-images")
-  );
+  const fromBlob = await scanBlobFolder("uploads/product-images/");
 
   const fromPresets = AVAILABLE_PRODUCT_IMAGES.filter(
     (image) =>
       isManagedProductLibraryImageUrl(image.imageUrl) && !hidden.has(image.imageUrl)
   );
 
-  return mergeImages(fromPresets, fromDisk, fromProducts);
+  const all = mergeImages(fromPresets, fromBlob, fromProducts);
+  return all.map((img) => ({
+    ...img,
+    imageUrl: resolveStorageUrl(img.imageUrl) ?? img.imageUrl,
+  }));
 }
 
 export async function hideProductLibraryImage(imageUrl: string): Promise<void> {

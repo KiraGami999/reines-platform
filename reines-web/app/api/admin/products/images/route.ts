@@ -66,9 +66,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    if (imageUrl.startsWith("/uploads/product-images/") || imageUrl.startsWith("/product-images/")) {
-      await deleteProductLibraryImageFile(imageUrl);
-    }
+    await deleteProductLibraryImageFile(imageUrl);
 
     await hideProductLibraryImage(imageUrl);
 

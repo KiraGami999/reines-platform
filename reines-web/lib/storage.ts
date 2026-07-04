@@ -154,12 +154,18 @@ async function uploadToBlob(
   const filename = `${randomUUID()}.${ext}`;
   const pathname = `${folder}/${filename}`;
 
-  const { url } = await put(pathname, file, {
-    access:      "private",
-    contentType: mimeType,
-  });
+  try {
+    const { url } = await put(pathname, file, {
+      access:      "private",
+      contentType: mimeType,
+    });
 
-  return { url, filename, sizeBytes: file.size, mimeType, originalName: file.name };
+    return { url, filename, sizeBytes: file.size, mimeType, originalName: file.name };
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error("[storage/uploadToBlob]", msg);
+    throw new StorageError(`Blob upload failed: ${msg}`, 500);
+  }
 }
 
 export async function saveUpload(file: File): Promise<StorageResult> {

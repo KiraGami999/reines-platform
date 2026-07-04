@@ -1,11 +1,10 @@
-import { readdir } from "fs/promises";
-import path from "path";
+import { list } from "@vercel/blob";
 import { prisma } from "@/lib/prisma";
 import {
   AVAILABLE_HOMEPAGE_IMAGES,
   type AvailableHomepageImage,
 } from "@/lib/homepage-ads";
-import { isManagedHomepageAdLibraryImageUrl } from "@/lib/storage";
+import { isManagedHomepageAdLibraryImageUrl, resolveStorageUrl } from "@/lib/storage";
 
 const SETTING_ID = "global";
 const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
@@ -21,31 +20,38 @@ async function getHiddenImageUrls(): Promise<Set<string>> {
   }
 }
 
-async function scanImageDirectory(publicSubdir: string): Promise<AvailableHomepageImage[]> {
-  const dir = path.join(process.cwd(), "public", publicSubdir);
-  const urlPrefix = `/${publicSubdir.replace(/\\/g, "/")}`;
+async function scanBlobFolder(prefix: string): Promise<AvailableHomepageImage[]> {
+  const results: AvailableHomepageImage[] = [];
 
   try {
-    const files = await readdir(dir);
-    return files
-      .filter((file) => IMAGE_EXTENSIONS.has(path.extname(file).toLowerCase()))
-      .map((file) => {
-        const base = file.replace(/\.[^.]+$/, "");
+    let cursor: string | undefined;
+    do {
+      const listing = await list({ prefix, cursor, limit: 100 });
+      for (const blob of listing.blobs) {
+        const ext = blob.pathname.split(".").pop()?.toLowerCase() ?? "";
+        if (!IMAGE_EXTENSIONS.has(`.${ext}`)) continue;
+
+        const filename = blob.pathname.split("/").pop() ?? blob.pathname;
+        const base = filename.replace(/\.[^.]+$/, "");
         const title = base
           .split(/[-_]/)
           .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
           .join(" ");
 
-        return {
-          imageUrl: `${urlPrefix}/${file}`,
+        results.push({
+          imageUrl: blob.url,
           alt: title,
           defaultTitle: title,
           defaultSubtitle: "Add a subtitle for this homepage ad after selecting it.",
-        };
-      });
+        });
+      }
+      cursor = listing.hasMore ? listing.cursor : undefined;
+    } while (cursor);
   } catch {
-    return [];
+    // Blob store may not have this folder yet — that's fine
   }
+
+  return results;
 }
 
 function mergeImages(...groups: AvailableHomepageImage[][]): AvailableHomepageImage[] {
@@ -79,16 +85,18 @@ export async function getHomepageImageLibrary(): Promise<AvailableHomepageImage[
     )
     .catch(() => [] as AvailableHomepageImage[]);
 
-  const fromDisk = mergeImages(
-    await scanImageDirectory("homepage-ads"),
-    await scanImageDirectory("uploads/homepage-ads")
-  );
+  const fromBlob = await scanBlobFolder("uploads/homepage-ads/");
 
   const fromPresets = AVAILABLE_HOMEPAGE_IMAGES.filter(
     (image) => !hidden.has(image.imageUrl)
   );
 
-  return mergeImages(fromPresets, fromDisk, fromAds);
+  // Resolve blob URLs to /api/media proxy URLs for display
+  const all = mergeImages(fromPresets, fromBlob, fromAds);
+  return all.map((img) => ({
+    ...img,
+    imageUrl: resolveStorageUrl(img.imageUrl) ?? img.imageUrl,
+  }));
 }
 
 export async function hideHomepageLibraryImage(imageUrl: string): Promise<void> {

@@ -66,12 +66,7 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    if (
-      imageUrl.startsWith("/uploads/homepage-ads/") ||
-      imageUrl.startsWith("/homepage-ads/")
-    ) {
-      await deleteHomepageAdLibraryImageFile(imageUrl);
-    }
+    await deleteHomepageAdLibraryImageFile(imageUrl);
 
     await hideHomepageLibraryImage(imageUrl);
 

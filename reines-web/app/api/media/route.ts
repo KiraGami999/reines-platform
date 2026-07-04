@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { verifyToken, extractBearer } from "@/lib/jwt";
 import { readBlob } from "@/lib/storage";
 
 /**
  * GET /api/media?url=<encoded-blob-url>
  *
  * Proxies files from the private Vercel Blob store to the browser.
- * Requires the user to be logged in.
+ * Accepts authentication via either:
+ *   - NextAuth session cookie (web)
+ *   - Bearer token header (mobile)
  */
 export async function GET(req: NextRequest) {
   const blobUrl = req.nextUrl.searchParams.get("url");
@@ -33,9 +36,23 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }
 
-  // Require login
+  // Authenticate — try session cookie first, then Bearer token
+  let authenticated = false;
+
   const session = await auth();
-  if (!session?.user) {
+  if (session?.user) {
+    authenticated = true;
+  }
+
+  if (!authenticated) {
+    const bearer = extractBearer(req.headers.get("authorization"));
+    if (bearer) {
+      const payload = await verifyToken(bearer);
+      if (payload?.id) authenticated = true;
+    }
+  }
+
+  if (!authenticated) {
     return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
   }
 

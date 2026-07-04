@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { resolveStorageUrl } from "@/lib/storage";
 
 /**
  * GET /api/mobile/manager/dashboard
@@ -127,7 +128,6 @@ export async function GET(req: NextRequest) {
       upcomingDeadlineCount: upcomingDeadlines.length,
     };
 
-    // Serialise Decimal fields
     const serialise = (p: typeof allProjects[number]) => ({
       ...p,
       budget: p.budget?.toString() ?? null,
@@ -135,6 +135,11 @@ export async function GET(req: NextRequest) {
       startDate: p.startDate ? p.startDate.toISOString() : null,
       createdAt: p.createdAt.toISOString(),
       updatedAt: p.updatedAt.toISOString(),
+      updates: p.updates.map((u) => ({
+        ...u,
+        imageUrl:  resolveStorageUrl(u.imageUrl),
+        createdAt: u.createdAt.toISOString(),
+      })),
     });
 
     return NextResponse.json({
@@ -153,7 +158,8 @@ export async function GET(req: NextRequest) {
       recentActivity: recentActivity.map((u) => ({
         id:              u.id,
         note:            u.note,
-        imageUrl:        u.imageUrl,
+        imageUrl:        resolveStorageUrl(u.imageUrl),
+        documentUrl:     resolveStorageUrl(u.documentUrl),
         progressPercent: u.progressPercent,
         createdAt:       u.createdAt.toISOString(),
         projectId:       u.projectId,

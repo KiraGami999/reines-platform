@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
-import { isSafeUploadUrl } from "@/lib/storage";
+import { isSafeUploadUrl, resolveStorageUrl } from "@/lib/storage";
 import { notifyGalleryUpload } from "@/lib/push";
 import { z } from "zod";
 
@@ -58,8 +58,15 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
       orderBy: { createdAt: "desc" },
     });
 
-    const withImages = updates.filter((u) => !!u.imageUrl);
-    const textOnly   = updates.filter((u) => !u.imageUrl);
+    const resolved = updates.map((u) => ({
+      ...u,
+      imageUrl:    resolveStorageUrl(u.imageUrl),
+      documentUrl: resolveStorageUrl(u.documentUrl),
+      createdAt:   u.createdAt.toISOString(),
+    }));
+
+    const withImages = resolved.filter((u) => !!u.imageUrl);
+    const textOnly   = resolved.filter((u) => !u.imageUrl);
 
     return NextResponse.json({
       projectTitle: project.title,
