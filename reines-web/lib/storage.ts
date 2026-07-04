@@ -69,7 +69,7 @@ function resolveMimeType(file: File): string {
 
 // ─── URL helpers ──────────────────────────────────────────────────────────────
 
-function isVercelBlobUrl(url: string): boolean {
+export function isVercelBlobUrl(url: string): boolean {
   try {
     const { protocol, hostname } = new URL(url);
     return (

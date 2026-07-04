@@ -6,6 +6,7 @@ import { readBlob } from "@/lib/storage";
 const PUBLIC_PATH_PREFIXES = [
   "uploads/homepage-ads/",
   "uploads/product-images/",
+  "uploads/public-projects/",
 ];
 
 function isPublicAsset(blobUrl: string): boolean {

@@ -65,14 +65,30 @@ export async function getProductCatalog(): Promise<ProductCatalogItem[]> {
   }
 }
 
-/** Admin catalogue — all saved products from the database (including hidden). */
+/** Admin catalogue — all saved products from the database (including hidden).
+ *  Returns RAW DB URLs so the admin form can save them back without corruption. */
 export async function getAdminProductCatalog(): Promise<{ products: ProductCatalogItem[] }> {
   try {
     const products = await prisma.product.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
 
-    return { products: products.map(serializeProduct) };
+    return {
+      products: products.map((p) => ({
+        id: p.id,
+        name: p.name,
+        subsidiary: normalizeProductSubsidiary(p.subsidiary),
+        description: p.description,
+        sizes: p.sizes,
+        applications: p.applications,
+        imageUrl: p.imageUrl,
+        badge: p.badge ?? "Available",
+        priceLabel: p.priceLabel ?? "Request quote",
+        promoLabel: p.promoLabel ?? "",
+        active: p.active,
+        sortOrder: p.sortOrder,
+      })),
+    };
   } catch (error) {
     console.error("[getAdminProductCatalog]", error);
     return { products: [] };

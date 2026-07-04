@@ -55,6 +55,7 @@ export async function getPublicProjects(): Promise<PublicProjectItem[]> {
   }
 }
 
+/** Admin view — returns RAW DB URLs so the admin form can save them back without corruption. */
 export async function getAdminPublicProjects(): Promise<{ projects: PublicProjectItem[]; usingFallback: boolean }> {
   try {
     const projects = await prisma.publicProject.findMany({
@@ -62,7 +63,22 @@ export async function getAdminPublicProjects(): Promise<{ projects: PublicProjec
     });
 
     if (projects.length === 0) return { projects: FALLBACK_PUBLIC_PROJECTS, usingFallback: true };
-    return { projects: projects.map(serializeProject), usingFallback: false };
+
+    return {
+      projects: projects.map((p) => ({
+        id: p.id,
+        title: p.title,
+        location: p.location,
+        type: p.type,
+        status: p.status as PublicProjectStatus,
+        description: p.description,
+        year: p.year,
+        imageUrl: p.imageUrl,
+        active: p.active,
+        sortOrder: p.sortOrder,
+      })),
+      usingFallback: false,
+    };
   } catch {
     return { projects: FALLBACK_PUBLIC_PROJECTS, usingFallback: true };
   }

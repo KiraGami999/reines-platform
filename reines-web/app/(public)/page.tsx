@@ -4,6 +4,8 @@ import { Building2, Factory, Hammer, House, Landmark, Layers3 } from "lucide-rea
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
 
+export const dynamic = "force-dynamic";
+
 // ─── Data ────────────────────────────────────────────────────────────────────
 
 const stats = [

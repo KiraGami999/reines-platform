@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -13,7 +13,9 @@ import {
   Plus,
   Save,
   Trash2,
+  Upload as UploadIcon,
 } from "lucide-react";
+import { upload } from "@vercel/blob/client";
 import {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
@@ -21,6 +23,11 @@ import {
   type PublicProjectItem,
   type PublicProjectStatus,
 } from "@/lib/public-projects-data";
+import { resolveStorageUrl } from "@/lib/storage";
+
+function mediaSrc(url: string) {
+  return resolveStorageUrl(url) ?? url;
+}
 
 type Props = {
   initialProjects: PublicProjectItem[];
@@ -61,10 +68,30 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
     () => projects.find((project) => project.id === selectedId) ?? projects[0],
     [projects, selectedId]
   );
+  const fileRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   function clearStatus() {
     setMessage("");
     setError("");
+  }
+
+  async function handleImageUpload(file: File) {
+    if (!selectedProject) return;
+    setUploading(true);
+    clearStatus();
+    try {
+      const blob = await upload(
+        `uploads/public-projects/${file.name}`,
+        file,
+        { access: "private", handleUploadUrl: "/api/upload/client" },
+      );
+      updateProject(selectedProject.id, { imageUrl: blob.url });
+    } catch {
+      setError("Image upload failed. Try again.");
+    } finally {
+      setUploading(false);
+    }
   }
 
   function updateProject(id: string, patch: Partial<PublicProjectItem>) {
@@ -214,7 +241,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
               >
                 <div className="flex items-start gap-3">
                   <div className="relative h-12 w-14 overflow-hidden rounded-lg bg-zinc-100">
-                    <Image src={project.imageUrl} alt={project.title} fill unoptimized={project.imageUrl.startsWith("/api/media")} className="object-cover" sizes="56px" />
+                    <Image src={mediaSrc(project.imageUrl)} alt={project.title} fill unoptimized={mediaSrc(project.imageUrl).startsWith("/api/media")} className="object-cover" sizes="56px" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-zinc-900">{project.title}</p>
@@ -347,7 +374,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                 <div>
                   <label className={LABEL}>Selected image</label>
                   <div className="relative h-44 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
-                    <Image src={selectedProject.imageUrl} alt={selectedProject.title} fill unoptimized={selectedProject.imageUrl.startsWith("/api/media")} className="object-cover" sizes="280px" />
+                    <Image src={mediaSrc(selectedProject.imageUrl)} alt={selectedProject.title} fill unoptimized={mediaSrc(selectedProject.imageUrl).startsWith("/api/media")} className="object-cover" sizes="280px" />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -361,12 +388,33 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       }`}
                     >
                       <div className="relative h-20 bg-zinc-100">
-                        <Image src={image.imageUrl} alt={image.alt} fill unoptimized={image.imageUrl.startsWith("/api/media")} className="object-cover" sizes="120px" />
+                        <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill unoptimized={mediaSrc(image.imageUrl).startsWith("/api/media")} className="object-cover" sizes="120px" />
                       </div>
                       <p className="truncate px-2 py-1.5 text-[11px] text-zinc-500">{image.defaultTitle}</p>
                     </button>
                   ))}
                 </div>
+
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleImageUpload(f);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+                >
+                  {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadIcon size={16} />}
+                  {uploading ? "Uploading…" : "Upload custom image"}
+                </button>
               </div>
             </div>
           </section>

@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Browse our portfolio of completed and ongoing property development projects.",
 };
 
+export const dynamic = "force-dynamic";
+
 export default async function ProjectsPage() {
   const projects = await getPublicProjects();
 

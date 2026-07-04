@@ -6,6 +6,7 @@ import {
 } from "@/lib/public-projects";
 
 export const metadata = { title: "Public Projects - Reines Admin" };
+export const dynamic = "force-dynamic";
 
 export default async function AdminPublicProjectsPage() {
   const { projects, usingFallback } = await getAdminPublicProjects();

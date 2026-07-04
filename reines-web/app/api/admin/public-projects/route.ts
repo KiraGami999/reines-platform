@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -9,13 +10,18 @@ import {
   type PublicProjectItem,
 } from "@/lib/public-projects";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
+import { isVercelBlobUrl } from "@/lib/storage";
 
 const statusValues = PUBLIC_PROJECT_STATUS_OPTIONS.map((status) => status.value) as [
   PublicProjectItem["status"],
   ...PublicProjectItem["status"][],
 ];
 
-const imageUrls = AVAILABLE_PUBLIC_PROJECT_IMAGES.map((image) => image.imageUrl);
+const presetImageUrls = new Set(AVAILABLE_PUBLIC_PROJECT_IMAGES.map((image) => image.imageUrl));
+
+function isValidProjectImageUrl(url: string): boolean {
+  return presetImageUrls.has(url) || isVercelBlobUrl(url);
+}
 
 const publicProjectSchema = z.object({
   title: z.string().trim().min(3, "Project title must be at least 3 characters").max(100),
@@ -24,7 +30,7 @@ const publicProjectSchema = z.object({
   status: z.enum(statusValues),
   description: z.string().trim().min(10, "Description must be at least 10 characters").max(700),
   year: z.string().trim().min(4, "Add a year or date range").max(30),
-  imageUrl: z.string().refine((value) => imageUrls.includes(value), "Select a valid project image"),
+  imageUrl: z.string().refine(isValidProjectImageUrl, "Select or upload a valid project image"),
   active: z.boolean().default(true),
   sortOrder: z.number().int().min(0).max(100),
 });
@@ -117,6 +123,9 @@ export async function PUT(req: NextRequest) {
     const savedProjects = await prisma.publicProject.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     });
+
+    revalidatePath("/projects");
+    revalidatePath("/dashboard/admin/public-projects");
 
     return ok({ projects: savedProjects.map(serializeProject), usingFallback: false });
   } catch {
