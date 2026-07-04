@@ -23,6 +23,11 @@ import {
   type ProductCatalogItem,
   type ProductSubsidiary,
 } from "@/lib/product-catalog-data";
+import { resolveStorageUrl } from "@/lib/storage";
+
+function mediaSrc(url: string) {
+  return resolveStorageUrl(url) ?? url;
+}
 
 type Props = {
   initialProducts: ProductCatalogItem[];
@@ -383,7 +388,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               >
                 <div className="flex gap-3">
                   <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
-                    <Image src={product.imageUrl} alt={product.name} fill sizes="56px" className="object-cover" />
+                    <Image src={mediaSrc(product.imageUrl)} alt={product.name} fill sizes="56px" className="object-cover" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-zinc-900">{product.name}</p>
@@ -522,7 +527,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
                     <div className="relative h-40 w-full overflow-hidden rounded-xl bg-zinc-100 sm:h-36 sm:w-36 sm:shrink-0">
                       <Image
-                        src={selectedProduct.imageUrl}
+                        src={mediaSrc(selectedProduct.imageUrl)}
                         alt={selectedProduct.name}
                         fill
                         sizes="160px"
@@ -589,7 +594,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                           className="block w-full text-left"
                         >
                           <div className="relative h-32 bg-zinc-100">
-                            <Image src={image.imageUrl} alt={image.alt} fill sizes="240px" className="object-cover" />
+                            <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill sizes="240px" className="object-cover" />
                           </div>
                           <p className="p-3 text-xs font-semibold text-zinc-700">{image.defaultTitle}</p>
                         </button>

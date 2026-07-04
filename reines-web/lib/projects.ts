@@ -8,6 +8,7 @@
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { Project, BudgetBreakdown } from "@/models/project";
+import { resolveStorageUrl } from "@/lib/storage";
 
 // ─── Prisma result shape ──────────────────────────────────────────────────────
 
@@ -90,8 +91,8 @@ function mapRow(row: ProjectRow): Project {
     updates:          row.updates.map((u) => ({
       id:              u.id,
       note:            u.note,
-      imageUrl:        u.imageUrl     ?? null,
-      documentUrl:     u.documentUrl  ?? null,
+      imageUrl:        resolveStorageUrl(u.imageUrl),
+      documentUrl:     resolveStorageUrl(u.documentUrl),
       documentName:    u.documentName ?? null,
       documentType:    u.documentType ?? null,
       progressPercent: u.progressPercent ?? null,

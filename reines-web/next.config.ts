@@ -84,10 +84,7 @@ const nextConfig: NextConfig = {
 
   images: {
     localPatterns: [
-      { pathname: "/uploads/gallery/**" },
-      { pathname: "/uploads/product-images/**" },
-      { pathname: "/uploads/homepage-ads/**" },
-      { pathname: "/uploads/receipts/**" },
+      { pathname: "/uploads/**" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
       { pathname: "/logo-full.png" },
@@ -96,6 +93,17 @@ const nextConfig: NextConfig = {
       { pathname: "/homepage-ads/**" },
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
+      { pathname: "/api/media" },
+    ],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.private.blob.vercel-storage.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
     ],
   },
 };
