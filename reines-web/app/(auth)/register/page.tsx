@@ -22,7 +22,7 @@ export default function RegisterPage() {
           <div>
             <h2 className="text-2xl font-bold text-white">Your project. Your portal.</h2>
             <p className="mt-2 text-sm text-zinc-400 leading-relaxed">
-              The Reines client portal gives you full visibility into your build — from foundation to finish.
+              The Reines portal gives you full visibility into your work — from foundation to finish.
             </p>
           </div>
 
@@ -51,7 +51,7 @@ export default function RegisterPage() {
 
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[#2d4a6b]">Create your account</h1>
-            <p className="mt-1 text-sm text-zinc-500">Set up your Reines client portal access.</p>
+            <p className="mt-1 text-sm text-zinc-500">Create your Reines account.</p>
           </div>
 
           <RegisterForm />

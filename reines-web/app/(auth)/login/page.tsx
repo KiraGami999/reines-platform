@@ -47,7 +47,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[#2d4a6b]">Welcome back</h1>
-            <p className="mt-1 text-sm text-zinc-500">Sign in to access your project portal.</p>
+            <p className="mt-1 text-sm text-zinc-500">Sign in to access your Reines dashboard.</p>
           </div>
 
           {params.registered && (

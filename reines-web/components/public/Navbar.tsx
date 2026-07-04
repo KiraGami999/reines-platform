@@ -112,9 +112,15 @@ export function Navbar() {
             <>
               <Link
                 href="/login"
-                className="hidden rounded-xl border border-[#8fb9e8]/40 px-3.5 py-2 text-sm font-medium text-[#8fb9e8] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#8fb9e8]/10 xl:block"
+                className="hidden rounded-xl border border-white/15 px-3 py-2 text-sm font-medium text-zinc-200 transition-all duration-300 hover:-translate-y-0.5 hover:border-white/30 hover:bg-white/5 hover:text-white xl:block"
               >
-                Client Login
+                Log In
+              </Link>
+              <Link
+                href="/register"
+                className="hidden rounded-xl border border-[#8fb9e8]/40 px-3 py-2 text-sm font-medium text-[#8fb9e8] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#8fb9e8]/10 xl:block"
+              >
+                Sign Up
               </Link>
               <Link
                 href="/quote"
@@ -179,8 +185,11 @@ export function Navbar() {
                 </>
               ) : (
                 <>
-                  <Link href="/login" onClick={() => setOpen(false)} className="rounded-md border border-[#8fb9e8]/40 px-4 py-2 text-center text-sm font-medium text-[#8fb9e8]">
-                    Client Login
+                  <Link href="/login" onClick={() => setOpen(false)} className="rounded-md border border-white/15 px-4 py-2 text-center text-sm font-medium text-zinc-200">
+                    Log In
+                  </Link>
+                  <Link href="/register" onClick={() => setOpen(false)} className="rounded-md border border-[#8fb9e8]/40 px-4 py-2 text-center text-sm font-medium text-[#8fb9e8]">
+                    Sign Up
                   </Link>
                   <Link href="/quote" onClick={() => setOpen(false)} className="rounded-md bg-[#8fb9e8] px-4 py-2 text-center text-sm font-semibold text-[#2d4a6b]">
                     Get a Quote

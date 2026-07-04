@@ -141,15 +141,15 @@ export default function QuotationPage() {
               </div>
 
               <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-5 space-y-2">
-                <h3 className="text-sm font-semibold text-zinc-900">Already a client?</h3>
+                <h3 className="text-sm font-semibold text-zinc-900">Already have an account?</h3>
                 <p className="text-xs text-zinc-500 leading-relaxed">
-                  Log in to your portal to track existing projects and payments.
+                  Log in to track existing projects and payments.
                 </p>
                 <Link
                   href="/login"
                   className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors"
                 >
-                  Client Portal <ArrowRight size={12} />
+                  Log In <ArrowRight size={12} />
                 </Link>
               </div>
             </div>

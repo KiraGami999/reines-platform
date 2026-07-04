@@ -8,10 +8,10 @@ const footerLinks = {
     { label: "Projects", href: "/projects" },
     { label: "Contact", href: "/contact" },
   ],
-  "Client Portal": [
-    { label: "Sign In", href: "/login" },
-    { label: "Register", href: "/register" },
-    { label: "My Projects", href: "/dashboard" },
+  Portal: [
+    { label: "Log In", href: "/login" },
+    { label: "Sign Up", href: "/register" },
+    { label: "Dashboard", href: "/dashboard" },
   ],
 };
 
