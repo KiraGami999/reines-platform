@@ -5,6 +5,8 @@ import { getDashboardProject } from "@/lib/projects";
 import { getClientPointSummary } from "@/lib/client-points";
 import { STATUS_CONFIG, PHASE_CONFIG, fmtMWK, fmtDate, daysRemaining } from "@/lib/mock-data";
 import type { Project, ProjectPhase, BudgetBreakdown, ProjectUpdate } from "@/models/project";
+import { groupGalleryUpdates } from "@/lib/gallery-batches";
+import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
   CalendarDays,
@@ -421,7 +423,9 @@ function UpdateDocument({
 }
 
 function UpdatesSection({ updates }: { updates: ProjectUpdate[] }) {
-  if (updates.length === 0) {
+  const batches = groupGalleryUpdates(updates);
+
+  if (batches.length === 0) {
     return (
       <Section title="Progress Updates" subtitle="Photos and notes from site">
         <div className="flex flex-col items-center py-8 text-center">
@@ -436,46 +440,87 @@ function UpdatesSection({ updates }: { updates: ProjectUpdate[] }) {
 
   return (
     <Section
-      title={`Progress Updates`}
-      subtitle={`${updates.length} update${updates.length !== 1 ? "s" : ""} from site`}
+      title="Progress Updates"
+      subtitle={`${batches.length} update${batches.length !== 1 ? "s" : ""} from site`}
     >
       <ol className="space-y-4">
-        {updates.map((u, i) => (
-          <li
-            key={u.id}
-            className="rounded-xl border border-zinc-100 bg-zinc-50 p-4"
-          >
-            <div className="flex items-start gap-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
-                {updates.length - i}
-              </div>
-              <div className="min-w-0 flex-1">
-                {u.progressPercent !== null && (
-                  <div className="mb-3">
-                    <div className="mb-1 flex items-center justify-between text-xs">
-                      <span className="font-medium text-zinc-500">Estimated progress</span>
-                      <span className="font-bold text-[#2d4a6b]">{u.progressPercent}%</span>
+        {batches.map((batch, i) => {
+          const photos = batch.items.filter((u) => u.imageUrl);
+          const docs   = batch.items.filter((u) => u.documentUrl);
+          const notes  = batch.items.filter((u) => !u.imageUrl && !u.documentUrl);
+
+          return (
+            <li
+              key={batch.batchId}
+              className="rounded-xl border border-zinc-100 bg-zinc-50 p-4"
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
+                  {batches.length - i}
+                </div>
+                <div className="min-w-0 flex-1">
+                  {batch.progressPercent !== null && (
+                    <div className="mb-3">
+                      <div className="mb-1 flex items-center justify-between text-xs">
+                        <span className="font-medium text-zinc-500">Estimated progress</span>
+                        <span className="font-bold text-[#2d4a6b]">{batch.progressPercent}%</span>
+                      </div>
+                      <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
+                        <div
+                          className="h-full rounded-full bg-[#8fb9e8]"
+                          style={{ width: `${batch.progressPercent}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
-                      <div className="h-full rounded-full bg-[#8fb9e8]" style={{ width: `${u.progressPercent}%` }} />
+                  )}
+                  <p className="text-xs text-zinc-400">
+                    {new Date(batch.createdAt).toLocaleDateString("en-GB", {
+                      weekday: "short",
+                      day:     "numeric",
+                      month:   "long",
+                      year:    "numeric",
+                    })}
+                    {batch.items.length > 1 && (
+                      <span className="ml-2 text-zinc-500">
+                        · {batch.items.length} attachments
+                      </span>
+                    )}
+                  </p>
+
+                  {photos.length > 0 && (
+                    <div className={cn("grid gap-3", photos.length > 1 ? "mt-3 grid-cols-2 sm:grid-cols-3" : "mt-3")}>
+                      {photos.map((u) => (
+                        <div key={u.id}>
+                          {u.imageUrl && <UpdateImage url={u.imageUrl} />}
+                          {u.note.trim() && (
+                            <p className="mt-1.5 text-sm leading-relaxed text-zinc-700">{u.note}</p>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  </div>
-                )}
-                <p className="text-sm leading-relaxed text-zinc-700">{u.note}</p>
-                <p className="mt-1.5 text-xs text-zinc-400">
-                  {new Date(u.createdAt).toLocaleDateString("en-GB", {
-                    weekday: "short",
-                    day:     "numeric",
-                    month:   "long",
-                    year:    "numeric",
-                  })}
-                </p>
-                {u.imageUrl && <UpdateImage url={u.imageUrl} />}
-                {u.documentUrl && <UpdateDocument url={u.documentUrl} name={u.documentName} />}
+                  )}
+
+                  {docs.map((u) => (
+                    <div key={u.id} className="mt-3">
+                      {u.documentUrl && (
+                        <UpdateDocument url={u.documentUrl} name={u.documentName} />
+                      )}
+                      {u.note.trim() && (
+                        <p className="mt-1.5 text-sm leading-relaxed text-zinc-700">{u.note}</p>
+                      )}
+                    </div>
+                  ))}
+
+                  {notes.map((u) => (
+                    <p key={u.id} className="mt-2 text-sm leading-relaxed text-zinc-700">
+                      {u.note}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-          </li>
-        ))}
+            </li>
+          );
+        })}
       </ol>
     </Section>
   );

@@ -24,6 +24,7 @@ export interface ProjectUpdate {
   documentName: string | null;
   documentType: string | null;
   progressPercent: number | null;
+  batchId:         string | null;
   createdAt: string;
 }
 

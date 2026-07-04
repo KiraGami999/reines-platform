@@ -112,6 +112,16 @@ export const createGalleryUpdateSchema = z.object({
   progressPercent: z.number().int().min(0).max(100).optional().nullable(),
 });
 
+const galleryBatchItemSchema = createGalleryUpdateSchema.omit({ progressPercent: true });
+
+export const createGalleryBatchSchema = z.object({
+  progressPercent: z.number().int().min(0).max(100).optional().nullable(),
+  items: z
+    .array(galleryBatchItemSchema)
+    .min(1, "Add at least one file")
+    .max(20, "You can post up to 20 files at once"),
+});
+
 export type CreateUserInput    = z.infer<typeof createUserSchema>;
 export type UpdateUserInput    = z.infer<typeof updateUserSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { ProjectUpdate } from "@/models/project";
 import { cn } from "@/lib/utils";
+import { groupGalleryUpdates, batchItemIds, type GalleryBatch } from "@/lib/gallery-batches";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -301,10 +302,12 @@ function GalleryCard({
   update,
   index,
   onOpen,
+  compact = false,
 }: {
-  update: ProjectUpdate;
-  index:  number;
-  onOpen: (i: number) => void;
+  update:  ProjectUpdate;
+  index:   number;
+  onOpen:  (i: number) => void;
+  compact?: boolean;
 }) {
   return (
     <button
@@ -334,16 +337,20 @@ function GalleryCard({
       <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/80 via-black/20 to-transparent p-3 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         <ZoomIn size={16} className="absolute right-3 top-3 text-white" />
         <p className="line-clamp-2 text-xs leading-relaxed text-white">{update.note}</p>
-        {update.progressPercent !== null && (
+        {update.progressPercent !== null && !compact && (
           <p className="mt-1 text-[10px] font-semibold text-white/80">{update.progressPercent}% estimated</p>
         )}
-        <p className="mt-1 text-[10px] text-white/60">{fmtDate(update.createdAt)}</p>
+        {!compact && (
+          <p className="mt-1 text-[10px] text-white/60">{fmtDate(update.createdAt)}</p>
+        )}
       </div>
 
       {/* Date chip */}
+      {!compact && (
       <div className="absolute left-2 top-2 rounded-full bg-black/50 px-2 py-0.5 text-[10px] text-white/80 backdrop-blur-sm">
         {new Date(update.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
       </div>
+      )}
     </button>
   );
 }
@@ -405,99 +412,158 @@ function TabBar({
   );
 }
 
-// ─── Document list item ────────────────────────────────────────────────────────
+// ─── Batch update card (one PM submission = one card) ─────────────────────────
 
-function DocumentItem({
-  u,
-  projectId,
-  canDelete,
-  onDeleted,
-}: {
-  u:         ProjectUpdate;
-  projectId?: string;
-  canDelete: boolean;
-  onDeleted: (id: string) => void;
-}) {
-  return (
-    <div className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-white p-4">
-      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10">
-        <FileText size={18} strokeWidth={1.8} className="text-[#2d4a6b]" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <a
-          href={u.documentUrl ?? "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-semibold text-[#2d4a6b] hover:underline"
-        >
-          {u.documentName ?? "Project document"}
-        </a>
-        <p className="mt-1 text-sm leading-relaxed text-zinc-700">{u.note}</p>
-        <div className="mt-1.5 flex flex-wrap gap-2 text-xs text-zinc-400">
-          <span>{fmtDate(u.createdAt)}</span>
-          {u.progressPercent !== null && (
-            <span className="font-medium text-[#2d4a6b]">{u.progressPercent}% complete</span>
-          )}
-        </div>
-      </div>
-      {canDelete && projectId && (
-        <button
-          onClick={async () => {
-            if (!confirm("Delete this update?")) return;
-            const res = await fetch(`/api/projects/${projectId}/gallery/${u.id}`, { method: "DELETE" });
-            if (res.ok) onDeleted(u.id);
-          }}
-          className="shrink-0 rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500"
-          aria-label="Delete update"
-        >
-          <Trash2 size={14} />
-        </button>
-      )}
-    </div>
-  );
+function batchMatchesTab(batch: GalleryBatch, tab: GalleryTab): boolean {
+  if (tab === "all") return true;
+  if (tab === "photos") return batch.items.some((i) => i.imageUrl);
+  if (tab === "documents") return batch.items.some((i) => i.documentUrl);
+  return batch.items.some((i) => !i.imageUrl && !i.documentUrl);
 }
 
-// ─── Note list item ────────────────────────────────────────────────────────────
-
-function NoteItem({
-  u,
+function BatchUpdateCard({
+  batch,
+  activeTab,
   projectId,
   canDelete,
+  onOpenLightbox,
   onDeleted,
 }: {
-  u:         ProjectUpdate;
-  projectId?: string;
-  canDelete: boolean;
-  onDeleted: (id: string) => void;
+  batch:          GalleryBatch;
+  activeTab:      GalleryTab;
+  projectId?:     string;
+  canDelete:      boolean;
+  onOpenLightbox: (photos: ProjectUpdate[], index: number) => void;
+  onDeleted:      (id: string) => void;
 }) {
+  const photos = batch.items.filter((i) => i.imageUrl);
+  const docs     = batch.items.filter((i) => i.documentUrl);
+  const notes    = batch.items.filter((i) => !i.imageUrl && !i.documentUrl);
+
+  const showPhotos    = activeTab === "all" || activeTab === "photos";
+  const showDocuments = activeTab === "all" || activeTab === "documents";
+  const showNotes     = activeTab === "all" || activeTab === "notes";
+
+  const attachmentCount = photos.length + docs.length + notes.length;
+  const isMulti         = attachmentCount > 1;
+
+  async function handleDeleteBatch() {
+    if (!projectId) return;
+    const label = isMulti
+      ? `Delete this update and all ${attachmentCount} attachments?`
+      : "Delete this update?";
+    if (!confirm(label)) return;
+    const res = await fetch(`/api/projects/${projectId}/gallery/${batch.items[0].id}`, {
+      method: "DELETE",
+    });
+    if (res.ok) onDeleted(batch.items[0].id);
+  }
+
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-white p-4">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-100">
-        <ClipboardList size={14} strokeWidth={1.8} className="text-zinc-400" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm leading-relaxed text-zinc-700">{u.note}</p>
-        <div className="mt-1.5 flex flex-wrap gap-2 text-xs text-zinc-400">
-          <span>{fmtDate(u.createdAt)}</span>
-          {u.progressPercent !== null && (
-            <span className="font-medium text-[#2d4a6b]">{u.progressPercent}% complete</span>
+    <article className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+      <div className="flex items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3 sm:px-5">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+            <Calendar size={12} className="shrink-0 text-[#8fb9e8]" />
+            <span>{fmtDate(batch.createdAt)}</span>
+            {isMulti && (
+              <span className="rounded-full bg-zinc-100 px-2 py-0.5 font-medium text-zinc-600">
+                {attachmentCount} attachments
+              </span>
+            )}
+          </div>
+          {batch.progressPercent !== null && (
+            <div className="mt-3 max-w-md">
+              <div className="mb-1 flex items-center justify-between text-xs">
+                <span className="font-medium text-zinc-500">Estimated progress</span>
+                <span className="font-bold text-[#2d4a6b]">{batch.progressPercent}%</span>
+              </div>
+              <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
+                <div
+                  className="h-full rounded-full bg-[#8fb9e8] transition-all"
+                  style={{ width: `${batch.progressPercent}%` }}
+                />
+              </div>
+            </div>
           )}
         </div>
+        {canDelete && projectId && (
+          <button
+            onClick={handleDeleteBatch}
+            className="shrink-0 rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500"
+            aria-label="Delete update"
+          >
+            <Trash2 size={14} />
+          </button>
+        )}
       </div>
-      {canDelete && projectId && (
-        <button
-          onClick={async () => {
-            if (!confirm("Delete this update?")) return;
-            const res = await fetch(`/api/projects/${projectId}/gallery/${u.id}`, { method: "DELETE" });
-            if (res.ok) onDeleted(u.id);
-          }}
-          className="shrink-0 rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500"
-          aria-label="Delete update"
-        >
-          <Trash2 size={14} />
-        </button>
-      )}
-    </div>
+
+      <div className="space-y-4 p-4 sm:p-5">
+        {showPhotos && photos.length > 0 && (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            {photos.map((u, i) => (
+              <div key={u.id} className="space-y-1.5">
+                <GalleryCard
+                  update={u}
+                  index={i}
+                  compact
+                  onOpen={(idx) => onOpenLightbox(photos, idx)}
+                />
+                {u.note.trim() && (
+                  <p className="line-clamp-2 px-0.5 text-[11px] leading-relaxed text-zinc-500">
+                    {u.note}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {showDocuments && docs.length > 0 && (
+          <div className="space-y-2">
+            {docs.map((u) => (
+              <div
+                key={u.id}
+                className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10">
+                  <FileText size={16} strokeWidth={1.8} className="text-[#2d4a6b]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <a
+                    href={u.documentUrl ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm font-semibold text-[#2d4a6b] hover:underline"
+                  >
+                    {u.documentName ?? "Project document"}
+                  </a>
+                  {u.note.trim() && (
+                    <p className="mt-1 text-sm leading-relaxed text-zinc-600">{u.note}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {showNotes && notes.length > 0 && (
+          <div className="space-y-2">
+            {notes.map((u) => (
+              <div
+                key={u.id}
+                className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3"
+              >
+                <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-zinc-200">
+                  <ClipboardList size={13} strokeWidth={1.8} className="text-zinc-500" />
+                </div>
+                <p className="text-sm leading-relaxed text-zinc-700">{u.note}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </article>
   );
 }
 
@@ -517,14 +583,24 @@ export function GalleryGrid({
   canDelete = false,
 }: GalleryGridProps) {
   const router = useRouter();
-  const [deletedIds,    setDeletedIds]    = useState<string[]>([]);
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
-  const [activeTab,     setActiveTab]     = useState<GalleryTab>("all");
+  const [deletedIds, setDeletedIds] = useState<string[]>([]);
+  const [lightbox, setLightbox]     = useState<{ photos: ProjectUpdate[]; index: number } | null>(null);
+  const [activeTab, setActiveTab]   = useState<GalleryTab>("all");
 
   const updates = initialUpdates.filter((u) => !deletedIds.includes(u.id));
+  const batches = groupGalleryUpdates(updates);
 
   function handleDeleted(id: string) {
-    setDeletedIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    const batch = batches.find((b) => b.items.some((i) => i.id === id));
+    const ids   = batch ? batchItemIds(batch) : [id];
+    setDeletedIds((prev) => {
+      const next = [...prev];
+      for (const itemId of ids) {
+        if (!next.includes(itemId)) next.push(itemId);
+      }
+      return next;
+    });
+    setLightbox(null);
     router.refresh();
   }
 
@@ -542,35 +618,23 @@ export function GalleryGrid({
     );
   }
 
-  const withImages    = updates.filter((u) => u.imageUrl);
-  const withDocuments = updates.filter((u) => u.documentUrl);
-  const textOnly      = updates.filter((u) => !u.imageUrl && !u.documentUrl);
+  const photoCount = updates.filter((u) => u.imageUrl).length;
+  const docCount   = updates.filter((u) => u.documentUrl).length;
+  const noteCount  = updates.filter((u) => !u.imageUrl && !u.documentUrl).length;
 
-  // Derive which items to show based on active tab
-  const showPhotos    = activeTab === "all" || activeTab === "photos";
-  const showDocuments = activeTab === "all" || activeTab === "documents";
-  const showNotes     = activeTab === "all" || activeTab === "notes";
-
-  const visiblePhotos    = showPhotos    ? withImages    : [];
-  const visibleDocuments = showDocuments ? withDocuments : [];
-  const visibleNotes     = showNotes     ? textOnly      : [];
-
-  const nothingVisible =
-    visiblePhotos.length === 0 && visibleDocuments.length === 0 && visibleNotes.length === 0;
+  const visibleBatches = batches.filter((b) => batchMatchesTab(b, activeTab));
 
   return (
     <div className="space-y-5">
-      {/* ── Category tabs ── */}
       <TabBar
         tab={activeTab}
-        onChange={(t) => { setActiveTab(t); setLightboxIndex(null); }}
-        photoCount={withImages.length}
-        docCount={withDocuments.length}
-        noteCount={textOnly.length}
+        onChange={(t) => { setActiveTab(t); setLightbox(null); }}
+        photoCount={photoCount}
+        docCount={docCount}
+        noteCount={noteCount}
       />
 
-      {/* ── Empty state for active tab ── */}
-      {nothingVisible && (
+      {visibleBatches.length === 0 && (
         <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-200 bg-zinc-50 py-12 text-center">
           <ImageIcon size={32} className="text-zinc-200" />
           <p className="mt-3 text-sm text-zinc-400">
@@ -579,74 +643,29 @@ export function GalleryGrid({
         </div>
       )}
 
-      {/* ── Photo grid ── */}
-      {visiblePhotos.length > 0 && (
-        <section>
-          {activeTab === "all" && (
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
-              Photos
-            </h3>
-          )}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {visiblePhotos.map((u, i) => (
-              <GalleryCard key={u.id} update={u} index={i} onOpen={setLightboxIndex} />
-            ))}
-          </div>
-        </section>
+      {visibleBatches.length > 0 && (
+        <div className="space-y-5">
+          {visibleBatches.map((batch) => (
+            <BatchUpdateCard
+              key={batch.batchId}
+              batch={batch}
+              activeTab={activeTab}
+              projectId={projectId}
+              canDelete={canDelete}
+              onOpenLightbox={(photos, index) => setLightbox({ photos, index })}
+              onDeleted={handleDeleted}
+            />
+          ))}
+        </div>
       )}
 
-      {/* ── Document list ── */}
-      {visibleDocuments.length > 0 && (
-        <section>
-          {activeTab === "all" && (
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
-              Documents
-            </h3>
-          )}
-          <div className="space-y-3">
-            {visibleDocuments.map((u) => (
-              <DocumentItem
-                key={u.id}
-                u={u}
-                projectId={projectId}
-                canDelete={canDelete}
-                onDeleted={handleDeleted}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Notes list ── */}
-      {visibleNotes.length > 0 && (
-        <section>
-          {activeTab === "all" && (
-            <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
-              Text Updates
-            </h3>
-          )}
-          <div className="space-y-3">
-            {visibleNotes.map((u) => (
-              <NoteItem
-                key={u.id}
-                u={u}
-                projectId={projectId}
-                canDelete={canDelete}
-                onDeleted={handleDeleted}
-              />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* ── Lightbox (always based on full photo list so indices stay valid) ── */}
-      {lightboxIndex !== null && withImages.length > 0 && (
+      {lightbox !== null && lightbox.photos.length > 0 && (
         <Lightbox
-          updates={withImages}
-          index={lightboxIndex}
+          updates={lightbox.photos}
+          index={lightbox.index}
           projectId={projectId}
           canDelete={canDelete}
-          onClose={() => setLightboxIndex(null)}
+          onClose={() => setLightbox(null)}
           onDeleted={handleDeleted}
         />
       )}

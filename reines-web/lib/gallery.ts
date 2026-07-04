@@ -45,6 +45,7 @@ function mapRow(row: {
     documentName: string | null;
     documentType: string | null;
     progressPercent: number | null;
+    batchId: string | null;
     createdAt: Date;
   }[];
 }): GalleryProject {
@@ -62,6 +63,7 @@ function mapRow(row: {
       documentName: u.documentName ?? null,
       documentType: u.documentType ?? null,
       progressPercent: u.progressPercent ?? null,
+      batchId:         u.batchId ?? null,
       createdAt: u.createdAt.toISOString(),
     })),
   };

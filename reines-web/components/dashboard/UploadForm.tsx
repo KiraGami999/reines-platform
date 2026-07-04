@@ -138,54 +138,58 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // ── Upload + save a single file ──────────────────────────────────────────────
+  // ── Upload all files, then save as one batch ─────────────────────────────────
 
-  async function uploadOne(entry: FileEntry): Promise<"done" | "error"> {
-    setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "uploading" } : f));
+  async function uploadFilesToBlob(): Promise<
+    | { ok: true; items: Array<{
+        note: string;
+        imageUrl: string | null;
+        documentUrl: string | null;
+        documentName: string | null;
+        documentType: string | null;
+      }> }
+    | { ok: false }
+  > {
+    const items: Array<{
+      note: string;
+      imageUrl: string | null;
+      documentUrl: string | null;
+      documentName: string | null;
+      documentType: string | null;
+    }> = [];
 
-    try {
-      // Client-side upload: file goes directly from browser to Vercel Blob,
-      // bypassing the serverless function body-size limit.
-      const blob = await upload(
-        `uploads/gallery/${entry.file.name}`,
-        entry.file,
-        {
-          access: "private",
-          handleUploadUrl: "/api/upload/client",
-        },
-      );
+    for (const entry of files) {
+      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "uploading" } : f));
 
-      const isImage = entry.kind === "image";
-      const body = {
-        note:         entry.note.trim(),
-        progressPercent,
-        imageUrl:     isImage ? blob.url : null,
-        documentUrl:  isImage ? null : blob.url,
-        documentName: isImage ? null : entry.file.name,
-        documentType: isImage ? null : (blob.contentType || entry.file.type),
-      };
+      try {
+        const blob = await upload(
+          `uploads/gallery/${entry.file.name}`,
+          entry.file,
+          {
+            access: "private",
+            handleUploadUrl: "/api/upload/client",
+          },
+        );
 
-      const saveRes = await fetch(`/api/projects/${projectId}/gallery`, {
-        method:  "POST",
-        headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify(body),
-      });
+        const isImage = entry.kind === "image";
+        items.push({
+          note:         entry.note.trim(),
+          imageUrl:     isImage ? blob.url : null,
+          documentUrl:  isImage ? null : blob.url,
+          documentName: isImage ? null : entry.file.name,
+          documentType: isImage ? null : (blob.contentType || entry.file.type),
+        });
 
-      if (!saveRes.ok) {
-        const d = await saveRes.json().catch(() => ({}));
-        const msg = d.error ?? "Could not save update.";
+        setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "done" } : f));
+        setDoneCount((n) => n + 1);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Upload failed.";
         setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
-        return "error";
+        return { ok: false };
       }
-
-      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "done" } : f));
-      setDoneCount((n) => n + 1);
-      return "done";
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Upload failed.";
-      setFiles((prev) => prev.map((f) => f.uid === entry.uid ? { ...f, status: "error", error: msg } : f));
-      return "error";
     }
+
+    return { ok: true, items };
   }
 
   // ── Submit ───────────────────────────────────────────────────────────────────
@@ -231,25 +235,29 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     setFormState("submitting");
     setDoneCount(0);
 
-    let hadError = false;
-    for (const entry of files) {
-      const result = await uploadOne(entry);
-      if (result === "error") hadError = true;
+    const uploaded = await uploadFilesToBlob();
+    if (!uploaded.ok) {
+      router.refresh();
+      setFormState("error");
+      setGlobalError("Some files failed to upload. Fix the errors below and try again.");
+      return;
+    }
+
+    const saveRes = await fetch(`/api/projects/${projectId}/gallery/batch`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ progressPercent, items: uploaded.items }),
+    });
+
+    if (!saveRes.ok) {
+      const d = await saveRes.json().catch(() => ({}));
+      setGlobalError(d.error ?? "Files uploaded but the batch update could not be saved.");
+      setFormState("error");
+      return;
     }
 
     router.refresh();
-    setFormState(hadError ? "error" : "success");
-    if (hadError) {
-      const failedNames = files
-        .filter((f) => f.status === "error")
-        .map((f) => f.file.name)
-        .join(", ");
-      setGlobalError(
-        failedNames
-          ? `Some files failed (${failedNames}). Check each file's error below. Successful ones were saved.`
-          : "Some files failed. Successful ones have been saved.",
-      );
-    }
+    setFormState("success");
   }
 
   // ── Reset ────────────────────────────────────────────────────────────────────
@@ -267,19 +275,25 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
   // ── Success screen ───────────────────────────────────────────────────────────
 
   if (formState === "success") {
-    const count = files.filter((f) => f.status === "done").length || (!hasFiles ? 1 : 0);
+    const fileCount = files.filter((f) => f.status === "done").length || (!hasFiles ? 0 : files.length);
+    const attachmentLabel =
+      fileCount === 0
+        ? "text update"
+        : fileCount === 1
+          ? "1 attachment"
+          : `${fileCount} attachments`;
     return (
       <div className="flex flex-col items-center rounded-2xl border border-green-100 bg-green-50 p-8 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-green-100">
           <CheckCircle2 size={32} className="text-green-500" />
         </div>
         <h3 className="mt-4 text-base font-semibold text-green-800">
-          {count === 1 ? "Update posted!" : `${count} updates posted!`}
+          {hasFiles ? "Batch update posted!" : "Update posted!"}
         </h3>
         <p className="mt-1.5 max-w-xs text-sm text-green-700">
-          {count === 1
-            ? "Your client can now see the update in their gallery."
-            : `All ${count} files are now visible to your client.`}
+          {hasFiles
+            ? `Your client will see one progress update with ${attachmentLabel} at ${progressPercent}%.`
+            : "Your client can now see the update in their gallery."}
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           {galleryHref && (
@@ -301,7 +315,6 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     );
   }
 
-  const uploadingIdx = files.findIndex((f) => f.status === "uploading");
 
   // ── Form ─────────────────────────────────────────────────────────────────────
 
@@ -321,7 +334,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               Estimated site progress
             </label>
             <p className="mt-1 text-xs leading-relaxed text-zinc-400">
-              Applies to this entire batch of updates.
+              Applies to this entire batch upload.
             </p>
           </div>
           <span className="shrink-0 rounded-full bg-[#8fb9e8]/10 px-3 py-1 text-sm font-bold text-[#2d4a6b]">
@@ -501,9 +514,9 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         {/* Upload progress summary */}
         {isSubmitting && files.length > 0 && (
           <p className="mt-2 text-center text-xs text-zinc-500">
-            {uploadingIdx >= 0
-              ? `Uploading file ${uploadingIdx + 1} of ${files.length}…`
-              : `Saving ${doneCount} of ${files.length} update${files.length !== 1 ? "s" : ""}…`}
+            {doneCount < files.length
+              ? `Uploading file ${doneCount + 1} of ${files.length}…`
+              : "Saving batch update…"}
           </p>
         )}
       </div>
@@ -553,14 +566,14 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
         ) : files.length === 1 ? (
           "Post update with attachment"
         ) : (
-          `Post ${files.length} updates`
+          `Post batch update (${files.length} files)`
         )}
       </Button>
 
       {files.length > 1 && !isSubmitting && (
         <p className="text-center text-xs text-zinc-400">
           <FileIcon size={11} className="inline mr-1" />
-          Each file will be uploaded separately with its own description.
+          All files will appear as one collective update with a single progress bar.
         </p>
       )}
     </form>

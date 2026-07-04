@@ -44,6 +44,7 @@ export const MOCK_PROJECTS: Project[] = [
         documentName: null,
         documentType: null,
         progressPercent: 42,
+        batchId: null,
         createdAt: "2026-04-28T10:00:00Z",
       },
       {
@@ -54,6 +55,7 @@ export const MOCK_PROJECTS: Project[] = [
         documentName: null,
         documentType: null,
         progressPercent: 34,
+        batchId: null,
         createdAt: "2026-04-14T08:30:00Z",
       },
       {
@@ -64,6 +66,7 @@ export const MOCK_PROJECTS: Project[] = [
         documentName: null,
         documentType: null,
         progressPercent: 18,
+        batchId: null,
         createdAt: "2026-04-01T08:30:00Z",
       },
       {
@@ -74,6 +77,7 @@ export const MOCK_PROJECTS: Project[] = [
         documentName: null,
         documentType: null,
         progressPercent: 5,
+        batchId: null,
         createdAt: "2026-03-01T09:00:00Z",
       },
     ],

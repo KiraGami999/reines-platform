@@ -97,6 +97,7 @@ function mapRow(row: ProjectRow): Project {
       documentType:    u.documentType ?? null,
       progressPercent: u.progressPercent ?? null,
       createdAt:       u.createdAt.toISOString(),
+      batchId:         u.batchId ?? null,
     })),
     completionPercent,
     createdAt: row.createdAt.toISOString(),

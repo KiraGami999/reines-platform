@@ -308,6 +308,7 @@ model ProjectUpdate {
   documentName String?
   documentType String?
   progressPercent Int?
+  batchId   String?  // Shared ID when multiple files are posted together
   createdAt DateTime @default(now())
 
   // Foreign key
@@ -315,6 +316,8 @@ model ProjectUpdate {
 
   // Relation
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([batchId])
 }
 
 // ---------------------------------------------------------------------------

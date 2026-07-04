@@ -41,7 +41,13 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
     if (!update)
       return NextResponse.json({ error: "Update not found" }, { status: 404 });
 
-    await prisma.projectUpdate.delete({ where: { id: updateId } });
+    if (update.batchId) {
+      await prisma.projectUpdate.deleteMany({
+        where: { projectId, batchId: update.batchId },
+      });
+    } else {
+      await prisma.projectUpdate.delete({ where: { id: updateId } });
+    }
 
     return NextResponse.json({ success: true });
   } catch {
