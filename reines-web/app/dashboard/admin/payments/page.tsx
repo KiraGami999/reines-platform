@@ -126,7 +126,7 @@ export default async function AdminPaymentsPage() {
       {/* Cash Approval Section */}
       {cashApproval > 0 && (
         <div className="rounded-xl border-2 border-amber-200 bg-amber-50 overflow-hidden">
-          <div className="flex items-center gap-2.5 px-5 py-4 border-b border-amber-200">
+          <div className="flex items-center gap-2.5 px-3 py-3 border-b border-amber-200 sm:px-5 sm:py-4">
             <Banknote size={18} className="text-amber-600" />
             <div>
               <p className="text-sm font-semibold text-amber-900">
@@ -137,7 +137,7 @@ export default async function AdminPaymentsPage() {
               </p>
             </div>
           </div>
-          <div className="p-5">
+          <div className="p-3 sm:p-5">
             <CashApprovalPanel payments={pendingCash} />
           </div>
         </div>

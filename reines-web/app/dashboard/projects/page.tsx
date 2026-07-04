@@ -268,7 +268,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
 
       {/* ── Summary strip ── */}
       {acceptedProjects.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        <div className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
           {[
             { label: "Total Projects",  value: String(counts.ALL),                           accent: true  },
             { label: "In Progress",     value: String(counts.IN_PROGRESS)                                  },

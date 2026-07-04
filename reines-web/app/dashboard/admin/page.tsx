@@ -126,7 +126,7 @@ export default async function AdminOverviewPage() {
         </div>
       </div>
 
-      <p className="text-zinc-500 text-sm mb-8 ml-13">
+      <p className="text-zinc-500 text-sm mb-8 sm:ml-13">
         Welcome to the admin area. Select a section below to manage the platform.
       </p>
 

@@ -49,12 +49,12 @@ export default async function ProjectGalleryPage({ params, searchParams }: PageP
       {/* ── Hero ── */}
       <div className="overflow-hidden rounded-2xl bg-[#2d4a6b]">
         <div className="h-1 bg-[#8fb9e8]" />
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
             Progress Gallery
           </p>
           <h1 className="mt-1 text-xl font-extrabold text-white">{project.title}</h1>
-          <div className="mt-2 flex items-center gap-4 text-sm text-zinc-400">
+          <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-400">
             <span className="flex items-center gap-1.5">
               <Camera size={13} /> {photoCount} photo{photoCount !== 1 ? "s" : ""}
             </span>
