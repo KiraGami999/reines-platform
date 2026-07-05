@@ -102,8 +102,10 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                 <td className="hidden px-2.5 py-2 text-xs text-zinc-500 md:table-cell sm:px-4 sm:py-3 max-w-[180px] truncate">
                   {p.description ?? "—"}
                 </td>
-                <td className="whitespace-nowrap px-2.5 py-2 font-semibold text-zinc-900 sm:px-4 sm:py-3">
-                  {fmtPaymentAmount(p.amount, p.currency)}
+                <td className="px-2.5 py-2 sm:px-4 sm:py-3">
+                  <span className="block min-w-0 break-words font-semibold tabular-nums text-[#2d4a6b]">
+                    {fmtPaymentAmount(p.amount, p.currency)}
+                  </span>
                 </td>
                 <td className="hidden px-2.5 py-2 md:table-cell sm:px-4 sm:py-3">
                   <MethodBadge method={p.method} />
@@ -127,12 +129,17 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
           </tbody>
         </table>
       </div>
-      <div className="px-4 py-3 border-t border-zinc-100 bg-zinc-50 text-xs text-zinc-400">
-        {payments.length} payment{payments.length !== 1 ? "s" : ""} total ·{" "}
-        {payments.filter((p) => p.status === "SUCCESS").length} successful ·{" "}
-        {fmtPaymentAmount(
-          payments.filter((p) => p.status === "SUCCESS").reduce((s, p) => s + p.amount, 0)
-        )} collected
+      <div className="border-t border-zinc-100 bg-zinc-50 px-4 py-3 text-xs text-zinc-400">
+        <p className="break-words">
+          {payments.length} payment{payments.length !== 1 ? "s" : ""} total ·{" "}
+          {payments.filter((p) => p.status === "SUCCESS").length} successful ·{" "}
+          <span className="font-semibold tabular-nums text-[#2d4a6b]">
+            {fmtPaymentAmount(
+              payments.filter((p) => p.status === "SUCCESS").reduce((s, p) => s + p.amount, 0)
+            )}
+          </span>{" "}
+          collected
+        </p>
       </div>
     </div>
   );

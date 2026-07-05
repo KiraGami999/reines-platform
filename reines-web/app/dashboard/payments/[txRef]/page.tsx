@@ -65,37 +65,44 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
   const flashStatus = sp.status;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="mx-auto max-w-2xl space-y-6 print:mx-0 print:max-w-none print:space-y-0">
       {/* Back */}
       <Link
         href="/dashboard/payments"
-        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-zinc-800 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-800 print:hidden"
       >
         <ArrowLeft size={14} /> Back to Payments
       </Link>
 
       {/* Flash banners from callback redirect */}
       {flashStatus === "success" && (
-        <div className="flex items-center gap-2 rounded-xl bg-blue-50 border border-blue-200 px-5 py-4 text-sm text-blue-800 font-medium">
+        <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 text-sm font-medium text-blue-800 print:hidden">
           <CheckCircle2 size={16} /> Payment completed successfully! Your receipt is below.
         </div>
       )}
       {(flashStatus === "failed" || flashStatus === "cancelled") && (
-        <div className="flex items-center gap-2 rounded-xl bg-blue-50 border border-blue-200 px-5 py-4 text-sm text-blue-800">
+        <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4 text-sm text-blue-800 print:hidden">
           <XCircle size={16} /> Payment was {flashStatus}. No charge was made. You can try again from your project page.
         </div>
       )}
 
-      {/* Receipt card */}
-      <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden shadow-sm">
+      {/* Receipt card — only this block is visible when printing */}
+      <div
+        id="payment-receipt"
+        className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
+      >
+        <div className="hidden border-b border-zinc-200 px-8 py-6 text-center print:block">
+          <p className="text-lg font-bold text-[#2d4a6b]">Reines Properties</p>
+          <p className="mt-1 text-xs uppercase tracking-widest text-zinc-500">Payment Receipt</p>
+        </div>
 
         {/* Status header */}
-        <div className={`px-8 py-8 text-center border-b border-zinc-100 ${
-          isSuccess ? "bg-blue-50" : isPending ? "bg-zinc-50" : "bg-zinc-50"
+        <div className={`border-b border-zinc-100 px-8 py-8 text-center ${
+          isSuccess ? "bg-blue-50 print:bg-white" : isPending ? "bg-zinc-50 print:bg-white" : "bg-zinc-50 print:bg-white"
         }`}>
           <StatusIcon
             size={48}
-            className={`mx-auto mb-3 ${
+            className={`mx-auto mb-3 print:hidden ${
               isSuccess ? "text-blue-500" : isPending ? "text-zinc-400" : "text-zinc-400"
             }`}
           />
@@ -110,7 +117,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         </div>
 
         {/* Receipt rows */}
-        <div className="px-8 py-6 divide-y divide-zinc-100">
+        <div className="divide-y divide-zinc-100 px-8 py-6">
           {[
             {
               label: "Reference",
@@ -119,19 +126,22 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
             {
               label: "Project",
               value: (
-                <Link
-                  href={`/dashboard/projects/${payment.project.id}`}
-                  className="text-[#8fb9e8] hover:underline flex items-center gap-1"
-                >
-                  {payment.project.title} <ExternalLink size={11} />
-                </Link>
+                <>
+                  <Link
+                    href={`/dashboard/projects/${payment.project.id}`}
+                    className="flex items-center gap-1 text-[#8fb9e8] hover:underline print:hidden"
+                  >
+                    {payment.project.title} <ExternalLink size={11} />
+                  </Link>
+                  <span className="hidden print:inline">{payment.project.title}</span>
+                </>
               ),
             },
             { label: "Description", value: payment.description ?? "—" },
             {
               label: "Amount",
               value: (
-                <span className="font-bold text-lg">
+                <span className="break-words text-base font-bold tabular-nums text-[#2d4a6b] sm:text-lg">
                   {fmtPaymentAmount(Number(payment.amount), payment.currency)}
                 </span>
               ),
@@ -141,9 +151,9 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
               label: "Status",
               value: (
                 <span
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${meta.classes}`}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-semibold print:border-zinc-300 print:bg-white print:text-zinc-800 ${meta.classes}`}
                 >
-                  <span className={`h-1.5 w-1.5 rounded-full ${meta.dot}`} />
+                  <span className={`h-1.5 w-1.5 rounded-full print:hidden ${meta.dot}`} />
                   {meta.label}
                 </span>
               ),
@@ -155,15 +165,15 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
               : []),
             { label: "Billed to", value: payment.user?.name ?? "—" },
           ].map((row, i) => (
-            <div key={i} className="flex items-start justify-between py-3.5 gap-4">
-              <span className="text-sm text-zinc-500 shrink-0 w-32">{row.label}</span>
-              <span className="text-sm text-zinc-900 text-right">{row.value}</span>
+            <div key={i} className="flex items-start justify-between gap-4 py-3.5">
+              <span className="w-32 shrink-0 text-sm text-zinc-500">{row.label}</span>
+              <span className="text-right text-sm text-zinc-900">{row.value}</span>
             </div>
           ))}
         </div>
 
-        {/* Footer actions */}
-        <div className="px-8 py-5 bg-zinc-50 border-t border-zinc-100 flex flex-wrap gap-3">
+        {/* Footer actions — screen only */}
+        <div className="flex flex-wrap gap-3 border-t border-zinc-100 bg-zinc-50 px-8 py-5 print:hidden">
           {!isSuccess && !isCancelled && (
             <Link
               href={`/dashboard/projects/${payment.project.id}`}
@@ -185,7 +195,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
       </div>
 
       {isSuccess && (
-        <p className="text-xs text-zinc-400 text-center">
+        <p className="text-center text-xs text-zinc-400 print:hidden">
           A payment confirmation email has been sent to your email address by Paychangu. Keep this page as your reference.
         </p>
       )}

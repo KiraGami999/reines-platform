@@ -291,15 +291,15 @@ function BudgetSection({ project, role }: { project: Project; role: string }) {
       {/* Stat grid — stacks to 1 col on mobile, 3 from sm up */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
-          { label: "Total Budget",  value: fmtMWK(project.budget), note: "Agreed contract value", colour: "text-zinc-900"    },
-          { label: "Paid to Date",  value: fmtMWK(totalPaid),       note: `${paidPct}% of total`,    colour: "text-blue-600" },
-          { label: "Outstanding",   value: fmtMWK(remaining),        note: `${100 - paidPct}% left`,  colour: "text-zinc-700"   },
+          { label: "Total Budget",  value: fmtMWK(project.budget), note: "Agreed contract value", colour: "text-zinc-900"     },
+          { label: "Paid to Date",  value: fmtMWK(totalPaid),       note: `${paidPct}% of total`,    colour: "text-[#2d4a6b]" },
+          { label: "Outstanding",   value: fmtMWK(remaining),        note: `${100 - paidPct}% left`,  colour: "text-zinc-700"    },
         ].map((s) => (
-          <div key={s.label} className="rounded-xl bg-zinc-50 p-4">
+          <div key={s.label} className="min-w-0 rounded-xl bg-zinc-50 p-4">
             <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               {s.label}
             </p>
-            <p className={`mt-1.5 text-lg font-extrabold leading-tight ${s.colour}`}>
+            <p className={`mt-1.5 min-w-0 break-words text-base font-extrabold tabular-nums leading-snug sm:text-lg lg:text-xl ${s.colour}`}>
               {s.value}
             </p>
             <p className="mt-0.5 text-[10px] text-zinc-400">{s.note}</p>
@@ -315,7 +315,7 @@ function BudgetSection({ project, role }: { project: Project; role: string }) {
         </div>
         <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-100">
           <div
-            className="h-full rounded-full bg-blue-500 transition-all"
+            className="h-full rounded-full bg-[#2d4a6b] transition-all"
             style={{ width: `${paidPct}%` }}
           />
         </div>
@@ -330,25 +330,25 @@ function BudgetSection({ project, role }: { project: Project; role: string }) {
           {project.budgetBreakdown.map((b: BudgetBreakdown, i: number) => (
             <div
               key={i}
-              className={`flex items-center justify-between rounded-xl border px-4 py-3 ${
+              className={`flex items-center justify-between gap-3 rounded-xl border px-4 py-3 ${
                 b.paid
-                  ? "border-blue-100 bg-blue-50"
+                  ? "border-[#8fb9e8]/25 bg-[#8fb9e8]/5"
                   : "border-zinc-100 bg-white"
               }`}
             >
-              <div className="flex items-center gap-3">
+              <div className="flex min-w-0 items-center gap-3">
                 <div
-                  className={`flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold ${
-                    b.paid ? "bg-blue-500 text-white" : "bg-zinc-100 text-zinc-400"
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    b.paid ? "bg-[#2d4a6b] text-white" : "bg-zinc-100 text-zinc-400"
                   }`}
                 >
                   {b.paid ? "✓" : i + 1}
                 </div>
-                <span className="text-sm font-medium text-zinc-700">{b.label}</span>
+                <span className="min-w-0 text-sm font-medium text-zinc-700">{b.label}</span>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-bold text-zinc-900">{fmtMWK(b.amount)}</p>
-                <p className={`text-[10px] font-semibold ${b.paid ? "text-blue-600" : "text-zinc-400"}`}>
+              <div className="shrink-0 text-right">
+                <p className="text-sm font-bold tabular-nums text-zinc-900">{fmtMWK(b.amount)}</p>
+                <p className={`text-[10px] font-semibold ${b.paid ? "text-[#2d4a6b]" : "text-zinc-400"}`}>
                   {b.paid ? "Paid" : "Outstanding"}
                 </p>
               </div>

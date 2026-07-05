@@ -26,22 +26,28 @@ function StatCard({
   value,
   sub,
   accent = false,
+  valueClassName,
 }: {
   icon: React.ElementType;
   label: string;
   value: string;
   sub: string;
   accent?: boolean;
+  valueClassName?: string;
 }) {
+  const valueColour = accent ? "text-white" : (valueClassName ?? "text-zinc-900");
+
   return (
-    <div className={`rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
+    <div className={`min-w-0 rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
       <div className="flex items-start justify-between">
         <div className={`rounded-lg p-2 ${accent ? "bg-[#8fb9e8]/15" : "bg-zinc-100"}`}>
           <Icon size={18} className={accent ? "text-[#8fb9e8]" : "text-zinc-600"} />
         </div>
       </div>
-      <p className={`mt-3 sm:mt-4 text-2xl sm:text-3xl font-extrabold ${accent ? "text-white" : "text-zinc-900"}`}>{value}</p>
-      <p className={`mt-0.5 text-xs sm:text-sm font-medium ${accent ? "text-zinc-300" : "text-zinc-700"}`}>{label}</p>
+      <p className={`mt-3 min-w-0 break-words text-xl font-extrabold tabular-nums leading-tight sm:mt-4 sm:text-2xl lg:text-3xl ${valueColour}`}>
+        {value}
+      </p>
+      <p className={`mt-0.5 text-xs font-medium sm:text-sm ${accent ? "text-zinc-300" : "text-zinc-700"}`}>{label}</p>
       <p className={`mt-1 text-[10px] sm:text-xs ${accent ? "text-zinc-500" : "text-zinc-400"}`}>{sub}</p>
     </div>
   );
@@ -702,7 +708,7 @@ function ClientDashboard({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard icon={Banknote} label="Total Contract Value" value={fmtMWK(totalBudget)} sub="All assigned projects" />
-        <StatCard icon={CheckCircle2} label="Paid To Date" value={fmtMWK(paidToDate)} sub="Confirmed project payments" />
+        <StatCard icon={CheckCircle2} label="Paid To Date" value={fmtMWK(paidToDate)} sub="Confirmed project payments" valueClassName="text-[#2d4a6b]" />
       </div>
 
       {projects.length === 0 ? (

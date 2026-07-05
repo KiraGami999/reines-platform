@@ -31,7 +31,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-50">
+    <div className="flex h-screen overflow-hidden bg-zinc-50 print:block print:h-auto print:overflow-visible print:bg-white">
       <Sidebar
         role={user.role}
         open={sidebarOpen}
@@ -49,7 +49,9 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           onMenuClick={() => setSidebarOpen(true)}
           sidebarCollapsed={sidebarCollapsed}
         />
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6">{children}</main>
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 print:overflow-visible print:p-0">
+          {children}
+        </main>
       </div>
     </div>
   );

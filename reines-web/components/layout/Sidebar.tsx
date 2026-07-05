@@ -199,7 +199,7 @@ export function Sidebar({
       {/* Mobile backdrop */}
       {open && onClose && (
         <div
-          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-20 bg-black/50 backdrop-blur-sm lg:hidden print:hidden"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -208,7 +208,7 @@ export function Sidebar({
       {/* Sidebar panel */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 flex flex-col bg-[#2d4a6b]",
+          "fixed inset-y-0 left-0 z-30 flex flex-col bg-[#2d4a6b] print:hidden",
           "transition-all duration-200 ease-in-out",
           /* Mobile: slides in/out as a full 256px panel */
           "w-64 max-w-[calc(100vw-3.5rem)]",

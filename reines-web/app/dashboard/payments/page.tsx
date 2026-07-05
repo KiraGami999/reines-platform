@@ -110,13 +110,17 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
             iconBg: "bg-blue-100 text-blue-600",
           },
         ].map((s) => (
-          <div key={s.label} className={`rounded-xl p-3 flex items-center gap-3 sm:p-5 sm:gap-4 ${s.bg}`}>
-            <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center shrink-0 ${s.iconBg}`}>
+          <div key={s.label} className={`min-w-0 rounded-xl p-3 flex items-center gap-3 sm:p-5 sm:gap-4 ${s.bg}`}>
+            <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${s.iconBg}`}>
               {s.icon}
             </div>
-            <div className="min-w-0">
-              <p className={`truncate text-lg font-bold sm:text-xl ${s.bg.includes("[#2d4a6b]") ? "text-white" : "text-zinc-900"}`}>{s.value}</p>
-              <p className={`truncate text-[10px] sm:text-xs ${s.bg.includes("[#2d4a6b]") ? "text-zinc-300" : "text-zinc-500"}`}>{s.label}</p>
+            <div className="min-w-0 flex-1">
+              <p className={`min-w-0 break-words text-base font-bold tabular-nums leading-tight sm:text-lg lg:text-xl ${s.bg.includes("[#2d4a6b]") ? "text-white" : "text-zinc-900"}`}>
+                {s.value}
+              </p>
+              <p className={`text-[10px] sm:text-xs ${s.bg.includes("[#2d4a6b]") ? "text-zinc-300" : "text-zinc-500"}`}>
+                {s.label}
+              </p>
             </div>
           </div>
         ))}

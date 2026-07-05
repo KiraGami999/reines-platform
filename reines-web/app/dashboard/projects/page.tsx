@@ -98,12 +98,12 @@ function ProjectCard({ project }: { project: Project }) {
 
         {/* Meta grid — stacks to 2 cols on small phones, 3 cols from sm up */}
         <div className="grid grid-cols-2 gap-3 border-t border-zinc-100 pt-4 text-xs sm:grid-cols-3">
-          <div>
+          <div className="min-w-0">
             <div className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
               <Banknote size={10} /> Budget
             </div>
-            <p className="mt-0.5 font-semibold text-zinc-800">{fmtMWK(project.budget)}</p>
-            <p className="text-[10px] text-zinc-400">{paidPct}% paid</p>
+            <p className="mt-0.5 break-words font-semibold tabular-nums text-zinc-800">{fmtMWK(project.budget)}</p>
+            <p className="text-[10px] text-[#2d4a6b]">{paidPct}% paid</p>
           </div>
 
           <div>
@@ -141,9 +141,9 @@ function PendingProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="mt-4 grid grid-cols-2 gap-3 border-t border-zinc-100 pt-4 text-xs">
-        <div>
+        <div className="min-w-0">
           <p className="font-semibold uppercase tracking-wider text-zinc-400">Budget</p>
-          <p className="mt-1 font-semibold text-zinc-800">{fmtMWK(project.budget)}</p>
+          <p className="mt-1 break-words font-semibold tabular-nums text-zinc-800">{fmtMWK(project.budget)}</p>
         </div>
         <div>
           <p className="font-semibold uppercase tracking-wider text-zinc-400">Timeline</p>
@@ -273,20 +273,24 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
             { label: "Total Projects",  value: String(counts.ALL),                           accent: true  },
             { label: "In Progress",     value: String(counts.IN_PROGRESS)                                  },
             { label: "Total Budget",    value: fmtMWK(totalBudget)                                         },
-            { label: "Paid to Date",    value: fmtMWK(totalPaid)                                           },
+            { label: "Paid to Date",    value: fmtMWK(totalPaid),                      paid: true           },
           ].map((s) => (
             <div
               key={s.label}
-              className={`rounded-xl border p-4 text-center ${
+              className={`min-w-0 rounded-xl border p-3 text-center sm:p-4 ${
                 s.accent
                   ? "border-[#8fb9e8]/30 bg-[#2d4a6b]"
                   : "border-zinc-200 bg-white"
               }`}
             >
-              <p className={`text-lg sm:text-2xl font-extrabold truncate ${s.accent ? "text-white" : "text-[#2d4a6b]"}`}>
+              <p
+                className={`min-w-0 break-words text-base font-extrabold tabular-nums leading-snug min-[400px]:text-lg sm:text-xl lg:text-2xl ${
+                  s.accent ? "text-white" : s.paid ? "text-[#2d4a6b]" : "text-[#2d4a6b]"
+                }`}
+              >
                 {s.value}
               </p>
-              <p className={`mt-0.5 text-[10px] sm:text-xs font-medium ${s.accent ? "text-zinc-400" : "text-zinc-400"}`}>
+              <p className={`mt-1 text-[10px] font-medium sm:text-xs ${s.accent ? "text-zinc-400" : "text-zinc-500"}`}>
                 {s.label}
               </p>
             </div>

@@ -93,3 +93,37 @@ select:disabled {
     opacity: 0.85;
   }
 }
+
+/* Payment receipt — when printing the receipt page, show only #payment-receipt */
+@media print {
+  @page {
+    margin: 16mm;
+    size: A4 portrait;
+  }
+
+  body:has(#payment-receipt) {
+    background: #fff !important;
+    color: #18181b !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  body:has(#payment-receipt) * {
+    visibility: hidden;
+  }
+
+  body:has(#payment-receipt) #payment-receipt,
+  body:has(#payment-receipt) #payment-receipt * {
+    visibility: visible;
+  }
+
+  body:has(#payment-receipt) #payment-receipt {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    box-shadow: none !important;
+    border: 1px solid #d4d4d8 !important;
+    border-radius: 0 !important;
+  }
+}
