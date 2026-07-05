@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ElementType } from "react";
 import { Binoculars, Building2, CheckCircle2, Factory, Leaf, Medal, Scale, ShieldCheck, Target, Users } from "lucide-react";
 import { AboutStoryHero } from "@/components/public/AboutStoryHero";
+import { AboutCompanyBanner } from "@/components/public/AboutCompanyBanner";
 
 export const metadata: Metadata = {
   title: "About Us — Reines Property Development",
@@ -41,8 +42,10 @@ export default function AboutPage() {
     <>
       <AboutStoryHero />
 
+      <AboutCompanyBanner />
+
       {/* Mission & Vision */}
-      <section className="bg-white py-12 sm:py-20">
+      <section className="bg-white py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="rounded-2xl border border-zinc-100 p-8">

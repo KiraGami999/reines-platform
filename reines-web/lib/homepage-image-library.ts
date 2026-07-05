@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import {
   AVAILABLE_HOMEPAGE_IMAGES,
   type AvailableHomepageImage,
-} from "@/lib/homepage-ads";
+} from "@/lib/homepage-ads-shared";
 import { isManagedHomepageAdLibraryImageUrl, resolveStorageUrl } from "@/lib/storage";
 
 const SETTING_ID = "global";

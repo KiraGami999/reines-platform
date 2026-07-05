@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import type { HomepageAd } from "@/lib/homepage-ads";
+import type { HomepageAd } from "@/lib/homepage-ads-shared";
 
 const AUTO_SCROLL_MS = 5500;
 

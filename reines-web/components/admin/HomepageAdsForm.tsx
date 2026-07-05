@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { ArrowDown, ArrowUp, CheckCircle2, Loader2, Save, Trash2, Upload as UploadIcon } from "lucide-react";
-import type { AvailableHomepageImage, HomepageAd } from "@/lib/homepage-ads";
-import { MAX_HOMEPAGE_ADS } from "@/lib/homepage-ads";
+import type { AvailableHomepageImage, HomepageAd } from "@/lib/homepage-ads-shared";
+import { MAX_HOMEPAGE_ADS } from "@/lib/homepage-ads-shared";
 import { resolveStorageUrl } from "@/lib/storage";
 
 function mediaSrc(url: string) {
