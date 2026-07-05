@@ -78,7 +78,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
             The catalogue has not been published yet. Please check back soon or contact Reines for product availability and quotes.
           </p>
           <Link
-            href="/contact"
+            href="/quote"
             className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
           >
             Request a quote <ArrowRight size={16} />
@@ -207,7 +207,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                     </div>
 
                     <Link
-                      href={`/contact?subject=${encodeURIComponent(activeProduct.name)}`}
+                      href="/quote"
                       className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
                     >
                       Request product quote

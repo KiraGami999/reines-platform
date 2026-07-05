@@ -108,10 +108,10 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
                 href="/projects"
                 className="inline-flex items-center justify-center rounded-full bg-[#4a6278] px-7 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#5a738c] sm:px-8"
               >
-                View Our Projects
+                View Projects
               </Link>
               <Link
-                href="/contact"
+                href="/quote"
                 className="inline-flex items-center justify-center rounded-full border border-white/25 px-7 py-3 text-sm font-medium text-white transition-colors hover:border-white/45 hover:bg-white/5 sm:px-8"
               >
                 Get a Quote
@@ -265,7 +265,7 @@ function CtaBanner() {
           Partner with a development, construction, and sustainable construction manufacturing company focused on strong foundations and long-term value.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-          <Link href="/contact" className="inline-flex items-center justify-center rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/quote" className="inline-flex items-center justify-center rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
             Get a Free Quote
           </Link>
           <Link href="/projects" className="inline-flex items-center justify-center rounded-lg border border-zinc-600 px-8 py-3 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white">

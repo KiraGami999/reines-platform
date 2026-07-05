@@ -98,7 +98,7 @@ export default async function ServicesPage() {
           <h2 className="text-3xl font-bold text-white">Let&apos;s build something together.</h2>
           <p className="mt-3 text-zinc-400">Request a quote or ask a question — our team responds within 24 hours.</p>
           <Link
-            href="/contact"
+            href="/quote"
             className="mt-6 inline-block rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
           >
             Request a Quote

@@ -79,7 +79,7 @@ export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouse
         </Link>
 
         {visibleAds.length > 1 && (
-          <div className="flex shrink-0 items-center gap-1.5">
+          <div className="flex max-w-[6.5rem] shrink-0 items-center gap-1.5 overflow-x-auto sm:max-w-[10rem]">
             {visibleAds.map((_, index) => (
               <button
                 key={index}

@@ -6,6 +6,7 @@ import { useMemo, useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import { ArrowDown, ArrowUp, CheckCircle2, Loader2, Save, Trash2, Upload as UploadIcon } from "lucide-react";
 import type { AvailableHomepageImage, HomepageAd } from "@/lib/homepage-ads";
+import { MAX_HOMEPAGE_ADS } from "@/lib/homepage-ads";
 import { resolveStorageUrl } from "@/lib/storage";
 
 function mediaSrc(url: string) {
@@ -48,7 +49,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
   const initialSelected = initialAds
     .filter((ad) => ad.active)
     .sort((a, b) => a.sortOrder - b.sortOrder)
-    .slice(0, 3);
+    .slice(0, MAX_HOMEPAGE_ADS);
 
   const [ads, setAds] = useState<HomepageAd[]>(initialSelected);
   const [libraryImages, setLibraryImages] = useState<AvailableHomepageImage[]>(initialLibraryImages);
@@ -73,8 +74,8 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
       return;
     }
 
-    if (ads.length >= 3) {
-      setError("Select up to three homepage images.");
+    if (ads.length >= MAX_HOMEPAGE_ADS) {
+      setError(`Select up to ${MAX_HOMEPAGE_ADS} homepage images.`);
       return;
     }
 
@@ -237,7 +238,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
           <div>
             <h2 className="text-sm font-semibold text-zinc-900">Homepage Image Library</h2>
             <p className="mt-1 text-xs text-zinc-400">
-              Upload images, select up to three for the homepage carousel, or remove images you no longer need.
+              Upload images, select up to {MAX_HOMEPAGE_ADS} for the homepage carousel, or remove images you no longer need.
             </p>
           </div>
           <div>
@@ -330,7 +331,9 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
         <div className="mb-4 flex items-center justify-between gap-4">
           <div>
             <h2 className="text-sm font-semibold text-zinc-900">Selected Ad Copy</h2>
-            <p className="mt-1 text-xs text-zinc-400">Edit the copy and order shown on the homepage.</p>
+            <p className="mt-1 text-xs text-zinc-400">
+              Edit the copy and order shown on the homepage. {ads.length}/{MAX_HOMEPAGE_ADS} selected.
+            </p>
           </div>
           <button
             type="button"

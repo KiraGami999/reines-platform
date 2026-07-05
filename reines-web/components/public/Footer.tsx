@@ -6,6 +6,7 @@ const footerLinks = {
     { label: "About Us", href: "/about" },
     { label: "Our Services", href: "/services" },
     { label: "Projects", href: "/projects" },
+    { label: "Get a Quote", href: "/quote" },
     { label: "Contact", href: "/contact" },
   ],
   Portal: [

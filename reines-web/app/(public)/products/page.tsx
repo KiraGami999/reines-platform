@@ -58,7 +58,7 @@ export default async function ProductsPage() {
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
             Send us your walling, paving, stone cladding, adhesive, or binding material requirement and we can advise on product fit, quantities, availability, and delivery planning.
           </p>
-          <Link href="/contact" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
+          <Link href="/quote" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
             Request assistance <ArrowRight size={16} />
           </Link>
         </div>

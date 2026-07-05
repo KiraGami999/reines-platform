@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { AVAILABLE_HOMEPAGE_IMAGES, FALLBACK_HOMEPAGE_ADS } from "@/lib/homepage-ads";
+import { AVAILABLE_HOMEPAGE_IMAGES, FALLBACK_HOMEPAGE_ADS, MAX_HOMEPAGE_ADS } from "@/lib/homepage-ads";
 import { getHomepageImageLibrary } from "@/lib/homepage-image-library";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
 import { isAssignableHomepageAdImageUrl } from "@/lib/storage";
@@ -19,7 +19,10 @@ const homepageAdSchema = z.object({
 });
 
 const updateSchema = z.object({
-  ads: z.array(homepageAdSchema).min(1, "Select at least one homepage image").max(3, "Select up to three homepage images"),
+  ads: z
+    .array(homepageAdSchema)
+    .min(1, "Select at least one homepage image")
+    .max(MAX_HOMEPAGE_ADS, `Select up to ${MAX_HOMEPAGE_ADS} homepage images`),
 });
 
 async function requireAdmin() {

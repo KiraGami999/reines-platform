@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import {
   FALLBACK_HOMEPAGE_ADS,
   getHomepageImageLibrary,
+  MAX_HOMEPAGE_ADS,
   type HomepageAd,
 } from "@/lib/homepage-ads";
 
@@ -52,7 +53,7 @@ export default async function HomepageAdsPage() {
           <div>
             <h1 className="text-2xl font-bold text-[#2d4a6b]">Homepage Ads</h1>
             <p className="mt-1 text-sm text-zinc-500">
-              Choose which promotional images and copy appear on the public homepage.
+              Choose which promotional images and copy appear on the public homepage (up to {MAX_HOMEPAGE_ADS} ads).
             </p>
           </div>
         </div>

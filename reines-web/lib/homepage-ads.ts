@@ -1,6 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { resolveStorageUrl } from "@/lib/storage";
 
+/** Maximum homepage carousel ads an admin can publish at once. */
+export const MAX_HOMEPAGE_ADS = 10;
+
 export type HomepageAd = {
   id: string;
   imageUrl: string;
@@ -48,13 +51,22 @@ export const FALLBACK_HOMEPAGE_ADS: HomepageAd[] = AVAILABLE_HOMEPAGE_IMAGES.map
   imageUrl: image.imageUrl,
   title: image.defaultTitle,
   subtitle: image.defaultSubtitle,
-  ctaLabel: index === 0 ? "View our products" : "View Projects",
-  ctaHref: index === 0 ? "/products" : "/projects",
+  ctaLabel: "View Projects",
+  ctaHref: "/projects",
   sortOrder: index,
   active: true,
 }));
 
 export { getHomepageImageLibrary } from "@/lib/homepage-image-library";
+
+/** Normalize legacy homepage CTA labels to the standard copy. */
+function normalizeHomepageCtaLabel(label: string | null | undefined): string {
+  const trimmed = (label ?? "").trim();
+  if (!trimmed) return "View Projects";
+  if (/^view our (projects|products)$/i.test(trimmed)) return "View Projects";
+  if (/^view our$/i.test(trimmed)) return "View Projects";
+  return trimmed;
+}
 
 export async function getHomepageAds(): Promise<HomepageAd[]> {
   try {
@@ -70,7 +82,7 @@ export async function getHomepageAds(): Promise<HomepageAd[]> {
       imageUrl: resolveStorageUrl(ad.imageUrl) ?? ad.imageUrl,
       title: ad.title,
       subtitle: ad.subtitle ?? "",
-      ctaLabel: ad.ctaLabel ?? "View Projects",
+      ctaLabel: normalizeHomepageCtaLabel(ad.ctaLabel),
       ctaHref: ad.ctaHref ?? "/projects",
       sortOrder: ad.sortOrder,
       active: ad.active,
