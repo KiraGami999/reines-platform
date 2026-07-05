@@ -265,6 +265,7 @@ model PublicProject {
   description String              @db.Text
   year        String
   imageUrl    String
+  imageUrls   String[]            @default([])
   active      Boolean             @default(true)
   sortOrder   Int                 @default(0)
   createdAt   DateTime            @default(now())

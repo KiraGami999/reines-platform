@@ -12,13 +12,17 @@ import {
   Loader2,
   Plus,
   Save,
+  Star,
   Trash2,
   Upload as UploadIcon,
+  X,
 } from "lucide-react";
 import { upload } from "@vercel/blob/client";
 import {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
+  MAX_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
+  getPublicProjectCoverImage,
   type AvailablePublicProjectImage,
   type PublicProjectItem,
   type PublicProjectStatus,
@@ -38,6 +42,11 @@ type Props = {
 const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
 const LABEL = "mb-1.5 block text-xs font-semibold uppercase tracking-widest text-zinc-400";
 
+function syncCoverImage(imageUrls: string[]): Pick<PublicProjectItem, "imageUrl" | "imageUrls"> {
+  const cover = imageUrls[0] ?? "";
+  return { imageUrls, imageUrl: cover };
+}
+
 function buildBlankProject(sortOrder: number): PublicProjectItem {
   const image = AVAILABLE_PUBLIC_PROJECT_IMAGES[0];
 
@@ -50,6 +59,7 @@ function buildBlankProject(sortOrder: number): PublicProjectItem {
     description: "Add a public-facing project description before saving.",
     year: String(new Date().getFullYear()),
     imageUrl: image.imageUrl,
+    imageUrls: [image.imageUrl],
     active: true,
     sortOrder,
   };
@@ -57,7 +67,12 @@ function buildBlankProject(sortOrder: number): PublicProjectItem {
 
 export default function PublicProjectsForm({ initialProjects, availableImages, usingFallback }: Props) {
   const [projects, setProjects] = useState<PublicProjectItem[]>(
-    initialProjects.map((project, sortOrder) => ({ ...project, sortOrder }))
+    initialProjects.map((project, sortOrder) => ({
+      ...project,
+      sortOrder,
+      imageUrls: project.imageUrls?.length ? project.imageUrls : [project.imageUrl],
+      imageUrl: getPublicProjectCoverImage(project),
+    }))
   );
   const [selectedId, setSelectedId] = useState(initialProjects[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
@@ -76,8 +91,18 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
     setError("");
   }
 
+  function updateProjectImages(id: string, imageUrls: string[]) {
+    updateProject(id, syncCoverImage(imageUrls));
+  }
+
   async function handleImageUpload(file: File) {
     if (!selectedProject) return;
+
+    if (selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES) {
+      setError(`Each project can have up to ${MAX_PUBLIC_PROJECT_IMAGES} images.`);
+      return;
+    }
+
     setUploading(true);
     clearStatus();
     try {
@@ -86,12 +111,68 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         file,
         { access: "private", handleUploadUrl: "/api/upload/client" },
       );
-      updateProject(selectedProject.id, { imageUrl: blob.url });
+      updateProjectImages(selectedProject.id, [...selectedProject.imageUrls, blob.url]);
     } catch {
       setError("Image upload failed. Try again.");
     } finally {
       setUploading(false);
     }
+  }
+
+  function addPresetImage(imageUrl: string) {
+    if (!selectedProject) return;
+    clearStatus();
+
+    if (selectedProject.imageUrls.includes(imageUrl)) {
+      setError("That image is already in this project's gallery.");
+      return;
+    }
+
+    if (selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES) {
+      setError(`Each project can have up to ${MAX_PUBLIC_PROJECT_IMAGES} images.`);
+      return;
+    }
+
+    updateProjectImages(selectedProject.id, [...selectedProject.imageUrls, imageUrl]);
+  }
+
+  function removeImage(imageUrl: string) {
+    if (!selectedProject) return;
+    clearStatus();
+
+    if (selectedProject.imageUrls.length <= 1) {
+      setError("Each project needs at least one image.");
+      return;
+    }
+
+    updateProjectImages(
+      selectedProject.id,
+      selectedProject.imageUrls.filter((url) => url !== imageUrl)
+    );
+  }
+
+  function setCoverImage(imageUrl: string) {
+    if (!selectedProject) return;
+    clearStatus();
+
+    const next = [
+      imageUrl,
+      ...selectedProject.imageUrls.filter((url) => url !== imageUrl),
+    ];
+    updateProjectImages(selectedProject.id, next);
+  }
+
+  function moveImage(imageUrl: string, direction: -1 | 1) {
+    if (!selectedProject) return;
+    clearStatus();
+
+    const index = selectedProject.imageUrls.indexOf(imageUrl);
+    const target = index + direction;
+    if (index < 0 || target < 0 || target >= selectedProject.imageUrls.length) return;
+
+    const next = [...selectedProject.imageUrls];
+    [next[index], next[target]] = [next[target], next[index]];
+    updateProjectImages(selectedProject.id, next);
   }
 
   function updateProject(id: string, patch: Partial<PublicProjectItem>) {
@@ -115,6 +196,8 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
       id: `draft-copy-${Date.now()}`,
       title: `${project.title} Copy`,
       sortOrder: projects.length,
+      imageUrls: [...project.imageUrls],
+      imageUrl: project.imageUrl,
     };
     setProjects((current) => [...current, copy]);
     setSelectedId(copy.id);
@@ -160,7 +243,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         status: project.status,
         description: project.description.trim(),
         year: project.year.trim(),
-        imageUrl: project.imageUrl,
+        imageUrls: project.imageUrls,
         active: project.active,
         sortOrder,
       })),
@@ -249,6 +332,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                     <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
                       <span>#{index + 1}</span>
                       <span>{project.status.replace("_", " ")}</span>
+                      <span>{project.imageUrls.length} img</span>
                       {!project.active && <span className="font-semibold text-blue-700">Hidden</span>}
                     </div>
                   </div>
@@ -309,7 +393,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
               </div>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[1fr_280px]">
+            <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
               <div className="space-y-4">
                 <div>
                   <label className={LABEL}>Project title</label>
@@ -372,27 +456,109 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
 
               <div className="space-y-4">
                 <div>
-                  <label className={LABEL}>Selected image</label>
-                  <div className="relative h-44 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100">
-                    <Image src={mediaSrc(selectedProject.imageUrl)} alt={selectedProject.title} fill unoptimized={mediaSrc(selectedProject.imageUrl).startsWith("/api/media")} className="object-cover" sizes="280px" />
+                  <div className="mb-1.5 flex items-center justify-between gap-2">
+                    <label className={LABEL}>Project gallery</label>
+                    <span className="text-[11px] font-medium text-zinc-400">
+                      {selectedProject.imageUrls.length}/{MAX_PUBLIC_PROJECT_IMAGES}
+                    </span>
+                  </div>
+                  <p className="mb-3 text-xs leading-relaxed text-zinc-500">
+                    The first image is the cover on the Projects page. Visitors can scroll through all images when they open a project.
+                  </p>
+
+                  <div className="space-y-3">
+                    {selectedProject.imageUrls.map((imageUrl, index) => {
+                      const isCover = index === 0;
+                      return (
+                        <div
+                          key={imageUrl}
+                          className={`overflow-hidden rounded-xl border ${isCover ? "border-[#2d4a6b] ring-2 ring-blue-100" : "border-zinc-200"}`}
+                        >
+                          <div className="relative h-28 bg-zinc-100">
+                            <Image
+                              src={mediaSrc(imageUrl)}
+                              alt={`${selectedProject.title} image ${index + 1}`}
+                              fill
+                              unoptimized={mediaSrc(imageUrl).startsWith("/api/media")}
+                              className="object-cover"
+                              sizes="320px"
+                            />
+                            {isCover && (
+                              <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-[#2d4a6b] px-2 py-0.5 text-[10px] font-semibold text-white">
+                                <Star size={10} /> Cover
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center justify-between gap-2 border-t border-zinc-100 px-2 py-2">
+                            <div className="flex gap-1">
+                              <button
+                                type="button"
+                                onClick={() => moveImage(imageUrl, -1)}
+                                disabled={index === 0}
+                                className="rounded-lg border border-zinc-200 p-1.5 text-zinc-500 disabled:opacity-30"
+                                aria-label="Move image up"
+                              >
+                                <ArrowUp size={13} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => moveImage(imageUrl, 1)}
+                                disabled={index === selectedProject.imageUrls.length - 1}
+                                className="rounded-lg border border-zinc-200 p-1.5 text-zinc-500 disabled:opacity-30"
+                                aria-label="Move image down"
+                              >
+                                <ArrowDown size={13} />
+                              </button>
+                            </div>
+                            <div className="flex gap-1">
+                              {!isCover && (
+                                <button
+                                  type="button"
+                                  onClick={() => setCoverImage(imageUrl)}
+                                  className="rounded-lg border border-zinc-200 px-2 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50"
+                                >
+                                  Set cover
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => removeImage(imageUrl)}
+                                className="rounded-lg border border-zinc-200 p-1.5 text-red-600 hover:bg-red-50"
+                                aria-label="Remove image"
+                              >
+                                <X size={13} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  {availableImages.map((image) => (
-                    <button
-                      type="button"
-                      key={image.imageUrl}
-                      onClick={() => updateProject(selectedProject.id, { imageUrl: image.imageUrl })}
-                      className={`overflow-hidden rounded-xl border text-left ${
-                        selectedProject.imageUrl === image.imageUrl ? "border-[#2d4a6b] ring-2 ring-blue-100" : "border-zinc-200"
-                      }`}
-                    >
-                      <div className="relative h-20 bg-zinc-100">
-                        <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill unoptimized={mediaSrc(image.imageUrl).startsWith("/api/media")} className="object-cover" sizes="120px" />
-                      </div>
-                      <p className="truncate px-2 py-1.5 text-[11px] text-zinc-500">{image.defaultTitle}</p>
-                    </button>
-                  ))}
+
+                <div>
+                  <label className={LABEL}>Add from library</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {availableImages.map((image) => {
+                      const selected = selectedProject.imageUrls.includes(image.imageUrl);
+                      return (
+                        <button
+                          type="button"
+                          key={image.imageUrl}
+                          disabled={selected}
+                          onClick={() => addPresetImage(image.imageUrl)}
+                          className={`overflow-hidden rounded-xl border text-left disabled:opacity-50 ${
+                            selected ? "border-zinc-200" : "border-zinc-200 hover:border-[#8fb9e8]"
+                          }`}
+                        >
+                          <div className="relative h-20 bg-zinc-100">
+                            <Image src={mediaSrc(image.imageUrl)} alt={image.alt} fill unoptimized={mediaSrc(image.imageUrl).startsWith("/api/media")} className="object-cover" sizes="120px" />
+                          </div>
+                          <p className="truncate px-2 py-1.5 text-[11px] text-zinc-500">{image.defaultTitle}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <input
@@ -402,18 +568,18 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   className="hidden"
                   onChange={(e) => {
                     const f = e.target.files?.[0];
-                    if (f) handleImageUpload(f);
+                    if (f) void handleImageUpload(f);
                     e.target.value = "";
                   }}
                 />
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
-                  disabled={uploading}
-                  className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+                  disabled={uploading || selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES}
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
                 >
                   {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadIcon size={16} />}
-                  {uploading ? "Uploading…" : "Upload custom image"}
+                  {uploading ? "Uploading…" : "Upload another image"}
                 </button>
               </div>
             </div>

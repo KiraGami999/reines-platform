@@ -6,7 +6,10 @@ import { prisma } from "@/lib/prisma";
 import {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
   FALLBACK_PUBLIC_PROJECTS,
+  MAX_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
+  getPublicProjectCoverImage,
+  normalizePublicProjectImages,
   type PublicProjectItem,
 } from "@/lib/public-projects";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
@@ -30,7 +33,10 @@ const publicProjectSchema = z.object({
   status: z.enum(statusValues),
   description: z.string().trim().min(10, "Description must be at least 10 characters").max(700),
   year: z.string().trim().min(4, "Add a year or date range").max(30),
-  imageUrl: z.string().refine(isValidProjectImageUrl, "Select or upload a valid project image"),
+  imageUrls: z
+    .array(z.string().refine(isValidProjectImageUrl, "Each image must be a valid preset or uploaded URL"))
+    .min(1, "Add at least one project image")
+    .max(MAX_PUBLIC_PROJECT_IMAGES, `A project can have up to ${MAX_PUBLIC_PROJECT_IMAGES} images`),
   active: z.boolean().default(true),
   sortOrder: z.number().int().min(0).max(100),
 });
@@ -54,9 +60,13 @@ function serializeProject(project: {
   description: string;
   year: string;
   imageUrl: string;
+  imageUrls: string[];
   active: boolean;
   sortOrder: number;
 }) {
+  const imageUrls = normalizePublicProjectImages(project);
+  const cover = getPublicProjectCoverImage({ imageUrl: project.imageUrl, imageUrls });
+
   return {
     id: project.id,
     title: project.title,
@@ -65,7 +75,8 @@ function serializeProject(project: {
     status: project.status,
     description: project.description,
     year: project.year,
-    imageUrl: project.imageUrl,
+    imageUrl: cover,
+    imageUrls,
     active: project.active,
     sortOrder: project.sortOrder,
   };
@@ -103,17 +114,23 @@ export async function PUT(req: NextRequest) {
   if (!parsed.success) return validationError(parsed.error);
 
   try {
-    const projects = parsed.data.projects.map((project, sortOrder) => ({
-      title: project.title,
-      location: project.location,
-      type: project.type,
-      status: project.status,
-      description: project.description,
-      year: project.year,
-      imageUrl: project.imageUrl,
-      active: project.active,
-      sortOrder,
-    }));
+    const projects = parsed.data.projects.map((project, sortOrder) => {
+      const imageUrls = project.imageUrls;
+      const cover = imageUrls[0];
+
+      return {
+        title: project.title,
+        location: project.location,
+        type: project.type,
+        status: project.status,
+        description: project.description,
+        year: project.year,
+        imageUrl: cover,
+        imageUrls,
+        active: project.active,
+        sortOrder,
+      };
+    });
 
     await prisma.$transaction([
       prisma.publicProject.deleteMany(),
