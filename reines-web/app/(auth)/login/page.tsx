@@ -51,8 +51,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
           </div>
 
           {params.registered && (
-            <div className="mb-6 rounded-lg bg-blue-50 border border-blue-200 px-4 py-3 text-sm text-blue-700">
-              ✓ Account created successfully. Sign in below.
+            <div className="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
+              Account created successfully. Sign in with your email and password.
             </div>
           )}
 

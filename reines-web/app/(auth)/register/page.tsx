@@ -51,7 +51,7 @@ export default function RegisterPage() {
 
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-[#2d4a6b]">Create your account</h1>
-            <p className="mt-1 text-sm text-zinc-500">Create your Reines account.</p>
+            <p className="mt-1 text-sm text-zinc-500">Create your Reines account to access your project portal.</p>
           </div>
 
           <RegisterForm />
