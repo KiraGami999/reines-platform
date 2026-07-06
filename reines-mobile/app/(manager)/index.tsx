@@ -11,19 +11,24 @@ import {
 import { COLORS } from "@/constants";
 import { useAuth }              from "@/hooks/useAuth";
 import { useManagerDashboard }  from "@/hooks/useManagerDashboard";
+import { useProjects }          from "@/hooks/useProjects";
 import { useConversations }     from "@/hooks/useMessages";
 import { useUnreadCount }       from "@/hooks/useMessages";
 import { ManagerStatCard, ManagerStatCardSkeleton } from "@/components/manager/ManagerStatCard";
 import { ManagedProjectCard, ManagedProjectCardSkeleton } from "@/components/manager/ManagedProjectCard";
 import { AttentionCard, DeadlineCard }                    from "@/components/manager/AttentionCard";
 import { MessageFeedItem, UpdateFeedItem, FeedItemSkeleton } from "@/components/manager/ActivityFeedItem";
+import { AcceptProjectButton } from "@/components/projects/AcceptProjectButton";
 
 export default function ManagerDashboard() {
   const router  = useRouter();
   const { user } = useAuth();
 
   const { data, isLoading, isError, refetch, isRefetching } = useManagerDashboard();
+  const { data: allProjects } = useProjects();
   const unreadMessages = useUnreadCount(user?.id ?? "");
+
+  const pendingProjects = (allProjects ?? []).filter((p) => !p.managerAccepted);
 
   const greeting = (() => {
     const h = new Date().getHours();
@@ -68,6 +73,28 @@ export default function ManagerDashboard() {
             </View>
           )}
         </View>
+
+        {/* ── Pending assignments ─────────────────────────────────────── */}
+        {pendingProjects.length > 0 && (
+          <>
+            <SectionHeader
+              title={`Pending Acceptance (${pendingProjects.length})`}
+              icon={<AlertTriangle size={14} color={COLORS.yellow} />}
+              accent={COLORS.yellow}
+              action={{
+                label: "View all →",
+                onPress: () => router.push("/(manager)/projects" as never),
+              }}
+            />
+            {pendingProjects.slice(0, 3).map((project) => (
+              <View key={project.id} style={styles.pendingCard}>
+                <Text style={styles.pendingTitle} numberOfLines={1}>{project.title}</Text>
+                <Text style={styles.pendingClient}>Client: {project.client.name}</Text>
+                <AcceptProjectButton projectId={project.id} compact />
+              </View>
+            ))}
+          </>
+        )}
 
         {/* ── Summary stats grid ────────────────────────────────────────── */}
         <Text style={styles.sectionTitle}>Overview</Text>
@@ -263,6 +290,24 @@ const styles = StyleSheet.create({
     borderColor:       COLORS.yellow + "60",
   },
   alertPillText: { fontSize: 11, fontWeight: "700", color: "#713f12" },
+
+  pendingCard: {
+    backgroundColor: COLORS.white,
+    borderRadius:    12,
+    padding:         12,
+    borderWidth:     1,
+    borderColor:     "#fde68a",
+    gap:             8,
+  },
+  pendingTitle: {
+    fontSize:   14,
+    fontWeight: "700",
+    color:      COLORS.zinc900,
+  },
+  pendingClient: {
+    fontSize: 12,
+    color:    COLORS.zinc500,
+  },
 
   statsGrid: {
     flexDirection: "row",

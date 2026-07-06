@@ -27,6 +27,7 @@ export interface ManagedProject {
   budget:     string | null;
   startDate:  string | null;
   endDate:    string | null;
+  managerAccepted?: boolean;
   createdAt:  string;
   updatedAt:  string;
   client:     MgrClient;

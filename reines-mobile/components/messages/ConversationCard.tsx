@@ -7,15 +7,20 @@ import { timeAgo, truncate } from "@/lib/format";
 import type { Conversation } from "@/types";
 
 interface ConversationCardProps {
-  conversation:  Conversation;
-  currentUserId: string;
-  unreadCount:   number;
+  conversation:       Conversation;
+  currentUserId:      string;
+  unreadCount:        number;
+  /** Who to show in the avatar / title row — client sees manager, manager sees client */
+  showParticipant?:   "manager" | "client";
+  threadRouteBase?:   string;
 }
 
 export function ConversationCard({
   conversation,
   currentUserId,
   unreadCount,
+  showParticipant = "manager",
+  threadRouteBase = "/(client)/messages",
 }: ConversationCardProps) {
   const router    = useRouter();
   const msg       = conversation.lastMessage;
@@ -25,7 +30,9 @@ export function ConversationCard({
     color: COLORS.zinc400,
   };
 
-  const initials = conversation.manager.name
+  const participant = showParticipant === "client" ? conversation.client : conversation.manager;
+
+  const initials = participant.name
     .split(" ")
     .map((w) => w[0])
     .join("")
@@ -39,7 +46,7 @@ export function ConversationCard({
       style={styles.card}
       activeOpacity={0.80}
       onPress={() =>
-        router.push(`/(client)/messages/${conversation.projectId}` as never)
+        router.push(`${threadRouteBase}/${conversation.projectId}` as never)
       }
     >
       {/* Avatar with optional unread dot */}
@@ -63,7 +70,7 @@ export function ConversationCard({
             style={[styles.name, hasUnread && styles.nameUnread]}
             numberOfLines={1}
           >
-            {conversation.manager.name}
+            {participant.name}
           </Text>
           {msg && (
             <Text style={styles.time}>{timeAgo(msg.createdAt)}</Text>

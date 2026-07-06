@@ -27,6 +27,7 @@ import { COLORS, PROJECT_STATUS_CONFIG } from "@/constants";
 import { formatMWK, shortDate } from "@/lib/format";
 import { MilestoneProgressBar } from "@/components/milestones/MilestoneProgressBar";
 import { MilestoneCard }        from "@/components/milestones/MilestoneCard";
+import { AcceptProjectButton }  from "@/components/projects/AcceptProjectButton";
 
 // ---------------------------------------------------------------------------
 // Skeleton
@@ -116,7 +117,21 @@ export default function ManagerProjectDetail() {
         ) : null}
       </View>
 
+      {!project.managerAccepted && (
+        <View style={styles.acceptCard}>
+          <View style={styles.acceptHeader}>
+            <Clock size={18} color={COLORS.yellow} />
+            <Text style={styles.acceptTitle}>Pending acceptance</Text>
+          </View>
+          <Text style={styles.acceptBody}>
+            Accept this assignment to unlock gallery uploads, milestones, and client messaging.
+          </Text>
+          <AcceptProjectButton projectId={project.id} onAccepted={() => refetch()} />
+        </View>
+      )}
+
       {/* Quick action buttons */}
+      {project.managerAccepted && (
       <View style={styles.actions}>
         <ActionBtn
           icon={<Flag size={16} color={COLORS.primary} />}
@@ -145,6 +160,7 @@ export default function ManagerProjectDetail() {
           onPress={() => router.push("/(manager)/gallery" as never)}
         />
       </View>
+      )}
 
       {/* Milestone progress */}
       {milestoneData && milestoneData.summary.total > 0 && (
@@ -295,6 +311,31 @@ const styles = StyleSheet.create({
   dot:           { width: 8, height: 8, borderRadius: 4 },
   heroBadgeLabel:{ fontSize: 12, fontWeight: "600" },
   heroDesc:      { fontSize: 13, color: COLORS.zinc500, lineHeight: 18 },
+
+  acceptCard: {
+    backgroundColor: "#fffbeb",
+    borderRadius:    12,
+    padding:         14,
+    marginBottom:    14,
+    borderWidth:     1,
+    borderColor:     "#fde68a",
+    gap:             10,
+  },
+  acceptHeader: {
+    flexDirection: "row",
+    alignItems:    "center",
+    gap:           8,
+  },
+  acceptTitle: {
+    fontSize:   14,
+    fontWeight: "700",
+    color:      "#92400e",
+  },
+  acceptBody: {
+    fontSize:   12,
+    color:      COLORS.zinc600,
+    lineHeight: 17,
+  },
 
   // Quick actions
   actions:   { flexDirection: "row", gap: 10, marginBottom: 14 },

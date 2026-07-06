@@ -13,7 +13,7 @@ export async function fetchProject(id: string): Promise<MobileProjectDetail> {
   return data.project;
 }
 
-/** Updates a project's status (project manager / admin only). */
-export async function updateProjectStatus(projectId: string, status: string): Promise<void> {
-  await api.patch(`/api/projects/${projectId}`, { status });
+/** Accept a project assignment (project manager only). */
+export async function acceptProject(projectId: string): Promise<void> {
+  await api.patch(`/api/mobile/projects/${projectId}/accept`);
 }

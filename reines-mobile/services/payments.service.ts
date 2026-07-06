@@ -1,4 +1,6 @@
 import api from "@/lib/api";
+import { getToken } from "@/lib/storage";
+import { API_BASE_URL } from "@/constants";
 import type {
   Payment,
   PaymentDetail,
@@ -57,21 +59,50 @@ export async function submitCashPayment(payload: {
 }
 
 /**
- * Uploads a local image (receipt) as FormData.
+ * Uploads a local receipt image via the mobile cash-upload endpoint.
  * Returns the remote URL of the uploaded file.
  */
-export async function uploadReceipt(localUri: string): Promise<string> {
-  const filename = localUri.split("/").pop() ?? "receipt.jpg";
-  const match    = /\.(\w+)$/.exec(filename);
-  const type     = match ? `image/${match[1]}` : "image/jpeg";
+export function uploadReceipt(localUri: string): Promise<string> {
+  return new Promise(async (resolve, reject) => {
+    const token = await getToken();
+    if (!token) {
+      reject(new Error("Not authenticated."));
+      return;
+    }
 
-  const formData = new FormData();
-  formData.append("file", { uri: localUri, name: filename, type } as unknown as Blob);
+    const filename = localUri.split("/").pop() ?? "receipt.jpg";
+    const match    = /\.(\w+)$/.exec(filename);
+    const mimeType = match
+      ? `image/${match[1].toLowerCase().replace("jpg", "jpeg")}`
+      : "image/jpeg";
 
-  const { data } = await api.post<{ url: string }>(
-    "/api/upload",
-    formData,
-    { headers: { "Content-Type": "multipart/form-data" } }
-  );
-  return data.url;
+    const formData = new FormData();
+    formData.append("file", {
+      uri:  localUri,
+      name: filename,
+      type: mimeType,
+    } as unknown as Blob);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", `${API_BASE_URL}/api/mobile/payments/cash/upload`);
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.onload = () => {
+      try {
+        const json = JSON.parse(xhr.responseText) as { url?: string; error?: string };
+        if (xhr.status >= 200 && xhr.status < 300 && json.url) {
+          resolve(json.url);
+        } else {
+          reject(new Error(json.error ?? `Upload failed (${xhr.status})`));
+        }
+      } catch {
+        reject(new Error("Invalid response from server."));
+      }
+    };
+
+    xhr.onerror  = () => reject(new Error("Network error during upload."));
+    xhr.ontimeout = () => reject(new Error("Upload timed out."));
+    xhr.timeout  = 60_000;
+    xhr.send(formData);
+  });
 }
