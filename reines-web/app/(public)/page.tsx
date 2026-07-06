@@ -73,8 +73,8 @@ const features = [
 
 function Hero({ ads }: { ads: HomepageAd[] }) {
   return (
-    <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#243040_0%,#243040_76%,#344a62_88%,#e8edf2_96%,#ffffff_100%)] pb-6 sm:pb-10 lg:flex lg:min-h-[92vh] lg:items-center lg:pb-16">
-      <div className="relative mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
+    <section className="relative overflow-hidden bg-[#243040] lg:flex lg:min-h-[92vh] lg:items-center">
+      <div className="relative mx-auto w-full max-w-7xl px-4 py-12 pb-10 sm:px-6 sm:py-16 sm:pb-12 lg:px-8 lg:py-24 lg:pb-20">
         <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-12 xl:gap-16">
           {/* Left — ad carousel + compact featured strip (aligned with CTAs) */}
           <div className="mx-auto flex w-full max-w-md flex-col gap-4 lg:mx-0 lg:max-w-none">
@@ -120,6 +120,12 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
           </div>
         </div>
       </div>
+
+      {/* Blue → white fade only at the very bottom edge (below CTAs on mobile) */}
+      <div
+        className="pointer-events-none h-10 bg-gradient-to-b from-[#243040] to-white sm:h-14 md:h-16 lg:h-20"
+        aria-hidden
+      />
     </section>
   );
 }
