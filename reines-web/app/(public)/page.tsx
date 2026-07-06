@@ -73,7 +73,7 @@ const features = [
 
 function Hero({ ads }: { ads: HomepageAd[] }) {
   return (
-    <section className="relative overflow-hidden bg-[#243040] pb-6 sm:pb-10 lg:flex lg:min-h-[92vh] lg:items-center lg:pb-16">
+    <section className="relative overflow-hidden bg-[linear-gradient(to_bottom,#243040_0%,#243040_76%,#344a62_88%,#e8edf2_96%,#ffffff_100%)] pb-6 sm:pb-10 lg:flex lg:min-h-[92vh] lg:items-center lg:pb-16">
       <div className="relative mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
         <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-12 xl:gap-16">
           {/* Left — ad carousel + compact featured strip (aligned with CTAs) */}
@@ -120,19 +120,13 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
           </div>
         </div>
       </div>
-
-      {/* Long bottom fade — blends hero into the stats band below */}
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-48 bg-[linear-gradient(to_top,#ffffff_0%,rgba(255,255,255,0.92)_22%,rgba(255,255,255,0.62)_48%,rgba(255,255,255,0.2)_72%,transparent_100%)] sm:h-64 md:h-80 lg:h-96"
-        aria-hidden
-      />
     </section>
   );
 }
 
 function Stats() {
   return (
-    <section className="relative z-10 -mt-10 border-y border-zinc-100 bg-white py-8 sm:-mt-16 sm:py-12 md:-mt-24 lg:-mt-28">
+    <section className="relative border-y border-zinc-100 bg-white py-8 sm:py-12">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4">
           {stats.map((s) => (
