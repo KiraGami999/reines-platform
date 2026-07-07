@@ -16,7 +16,7 @@ import {
   ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
-import { BrandLogoAnchor } from "@/components/layout/BrandLogoAnchor";
+import { ReinesLogo } from "@/components/layout/ReinesLogo";
 import { cn } from "@/lib/utils";
 
 // ─── Breadcrumb helper ─────────────────────────────────────────────────────────
@@ -321,14 +321,9 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 sm:h-16 sm:px-6 print:hidden">
       {/* Left — mobile hamburger + breadcrumbs */}
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-        <BrandLogoAnchor className="lg:hidden">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo-loader.png"
-            alt="Reines logo"
-            className="h-8 w-8 shrink-0 rounded-md object-contain"
-          />
-        </BrandLogoAnchor>
+        <div className="lg:hidden">
+          <ReinesLogo size="xs" variant="on-light" />
+        </div>
 
         {/* Mobile hamburger */}
         <button

@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { KeyRound, ArrowLeft, Loader2, CheckCircle2 } from "lucide-react";
+import { AuthDesktopBrandLogo, AuthMobileBrandLogo } from "@/components/auth/AuthBrandLogo";
 
 type Phase = "email" | "code";
 
@@ -70,12 +71,7 @@ export default function ForgotPasswordPage() {
     <div className="flex min-h-screen">
       {/* Left brand panel */}
       <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#2d4a6b] p-12">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-            <KeyRound size={18} className="text-[#8fb9e8]" />
-          </div>
-          <span className="text-lg font-bold text-white tracking-tight">Reines Properties</span>
-        </div>
+        <AuthDesktopBrandLogo />
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">Reset your password</h2>
           <p className="text-sm text-zinc-400 leading-relaxed max-w-xs">
@@ -92,13 +88,7 @@ export default function ForgotPasswordPage() {
       {/* Right form panel */}
       <div className="flex flex-1 flex-col justify-center px-6 py-12 bg-zinc-50">
         <div className="mx-auto w-full max-w-sm">
-          {/* Mobile logo */}
-          <div className="lg:hidden mb-8 flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#2d4a6b]">
-              <KeyRound size={15} className="text-white" />
-            </div>
-            <span className="font-bold text-[#2d4a6b] tracking-tight">Reines Properties</span>
-          </div>
+          <AuthMobileBrandLogo />
 
           {done ? (
             <div className="text-center space-y-4">

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BrandLogoAnchor } from "@/components/layout/BrandLogoAnchor";
+import { ReinesLogo } from "@/components/layout/ReinesLogo";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -220,17 +221,14 @@ export function Sidebar({
       >
         {/* Logo row */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
-          <Link href="/" className="flex min-w-0 items-center gap-2.5" onClick={handleLinkClick}>
+          <Link href="/" className="flex min-w-0 items-center" onClick={handleLinkClick}>
             <BrandLogoAnchor>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo-loader.png" alt="Reines logo" className="h-8 w-8 shrink-0 rounded-md object-contain" />
+              {collapsed ? (
+                <ReinesLogo size="xs" variant="on-dark" className="max-w-[36px] object-contain object-center" />
+              ) : (
+                <ReinesLogo size="sm" variant="on-dark" />
+              )}
             </BrandLogoAnchor>
-            {!collapsed && (
-              <span className="leading-tight min-w-0">
-                <span className="block truncate text-sm font-bold tracking-tight text-white">Reines Property</span>
-                <span className="block text-[9px] font-normal tracking-widest text-zinc-400 uppercase">Development Ltd</span>
-              </span>
-            )}
           </Link>
 
           {/* Mobile close button */}

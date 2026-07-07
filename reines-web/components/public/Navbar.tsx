@@ -1,12 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { BrandLogoAnchor } from "@/components/layout/BrandLogoAnchor";
+import { ReinesLogo } from "@/components/layout/ReinesLogo";
 
 const links = [
   { label: "Home", href: "/" },
@@ -38,21 +37,7 @@ export function Navbar() {
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
         {/* Logo */}
-        <Link href="/" className="group flex min-w-0 shrink-0 items-center gap-3 xl:min-w-[220px]">
-          <BrandLogoAnchor>
-            <Image
-              src="/logo-loader.png"
-              alt="Reines logo"
-              width={44}
-              height={44}
-              className="shrink-0 rounded-md transition-transform duration-300 group-hover:scale-105"
-            />
-          </BrandLogoAnchor>
-          <span className="min-w-0 leading-tight">
-            <span className="block truncate text-lg font-bold tracking-tight text-white sm:text-xl">Reines Property</span>
-            <span className="block truncate text-[10px] font-normal uppercase tracking-[0.16em] text-zinc-300 sm:text-[11px]">Development Limited</span>
-          </span>
-        </Link>
+        <ReinesLogo size="md" linked priority className="xl:min-w-[200px]" />
 
         {/* Desktop nav */}
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 xl:flex">

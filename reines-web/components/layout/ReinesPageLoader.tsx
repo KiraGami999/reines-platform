@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { ReinesLogo } from "@/components/layout/ReinesLogo";
 
 type ReinesPageLoaderProps = {
   phase: "hidden" | "loading" | "exiting";
@@ -58,15 +58,7 @@ export function ReinesPageLoader({ phase, progress, onExitComplete }: ReinesPage
       <div className="pointer-events-none absolute -top-32 right-1/4 h-[420px] w-[420px] rounded-full bg-[#8fb9e8]/10 blur-[100px]" aria-hidden />
 
       <div className="relative flex flex-col items-center gap-6 px-6">
-        <div className="relative h-28 w-28 sm:h-36 sm:w-36 mix-blend-screen">
-          <Image
-            src="/logo-loader.png"
-            alt="Reines Properties"
-            fill
-            priority
-            className="object-contain"
-          />
-        </div>
+        <ReinesLogo size="xl" variant="on-dark" priority className="mix-blend-screen" />
 
         <div className="flex flex-col items-center gap-5">
           <div className="flex h-10 items-end justify-center gap-2" aria-hidden>

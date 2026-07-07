@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { ReinesLogo } from "@/components/layout/ReinesLogo";
 
 const footerLinks = {
   Company: [
@@ -23,13 +23,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-2">
-            <div className="flex items-center gap-3">
-              <Image src="/logo-icon.png" alt="Reines Property Development" width={44} height={44} className="rounded-md" />
-              <span className="leading-tight">
-                <span className="block text-lg font-bold tracking-tight text-white">Reines Property</span>
-                <span className="block text-[10px] font-normal tracking-widest text-zinc-500 uppercase">Development Limited</span>
-              </span>
-            </div>
+            <ReinesLogo size="md" variant="on-dark" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
               Redefining Homes, One Project at a Time. Property development, construction, concrete products, adhesives, and building materials for Malawi.
             </p>
