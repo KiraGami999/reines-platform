@@ -9,7 +9,7 @@ export function AuthDesktopBrandLogo() {
 export function AuthMobileBrandLogo() {
   return (
     <div className="mb-8 lg:hidden">
-      <ReinesLogo size="md" variant="on-light" linked />
+      <ReinesLogo size="lg" variant="on-light" linked />
     </div>
   );
 }

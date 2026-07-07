@@ -4,16 +4,18 @@ import { cn } from "@/lib/utils";
 
 export const REINES_LOGO_SRC = "/logo.png";
 
-/** Logo aspect ratio from extracted asset content (687×136). */
+/** Logo aspect ratio from trimmed transparent asset (687×136). */
 const LOGO_WIDTH = 687;
 const LOGO_HEIGHT = 136;
 
 const HEIGHT_CLASS = {
-  xs: "h-6",
-  sm: "h-7",
-  md: "h-9 sm:h-10",
-  lg: "h-11 sm:h-12",
-  xl: "h-16 sm:h-20 md:h-24",
+  xs: "h-8",
+  sm: "h-10",
+  md: "h-12 sm:h-14",
+  lg: "h-14 sm:h-16",
+  /** Fills the h-20 navbar while keeping the hexagon icon clearly readable. */
+  nav: "h-12 min-h-12 sm:h-14 lg:h-16",
+  xl: "h-24 sm:h-28 md:h-32",
 } as const;
 
 type ReinesLogoProps = {

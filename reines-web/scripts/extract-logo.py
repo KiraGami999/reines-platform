@@ -74,6 +74,11 @@ def main() -> None:
     print(f"Source: {SRC.name} ({img.size[0]}x{img.size[1]}, mode={img.mode})")
 
     result = flood_remove_background(img)
+
+    alpha_bbox = result.getchannel("A").getbbox()
+    if alpha_bbox:
+        result = result.crop(alpha_bbox)
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     result.save(OUT, format="PNG", optimize=True)
     print(f"Saved: {OUT} ({result.size[0]}x{result.size[1]})")

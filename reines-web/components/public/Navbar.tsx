@@ -37,7 +37,7 @@ export function Navbar() {
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
         {/* Logo */}
-        <ReinesLogo size="md" linked priority />
+        <ReinesLogo size="nav" linked priority className="shrink-0" />
 
         {/* Desktop nav */}
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 xl:flex">

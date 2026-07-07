@@ -23,7 +23,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-12 md:grid-cols-4">
           {/* Brand */}
           <div className="md:col-span-2">
-            <ReinesLogo size="md" variant="on-dark" />
+            <ReinesLogo size="lg" variant="on-dark" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
               Redefining Homes, One Project at a Time. Property development, construction, concrete products, adhesives, and building materials for Malawi.
             </p>

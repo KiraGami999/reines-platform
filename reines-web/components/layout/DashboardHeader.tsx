@@ -322,7 +322,7 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
       {/* Left — mobile hamburger + breadcrumbs */}
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <div className="lg:hidden">
-          <ReinesLogo size="xs" variant="on-light" />
+          <ReinesLogo size="sm" variant="on-light" />
         </div>
 
         {/* Mobile hamburger */}
