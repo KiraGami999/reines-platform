@@ -2,37 +2,24 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 
-export const REINES_ICON_SRC = "/logo-loader.png";
+export const REINES_LOGO_SRC = "/logo.png";
 
-const ICON_BOX_CLASS = {
-  xs: "h-8 w-8 rounded-md p-1",
-  sm: "h-8 w-8 rounded-md p-1",
-  md: "h-11 w-11 rounded-lg p-1.5",
-  lg: "h-12 w-12 rounded-lg p-1.5",
-  xl: "h-28 w-28 rounded-2xl p-3 sm:h-36 sm:w-36 sm:p-4",
-} as const;
+/** Logo aspect ratio from extracted asset content (687×136). */
+const LOGO_WIDTH = 687;
+const LOGO_HEIGHT = 136;
 
-const TEXT_CLASS = {
-  sm: {
-    primary: "text-sm font-bold tracking-tight",
-    secondary: "text-[9px] font-normal uppercase tracking-widest",
-  },
-  md: {
-    primary: "text-lg font-bold tracking-tight sm:text-xl",
-    secondary: "text-[10px] font-normal uppercase tracking-[0.16em] sm:text-[11px]",
-  },
-  lg: {
-    primary: "text-xl font-bold tracking-tight",
-    secondary: "text-[11px] font-normal uppercase tracking-[0.16em]",
-  },
+const HEIGHT_CLASS = {
+  xs: "h-6",
+  sm: "h-7",
+  md: "h-9 sm:h-10",
+  lg: "h-11 sm:h-12",
+  xl: "h-16 sm:h-20 md:h-24",
 } as const;
 
 type ReinesLogoProps = {
-  /** `on-dark` = white text for navy backgrounds. `on-light` = navy text for pale backgrounds. */
+  /** `on-dark` = white logo on navy backgrounds. `on-light` = dark logo on pale backgrounds. */
   variant?: "on-dark" | "on-light";
-  size?: keyof typeof ICON_BOX_CLASS;
-  /** Show only the icon mark (sidebar collapsed, mobile header). */
-  iconOnly?: boolean;
+  size?: keyof typeof HEIGHT_CLASS;
   linked?: boolean;
   className?: string;
   priority?: boolean;
@@ -41,66 +28,27 @@ type ReinesLogoProps = {
 export function ReinesLogo({
   variant = "on-dark",
   size = "md",
-  iconOnly = false,
   linked = false,
   className,
   priority = false,
 }: ReinesLogoProps) {
-  const textSize = size === "xs" || size === "sm" ? "sm" : size === "lg" || size === "xl" ? "lg" : "md";
-  const textStyles = TEXT_CLASS[textSize];
-
-  const mark = (
-    <span className={cn("inline-flex min-w-0 shrink-0 items-center", iconOnly ? "" : "gap-3", className)}>
-      <span
-        className={cn(
-          "inline-flex shrink-0 items-center justify-center backdrop-blur-sm",
-          ICON_BOX_CLASS[size],
-          variant === "on-dark" ? "bg-white/10" : "bg-[#2d4a6b]/10"
-        )}
-      >
-        <Image
-          src={REINES_ICON_SRC}
-          alt=""
-          width={size === "xl" ? 144 : size === "md" || size === "lg" ? 44 : 32}
-          height={size === "xl" ? 144 : size === "md" || size === "lg" ? 44 : 32}
-          priority={priority}
-          aria-hidden
-          className="h-full w-full object-contain mix-blend-screen"
-        />
-      </span>
-
-      {!iconOnly && size !== "xl" && (
-        <span className="min-w-0 leading-tight">
-          <span
-            className={cn(
-              "block truncate",
-              textStyles.primary,
-              variant === "on-dark" ? "text-white" : "text-[#2d4a6b]"
-            )}
-          >
-            Reines Property
-          </span>
-          <span
-            className={cn(
-              "block truncate",
-              textStyles.secondary,
-              variant === "on-dark" ? "text-zinc-300" : "text-zinc-500"
-            )}
-          >
-            Development Limited
-          </span>
-        </span>
+  const image = (
+    <Image
+      src={REINES_LOGO_SRC}
+      alt="Reines Property Development Limited"
+      width={LOGO_WIDTH}
+      height={LOGO_HEIGHT}
+      priority={priority}
+      className={cn(
+        HEIGHT_CLASS[size],
+        "w-auto max-w-none object-contain object-left",
+        variant === "on-light" && "brightness-0",
+        className
       )}
-    </span>
+    />
   );
 
-  if (!linked) {
-    return (
-      <span role="img" aria-label="Reines Property Development Limited">
-        {mark}
-      </span>
-    );
-  }
+  if (!linked) return image;
 
   return (
     <Link
@@ -108,7 +56,7 @@ export function ReinesLogo({
       className="group inline-flex min-w-0 shrink-0 items-center transition-transform duration-300 hover:scale-[1.02]"
       aria-label="Reines Property Development Limited — Home"
     >
-      {mark}
+      {image}
     </Link>
   );
 }

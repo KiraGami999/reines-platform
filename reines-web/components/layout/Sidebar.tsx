@@ -223,11 +223,7 @@ export function Sidebar({
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
           <Link href="/" className="flex min-w-0 items-center" onClick={handleLinkClick}>
             <BrandLogoAnchor>
-              <ReinesLogo
-                size={collapsed ? "xs" : "sm"}
-                variant="on-dark"
-                iconOnly={collapsed}
-              />
+              <ReinesLogo size={collapsed ? "xs" : "sm"} variant="on-dark" />
             </BrandLogoAnchor>
           </Link>
 
