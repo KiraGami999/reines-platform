@@ -1,4 +1,4 @@
-"""Extract transparent logo from uploaded asset — removes outer black background only."""
+"""Extract transparent logo from white-on-black (or blue-background) source assets."""
 
 from __future__ import annotations
 
@@ -7,15 +7,24 @@ from pathlib import Path
 
 from PIL import Image
 
-SRC = Path(
-    r"C:\Users\kiras\.cursor\projects\c-Users-kiras-OneDrive-Desktop-Reines-Platform\assets"
-    r"\c__Users_kiras_AppData_Roaming_Cursor_User_workspaceStorage_bcbead6fdb3a5819cec5df2c66988749"
-    r"_images_Rebranded_Logo__24_-Photoroom-29f5dd6d-cb68-4827-832c-4d518cfa3962.png"
-)
-OUT = Path(__file__).resolve().parents[1] / "public" / "logo.png"
+ROOT = Path(__file__).resolve().parents[1]
+PUBLIC = ROOT / "public"
 
-# Pixels at or below this luminance connected to image edges become transparent.
-BACKGROUND_LUMINANCE = 28
+# Prefer the clean white-on-black master asset in /public.
+SRC_CANDIDATES = [
+    PUBLIC / "reines-logo.png",
+    Path(
+        r"C:\Users\kiras\.cursor\projects\c-Users-kiras-OneDrive-Desktop-Reines-Platform\assets"
+        r"\c__Users_kiras_AppData_Roaming_Cursor_User_workspaceStorage_bcbead6fdb3a5819cec5df2c66988749"
+        r"_images_Rebranded_Logo__24_-Photoroom-29f5dd6d-cb68-4827-832c-4d518cfa3962.png"
+    ),
+]
+
+OUT_LOGO = PUBLIC / "logo.png"
+OUT_ICON = PUBLIC / "logo-loader.png"
+
+BLACK_LUMINANCE = 32
+BLACK_MARK_LUMINANCE = 52
 
 
 def luminance(r: int, g: int, b: int) -> float:
@@ -25,7 +34,16 @@ def luminance(r: int, g: int, b: int) -> float:
 def is_background_pixel(r: int, g: int, b: int, a: int) -> bool:
     if a < 8:
         return True
-    return luminance(r, g, b) <= BACKGROUND_LUMINANCE
+
+    lum = luminance(r, g, b)
+    if lum <= BLACK_LUMINANCE:
+        return True
+
+    # Remove slate/navy export backgrounds (screenshots or colored exports).
+    if lum < 175 and b > r + 8 and b >= g - 6:
+        return True
+
+    return False
 
 
 def flood_remove_background(img: Image.Image) -> Image.Image:
@@ -33,7 +51,6 @@ def flood_remove_background(img: Image.Image) -> Image.Image:
     w, h = rgba.size
     px = rgba.load()
     bg = [[False] * w for _ in range(h)]
-
     q: deque[tuple[int, int]] = deque()
 
     def try_seed(x: int, y: int) -> None:
@@ -66,27 +83,68 @@ def flood_remove_background(img: Image.Image) -> Image.Image:
     return rgba
 
 
+def clean_logo_pixels(img: Image.Image) -> Image.Image:
+    """Convert extracted marks to pure white/black with no gray background halos."""
+    rgba = img.convert("RGBA")
+    px = rgba.load()
+    w, h = rgba.size
+
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if a == 0:
+                continue
+
+            lum = luminance(r, g, b)
+
+            if lum <= BLACK_MARK_LUMINANCE:
+                px[x, y] = (0, 0, 0, 255)
+            else:
+                alpha = max(0, min(255, int(round(lum))))
+                px[x, y] = (255, 255, 255, alpha)
+
+    return rgba
+
+
+def trim_transparent(img: Image.Image) -> Image.Image:
+    bbox = img.getchannel("A").getbbox()
+    return img.crop(bbox) if bbox else img
+
+
+def resolve_source() -> Path:
+    for candidate in SRC_CANDIDATES:
+        if candidate.exists():
+            return candidate
+    raise SystemExit("No logo source image found.")
+
+
+def extract_icon_from_logo(logo: Image.Image) -> Image.Image:
+    """Crop the left hexagon mark for the loading screen icon."""
+    h = logo.size[1]
+    icon = logo.crop((0, 0, 90, h))
+
+    canvas = Image.new("RGBA", (h, h), (0, 0, 0, 0))
+    ox = (h - icon.size[0]) // 2
+    oy = (h - icon.size[1]) // 2
+    canvas.paste(icon, (ox, oy), icon)
+    return canvas
+
+
 def main() -> None:
-    if not SRC.exists():
-        raise SystemExit(f"Source not found: {SRC}")
+    src = resolve_source()
+    img = Image.open(src)
+    print(f"Source: {src} ({img.size[0]}x{img.size[1]}, mode={img.mode})")
 
-    img = Image.open(SRC)
-    print(f"Source: {SRC.name} ({img.size[0]}x{img.size[1]}, mode={img.mode})")
+    result = clean_logo_pixels(flood_remove_background(img))
+    result = trim_transparent(result)
 
-    result = flood_remove_background(img)
+    PUBLIC.mkdir(parents=True, exist_ok=True)
+    result.save(OUT_LOGO, format="PNG", optimize=True)
+    print(f"Saved logo: {OUT_LOGO} ({result.size[0]}x{result.size[1]})")
 
-    alpha_bbox = result.getchannel("A").getbbox()
-    if alpha_bbox:
-        result = result.crop(alpha_bbox)
-
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    result.save(OUT, format="PNG", optimize=True)
-    print(f"Saved: {OUT} ({result.size[0]}x{result.size[1]})")
-
-    # Verify alpha channel exists
-    alpha = result.getchannel("A")
-    bbox = alpha.getbbox()
-    print(f"Content bbox: {bbox}")
+    icon = trim_transparent(extract_icon_from_logo(result))
+    icon.save(OUT_ICON, format="PNG", optimize=True)
+    print(f"Saved icon: {OUT_ICON} ({icon.size[0]}x{icon.size[1]})")
 
 
 if __name__ == "__main__":

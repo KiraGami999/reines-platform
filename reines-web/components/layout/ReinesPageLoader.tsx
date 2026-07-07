@@ -60,7 +60,7 @@ export function ReinesPageLoader({ phase, progress, onExitComplete }: ReinesPage
       <div className="pointer-events-none absolute -top-32 right-1/4 h-[420px] w-[420px] rounded-full bg-[#8fb9e8]/10 blur-[100px]" aria-hidden />
 
       <div className="relative flex flex-col items-center gap-6 px-6">
-        <div className="relative h-28 w-28 mix-blend-screen sm:h-36 sm:w-36">
+        <div className="relative h-28 w-28 sm:h-36 sm:w-36">
           <Image
             src={REINES_LOADER_ICON_SRC}
             alt="Reines Property Development"
