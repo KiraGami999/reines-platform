@@ -13,23 +13,17 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { Eye, EyeOff, AlertCircle, ShieldCheck, MessageSquare } from "lucide-react-native";
+import { Eye, EyeOff, AlertCircle } from "lucide-react-native";
 
 import { register } from "@/services/auth.service";
 import { getErrorMessage } from "@/lib/api";
 import { registerSchema, type RegisterForm } from "@/lib/validation";
-import { COLORS } from "@/constants";
+import { APP_NAME, COLORS } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { ReinesLogo } from "@/components/brand/ReinesLogo";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
-
-const BENEFITS = [
-  { icon: Eye,            text: "Real-time project progress visibility" },
-  { icon: MessageSquare, text: "Direct messaging with your project manager" },
-  { icon: ShieldCheck,    text: "Secure, role-based access to your data" },
-] as const;
 
 type FieldErrors = Partial<Record<keyof RegisterForm, string>>;
 
@@ -94,47 +88,15 @@ export default function RegisterScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Brand panel — mirrors web register left panel */}
         <View style={styles.brandPanel}>
-          <ReinesLogo variant="on-dark" height={40} />
-
-          <View style={styles.brandCopy}>
-            <Text style={styles.brandTitle}>Your project. Your portal.</Text>
-            <Text style={styles.brandSub}>
-              The Reines portal gives you full visibility into your work — from foundation to finish.
-            </Text>
-          </View>
-
-          <View style={styles.benefits}>
-            {BENEFITS.map(({ icon: Icon, text }) => (
-              <View key={text} style={styles.benefitRow}>
-                <View style={styles.benefitIcon}>
-                  <Icon size={16} color={COLORS.accent} />
-                </View>
-                <Text style={styles.benefitText}>{text}</Text>
-              </View>
-            ))}
-          </View>
-
-          <Text style={styles.brandFooter}>
-            Already have an account?{" "}
-            <Text
-              style={styles.brandFooterLink}
-              onPress={() => router.push("/(auth)/login")}
-            >
-              Sign in here.
-            </Text>
-          </Text>
+          <ReinesLogo variant="on-dark" height={56} />
         </View>
 
-        {/* Form panel */}
         <View style={styles.formPanel}>
-          <ReinesLogo variant="on-light" height={32} style={styles.mobileLogo} />
-
           <View style={styles.formHeader}>
             <Text style={styles.formTitle}>Create your account</Text>
             <Text style={styles.formSub}>
-              Create your Reines account to access your project portal.
+              Join {APP_NAME} to access your project portal.
             </Text>
           </View>
 
@@ -244,7 +206,7 @@ export default function RegisterScreen() {
           </Text>
 
           <Text style={styles.footer}>
-            © {new Date().getFullYear()} Reines Property Development Limited
+            © {new Date().getFullYear()} {APP_NAME}
           </Text>
         </View>
       </ScrollView>
@@ -259,52 +221,9 @@ const styles = StyleSheet.create({
   brandPanel: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 32,
-    gap: 24,
-  },
-  brandCopy: { gap: 8 },
-  brandTitle: {
-    fontFamily: FONTS.bold,
-    fontSize: 22,
-    color: COLORS.white,
-  },
-  brandSub: {
-    fontFamily: FONTS.regular,
-    fontSize: 14,
-    color: COLORS.zinc400,
-    lineHeight: 20,
-  },
-  benefits: { gap: 14 },
-  benefitRow: {
-    flexDirection: "row",
-    alignItems:    "center",
-    gap:           12,
-  },
-  benefitIcon: {
-    width:           32,
-    height:          32,
-    borderRadius:    8,
-    backgroundColor: COLORS.accentMuted,
-    alignItems:      "center",
-    justifyContent:  "center",
-  },
-  benefitText: {
-    flex:       1,
-    fontFamily: FONTS.regular,
-    fontSize:   14,
-    color:      COLORS.zinc300,
-    lineHeight: 20,
-  },
-  brandFooter: {
-    fontFamily: FONTS.regular,
-    fontSize:   12,
-    color:      COLORS.zinc500,
-    marginTop:  4,
-  },
-  brandFooterLink: {
-    fontFamily: FONTS.semibold,
-    color:      COLORS.accent,
+    paddingVertical: 56,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   formPanel: {
@@ -314,7 +233,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     backgroundColor: COLORS.zinc50,
   },
-  mobileLogo: { marginBottom: 20 },
   formHeader: { marginBottom: 24 },
   formTitle: {
     fontFamily: FONTS.bold,

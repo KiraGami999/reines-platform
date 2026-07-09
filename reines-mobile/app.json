@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Reines Portal",
+    "name": "Project Reins Mate",
     "slug": "reines-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,8 +16,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "mw.co.reines.portal",
       "infoPlist": {
-        "NSCameraUsageDescription": "Reines Portal uses your camera to upload project progress photos.",
-        "NSPhotoLibraryUsageDescription": "Reines Portal accesses your photo library to upload project progress photos and payment receipts."
+        "NSCameraUsageDescription": "Project Reins Mate uses your camera to upload project progress photos.",
+        "NSPhotoLibraryUsageDescription": "Project Reins Mate accesses your photo library to upload project progress photos and payment receipts."
       }
     },
     "android": {
@@ -43,8 +43,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Reines Portal accesses your photo library to upload progress photos and payment receipts.",
-          "cameraPermission": "Reines Portal uses your camera to upload project progress photos."
+          "photosPermission": "Project Reins Mate accesses your photo library to upload progress photos and payment receipts.",
+          "cameraPermission": "Project Reins Mate uses your camera to upload project progress photos."
         }
       ],
       [

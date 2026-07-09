@@ -18,17 +18,11 @@ import { useAuth } from "@/hooks/useAuth";
 import { login } from "@/services/auth.service";
 import { getErrorMessage } from "@/lib/api";
 import { loginSchema, type LoginForm } from "@/lib/validation";
-import { COLORS } from "@/constants";
+import { APP_NAME, COLORS } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { ReinesLogo } from "@/components/brand/ReinesLogo";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-
-const STATS = [
-  { label: "Projects Completed", value: "15+" },
-  { label: "Years Experience", value: "3+" },
-  { label: "Client Satisfaction", value: "98%" },
-] as const;
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
@@ -73,37 +67,15 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Brand panel — mirrors web left auth panel */}
         <View style={styles.brandPanel}>
-          <ReinesLogo variant="on-dark" height={40} />
-
-          <View style={styles.quoteBlock}>
-            <Text style={styles.quote}>
-              &ldquo;Transparency and quality in every build — your project, your vision, our commitment.&rdquo;
-            </Text>
-            <Text style={styles.quoteAttribution}>
-              — Reines Property Development Limited
-            </Text>
-          </View>
-
-          <View style={styles.statsRow}>
-            {STATS.map((stat) => (
-              <View key={stat.label} style={styles.statItem}>
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statLabel}>{stat.label}</Text>
-              </View>
-            ))}
-          </View>
+          <ReinesLogo variant="on-dark" height={56} />
         </View>
 
-        {/* Form panel — mirrors web right auth panel */}
         <View style={styles.formPanel}>
-          <ReinesLogo variant="on-light" height={32} style={styles.mobileLogo} />
-
           <View style={styles.formHeader}>
             <Text style={styles.formTitle}>Welcome back</Text>
             <Text style={styles.formSub}>
-              Sign in to access your Reines dashboard.
+              Sign in to access {APP_NAME}.
             </Text>
           </View>
 
@@ -194,7 +166,7 @@ export default function LoginScreen() {
           </Text>
 
           <Text style={styles.footer}>
-            © {new Date().getFullYear()} Reines Property Development Limited
+            © {new Date().getFullYear()} {APP_NAME}
           </Text>
         </View>
       </ScrollView>
@@ -209,37 +181,9 @@ const styles = StyleSheet.create({
   brandPanel: {
     backgroundColor: COLORS.primary,
     paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 32,
-    gap: 28,
-  },
-  quoteBlock: { gap: 10 },
-  quote: {
-    fontFamily: FONTS.semibold,
-    fontSize: 20,
-    lineHeight: 28,
-    color: COLORS.white,
-  },
-  quoteAttribution: {
-    fontFamily: FONTS.regular,
-    fontSize: 13,
-    color: COLORS.zinc400,
-  },
-  statsRow: {
-    flexDirection: "row",
-    gap: 12,
-  },
-  statItem: { flex: 1 },
-  statValue: {
-    fontFamily: FONTS.extrabold,
-    fontSize: 22,
-    color: COLORS.accent,
-  },
-  statLabel: {
-    fontFamily: FONTS.regular,
-    fontSize: 10,
-    color: COLORS.zinc400,
-    marginTop: 2,
+    paddingVertical: 56,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   formPanel: {
@@ -249,7 +193,6 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     backgroundColor: COLORS.zinc50,
   },
-  mobileLogo: { marginBottom: 20 },
   formHeader: { marginBottom: 24 },
   formTitle: {
     fontFamily: FONTS.bold,

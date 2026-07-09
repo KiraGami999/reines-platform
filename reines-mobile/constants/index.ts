@@ -23,6 +23,8 @@ export const MESSAGE_POLL_INTERVAL_MS = 5_000;
 export const QUERY_STALE_TIME_MS = 30_000;
 
 /** Brand colours — matches reines-web portal */
+export const APP_NAME = "Project Reins Mate";
+
 export const COLORS = {
   primary:      "#2d4a6b",
   primaryDark:  "#1a2f4a",

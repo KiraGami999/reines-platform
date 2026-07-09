@@ -21,7 +21,7 @@ import {
 } from "lucide-react-native";
 
 import { useAuth } from "@/hooks/useAuth";
-import { COLORS, ROLE_LABELS } from "@/constants";
+import { COLORS, ROLE_LABELS, APP_NAME } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { Card } from "@/components/ui/Card";
 
@@ -203,7 +203,7 @@ export function SettingsScreen({ extraRows }: Props) {
       </View>
 
       <Text style={styles.footer}>
-        © {new Date().getFullYear()} Reines Property Development Limited
+        © {new Date().getFullYear()} {APP_NAME}
       </Text>
     </ScrollView>
   );
