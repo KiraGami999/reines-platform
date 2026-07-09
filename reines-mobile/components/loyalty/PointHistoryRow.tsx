@@ -14,7 +14,7 @@ const TYPE_CONFIG: Record<string, { label: string; color: string; Icon: React.Co
   PAYMENT:    { label: "Payment",    color: COLORS.green,   Icon: TrendingUp   },
   REDEMPTION: { label: "Redemption", color: COLORS.red,     Icon: TrendingDown },
   PROJECT:    { label: "Project",    color: COLORS.primary, Icon: Award        },
-  PROMO:      { label: "Promo",      color: "#7c3aed",      Icon: Star         },
+  PROMO:      { label: "Promo",      color: COLORS.primary,      Icon: Star         },
 };
 
 export function PointHistoryRow({ entry }: PointHistoryRowProps) {

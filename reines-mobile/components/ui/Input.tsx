@@ -6,6 +6,7 @@ import {
   type TextInputProps,
 } from "react-native";
 import { COLORS } from "@/constants";
+import { FONTS } from "@/constants/theme";
 
 interface Props extends TextInputProps {
   label?:   string;
@@ -34,13 +35,13 @@ export function Input({ label, error, hint, style, ...props }: Props) {
 
 const styles = StyleSheet.create({
   wrapper:    { marginBottom: 16 },
-  label:      { fontSize: 13, fontWeight: "600", color: COLORS.zinc700, marginBottom: 6 },
+  label:      { fontSize: 14, fontFamily: FONTS.medium, color: COLORS.zinc700, marginBottom: 6 },
   input: {
-    borderWidth: 1, borderColor: COLORS.zinc200, borderRadius: 12,
+    borderWidth: 1, borderColor: COLORS.zinc200, borderRadius: 8,
     paddingHorizontal: 14, paddingVertical: 12,
-    fontSize: 14, color: COLORS.zinc900, backgroundColor: COLORS.white,
+    fontSize: 14, fontFamily: FONTS.regular, color: COLORS.zinc900, backgroundColor: COLORS.white,
   },
-  inputError: { borderColor: COLORS.red },
-  error:      { fontSize: 11, color: COLORS.red,     marginTop: 4 },
-  hint:       { fontSize: 11, color: COLORS.zinc400, marginTop: 4 },
+  inputError: { borderColor: COLORS.red, backgroundColor: COLORS.redBg },
+  error:      { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.red, marginTop: 4 },
+  hint:       { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.zinc400, marginTop: 4 },
 });

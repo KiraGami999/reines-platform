@@ -1,13 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS } from "@/constants";
+import { FONTS, RADII, SHADOW } from "@/constants/theme";
 
 interface ManagerStatCardProps {
   value:     string | number;
   label:     string;
   accent?:   string;
   icon?:     React.ReactNode;
-  badge?:    string;         // small warning badge (e.g. "2 need attention")
+  badge?:    string;
   onPress?:  () => void;
 }
 
@@ -52,26 +53,30 @@ const styles = StyleSheet.create({
   card: {
     flex:            1,
     backgroundColor: COLORS.white,
-    borderRadius:    14,
+    borderRadius:    RADII.md,
     padding:         14,
     borderTopWidth:  3,
     alignItems:      "center",
     gap:             5,
-    shadowColor:     "#000",
-    shadowOffset:    { width: 0, height: 1 },
-    shadowOpacity:   0.07,
-    shadowRadius:    5,
-    elevation:       2,
+    borderWidth:     1,
+    borderColor:     COLORS.zinc200,
+    borderTopColor:  COLORS.primary,
+    ...SHADOW.card,
   },
   iconWrap: { borderRadius: 18, padding: 8, marginBottom: 2 },
-  value:    { fontSize: 26, fontWeight: "900", letterSpacing: -0.5 },
-  label:    { fontSize: 11, fontWeight: "600", color: COLORS.zinc500, textAlign: "center" },
+  value:    { fontSize: 26, fontFamily: FONTS.extrabold, letterSpacing: -0.5 },
+  label:    {
+    fontSize:   11,
+    fontFamily: FONTS.semibold,
+    color:      COLORS.zinc500,
+    textAlign:  "center",
+  },
   badge: {
-    borderRadius:      8,
+    borderRadius:      RADII.sm,
     paddingHorizontal: 6,
     paddingVertical:   2,
     marginTop:         2,
   },
-  badgeText: { fontSize: 9, fontWeight: "700" },
+  badgeText: { fontSize: 9, fontFamily: FONTS.bold },
   sk:        { backgroundColor: COLORS.zinc100, borderRadius: 6 },
 });

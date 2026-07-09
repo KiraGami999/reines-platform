@@ -22,6 +22,7 @@ import {
 
 import { useAuth } from "@/hooks/useAuth";
 import { COLORS, ROLE_LABELS } from "@/constants";
+import { FONTS } from "@/constants/theme";
 import { Card } from "@/components/ui/Card";
 
 interface SettingsRow {
@@ -73,8 +74,7 @@ export function SettingsScreen({ extraRows }: Props) {
   const [notifications, setNotifications] = useState(true);
   const [darkMode,      setDarkMode]      = useState(false);
 
-  const roleBadgeColor =
-    user?.role === "PROJECT_MANAGER" ? "#7c3aed" : COLORS.primary;
+  const roleBadgeColor = COLORS.primary;
 
   function handleLogout() {
     Alert.alert(
@@ -217,23 +217,23 @@ const styles = StyleSheet.create({
   profileCard:  { alignItems: "center", marginBottom: 8, paddingVertical: 24 },
   avatarLarge:  {
     width: 72, height: 72, borderRadius: 36,
-    backgroundColor: COLORS.accent,
+    backgroundColor: COLORS.primary,
     alignItems: "center", justifyContent: "center",
     marginBottom: 12,
   },
-  avatarText:   { fontSize: 28, fontWeight: "800", color: COLORS.primary },
-  profileName:  { fontSize: 18, fontWeight: "700", color: COLORS.zinc900 },
-  profileEmail: { fontSize: 13, color: COLORS.zinc500, marginTop: 3 },
+  avatarText:   { fontSize: 28, fontFamily: FONTS.extrabold, color: COLORS.accent },
+  profileName:  { fontSize: 18, fontFamily: FONTS.bold, color: COLORS.zinc900 },
+  profileEmail: { fontSize: 13, fontFamily: FONTS.regular, color: COLORS.zinc500, marginTop: 3 },
   roleBadge:    {
     flexDirection: "row", alignItems: "center", gap: 5,
     marginTop: 10, paddingHorizontal: 12, paddingVertical: 5,
     borderRadius: 100, borderWidth: 1,
   },
-  roleText:     { fontSize: 11, fontWeight: "700" },
+  roleText:     { fontSize: 11, fontFamily: FONTS.bold },
 
   // ── Sections ──
   sectionHeading: {
-    fontSize: 11, fontWeight: "700", letterSpacing: 0.8,
+    fontSize: 11, fontFamily: FONTS.bold, letterSpacing: 0.8,
     textTransform: "uppercase", color: COLORS.zinc400,
     marginTop: 24, marginBottom: 8, marginLeft: 4,
   },
@@ -246,21 +246,21 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.zinc100,
     alignItems: "center", justifyContent: "center",
   },
-  rowIconDanger: { backgroundColor: "#fef2f2" },
+  rowIconDanger: { backgroundColor: COLORS.redBg },
   rowBody:       { flex: 1 },
-  rowLabel:      { fontSize: 14, fontWeight: "600", color: COLORS.zinc900 },
+  rowLabel:      { fontSize: 14, fontFamily: FONTS.semibold, color: COLORS.zinc900 },
   rowLabelDanger:{ color: COLORS.red },
-  rowValue:      { fontSize: 12, color: COLORS.zinc500, marginTop: 2 },
+  rowValue:      { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.zinc500, marginTop: 2 },
   divider:       { height: 1, backgroundColor: COLORS.zinc100, marginLeft: 62 },
 
   // ── Logout ──
   logoutSection: { marginTop: 28 },
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10,
-    borderWidth: 1, borderColor: "#fecaca", borderRadius: 14,
-    backgroundColor: "#fef2f2", paddingVertical: 14,
+    borderWidth: 1, borderColor: COLORS.redBorder, borderRadius: 14,
+    backgroundColor: COLORS.redBg, paddingVertical: 14,
   },
-  logoutText: { fontSize: 15, fontWeight: "700", color: COLORS.red },
+  logoutText: { fontSize: 15, fontFamily: FONTS.bold, color: COLORS.red },
 
-  footer: { marginTop: 28, textAlign: "center", fontSize: 11, color: COLORS.zinc400 },
+  footer: { marginTop: 28, textAlign: "center", fontSize: 11, fontFamily: FONTS.regular, color: COLORS.zinc400 },
 });

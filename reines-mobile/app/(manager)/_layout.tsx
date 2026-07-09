@@ -12,6 +12,7 @@ import { useRoleGuard }   from "@/hooks/useRoleGuard";
 import { useAuth }         from "@/hooks/useAuth";
 import { useUnreadCount }  from "@/hooks/useMessages";
 import { COLORS }          from "@/constants";
+import { portalTabScreenOptions } from "@/constants/theme";
 import { LoadingScreen }   from "@/components/ui/LoadingScreen";
 import { TabBarIcon }      from "@/components/layout/TabBarIcon";
 import { TabBadge }        from "@/components/layout/TabBadge";
@@ -42,22 +43,8 @@ export default function ManagerLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor:   COLORS.accent,
-        tabBarInactiveTintColor: COLORS.zinc400,
-        tabBarStyle: {
-          backgroundColor: COLORS.primary,
-          borderTopWidth:  0,
-          paddingTop:      4,
-          paddingBottom:   4,
-          height:          62,
-        },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: "600", marginTop: 2 },
-
-        headerStyle:         { backgroundColor: COLORS.primary },
-        headerTintColor:     COLORS.white,
-        headerTitleStyle:    { fontWeight: "700", fontSize: 17 },
-        headerShadowVisible: false,
-        headerRight:         () => <HeaderRight />,
+        ...portalTabScreenOptions(),
+        headerRight: () => <HeaderRight />,
       }}
     >
       {/* ── Visible tabs ─────────────────────────────────────────────── */}

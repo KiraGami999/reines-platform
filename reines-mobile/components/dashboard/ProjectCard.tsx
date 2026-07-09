@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { ChevronRight, Clock } from "lucide-react-native";
 import { COLORS, PROJECT_STATUS_CONFIG } from "@/constants";
+import { FONTS, RADII, SHADOW } from "@/constants/theme";
 import { timeAgo, formatMWK } from "@/lib/format";
 import type { DashboardProject } from "@/types";
 
@@ -81,14 +82,12 @@ export function ProjectCardSkeleton() {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
-    borderRadius:    14,
+    borderRadius:    RADII.md,
     padding:         14,
     marginBottom:    10,
-    shadowColor:     "#000",
-    shadowOffset:    { width: 0, height: 1 },
-    shadowOpacity:   0.06,
-    shadowRadius:    4,
-    elevation:       2,
+    borderWidth:     1,
+    borderColor:     COLORS.zinc200,
+    ...SHADOW.card,
   },
   header: {
     flexDirection:  "row",
@@ -100,9 +99,9 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   title: {
-    fontSize:   15,
-    fontWeight: "700",
-    color:      COLORS.zinc900,
+    fontSize:     15,
+    fontFamily:   FONTS.semibold,
+    color:        COLORS.zinc900,
     marginBottom: 6,
   },
   badge: {
@@ -121,7 +120,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize:   10,
-    fontWeight: "600",
+    fontFamily: FONTS.semibold,
   },
   progressWrap: {
     flexDirection:  "row",
@@ -144,7 +143,7 @@ const styles = StyleSheet.create({
   progressLabel: {
     fontSize:   11,
     color:      COLORS.zinc500,
-    fontWeight: "600",
+    fontFamily: FONTS.semibold,
     width:      30,
     textAlign:  "right",
   },
@@ -160,12 +159,13 @@ const styles = StyleSheet.create({
     gap:           4,
   },
   footerText: {
-    fontSize: 11,
-    color:    COLORS.zinc400,
+    fontSize:   11,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc400,
   },
   budget: {
     fontSize:   11,
-    fontWeight: "600",
+    fontFamily: FONTS.semibold,
     color:      COLORS.zinc500,
   },
   skeleton: {

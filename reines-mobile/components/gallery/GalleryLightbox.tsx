@@ -58,25 +58,23 @@ export function GalleryLightbox({
     }
   }, [visible, initialIndex]);
 
-  const item = items[index];
-  if (!item) return null;
-
   const canPrev = index > 0;
   const canNext = index < items.length - 1;
 
   const prev = useCallback(() => {
-    if (canPrev) {
-      setIndex((i) => i - 1);
-      scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
-    }
+    if (!canPrev) return;
+    setIndex((i) => i - 1);
+    scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
   }, [canPrev]);
 
   const next = useCallback(() => {
-    if (canNext) {
-      setIndex((i) => i + 1);
-      scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
-    }
+    if (!canNext) return;
+    setIndex((i) => i + 1);
+    scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
   }, [canNext]);
+
+  const item = items[index];
+  if (!visible || !item) return null;
 
   return (
     <Modal

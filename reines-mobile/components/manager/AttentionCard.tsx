@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { AlertTriangle, Calendar, ChevronRight } from "lucide-react-native";
 import { COLORS, PROJECT_STATUS_CONFIG } from "@/constants";
+import { FONTS, RADII } from "@/constants/theme";
 import { shortDate, timeAgo } from "@/lib/format";
 import type { ManagedProject } from "@/types";
 
@@ -87,8 +88,8 @@ const styles = StyleSheet.create({
   attentionCard: {
     flexDirection:   "row",
     alignItems:      "center",
-    backgroundColor: "#fef9c3",
-    borderRadius:    12,
+    backgroundColor: COLORS.yellowBg,
+    borderRadius:    RADII.md,
     padding:         12,
     gap:             10,
     borderLeftWidth: 3,
@@ -103,9 +104,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   body:   { flex: 1, gap: 2 },
-  title:  { fontSize: 13, fontWeight: "700", color: COLORS.zinc900 },
-  sub:    { fontSize: 11, color: "#713f12" },
-  client: { fontSize: 11, color: COLORS.zinc500 },
+  title:  { fontSize: 13, fontFamily: FONTS.bold, color: COLORS.zinc900 },
+  sub:    { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.yellowText },
+  client: { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.zinc500 },
 
   // Deadline
   deadlineCard: {
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
   deadlineUrgent: {
     borderLeftWidth: 3,
     borderLeftColor: COLORS.red,
-    backgroundColor: "#fef2f2",
+    backgroundColor: COLORS.redBg,
   },
   deadlineIcon: {
     width:          32,

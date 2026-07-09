@@ -105,7 +105,7 @@ function SingleBanner({ item, onPress, onDismiss }: SingleBannerProps) {
   const accentColor = {
     message: "#8fb9e8",
     project: COLORS.primary,
-    gallery: "#7c3aed",
+    gallery: COLORS.accent,
     payment: COLORS.green,
   }[item.data.type] ?? COLORS.primary;
 

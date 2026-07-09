@@ -126,6 +126,7 @@ export function getErrorMessage(error: unknown): string {
     switch (error.response.status) {
       case 401: return "Invalid email or password.";
       case 403: return "Access denied. Admin accounts must use the web portal.";
+      case 409: return "An account with this email already exists.";
       case 422: return "Please check your input and try again.";
       case 429: return "Too many attempts. Please wait a moment and try again.";
       case 500:

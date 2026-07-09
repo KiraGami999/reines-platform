@@ -10,7 +10,7 @@ import type { LoyaltyReward } from "@/types";
 const CATEGORY_CONFIG: Record<string, { label: string; color: string; Icon: React.ComponentType<any> }> = {
   DISCOUNT: { label: "Discount",   color: "#16a34a", Icon: Tag     },
   PRODUCT:  { label: "Product",    color: "#2563eb", Icon: Package  },
-  SERVICE:  { label: "Service",    color: "#7c3aed", Icon: Wrench   },
+  SERVICE:  { label: "Service",    color: COLORS.primary, Icon: Wrench   },
   OTHER:    { label: "Other",      color: "#ca8a04", Icon: Gift     },
 };
 

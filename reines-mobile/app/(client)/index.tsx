@@ -20,6 +20,7 @@ import {
 import { useAuth }           from "@/hooks/useAuth";
 import { useClientDashboard } from "@/hooks/useDashboard";
 import { COLORS, PAYMENT_STATUS_CONFIG } from "@/constants";
+import { FONTS, RADII, SHADOW } from "@/constants/theme";
 import { formatMWK }         from "@/lib/format";
 import { StatCard, StatCardSkeleton }         from "@/components/dashboard/StatCard";
 import { ProjectCard, ProjectCardSkeleton }   from "@/components/dashboard/ProjectCard";
@@ -146,8 +147,9 @@ export default function ClientDashboard() {
           label="Projects"
           value={data.projects.totalCount}
           subtitle={`${data.projects.active.length} active`}
-          accent={COLORS.primary}
-          icon={<FolderOpen size={14} color={COLORS.primary} />}
+          variant="accent"
+          accent={COLORS.accent}
+          icon={<FolderOpen size={14} color={COLORS.accent} />}
           style={{ flex: 1 }}
         />
         <StatCard
@@ -162,8 +164,8 @@ export default function ClientDashboard() {
           label="Points"
           value={loyaltyBal.toLocaleString()}
           subtitle={data.loyalty.tier}
-          accent={loyaltyBal > 0 ? "#f59e0b" : COLORS.zinc400}
-          icon={<Star size={14} color={loyaltyBal > 0 ? "#f59e0b" : COLORS.zinc400} />}
+          accent={loyaltyBal > 0 ? COLORS.yellow : COLORS.zinc400}
+          icon={<Star size={14} color={loyaltyBal > 0 ? COLORS.yellow : COLORS.zinc400} />}
           style={{ flex: 1 }}
         />
         <StatCard
@@ -186,7 +188,7 @@ export default function ClientDashboard() {
 
         {data.projects.active.length === 0 ? (
           <View style={styles.emptyCard}>
-            <FolderOpen size={28} color="#d4d4d8" />
+            <FolderOpen size={28} color={COLORS.zinc300} />
             <Text style={styles.emptyTitle}>No active projects</Text>
             <Text style={styles.emptySub}>Your projects will appear here once started.</Text>
           </View>
@@ -223,7 +225,7 @@ export default function ClientDashboard() {
 
         {data.messages.conversations.length === 0 ? (
           <View style={styles.emptyCard}>
-            <MessageCircle size={28} color="#d4d4d8" />
+            <MessageCircle size={28} color={COLORS.zinc300} />
             <Text style={styles.emptyTitle}>No conversations yet</Text>
             <Text style={styles.emptySub}>Messages from your project manager will appear here.</Text>
           </View>
@@ -269,14 +271,6 @@ export default function ClientDashboard() {
 // Styles
 // ---------------------------------------------------------------------------
 
-const CARD_SHADOW = {
-  shadowColor:   "#000",
-  shadowOffset:  { width: 0, height: 1 },
-  shadowOpacity: 0.06,
-  shadowRadius:  4,
-  elevation:     2,
-} as const;
-
 const styles = StyleSheet.create({
   root:    { flex: 1, backgroundColor: COLORS.zinc50 },
   content: { padding: 20, paddingBottom: 40 },
@@ -287,19 +281,20 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 13,
+    fontFamily: FONTS.medium,
     color:    COLORS.zinc500,
-    fontWeight: "500",
   },
   name: {
-    fontSize:      28,
-    fontWeight:    "800",
+    fontSize:      24,
+    fontFamily:    FONTS.bold,
     color:         COLORS.primary,
     marginTop:     2,
     letterSpacing: -0.5,
   },
   heroCopy: {
     fontSize:  13,
-    color:     COLORS.zinc400,
+    fontFamily: FONTS.regular,
+    color:     COLORS.zinc500,
     marginTop: 4,
   },
 
@@ -318,9 +313,11 @@ const styles = StyleSheet.create({
   // Conversations card wrapper
   conversationsCard: {
     backgroundColor: COLORS.white,
-    borderRadius:    14,
+    borderRadius:    RADII.md,
     paddingHorizontal: 14,
-    ...CARD_SHADOW,
+    borderWidth:     1,
+    borderColor:     COLORS.zinc200,
+    ...SHADOW.card,
   },
   divider: {
     height:           1,
@@ -341,35 +338,39 @@ const styles = StyleSheet.create({
   paymentAlertText: {
     flex:       1,
     fontSize:   13,
+    fontFamily: FONTS.regular,
     color:      COLORS.zinc700,
     lineHeight: 18,
   },
   paymentAlertAmount: {
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     color:      COLORS.yellow,
   },
 
   // Empty states
   emptyCard: {
     backgroundColor: COLORS.white,
-    borderRadius:    14,
+    borderRadius:    RADII.md,
     padding:         28,
     alignItems:      "center",
-    ...CARD_SHADOW,
+    borderWidth:     1,
+    borderColor:     COLORS.zinc200,
+    ...SHADOW.card,
   },
   emptyTitle: {
-    fontSize:   14,
-    fontWeight: "700",
-    color:      COLORS.zinc700,
-    marginTop:  12,
+    fontSize:     14,
+    fontFamily:   FONTS.bold,
+    color:        COLORS.zinc700,
+    marginTop:    12,
     marginBottom: 4,
   },
   emptySub: {
-    fontSize:  12,
-    color:     COLORS.zinc400,
-    textAlign: "center",
+    fontSize:   12,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc400,
+    textAlign:  "center",
     lineHeight: 17,
-    maxWidth:  220,
+    maxWidth:   220,
   },
 
   // Error state
@@ -381,15 +382,16 @@ const styles = StyleSheet.create({
   },
   errorTitle: {
     fontSize:   16,
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     color:      COLORS.zinc900,
     marginTop:  16,
   },
   errorSub: {
-    fontSize:  13,
-    color:     COLORS.zinc500,
-    marginTop: 6,
-    textAlign: "center",
+    fontSize:   13,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc500,
+    marginTop:  6,
+    textAlign:  "center",
   },
   retryBtn: {
     flexDirection:    "row",
@@ -403,7 +405,7 @@ const styles = StyleSheet.create({
   },
   retryText: {
     color:      COLORS.white,
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     fontSize:   14,
   },
 

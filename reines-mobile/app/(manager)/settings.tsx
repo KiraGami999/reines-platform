@@ -14,12 +14,12 @@ export default function ManagerSettings() {
     <SettingsScreen
       extraRows={[
         {
-          icon:    <FolderKanban size={16} color="#7c3aed" />,
+          icon:    <FolderKanban size={16} color={COLORS.primary} />,
           label:   "My Projects",
           onPress: () => router.push("/(manager)/projects"),
         },
         {
-          icon:    <ImageIcon size={16} color="#7c3aed" />,
+          icon:    <ImageIcon size={16} color={COLORS.primary} />,
           label:   "Progress Gallery",
           onPress: () => router.push("/(manager)/gallery"),
         },

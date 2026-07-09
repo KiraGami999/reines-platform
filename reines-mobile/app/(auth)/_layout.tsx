@@ -24,11 +24,12 @@ export default function AuthLayout() {
     <Stack
       screenOptions={{
         headerShown:   false,
-        contentStyle:  { backgroundColor: COLORS.primary },
+        contentStyle:  { backgroundColor: COLORS.zinc50 },
         animation:     "fade",
       }}
     >
       <Stack.Screen name="login" />
+      <Stack.Screen name="register" />
     </Stack>
   );
 }

@@ -3,6 +3,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 
 import { AuthProvider }              from "@/components/auth/AuthProvider";
+import { FontProvider }              from "@/components/providers/FontProvider";
 import { NotificationsProvider }     from "@/components/notifications/NotificationsProvider";
 import { queryClient }               from "@/lib/queryClient";
 import { COLORS }                    from "@/constants";
@@ -30,17 +31,19 @@ import { COLORS }                    from "@/constants";
 export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <StatusBar style="light" backgroundColor={COLORS.primary} />
-        <NotificationsProvider>
-          <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
-            <Stack.Screen name="(auth)"     />
-            <Stack.Screen name="(client)"   />
-            <Stack.Screen name="(manager)"  />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </NotificationsProvider>
-      </AuthProvider>
+      <FontProvider>
+        <AuthProvider>
+          <StatusBar style="auto" />
+          <NotificationsProvider>
+            <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
+              <Stack.Screen name="(auth)"     />
+              <Stack.Screen name="(client)"   />
+              <Stack.Screen name="(manager)"  />
+              <Stack.Screen name="+not-found" />
+            </Stack>
+          </NotificationsProvider>
+        </AuthProvider>
+      </FontProvider>
     </QueryClientProvider>
   );
 }

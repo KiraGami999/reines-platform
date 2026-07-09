@@ -1,6 +1,13 @@
 import api from "@/lib/api";
 import { saveToken, deleteToken, getToken, deletePushToken } from "@/lib/storage";
-import type { LoginCredentials, LoginResponse, RefreshResponse, AuthUser } from "@/types";
+import type {
+  LoginCredentials,
+  LoginResponse,
+  RefreshResponse,
+  AuthUser,
+  RegisterCredentials,
+  RegisterResponse,
+} from "@/types";
 
 /**
  * Calls POST /api/mobile/login.
@@ -9,6 +16,15 @@ import type { LoginCredentials, LoginResponse, RefreshResponse, AuthUser } from 
 export async function login(credentials: LoginCredentials): Promise<LoginResponse> {
   const { data } = await api.post<LoginResponse>("/api/mobile/login", credentials);
   await saveToken(data.token);
+  return data;
+}
+
+/**
+ * Calls POST /api/auth/register (same endpoint as the web portal).
+ * Does not sign the user in — redirect to login after success.
+ */
+export async function register(credentials: RegisterCredentials): Promise<RegisterResponse> {
+  const { data } = await api.post<RegisterResponse>("/api/auth/register", credentials);
   return data;
 }
 

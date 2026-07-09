@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { MessageCircle } from "lucide-react-native";
 import { COLORS } from "@/constants";
+import { FONTS } from "@/constants/theme";
 import { timeAgo, truncate } from "@/lib/format";
 import type { DashboardConversation } from "@/types";
 
@@ -82,8 +83,8 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     fontSize:   14,
-    fontWeight: "700",
-    color:      COLORS.white,
+    fontFamily: FONTS.bold,
+    color:      COLORS.accent,
   },
   content: {
     flex: 1,
@@ -95,25 +96,27 @@ const styles = StyleSheet.create({
     marginBottom:   2,
   },
   name: {
-    fontSize:   14,
-    fontWeight: "700",
-    color:      COLORS.zinc900,
-    flex:       1,
+    fontSize:    14,
+    fontFamily:  FONTS.bold,
+    color:       COLORS.zinc900,
+    flex:        1,
     marginRight: 8,
   },
   time: {
-    fontSize: 11,
-    color:    COLORS.zinc400,
+    fontSize:   11,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc400,
   },
   project: {
-    fontSize:     11,
-    color:        COLORS.primary,
-    fontWeight:   "600",
-    marginBottom: 2,
+    fontSize:      11,
+    color:         COLORS.primary,
+    fontFamily:    FONTS.semibold,
+    marginBottom:  2,
   },
   preview: {
-    fontSize: 12,
-    color:    COLORS.zinc500,
+    fontSize:   12,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc500,
     lineHeight: 16,
   },
   skeleton: {

@@ -8,6 +8,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { COLORS } from "@/constants";
+import { FONTS } from "@/constants/theme";
 
 type Variant = "primary" | "secondary" | "danger" | "ghost";
 type Size    = "sm" | "md" | "lg";
@@ -23,15 +24,15 @@ interface Props extends TouchableOpacityProps {
 
 const VARIANT_STYLES: Record<Variant, { bg: string; text: string; border?: string }> = {
   primary:   { bg: COLORS.primary, text: COLORS.white },
-  secondary: { bg: COLORS.accent,  text: COLORS.primary },
-  danger:    { bg: COLORS.red,     text: COLORS.white },
-  ghost:     { bg: "transparent",  text: COLORS.primary, border: COLORS.zinc200 },
+  secondary: { bg: COLORS.white, text: COLORS.zinc700, border: COLORS.zinc200 },
+  danger:    { bg: COLORS.blue, text: COLORS.white },
+  ghost:     { bg: "transparent", text: COLORS.zinc600 },
 };
 
 const SIZE_STYLES: Record<Size, { py: number; px: number; fontSize: number }> = {
   sm: { py: 8,  px: 14, fontSize: 13 },
   md: { py: 12, px: 18, fontSize: 14 },
-  lg: { py: 15, px: 22, fontSize: 15 },
+  lg: { py: 14, px: 22, fontSize: 15 },
 };
 
 export function Button({ children, variant = "primary", size = "md", loading, fullWidth, style, disabled, ...props }: Props) {
@@ -66,6 +67,6 @@ export function Button({ children, variant = "primary", size = "md", loading, fu
 }
 
 const styles = StyleSheet.create({
-  base:  { borderRadius: 12, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 6 },
-  label: { fontWeight: "700" },
+  base:  { borderRadius: 8, alignItems: "center", justifyContent: "center", flexDirection: "row", gap: 6 },
+  label: { fontFamily: FONTS.semibold },
 });

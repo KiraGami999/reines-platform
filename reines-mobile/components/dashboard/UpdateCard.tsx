@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import { useRouter } from "expo-router";
 import { FileText } from "lucide-react-native";
 import { COLORS } from "@/constants";
+import { FONTS, RADII, SHADOW } from "@/constants/theme";
 import { timeAgo, truncate } from "@/lib/format";
 import type { DashboardUpdate } from "@/types";
 
@@ -63,15 +64,13 @@ export function UpdateCardSkeleton() {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: COLORS.white,
-    borderRadius:    12,
+    borderRadius:    RADII.md,
     flexDirection:   "row",
     overflow:        "hidden",
     marginBottom:    10,
-    shadowColor:     "#000",
-    shadowOffset:    { width: 0, height: 1 },
-    shadowOpacity:   0.05,
-    shadowRadius:    3,
-    elevation:       1,
+    borderWidth:     1,
+    borderColor:     COLORS.zinc200,
+    ...SHADOW.card,
   },
   thumb: {
     width:  72,
@@ -88,15 +87,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   projectName: {
-    fontSize:   11,
-    fontWeight: "700",
-    color:      COLORS.primary,
+    fontSize:      11,
+    fontFamily:    FONTS.bold,
+    color:         COLORS.primary,
     textTransform: "uppercase",
     letterSpacing: 0.3,
     marginBottom:  2,
   },
   note: {
     fontSize:   13,
+    fontFamily: FONTS.regular,
     color:      COLORS.zinc700,
     lineHeight: 18,
     flex:       1,
@@ -115,14 +115,15 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize:   10,
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     color:      COLORS.primary,
   },
   time: {
-    fontSize: 10,
-    color:    COLORS.zinc400,
-    flex:     1,
-    textAlign: "right",
+    fontSize:   10,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc400,
+    flex:       1,
+    textAlign:  "right",
   },
   skeleton: {
     backgroundColor: COLORS.zinc100,

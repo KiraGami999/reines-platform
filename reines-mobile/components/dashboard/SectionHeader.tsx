@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { COLORS } from "@/constants";
+import { FONTS } from "@/constants/theme";
 
 interface SectionHeaderProps {
   title:      string;
@@ -31,12 +32,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize:   15,
-    fontWeight: "700",
+    fontFamily: FONTS.semibold,
     color:      COLORS.zinc900,
   },
   action: {
     fontSize:   13,
-    color:      COLORS.primary,
-    fontWeight: "600",
+    fontFamily: FONTS.semibold,
+    color:      COLORS.accent,
   },
 });

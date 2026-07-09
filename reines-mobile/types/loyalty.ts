@@ -124,7 +124,7 @@ export const TIER_CONFIG: TierConfig[] = [
   {
     name:      "PLATINUM",
     label:     "Platinum",
-    color:     "#7c3aed",
+    color:     "#2d4a6b",
     icon:      "💎",
     minSpend:  10_000_000,
     nextSpend: null,

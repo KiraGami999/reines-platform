@@ -19,6 +19,16 @@ export interface LoginCredentials {
   password: string;
 }
 
+export interface RegisterCredentials {
+  name:     string;
+  email:    string;
+  password: string;
+}
+
+export interface RegisterResponse {
+  user: Pick<AuthUser, "id" | "name" | "email" | "role">;
+}
+
 export interface LoginResponse {
   token: string;
   user:  AuthUser;

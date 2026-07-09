@@ -9,6 +9,7 @@ import {
   Activity, ChevronRight, AlertCircle,
 } from "lucide-react-native";
 import { COLORS } from "@/constants";
+import { FONTS, RADII } from "@/constants/theme";
 import { useAuth }              from "@/hooks/useAuth";
 import { useManagerDashboard }  from "@/hooks/useManagerDashboard";
 import { useProjects }          from "@/hooks/useProjects";
@@ -127,8 +128,8 @@ export default function ManagerDashboard() {
             <ManagerStatCard
               value={data!.stats.completedThisMonth}
               label="Done This Month"
-              accent="#7c3aed"
-              icon={<FolderKanban size={16} color="#7c3aed" />}
+              accent={COLORS.accent}
+              icon={<FolderKanban size={16} color={COLORS.accent} />}
             />
           </View>
         )}
@@ -242,7 +243,7 @@ function SectionHeader({
       </View>
       {action && (
         <TouchableOpacity onPress={action.onPress} activeOpacity={0.75}>
-          <Text style={[styles.seeAll, { color: accent ?? COLORS.primary }]}>{action.label}</Text>
+          <Text style={[styles.seeAll, { color: COLORS.accent }]}>{action.label}</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -268,12 +269,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom:   4,
   },
-  greeting: { fontSize: 13, color: COLORS.zinc400 },
-  name:     { fontSize: 24, fontWeight: "900", color: COLORS.primary, marginTop: 2 },
+  greeting: { fontSize: 13, fontFamily: FONTS.medium, color: COLORS.zinc500 },
+  name:     { fontSize: 24, fontFamily: FONTS.bold, color: COLORS.primary, marginTop: 2 },
   role: {
     fontSize:      11,
     color:         COLORS.accent,
-    fontWeight:    "700",
+    fontFamily:    FONTS.bold,
     textTransform: "uppercase",
     letterSpacing: 1,
     marginTop:     3,
@@ -282,31 +283,32 @@ const styles = StyleSheet.create({
     flexDirection:     "row",
     alignItems:        "center",
     gap:               5,
-    backgroundColor:   "#fef9c3",
-    borderRadius:      16,
+    backgroundColor:   COLORS.yellowBg,
+    borderRadius:      RADII.xl,
     paddingHorizontal: 10,
     paddingVertical:   5,
     borderWidth:       1,
-    borderColor:       COLORS.yellow + "60",
+    borderColor:       COLORS.yellowBorder,
   },
-  alertPillText: { fontSize: 11, fontWeight: "700", color: "#713f12" },
+  alertPillText: { fontSize: 11, fontFamily: FONTS.bold, color: COLORS.yellowText },
 
   pendingCard: {
     backgroundColor: COLORS.white,
-    borderRadius:    12,
+    borderRadius:    RADII.md,
     padding:         12,
     borderWidth:     1,
-    borderColor:     "#fde68a",
+    borderColor:     COLORS.yellowBorder,
     gap:             8,
   },
   pendingTitle: {
     fontSize:   14,
-    fontWeight: "700",
+    fontFamily: FONTS.bold,
     color:      COLORS.zinc900,
   },
   pendingClient: {
-    fontSize: 12,
-    color:    COLORS.zinc500,
+    fontSize:   12,
+    fontFamily: FONTS.regular,
+    color:      COLORS.zinc500,
   },
 
   statsGrid: {
@@ -322,8 +324,8 @@ const styles = StyleSheet.create({
     marginTop:      4,
   },
   sectionHeaderLeft: { flexDirection: "row", alignItems: "center", gap: 6 },
-  sectionTitle: { fontSize: 14, fontWeight: "700", color: COLORS.zinc700, marginTop: 4 },
-  seeAll:       { fontSize: 12, fontWeight: "600" },
+  sectionTitle: { fontSize: 14, fontFamily: FONTS.bold, color: COLORS.zinc700, marginTop: 4 },
+  seeAll:       { fontSize: 12, fontFamily: FONTS.semibold, color: COLORS.accent },
 
   feedCard: {
     backgroundColor: COLORS.white,
