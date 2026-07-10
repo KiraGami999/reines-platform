@@ -1,11 +1,11 @@
 import { Image, type ImageStyle, type StyleProp } from "react-native";
 import { APP_NAME } from "@/constants";
 
-/** Trimmed wordmark aspect ratio from source asset (687×136). */
-export const LOGO_WORDMARK_ASPECT = 687 / 136;
+/** Trimmed wordmark aspect ratio from source asset (684×143). */
+export const LOGO_WORDMARK_ASPECT = 684 / 143;
 
-/** Icon-only crop aspect ratio (142×136). */
-export const LOGO_ICON_ASPECT = 142 / 136;
+/** Icon-only crop aspect ratio (154×154). */
+export const LOGO_ICON_ASPECT = 1;
 
 const WORDMARK = {
   "on-dark":  require("@/assets/logo-white.png"),

@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   title: "Reines Property Development",
   description: "Modern client portal and project management platform.",
   icons: {
-    icon: "/logo.png",
-    apple: "/logo.png",
+    icon: "/logo-icon.png",
+    apple: "/logo-icon.png",
   },
 };
 

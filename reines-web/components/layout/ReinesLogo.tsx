@@ -4,9 +4,9 @@ import { cn } from "@/lib/utils";
 
 export const REINES_LOGO_SRC = "/logo.png";
 
-/** Logo aspect ratio from trimmed transparent asset (687×136). */
-const LOGO_WIDTH = 687;
-const LOGO_HEIGHT = 136;
+/** Logo aspect ratio from trimmed transparent asset (684×143). */
+const LOGO_WIDTH = 684;
+const LOGO_HEIGHT = 143;
 
 const HEIGHT_CLASS = {
   xs: "h-8",
