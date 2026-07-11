@@ -4,29 +4,68 @@
  * The API client runs outside React, so it cannot call hooks or
  * dispatch context actions directly. This bus bridges that gap:
  *
- *   API interceptor → emits "SESSION_EXPIRED"
- *   AuthProvider    → listens and calls signOut() + redirects to login
+ *   API interceptor → emits "TOKEN_REFRESHED" | "SESSION_EXPIRED"
+ *   AuthProvider    → listens and syncs React state / redirects
  *
  * Pattern: singleton module-level listeners list (zero dependencies).
  */
 
-type AuthEvent = "SESSION_EXPIRED";
+import type { AuthUser } from "@/types";
 
-type Listener = () => void;
+export type TokenRefreshedPayload = { token: string; user: AuthUser };
 
-const listeners: Record<AuthEvent, Listener[]> = {
-  SESSION_EXPIRED: [],
-};
+type SessionExpiredListener = () => void;
+type TokenRefreshedListener = (payload: TokenRefreshedPayload) => void;
 
-/** Register a listener for an auth event. Returns an unsubscribe function. */
-export function onAuthEvent(event: AuthEvent, fn: Listener): () => void {
-  listeners[event].push(fn);
+const sessionExpiredListeners: SessionExpiredListener[] = [];
+const tokenRefreshedListeners: TokenRefreshedListener[] = [];
+
+/** Register a listener for SESSION_EXPIRED. Returns an unsubscribe function. */
+export function onAuthEvent(
+  event: "SESSION_EXPIRED",
+  fn: SessionExpiredListener
+): () => void;
+/** Register a listener for TOKEN_REFRESHED. Returns an unsubscribe function. */
+export function onAuthEvent(
+  event: "TOKEN_REFRESHED",
+  fn: TokenRefreshedListener
+): () => void;
+export function onAuthEvent(
+  event: "SESSION_EXPIRED" | "TOKEN_REFRESHED",
+  fn: SessionExpiredListener | TokenRefreshedListener
+): () => void {
+  if (event === "SESSION_EXPIRED") {
+    const listener = fn as SessionExpiredListener;
+    sessionExpiredListeners.push(listener);
+    return () => {
+      const i = sessionExpiredListeners.indexOf(listener);
+      if (i >= 0) sessionExpiredListeners.splice(i, 1);
+    };
+  }
+
+  const listener = fn as TokenRefreshedListener;
+  tokenRefreshedListeners.push(listener);
   return () => {
-    listeners[event] = listeners[event].filter((l) => l !== fn);
+    const i = tokenRefreshedListeners.indexOf(listener);
+    if (i >= 0) tokenRefreshedListeners.splice(i, 1);
   };
 }
 
-/** Emit an auth event to all registered listeners. */
-export function emitAuthEvent(event: AuthEvent): void {
-  listeners[event].forEach((fn) => fn());
+/** Emit SESSION_EXPIRED to all registered listeners. */
+export function emitAuthEvent(event: "SESSION_EXPIRED"): void;
+/** Emit TOKEN_REFRESHED with the new token and user. */
+export function emitAuthEvent(
+  event: "TOKEN_REFRESHED",
+  payload: TokenRefreshedPayload
+): void;
+export function emitAuthEvent(
+  event: "SESSION_EXPIRED" | "TOKEN_REFRESHED",
+  payload?: TokenRefreshedPayload
+): void {
+  if (event === "SESSION_EXPIRED") {
+    sessionExpiredListeners.forEach((fn) => fn());
+    return;
+  }
+  if (!payload) return;
+  tokenRefreshedListeners.forEach((fn) => fn(payload));
 }

@@ -7,6 +7,7 @@ import { queryClient } from "@/lib/queryClient";
 import { getToken, saveToken, deleteToken, deletePushToken } from "@/lib/storage";
 import { onAuthEvent } from "@/lib/authEvents";
 import { fetchCurrentUser, logout as authLogout } from "@/services/auth.service";
+import { unregisterPushToken } from "@/services/notifications.service";
 import type { AuthUser } from "@/types";
 
 interface Props {
@@ -25,19 +26,19 @@ interface Props {
  *     Saves the token, sets user state, and the router guard in each
  *     group layout takes care of navigation.
  *
- *  3. signOut: clears JWT + push token from SecureStore, resets all
- *     React Query cache, and redirects to /login.
+ *  3. signOut: unregisters push token on the server, clears JWT + push
+ *     from SecureStore, resets React Query cache, redirects to /login.
  *
  *  4. SESSION_EXPIRED event: when the API interceptor fails to refresh
  *     the token, it emits this event. AuthProvider catches it and calls
  *     signOut so the user is cleanly redirected to login without seeing
  *     a broken screen.
  *
- *  5. updateToken: called when the API interceptor silently refreshes
- *     the JWT so that context.token stays in sync with SecureStore.
+ *  5. TOKEN_REFRESHED event: when the API interceptor (or XHR upload)
+ *     silently refreshes the JWT, AuthProvider syncs context.token and
+ *     context.user with SecureStore / server payload.
  *
  *  6. refreshUser: re-fetches the user profile from the server.
- *     Useful after the user updates their name or role changes.
  */
 export function AuthProvider({ children }: Props) {
   const [user,      setUser]      = useState<AuthUser | null>(null);
@@ -86,14 +87,23 @@ export function AuthProvider({ children }: Props) {
     return () => { cancelled = true; };
   }, []);
 
+  // ── Silent refresh → keep React context in sync with SecureStore ────────────
+
+  useEffect(() => {
+    const unsub = onAuthEvent("TOKEN_REFRESHED", ({ token: newToken, user: newUser }) => {
+      setToken(newToken);
+      setUser(newUser);
+    });
+    return unsub;
+  }, []);
+
   // ── Session-expired event from the API interceptor ──────────────────────────
 
   useEffect(() => {
     const unsub = onAuthEvent("SESSION_EXPIRED", () => {
-      // api.ts already deleted the JWT before emitting this event.
-      // Clean up the push token from local storage too so we don't leave
-      // a stale reference — the server record will be orphaned but the
-      // token will eventually expire and stop delivering pushes.
+      // JWT was already deleted by refreshAccessToken before this fired.
+      // Cannot reliably unregister on the server without a valid token —
+      // clear local push storage only. signOut() handles server unregister.
       deletePushToken().catch(console.warn);
       setToken(null);
       setUser(null);
@@ -112,6 +122,13 @@ export function AuthProvider({ children }: Props) {
   }, []);
 
   const signOut = useCallback(async () => {
+    // Unregister while the JWT is still valid so the backend can remove
+    // this device from the push roster immediately.
+    try {
+      await unregisterPushToken();
+    } catch {
+      // Non-fatal — authLogout still clears local state
+    }
     await authLogout();
     setToken(null);
     setUser(null);
@@ -129,8 +146,9 @@ export function AuthProvider({ children }: Props) {
   }, []);
 
   /**
-   * Called by the API interceptor (via a future hook or effect) when it
-   * silently refreshes the JWT, so the context token stays current.
+   * Called when the API silently refreshes the JWT so context.token stays
+   * current. Prefer TOKEN_REFRESHED events from the interceptor; this remains
+   * for explicit callers.
    */
   const updateToken = useCallback((newToken: string) => {
     setToken(newToken);

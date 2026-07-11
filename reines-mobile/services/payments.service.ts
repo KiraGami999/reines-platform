@@ -1,5 +1,5 @@
 import api from "@/lib/api";
-import { getToken } from "@/lib/storage";
+import { authenticatedUpload } from "@/lib/authenticatedUpload";
 import { API_BASE_URL } from "@/constants";
 import type {
   Payment,
@@ -60,49 +60,34 @@ export async function submitCashPayment(payload: {
 
 /**
  * Uploads a local receipt image via the mobile cash-upload endpoint.
+ * On 401, refreshes the token and retries once.
  * Returns the remote URL of the uploaded file.
  */
-export function uploadReceipt(localUri: string): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    const token = await getToken();
-    if (!token) {
-      reject(new Error("Not authenticated."));
-      return;
-    }
+export async function uploadReceipt(localUri: string): Promise<string> {
+  const filename = localUri.split("/").pop() ?? "receipt.jpg";
+  const match    = /\.(\w+)$/.exec(filename);
+  const mimeType = match
+    ? `image/${match[1].toLowerCase().replace("jpg", "jpeg")}`
+    : "image/jpeg";
 
-    const filename = localUri.split("/").pop() ?? "receipt.jpg";
-    const match    = /\.(\w+)$/.exec(filename);
-    const mimeType = match
-      ? `image/${match[1].toLowerCase().replace("jpg", "jpeg")}`
-      : "image/jpeg";
+  const formData = new FormData();
+  formData.append("file", {
+    uri:  localUri,
+    name: filename,
+    type: mimeType,
+  } as unknown as Blob);
 
-    const formData = new FormData();
-    formData.append("file", {
-      uri:  localUri,
-      name: filename,
-      type: mimeType,
-    } as unknown as Blob);
-
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", `${API_BASE_URL}/api/mobile/payments/cash/upload`);
-    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
-
-    xhr.onload = () => {
-      try {
-        const json = JSON.parse(xhr.responseText) as { url?: string; error?: string };
-        if (xhr.status >= 200 && xhr.status < 300 && json.url) {
-          resolve(json.url);
-        } else {
-          reject(new Error(json.error ?? `Upload failed (${xhr.status})`));
-        }
-      } catch {
-        reject(new Error("Invalid response from server."));
-      }
-    };
-
-    xhr.onerror  = () => reject(new Error("Network error during upload."));
-    xhr.ontimeout = () => reject(new Error("Upload timed out."));
-    xhr.timeout  = 60_000;
-    xhr.send(formData);
+  const { status, json } = await authenticatedUpload({
+    url: `${API_BASE_URL}/api/mobile/payments/cash/upload`,
+    formData,
   });
+
+  if (status >= 200 && status < 300 && typeof json.url === "string") {
+    return json.url;
+  }
+
+  throw new Error(
+    (typeof json.error === "string" ? json.error : null) ??
+      `Upload failed (${status})`
+  );
 }

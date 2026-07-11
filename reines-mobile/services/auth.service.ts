@@ -41,11 +41,15 @@ export async function refresh(): Promise<RefreshResponse> {
 /**
  * Calls POST /api/mobile/logout, then wipes local storage.
  * Safe to call even if the server is unreachable.
+ *
+ * Prefer AuthProvider.signOut(), which calls unregisterPushToken() first
+ * while the JWT is still valid. This function still accepts an optional
+ * pushToken body for backends that clear devices on logout.
  */
 export async function logout(): Promise<void> {
   const pushToken = await import("@/lib/storage").then((m) => m.getPushToken());
   try {
-    await api.post("/api/mobile/logout", { pushToken });
+    await api.post("/api/mobile/logout", { pushToken: pushToken ?? undefined });
   } catch {
     // Ignore network errors — always clear local state
   }

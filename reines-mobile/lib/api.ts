@@ -12,10 +12,9 @@ import type { RefreshResponse } from "@/types";
  *
  * Response interceptor — on 401:
  *   1. Queues concurrent requests while a refresh is in flight.
- *   2. Calls POST /api/mobile/refresh with the existing token.
- *   3. On success: saves the new token, retries all queued requests.
- *   4. On failure: deletes the token, emits SESSION_EXPIRED so
- *      AuthProvider can clear React state and redirect to login.
+ *   2. Calls refreshAccessToken() (shared with XHR uploads).
+ *   3. On success: retries all queued requests.
+ *   4. On failure: SESSION_EXPIRED is emitted inside refreshAccessToken.
  */
 
 let isRefreshing = false;
@@ -27,6 +26,44 @@ let pendingQueue: Array<{
 function drainQueue(error: unknown, token: string | null): void {
   pendingQueue.forEach((p) => (error ? p.reject(error) : p.resolve(token!)));
   pendingQueue = [];
+}
+
+/**
+ * Silently refreshes the access token.
+ * Shared by the Axios interceptor and XHR upload helpers so both paths
+ * stay in sync with SecureStore and AuthProvider (via TOKEN_REFRESHED).
+ *
+ * Concurrent callers share a single in-flight refresh via pendingQueue.
+ */
+export async function refreshAccessToken(): Promise<string> {
+  if (isRefreshing) {
+    return new Promise<string>((resolve, reject) => {
+      pendingQueue.push({ resolve, reject });
+    });
+  }
+
+  isRefreshing = true;
+
+  try {
+    const currentToken = await getToken();
+    const res = await axios.post<RefreshResponse>(
+      `${API_BASE_URL}/api/mobile/refresh`,
+      {},
+      { headers: { Authorization: `Bearer ${currentToken}` } }
+    );
+    const newToken = res.data.token;
+    await saveToken(newToken);
+    emitAuthEvent("TOKEN_REFRESHED", { token: newToken, user: res.data.user });
+    drainQueue(null, newToken);
+    return newToken;
+  } catch (refreshError) {
+    drainQueue(refreshError, null);
+    await deleteToken();
+    emitAuthEvent("SESSION_EXPIRED");
+    throw refreshError;
+  } finally {
+    isRefreshing = false;
+  }
 }
 
 const api: AxiosInstance = axios.create({
@@ -64,43 +101,14 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Queue this request while a refresh is already in progress
-    if (isRefreshing) {
-      return new Promise<unknown>((resolve, reject) => {
-        pendingQueue.push({
-          resolve: (token) => {
-            original.headers.Authorization = `Bearer ${token}`;
-            resolve(api(original));
-          },
-          reject,
-        });
-      });
-    }
-
     original._retry = true;
-    isRefreshing    = true;
 
     try {
-      const currentToken = await getToken();
-      const res = await axios.post<RefreshResponse>(
-        `${API_BASE_URL}/api/mobile/refresh`,
-        {},
-        { headers: { Authorization: `Bearer ${currentToken}` } }
-      );
-      const newToken = res.data.token;
-      await saveToken(newToken);
-
-      drainQueue(null, newToken);
+      const newToken = await refreshAccessToken();
       original.headers.Authorization = `Bearer ${newToken}`;
       return api(original);
     } catch (refreshError) {
-      drainQueue(refreshError, null);
-      await deleteToken();
-      // Signal AuthProvider to clear React state and redirect to login
-      emitAuthEvent("SESSION_EXPIRED");
       return Promise.reject(refreshError);
-    } finally {
-      isRefreshing = false;
     }
   }
 );
