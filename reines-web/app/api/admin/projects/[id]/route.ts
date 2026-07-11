@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { updateProjectSchema } from "@/lib/validations";
 import { ok, forbidden, notFound, validationError } from "@/lib/api-response";
+import { notifyProjectUpdate } from "@/lib/push";
 
 async function requireAdminOrManager() {
   const session = await auth();
@@ -23,12 +24,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   const { startDate, endDate, budget, status, ...rest } = parsed.data;
 
   try {
+    const existing = await prisma.project.findUnique({
+      where:  { id },
+      select: { id: true, status: true, title: true, clientId: true, managerId: true, managerAccepted: true },
+    });
+    if (!existing) return notFound("Project");
+
     if (session.user.role === "PROJECT_MANAGER") {
-      const existing = await prisma.project.findFirst({
-        where: { id, managerId: session.user.id, managerAccepted: true },
-        select: { id: true },
-      });
-      if (!existing) return forbidden("Accept this project before making updates.");
+      if (existing.managerId !== session.user.id || !existing.managerAccepted) {
+        return forbidden("Accept this project before making updates.");
+      }
     }
 
     const project = await prisma.project.update({
@@ -46,6 +51,21 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
         manager: { select: { id: true, name: true, email: true } },
       },
     });
+
+    // Notify the client when project status actually changes
+    if (
+      status !== undefined &&
+      status !== existing.status &&
+      existing.clientId
+    ) {
+      notifyProjectUpdate({
+        clientId:     existing.clientId,
+        projectTitle: project.title,
+        projectId:    project.id,
+        newStatus:    status,
+      }).catch(console.warn);
+    }
+
     return ok(project);
   } catch {
     return notFound("Project");

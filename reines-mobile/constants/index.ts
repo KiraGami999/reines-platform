@@ -16,6 +16,9 @@ export const TOKEN_KEY = "reines_auth_token";
 /** Push token storage key */
 export const PUSH_TOKEN_KEY = "reines_push_token";
 
+/** User preference: push notifications enabled (SecureStore) */
+export const PUSH_ENABLED_KEY = "reines_push_enabled";
+
 /** Message polling interval in milliseconds */
 export const MESSAGE_POLL_INTERVAL_MS = 5_000;
 

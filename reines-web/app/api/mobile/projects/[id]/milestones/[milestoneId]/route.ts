@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { notifyMilestone } from "@/lib/push";
 import { z } from "zod";
 
 type RouteContext = { params: Promise<{ id: string; milestoneId: string }> };
@@ -48,7 +49,15 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
   try {
     const milestone = await prisma.milestone.findUnique({
       where:  { id: milestoneId },
-      select: { id: true, projectId: true, project: { select: { managerId: true } } },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        projectId: true,
+        project: {
+          select: { managerId: true, clientId: true, title: true },
+        },
+      },
     });
     if (!milestone || milestone.projectId !== projectId)
       return NextResponse.json({ error: "Milestone not found." }, { status: 404 });
@@ -73,6 +82,22 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         }),
       },
     });
+
+    if (
+      status !== undefined &&
+      status !== milestone.status &&
+      milestone.project.clientId
+    ) {
+      notifyMilestone({
+        clientId:       milestone.project.clientId,
+        projectTitle:   milestone.project.title,
+        projectId,
+        milestoneId:    updated.id,
+        milestoneTitle: updated.title,
+        kind:           "status",
+        newStatus:      status,
+      }).catch(console.warn);
+    }
 
     return NextResponse.json({
       milestone: {

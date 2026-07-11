@@ -14,10 +14,11 @@ export interface PaginatedResponse<T> {
 
 /** Notification payload pushed to device (matches lib/push.ts PushPayload) */
 export interface PushNotificationData {
-  type:       "message" | "payment" | "project" | "gallery";
-  projectId?: string;
-  paymentId?: string;
-  updateId?:  string;   // gallery update ID for direct deep-link
-  title:      string;
-  body:       string;
+  type:         "message" | "payment" | "project" | "gallery" | "milestone";
+  projectId?:   string;
+  paymentId?:   string;
+  updateId?:    string;   // gallery update ID for direct deep-link
+  milestoneId?: string;
+  title:        string;
+  body:         string;
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { notifyMilestone } from "@/lib/push";
 import { z } from "zod";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -101,7 +102,7 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   try {
     const project = await prisma.project.findUnique({
       where:  { id: projectId },
-      select: { managerId: true },
+      select: { managerId: true, clientId: true, title: true },
     });
     if (!project)
       return NextResponse.json({ error: "Project not found." }, { status: 404 });
@@ -117,6 +118,17 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
         sortOrder:   parsed.data.sortOrder,
       },
     });
+
+    if (project.clientId) {
+      notifyMilestone({
+        clientId:       project.clientId,
+        projectTitle:   project.title,
+        projectId,
+        milestoneId:    milestone.id,
+        milestoneTitle: milestone.title,
+        kind:           "created",
+      }).catch(console.warn);
+    }
 
     return NextResponse.json({
       milestone: {

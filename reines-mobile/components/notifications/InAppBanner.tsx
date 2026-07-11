@@ -13,6 +13,7 @@ import {
   FolderOpen,
   Image as ImageIcon,
   CreditCard,
+  Flag,
   Bell,
 } from "lucide-react-native";
 import { COLORS } from "@/constants";
@@ -34,11 +35,12 @@ interface BannerItem {
 function BannerIcon({ type }: { type: PushNotificationData["type"] }) {
   const props = { size: 18, color: COLORS.white };
   switch (type) {
-    case "message": return <MessageCircle {...props} />;
-    case "project": return <FolderOpen   {...props} />;
-    case "gallery": return <ImageIcon    {...props} />;
-    case "payment": return <CreditCard   {...props} />;
-    default:        return <Bell         {...props} />;
+    case "message":   return <MessageCircle {...props} />;
+    case "project":   return <FolderOpen    {...props} />;
+    case "gallery":   return <ImageIcon     {...props} />;
+    case "payment":   return <CreditCard    {...props} />;
+    case "milestone": return <Flag          {...props} />;
+    default:          return <Bell          {...props} />;
   }
 }
 
@@ -103,10 +105,11 @@ function SingleBanner({ item, onPress, onDismiss }: SingleBannerProps) {
   };
 
   const accentColor = {
-    message: "#8fb9e8",
-    project: COLORS.primary,
-    gallery: COLORS.accent,
-    payment: COLORS.green,
+    message:   "#8fb9e8",
+    project:   COLORS.primary,
+    gallery:   COLORS.accent,
+    payment:   COLORS.green,
+    milestone: COLORS.yellow,
   }[item.data.type] ?? COLORS.primary;
 
   return (

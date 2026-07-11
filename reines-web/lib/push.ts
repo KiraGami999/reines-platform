@@ -37,16 +37,17 @@ import { prisma } from "@/lib/prisma";
 
 export type PushChannel = "messages" | "projects" | "gallery" | "payments";
 
-export type PushType = "message" | "project" | "gallery" | "payment";
+export type PushType = "message" | "project" | "gallery" | "payment" | "milestone";
 
 export interface PushPayload {
-  type:       PushType;
-  title:      string;
-  body:       string;
-  channel:    PushChannel;
-  projectId?: string;
-  paymentId?: string;
-  updateId?:  string;
+  type:         PushType;
+  title:        string;
+  body:         string;
+  channel:      PushChannel;
+  projectId?:   string;
+  paymentId?:   string;
+  updateId?:    string;
+  milestoneId?: string;
 }
 
 interface ExpoMessage {
@@ -101,12 +102,13 @@ export async function sendPushToUser(
     channelId: payload.channel,
     priority:  payload.channel === "messages" ? "high" : "normal",
     data: {
-      type:      payload.type,
-      projectId: payload.projectId,
-      paymentId: payload.paymentId,
-      updateId:  payload.updateId,
-      title:     payload.title,
-      body:      payload.body,
+      type:         payload.type,
+      projectId:    payload.projectId,
+      paymentId:    payload.paymentId,
+      updateId:     payload.updateId,
+      milestoneId:  payload.milestoneId,
+      title:        payload.title,
+      body:         payload.body,
     },
   }));
 
@@ -148,12 +150,13 @@ export async function sendPushToUsers(
     channelId: payload.channel,
     priority:  payload.channel === "messages" ? "high" : "normal",
     data: {
-      type:      payload.type,
-      projectId: payload.projectId,
-      paymentId: payload.paymentId,
-      updateId:  payload.updateId,
-      title:     payload.title,
-      body:      payload.body,
+      type:         payload.type,
+      projectId:    payload.projectId,
+      paymentId:    payload.paymentId,
+      updateId:     payload.updateId,
+      milestoneId:  payload.milestoneId,
+      title:        payload.title,
+      body:         payload.body,
     },
   }));
 
@@ -247,6 +250,7 @@ export async function notifyProjectUpdate(opts: {
   newStatus:    string;
 }): Promise<void> {
   const statusLabels: Record<string, string> = {
+    PLANNING:    "moved to planning",
     IN_PROGRESS: "started",
     ON_HOLD:     "put on hold",
     COMPLETED:   "marked as complete",
@@ -260,6 +264,38 @@ export async function notifyProjectUpdate(opts: {
     projectId: opts.projectId,
     title:     "Project update",
     body:      `${opts.projectTitle} has been ${verb}.`,
+  });
+}
+
+/** Notify a client that a milestone was created or its status changed. */
+export async function notifyMilestone(opts: {
+  clientId:        string;
+  projectTitle:    string;
+  projectId:       string;
+  milestoneId:     string;
+  milestoneTitle:  string;
+  kind:            "created" | "status";
+  newStatus?:      string;
+}): Promise<void> {
+  const statusLabels: Record<string, string> = {
+    PENDING:     "is pending",
+    IN_PROGRESS: "is now in progress",
+    COMPLETED:   "was completed",
+    CANCELLED:   "was cancelled",
+  };
+
+  const body =
+    opts.kind === "created"
+      ? `New milestone on ${opts.projectTitle}: ${opts.milestoneTitle}`
+      : `${opts.milestoneTitle} ${statusLabels[opts.newStatus ?? ""] ?? "was updated"} on ${opts.projectTitle}.`;
+
+  await sendPushToUser(opts.clientId, {
+    type:         "milestone",
+    channel:      "projects",
+    projectId:    opts.projectId,
+    milestoneId:  opts.milestoneId,
+    title:        opts.kind === "created" ? "New milestone" : "Milestone update",
+    body,
   });
 }
 

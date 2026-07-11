@@ -3,6 +3,7 @@ import { AppState, type AppStateStatus } from "react-native";
 import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { registerForPushNotifications, clearBadge } from "@/services/notifications.service";
+import { getPushPreference } from "@/lib/storage";
 import { useAuth } from "@/hooks/useAuth";
 import type { PushNotificationData } from "@/types";
 
@@ -40,8 +41,15 @@ function resolveRoute(
         ? `/(manager)/gallery`
         : `/(client)/gallery/${data.projectId}`;
 
+    case "milestone":
+      if (!data.projectId) return null;
+      return isManager
+        ? `/(manager)/milestones/${data.projectId}`
+        : `/(client)/projects/${data.projectId}`;
+
     case "payment":
-      // Payments are client-only
+      // Payments are client-only — open detail when paymentId is present
+      if (data.paymentId) return `/(client)/payments/${data.paymentId}`;
       return `/(client)/payments`;
 
     default:
@@ -82,10 +90,16 @@ export function usePushNotifications() {
     [router, user?.role]
   );
 
-  // ── Register device token when user signs in ─────────────────────────────
+  // ── Register device token when user signs in (respect Settings preference)
   useEffect(() => {
     if (!isSignedIn) return;
-    registerForPushNotifications().catch(console.warn);
+    getPushPreference()
+      .then((enabled) => {
+        // null = never set → register by default; false = user opted out
+        if (enabled === false) return;
+        return registerForPushNotifications();
+      })
+      .catch(console.warn);
   }, [isSignedIn]);
 
   // ── Cold-start: app was killed, user tapped a notification ───────────────

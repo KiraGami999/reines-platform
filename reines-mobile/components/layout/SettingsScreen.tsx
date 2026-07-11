@@ -7,7 +7,7 @@ import {
   Alert,
   Switch,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "expo-router";
 import {
   User,
@@ -21,6 +21,15 @@ import {
 } from "lucide-react-native";
 
 import { useAuth } from "@/hooks/useAuth";
+import {
+  getPushPreference,
+  setPushPreference,
+  getPushToken,
+} from "@/lib/storage";
+import {
+  registerForPushNotifications,
+  unregisterPushToken,
+} from "@/services/notifications.service";
 import { COLORS, ROLE_LABELS, APP_NAME } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { Card } from "@/components/ui/Card";
@@ -72,9 +81,54 @@ export function SettingsScreen({ extraRows }: Props) {
   const { user, signOut } = useAuth();
   const router            = useRouter();
   const [notifications, setNotifications] = useState(true);
+  const [togglingPush,  setTogglingPush]  = useState(false);
   const [darkMode,      setDarkMode]      = useState(false);
 
   const roleBadgeColor = COLORS.primary;
+
+  // Hydrate toggle from stored preference (or existing push token)
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const preference = await getPushPreference();
+      if (cancelled) return;
+      if (preference !== null) {
+        setNotifications(preference);
+        return;
+      }
+      const token = await getPushToken();
+      if (!cancelled) setNotifications(!!token);
+    })().catch(console.warn);
+    return () => { cancelled = true; };
+  }, []);
+
+  async function handlePushToggle(enabled: boolean) {
+    setTogglingPush(true);
+    setNotifications(enabled); // optimistic
+    try {
+      if (enabled) {
+        const token = await registerForPushNotifications();
+        if (!token) {
+          setNotifications(false);
+          await setPushPreference(false);
+          Alert.alert(
+            "Permission needed",
+            "Enable notifications in your device settings to receive project updates."
+          );
+          return;
+        }
+        await setPushPreference(true);
+      } else {
+        await unregisterPushToken();
+        await setPushPreference(false);
+      }
+    } catch {
+      setNotifications(!enabled);
+      Alert.alert("Error", "Could not update notification settings. Please try again.");
+    } finally {
+      setTogglingPush(false);
+    }
+  }
 
   function handleLogout() {
     Alert.alert(
@@ -100,7 +154,6 @@ export function SettingsScreen({ extraRows }: Props) {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
-      {/* ── Profile card ── */}
       <Card style={styles.profileCard} padded>
         <View style={styles.avatarLarge}>
           <Text style={styles.avatarText}>
@@ -117,7 +170,6 @@ export function SettingsScreen({ extraRows }: Props) {
         </View>
       </Card>
 
-      {/* ── Account ── */}
       <Text style={styles.sectionHeading}>Account</Text>
       <Card padded={false}>
         <Row
@@ -133,7 +185,6 @@ export function SettingsScreen({ extraRows }: Props) {
         />
       </Card>
 
-      {/* ── Portal-specific rows (injected by child screens) ── */}
       {extraRows && extraRows.length > 0 && (
         <>
           <Text style={styles.sectionHeading}>Portal</Text>
@@ -148,7 +199,6 @@ export function SettingsScreen({ extraRows }: Props) {
         </>
       )}
 
-      {/* ── Preferences ── */}
       <Text style={styles.sectionHeading}>Preferences</Text>
       <Card padded={false}>
         <Row
@@ -157,7 +207,8 @@ export function SettingsScreen({ extraRows }: Props) {
           right={
             <Switch
               value={notifications}
-              onValueChange={setNotifications}
+              onValueChange={handlePushToggle}
+              disabled={togglingPush}
               trackColor={{ false: COLORS.zinc200, true: COLORS.accent }}
               thumbColor={COLORS.white}
             />
@@ -180,7 +231,6 @@ export function SettingsScreen({ extraRows }: Props) {
         />
       </Card>
 
-      {/* ── App info ── */}
       <Text style={styles.sectionHeading}>App</Text>
       <Card padded={false}>
         <Row
@@ -190,7 +240,6 @@ export function SettingsScreen({ extraRows }: Props) {
         />
       </Card>
 
-      {/* ── Sign out ── */}
       <View style={styles.logoutSection}>
         <TouchableOpacity
           style={styles.logoutBtn}
@@ -213,7 +262,6 @@ const styles = StyleSheet.create({
   root:    { flex: 1, backgroundColor: COLORS.zinc50 },
   content: { padding: 20, paddingBottom: 40 },
 
-  // ── Profile card ──
   profileCard:  { alignItems: "center", marginBottom: 8, paddingVertical: 24 },
   avatarLarge:  {
     width: 72, height: 72, borderRadius: 36,
@@ -231,14 +279,12 @@ const styles = StyleSheet.create({
   },
   roleText:     { fontSize: 11, fontFamily: FONTS.bold },
 
-  // ── Sections ──
   sectionHeading: {
     fontSize: 11, fontFamily: FONTS.bold, letterSpacing: 0.8,
     textTransform: "uppercase", color: COLORS.zinc400,
     marginTop: 24, marginBottom: 8, marginLeft: 4,
   },
 
-  // ── Rows ──
   rowWrapper: { paddingHorizontal: 16 },
   row:        { flexDirection: "row", alignItems: "center", gap: 14, paddingVertical: 14 },
   rowIcon:    {
@@ -253,7 +299,6 @@ const styles = StyleSheet.create({
   rowValue:      { fontSize: 12, fontFamily: FONTS.regular, color: COLORS.zinc500, marginTop: 2 },
   divider:       { height: 1, backgroundColor: COLORS.zinc100, marginLeft: 62 },
 
-  // ── Logout ──
   logoutSection: { marginTop: 28 },
   logoutBtn: {
     flexDirection: "row", alignItems: "center", justifyContent: "center", gap: 10,
