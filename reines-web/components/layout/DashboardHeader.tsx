@@ -319,10 +319,10 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 sm:h-16 sm:px-6 print:hidden">
-      {/* Left — mobile hamburger + breadcrumbs */}
+      {/* Left — mobile logo + hamburger + breadcrumbs */}
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-        <div className="lg:hidden">
-          <ReinesLogo size="sm" variant="on-light" />
+        <div className="shrink-0 lg:hidden">
+          <ReinesLogo size="header" variant="on-light" className="block" />
         </div>
 
         {/* Mobile hamburger */}

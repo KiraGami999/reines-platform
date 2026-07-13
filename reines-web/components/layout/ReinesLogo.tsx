@@ -15,6 +15,11 @@ const HEIGHT_CLASS = {
   lg: "h-14 sm:h-16",
   /** Fills the h-20 navbar while keeping the hexagon icon clearly readable. */
   nav: "h-12 min-h-12 sm:h-14 lg:h-16",
+  /**
+   * Compact portal header mark (mobile top-left).
+   * Caps width so the wide wordmark doesn’t crowd the hamburger + title.
+   */
+  header: "h-7 max-w-[7.75rem] sm:h-8 sm:max-w-[9.5rem]",
   xl: "h-24 sm:h-28 md:h-32",
 } as const;
 
