@@ -73,7 +73,26 @@ export async function GET(req: NextRequest) {
     maxAge: SESSION_MAX_AGE,
   });
 
-  const res = NextResponse.redirect(new URL(callbackUrl, req.url));
+  // Build the redirect target from the ACTUAL host the client used (phone's LAN
+  // IP), not req.url — which in `next dev -H 0.0.0.0` can resolve to
+  // localhost/0.0.0.0 and make the WebView follow the 307 to an unreachable host
+  // (net::ERR_CONNECTION_REFUSED).
+  const proto = (
+    req.headers.get("x-forwarded-proto") ??
+    req.nextUrl.protocol.replace(":", "")
+  ).split(",")[0].trim();
+  const host =
+    req.headers.get("x-forwarded-host") ??
+    req.headers.get("host") ??
+    req.nextUrl.host;
+  const base = `${proto}://${host}`;
+  const target = new URL(callbackUrl, base);
+
+  console.log(
+    `[mobile-bridge] req.url=${req.url} host=${host} -> redirect ${target.toString()} (cookie=${cookieName})`
+  );
+
+  const res = NextResponse.redirect(target);
   res.cookies.set(cookieName, sessionJwt, {
     httpOnly: true,
     sameSite: "lax",

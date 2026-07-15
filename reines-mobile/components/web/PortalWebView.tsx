@@ -8,7 +8,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useFocusEffect } from "expo-router";
-import { WebView, type WebViewNavigation } from "react-native-webview";
+import {
+  WebView,
+  type WebViewNavigation,
+  type WebViewErrorEvent,
+  type WebViewHttpErrorEvent,
+} from "react-native-webview";
 
 import { useWebSession } from "@/hooks/useWebSession";
 import { buildBridgeUrl, isLoginUrl, toWebUrl } from "@/lib/webPortal";
@@ -64,8 +69,10 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
     // Cache-bust so a stuck tab actually reloads after recovery.
     const base = toWebUrl(path);
     const sep  = base.includes("?") ? "&" : "?";
-    setSource(`${base}${sep}_t=${Date.now()}`);
-  }, []);
+    const url  = `${base}${sep}_t=${Date.now()}`;
+    console.log(`[PortalWebView:${route}] loadDirect ->`, url);
+    setSource(url);
+  }, [route]);
 
   const startBridge = useCallback(async () => {
     if (bridging.current) return;
@@ -89,8 +96,11 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
 
     try {
       const bridgeToken = await withSharedBridgeToken(getBridgeToken);
-      setSource(buildBridgeUrl(bridgeToken, route));
-    } catch {
+      const url = buildBridgeUrl(bridgeToken, route);
+      console.log(`[PortalWebView:${route}] startBridge -> ${url.replace(/token=[^&]+/, "token=***")}`);
+      setSource(url);
+    } catch (e) {
+      console.log(`[PortalWebView:${route}] startBridge FAILED`, String(e));
       bridging.current = false;
       setError(true);
       setLoading(false);
@@ -124,6 +134,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   const handleNavChange = useCallback(
     (nav: WebViewNavigation) => {
       setCanGoBack(nav.canGoBack);
+      console.log(`[PortalWebView:${route}] nav ->`, nav.url, "loading:", nav.loading);
 
       const onBridge =
         nav.url.includes("/mobile-bridge") || nav.url.includes("/api/auth/");
@@ -146,21 +157,28 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
       markWebSessionEstablished();
       setError(false);
     },
-    [startBridge]
+    [route, startBridge]
   );
 
   // Soften hard failures: a one-off WebView error (heavy SSR page, flaky Wi‑Fi)
   // should not leave the tab permanently dead if we already have a session.
-  const handleError = useCallback(() => {
-    bridging.current = false;
-    if (isWebSessionEstablished()) {
-      // Keep the WebView mounted; let the user pull-to-refresh / tap Retry.
+  const handleError = useCallback(
+    (e: WebViewErrorEvent) => {
+      const { url, code, description } = e.nativeEvent;
+      console.log(
+        `[PortalWebView:${route}] onError code=${code} desc=${description} url=${url}`
+      );
+      bridging.current = false;
+      if (isWebSessionEstablished()) {
+        // Keep the WebView mounted; let the user pull-to-refresh / tap Retry.
+        setLoading(false);
+        return;
+      }
+      setError(true);
       setLoading(false);
-      return;
-    }
-    setError(true);
-    setLoading(false);
-  }, []);
+    },
+    [route]
+  );
 
   // When the user returns to a tab that failed early, recover if another tab
   // already established the web session (very common for Dashboard = first tab).
@@ -191,6 +209,15 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [route]);
 
+  // Safety net: never let the loading overlay hang forever (e.g. a sub-resource
+  // that never completes). If we're still "loading" after 10s, hide the spinner
+  // so the user can interact with whatever already rendered.
+  useEffect(() => {
+    if (!loading) return;
+    const id = setTimeout(() => setLoading(false), 10000);
+    return () => clearTimeout(id);
+  }, [loading, source]);
+
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
       {error ? (
@@ -212,11 +239,27 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
               originWhitelist={["*"]}
               onShouldStartLoadWithRequest={handleShouldStart}
               onNavigationStateChange={handleNavChange}
-              onLoadStart={() => setLoading(true)}
-              onLoadEnd={() => setLoading(false)}
+              onLoadStart={(e) => {
+                console.log(`[PortalWebView:${route}] loadStart`, e.nativeEvent.url);
+                setLoading(true);
+              }}
+              onLoadEnd={(e) => {
+                console.log(`[PortalWebView:${route}] loadEnd`, e.nativeEvent.url);
+                setLoading(false);
+              }}
+              // Hide the overlay once the document is essentially ready. onLoadEnd
+              // waits for EVERY sub-resource (e.g. /api/media images) to finish,
+              // which can stall forever on image-heavy pages like the gallery and
+              // leave the spinner up indefinitely.
+              onLoadProgress={({ nativeEvent }) => {
+                if (nativeEvent.progress >= 0.7) setLoading(false);
+              }}
               onError={handleError}
-              onHttpError={(e) => {
-                if (e.nativeEvent.statusCode >= 500) handleError();
+              onHttpError={(e: WebViewHttpErrorEvent) => {
+                console.log(
+                  `[PortalWebView:${route}] httpError status=${e.nativeEvent.statusCode} url=${e.nativeEvent.url}`
+                );
+                if (e.nativeEvent.statusCode >= 500) handleError(e as unknown as WebViewErrorEvent);
               }}
               javaScriptEnabled
               domStorageEnabled
