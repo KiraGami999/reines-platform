@@ -148,7 +148,14 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       progressPct: update.progressPercent,
     }).catch(console.warn);
 
-    return NextResponse.json({ update }, { status: 201 });
+    return NextResponse.json({
+      update: {
+        ...update,
+        imageUrl:    resolveStorageUrl(update.imageUrl),
+        documentUrl: resolveStorageUrl(update.documentUrl),
+        createdAt:   update.createdAt.toISOString(),
+      },
+    }, { status: 201 });
   } catch (err) {
     console.error("[POST /api/mobile/projects/:id/gallery]", err);
     return NextResponse.json({ error: "Failed to save update. Please try again." }, { status: 500 });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { resolveStorageUrl } from "@/lib/storage";
 
 /**
  * GET /api/mobile/projects/:id
@@ -68,9 +69,18 @@ export async function GET(
 
     const latestProgress = project.updates[0]?.progressPercent ?? null;
 
+    // Resolve stored media paths (private blobs → /api/media proxy) so the
+    // mobile client can load images/documents with its bearer token.
+    const updates = project.updates.map((u) => ({
+      ...u,
+      imageUrl:    resolveStorageUrl(u.imageUrl),
+      documentUrl: resolveStorageUrl(u.documentUrl),
+    }));
+
     return NextResponse.json({
       project: {
         ...project,
+        updates,
         budget: project.budget?.toString() ?? null,
         paymentSummary: {
           totalBudget:   project.budget?.toString() ?? null,

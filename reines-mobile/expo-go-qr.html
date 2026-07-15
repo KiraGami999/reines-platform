@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reines · Expo Go</title>
+  <style>
+    :root { color-scheme: light; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 24px;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: #2d4a6b;
+      color: #fff;
+      text-align: center;
+    }
+    h1 { margin: 0; font-size: 1.35rem; font-weight: 700; }
+    p  { margin: 0; opacity: 0.85; font-size: 0.95rem; max-width: 22rem; line-height: 1.45; }
+    .qr {
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .qr img { display: block; width: 260px; height: 260px; }
+    code {
+      display: inline-block;
+      margin-top: 4px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.12);
+      font-size: 0.85rem;
+      word-break: break-all;
+    }
+    ol {
+      margin: 8px 0 0;
+      padding-left: 1.25rem;
+      text-align: left;
+      max-width: 22rem;
+      opacity: 0.9;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+  </style>
+</head>
+<body>
+  <h1>Reines Project Mate · Expo Go</h1>
+  <p>Scan this QR with Expo Go (same Wi‑Fi as this PC).</p>
+
+  <div class="qr">
+    <img
+      src="https://api.qrserver.com/v1/create-qr-code/?size=260x260&amp;data=exp%3A%2F%2F192.168.1.134%3A8082"
+      alt="Expo Go QR code"
+      width="260"
+      height="260"
+    />
+  </div>
+
+  <code>exp://192.168.1.134:8082</code>
+
+  <ol>
+    <li>Phone and PC on the same Wi‑Fi</li>
+    <li>Install <strong>Expo Go</strong> from the App Store / Play Store</li>
+    <li>Scan the QR (or paste the link into Expo Go)</li>
+    <li>Backend must be running at <code>http://192.168.1.134:3000</code></li>
+  </ol>
+</body>
+</html>

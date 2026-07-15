@@ -1,10 +1,11 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { FileText } from "lucide-react-native";
 import { COLORS } from "@/constants";
 import { FONTS, RADII, SHADOW } from "@/constants/theme";
 import { timeAgo, truncate } from "@/lib/format";
+import { AuthenticatedImage } from "@/components/media/AuthenticatedImage";
 import type { DashboardUpdate } from "@/types";
 
 interface UpdateCardProps {
@@ -21,7 +22,7 @@ export function UpdateCard({ update }: UpdateCardProps) {
       onPress={() => router.push(`/(client)/projects/${update.project.id}` as never)}
     >
       {update.imageUrl ? (
-        <Image source={{ uri: update.imageUrl }} style={styles.thumb} resizeMode="cover" />
+        <AuthenticatedImage url={update.imageUrl} style={styles.thumb} resizeMode="cover" />
       ) : (
         <View style={[styles.thumb, styles.thumbPlaceholder]}>
           <FileText size={18} color={COLORS.zinc400} />

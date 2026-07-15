@@ -44,9 +44,13 @@ export default function LoginScreen() {
     mutationFn: login,
     onSuccess: (data) => {
       signIn(data.token, data.user);
-      router.replace(
-        data.user.role === "PROJECT_MANAGER" ? "/(manager)" : "/(client)"
-      );
+      const dest =
+        data.user.role === "ADMIN"
+          ? "/(admin)"
+          : data.user.role === "PROJECT_MANAGER"
+            ? "/(manager)"
+            : "/(client)";
+      router.replace(dest);
     },
   });
 

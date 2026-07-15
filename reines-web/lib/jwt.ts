@@ -23,6 +23,8 @@ export interface TokenPayload extends JWTPayload {
   email: string;
   role: string;
   name: string;
+  /** Present only on short-lived bridge tokens (mobile → web session handoff). */
+  purpose?: "web-bridge";
 }
 
 export async function signToken(payload: Omit<TokenPayload, keyof JWTPayload>): Promise<string> {
@@ -30,6 +32,25 @@ export async function signToken(payload: Omit<TokenPayload, keyof JWTPayload>): 
     .setProtectedHeader({ alg: ALGORITHM })
     .setIssuedAt()
     .setExpirationTime(ACCESS_EXPIRES)
+    .sign(SECRET);
+}
+
+/**
+ * Mints a short-lived, single-purpose token used to hand a native (JWT) mobile
+ * session over to a NextAuth web session inside an in-app WebView.
+ *
+ * The token is deliberately short-lived (2 minutes) and carries a
+ * `purpose: "web-bridge"` claim so it can never be confused with a normal
+ * access token. It is consumed once by the "mobile-bridge" credentials
+ * provider, which establishes the NextAuth session cookie.
+ */
+export async function signBridgeToken(
+  payload: Omit<TokenPayload, keyof JWTPayload>
+): Promise<string> {
+  return new SignJWT({ ...payload, purpose: "web-bridge" })
+    .setProtectedHeader({ alg: ALGORITHM })
+    .setIssuedAt()
+    .setExpirationTime("2m")
     .sign(SECRET);
 }
 

@@ -1,7 +1,7 @@
 import React from "react";
 import {
   View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  SafeAreaView, RefreshControl, Linking, Image,
+  SafeAreaView, RefreshControl, Linking,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
@@ -10,6 +10,7 @@ import {
 } from "lucide-react-native";
 import { COLORS, PAYMENT_STATUS_CONFIG } from "@/constants";
 import { usePayment } from "@/hooks/usePayments";
+import { AuthenticatedImage } from "@/components/media/AuthenticatedImage";
 import { PaymentStatusBadge } from "@/components/payments/PaymentStatusBadge";
 import { formatMWK, fullDateTime } from "@/lib/format";
 
@@ -119,8 +120,8 @@ export default function PaymentDetailScreen() {
         {isCash && payment.receiptUrl && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Receipt</Text>
-            <Image
-              source={{ uri: payment.receiptUrl }}
+            <AuthenticatedImage
+              url={payment.receiptUrl}
               style={styles.receipt}
               resizeMode="contain"
             />

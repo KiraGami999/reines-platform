@@ -55,6 +55,7 @@ export default function ClientLayout() {
         options={{
           title:       "Dashboard",
           tabBarLabel: "Dashboard",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={LayoutDashboard} color={color} focused={focused} />
           ),
@@ -66,6 +67,7 @@ export default function ClientLayout() {
         options={{
           title:       "Projects",
           tabBarLabel: "Projects",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={FolderKanban} color={color} focused={focused} />
           ),
@@ -77,6 +79,7 @@ export default function ClientLayout() {
         options={{
           title:       "Messages",
           tabBarLabel: "Messages",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <View>
               <TabBarIcon icon={MessageSquare} color={color} focused={focused} />
@@ -91,6 +94,7 @@ export default function ClientLayout() {
         options={{
           title:       "Payments",
           tabBarLabel: "Payments",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={CreditCard} color={color} focused={focused} />
           ),
@@ -102,6 +106,7 @@ export default function ClientLayout() {
         options={{
           title:       "Rewards",
           tabBarLabel: "Rewards",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={Star} color={color} focused={focused} />
           ),

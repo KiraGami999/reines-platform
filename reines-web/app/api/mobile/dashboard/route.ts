@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { resolveStorageUrl } from "@/lib/storage";
 
 /**
  * GET /api/mobile/dashboard
@@ -141,6 +142,14 @@ export async function GET(req: NextRequest) {
         lastMessage: p.messages[0],
       }));
 
+    // Resolve stored media paths (private blobs → /api/media proxy) so the
+    // mobile client can load thumbnails with its bearer token.
+    const resolvedUpdates = recentUpdates.map((u) => ({
+      ...u,
+      imageUrl:    resolveStorageUrl(u.imageUrl),
+      documentUrl: resolveStorageUrl(u.documentUrl),
+    }));
+
     // Loyalty tier logic
     const balance = pointBalance._sum.points ?? 0;
     const spend   = Number(lifetimeSpend._sum.amount ?? 0);
@@ -161,7 +170,7 @@ export async function GET(req: NextRequest) {
         lifetimeSpend: spend.toString(),
         tier,
       },
-      updates: recentUpdates,
+      updates: resolvedUpdates,
       messages: {
         recentCount:   recentMessageCount,
         conversations: activeConversations,

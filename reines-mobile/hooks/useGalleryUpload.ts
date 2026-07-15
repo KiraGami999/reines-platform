@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { uploadGalleryImage, postGalleryUpdate } from "@/services/gallery.service";
 import { PROJECT_KEYS } from "@/hooks/useProjects";
+import { toProxiedMediaPath } from "@/lib/media";
 import type { GalleryResponse, GalleryImage, ProjectUpdate } from "@/types";
 
 // ─── Upload state machine ──────────────────────────────────────────────────────
@@ -43,7 +44,7 @@ const INITIAL_STATE: UploadState = {
  *  When a text-only update (no image) is posted, it is inserted into the
  *  cached GalleryResponse immediately so the UI updates without waiting.
  *  Image uploads show a preview in the GalleryUploadSheet itself; the cache
- *  is invalidated on success so the grid refreshes with the real record.
+ *  stores a *proxied* /api/media URL (never the raw private blob URL).
  */
 export function useGalleryUpload() {
   const qc                          = useQueryClient();
@@ -76,15 +77,18 @@ export function useGalleryUpload() {
         progressPercent,
       });
 
+      // Blob store URLs must be viewed via /api/media — never feed the raw
+      // private URL into the gallery cache (native Image can't read it).
+      const viewableImageUrl = imageUrl ? toProxiedMediaPath(imageUrl) : null;
+
       // ── Optimistic insert into gallery cache ──────────────────────────────
       const key = PROJECT_KEYS.gallery(projectId);
       qc.setQueryData<GalleryResponse>(key, (old) => {
         if (!old) return old;
-        if (imageUrl) {
-          // Add to withImages (newest first)
+        if (viewableImageUrl) {
           const newItem: GalleryImage = {
             id:              update.id,
-            imageUrl:        imageUrl!,
+            imageUrl:        viewableImageUrl,
             note:            update.note,
             progressPercent: update.progressPercent,
             documentUrl:     null,
@@ -98,25 +102,24 @@ export function useGalleryUpload() {
             withImages: [newItem, ...old.withImages],
             totalCount: old.totalCount + 1,
           };
-        } else {
-          // Text-only update
-          const newItem: ProjectUpdate = {
-            id:              update.id,
-            note:            update.note,
-            imageUrl:        null,
-            documentUrl:     null,
-            documentName:    null,
-            documentType:    null,
-            progressPercent: update.progressPercent,
-            createdAt:       update.createdAt,
-            projectId:       update.projectId,
-          };
-          return {
-            ...old,
-            textOnly:   [newItem, ...old.textOnly],
-            totalCount: old.totalCount + 1,
-          };
         }
+
+        const newItem: ProjectUpdate = {
+          id:              update.id,
+          note:            update.note,
+          imageUrl:        null,
+          documentUrl:     null,
+          documentName:    null,
+          documentType:    null,
+          progressPercent: update.progressPercent,
+          createdAt:       update.createdAt,
+          projectId:       update.projectId,
+        };
+        return {
+          ...old,
+          textOnly:   [newItem, ...old.textOnly],
+          totalCount: old.totalCount + 1,
+        };
       });
 
       // Also invalidate manager dashboard so recent-activity feed refreshes

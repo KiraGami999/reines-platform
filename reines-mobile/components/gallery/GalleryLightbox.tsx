@@ -11,7 +11,6 @@ import {
   StatusBar,
   Platform,
 } from "react-native";
-import { Image } from "expo-image";
 import {
   X,
   ChevronLeft,
@@ -21,6 +20,7 @@ import {
 } from "lucide-react-native";
 import { COLORS } from "@/constants";
 import { fullDateTime, truncate } from "@/lib/format";
+import { AuthenticatedImage } from "@/components/media/AuthenticatedImage";
 import type { GalleryImage } from "@/types";
 
 const { width: SCREEN_W, height: SCREEN_H } = Dimensions.get("window");
@@ -108,12 +108,11 @@ export function GalleryLightbox({
           centerContent
           scrollEnabled
         >
-          <Image
-            source={{ uri: item.imageUrl }}
+          <AuthenticatedImage
+            url={item.imageUrl}
             style={styles.fullImage}
             contentFit="contain"
             transition={150}
-            cachePolicy="memory-disk"
             recyclingKey={item.id}
           />
         </ScrollView>

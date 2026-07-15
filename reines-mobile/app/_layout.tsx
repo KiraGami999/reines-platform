@@ -40,6 +40,7 @@ export default function RootLayout() {
                 <Stack.Screen name="(auth)"     />
                 <Stack.Screen name="(client)"   />
                 <Stack.Screen name="(manager)"  />
+                <Stack.Screen name="(admin)"    />
                 <Stack.Screen name="+not-found" />
               </Stack>
             </NotificationsProvider>

@@ -10,6 +10,7 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
  * Not signed in → (auth)/login
  * CLIENT → (client)
  * PROJECT_MANAGER → (manager)
+ * ADMIN → (admin)
  */
 export default function Index() {
   const { isLoading, isSignedIn, user } = useAuth();
@@ -23,7 +24,9 @@ export default function Index() {
       return;
     }
 
-    if (user?.role === "PROJECT_MANAGER") {
+    if (user?.role === "ADMIN") {
+      router.replace("/(admin)");
+    } else if (user?.role === "PROJECT_MANAGER") {
       router.replace("/(manager)");
     } else {
       router.replace("/(client)");

@@ -18,7 +18,10 @@ import {
   RefreshCw,
   TrendingUp,
 } from "lucide-react-native";
+import * as WebBrowser        from "expo-web-browser";
 import { useGallery }         from "@/hooks/useProjects";
+import { useAuth }            from "@/hooks/useAuth";
+import { buildDocumentUrl }   from "@/lib/media";
 import { COLORS }             from "@/constants";
 import { timeAgo }            from "@/lib/format";
 import { GalleryItem, GalleryItemPlaceholder, GAP, COLUMNS } from "@/components/gallery/GalleryItem";
@@ -108,6 +111,13 @@ function ErrorState({ onRetry }: { onRetry: () => void }) {
 // ---------------------------------------------------------------------------
 
 function UpdateRow({ update }: { update: ProjectUpdate }) {
+  const { token } = useAuth();
+
+  const openDocument = async () => {
+    const url = buildDocumentUrl(update.documentUrl, token);
+    if (url) await WebBrowser.openBrowserAsync(url);
+  };
+
   return (
     <View style={styles.updateRow}>
       <View style={styles.updateSpine}>
@@ -122,6 +132,14 @@ function UpdateRow({ update }: { update: ProjectUpdate }) {
           </View>
         )}
         <Text style={styles.updateNote}>{update.note}</Text>
+        {update.documentUrl && (
+          <TouchableOpacity style={styles.docRow} onPress={openDocument} activeOpacity={0.8}>
+            <FileText size={14} color={COLORS.primary} />
+            <Text style={styles.docName} numberOfLines={1}>
+              {update.documentName ?? "Attached document"}
+            </Text>
+          </TouchableOpacity>
+        )}
         <Text style={styles.updateTime}>{timeAgo(update.createdAt)}</Text>
       </View>
     </View>
@@ -429,6 +447,17 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color:    COLORS.zinc400,
   },
+  docRow: {
+    flexDirection:     "row",
+    alignItems:        "center",
+    gap:               6,
+    backgroundColor:   COLORS.primary + "10",
+    borderRadius:      8,
+    paddingHorizontal: 10,
+    paddingVertical:   8,
+    alignSelf:         "flex-start",
+  },
+  docName: { fontSize: 12, color: COLORS.primary, fontWeight: "600", flex: 1 },
 
   // Empty states
   empty: {

@@ -9,7 +9,7 @@ interface Options {
    * Any signed-in user with a different role will be redirected
    * to their correct portal instead.
    */
-  allowedRole: Exclude<UserRole, "ADMIN">;
+  allowedRole: UserRole;
 }
 
 /**
@@ -41,7 +41,9 @@ export function useRoleGuard({ allowedRole }: Options): { ready: boolean } {
 
     if (user?.role !== allowedRole) {
       // Redirect to the correct portal for this role
-      if (user?.role === "PROJECT_MANAGER") {
+      if (user?.role === "ADMIN") {
+        router.replace("/(admin)");
+      } else if (user?.role === "PROJECT_MANAGER") {
         router.replace("/(manager)");
       } else {
         router.replace("/(client)");

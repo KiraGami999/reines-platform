@@ -10,6 +10,15 @@
  */
 export const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL ?? "http://192.168.1.100:3000";
 
+/**
+ * Base URL of the web portal shown inside the in-app WebView.
+ *
+ * The same Next.js server serves both the REST API and the web portal, so this
+ * defaults to API_BASE_URL. Override with EXPO_PUBLIC_WEB_URL only if the web
+ * portal is ever hosted on a different origin than the API.
+ */
+export const WEB_BASE_URL = process.env.EXPO_PUBLIC_WEB_URL ?? API_BASE_URL;
+
 /** Token storage key in Expo SecureStore */
 export const TOKEN_KEY = "reines_auth_token";
 
@@ -26,7 +35,7 @@ export const MESSAGE_POLL_INTERVAL_MS = 5_000;
 export const QUERY_STALE_TIME_MS = 30_000;
 
 /** Brand colours — matches reines-web portal */
-export const APP_NAME = "Project Reins Mate";
+export const APP_NAME = "Reines Project Mate";
 
 export const COLORS = {
   primary:      "#2d4a6b",

@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Project Reins Mate",
+    "name": "Reines Project Mate",
     "slug": "reines-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -16,8 +16,8 @@
       "supportsTablet": false,
       "bundleIdentifier": "mw.co.reines.portal",
       "infoPlist": {
-        "NSCameraUsageDescription": "Project Reins Mate uses your camera to upload project progress photos.",
-        "NSPhotoLibraryUsageDescription": "Project Reins Mate accesses your photo library to upload project progress photos and payment receipts."
+        "NSCameraUsageDescription": "Reines Project Mate uses your camera to upload project progress photos.",
+        "NSPhotoLibraryUsageDescription": "Reines Project Mate accesses your photo library to upload project progress photos and payment receipts."
       }
     },
     "android": {
@@ -27,11 +27,12 @@
       },
       "package": "mw.co.reines.portal",
       "permissions": [
-        "CAMERA",
-        "READ_MEDIA_IMAGES",
-        "READ_MEDIA_VIDEO",
-        "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "android.permission.CAMERA",
+        "android.permission.READ_MEDIA_IMAGES",
+        "android.permission.READ_MEDIA_VIDEO",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -43,8 +44,8 @@
       [
         "expo-image-picker",
         {
-          "photosPermission": "Project Reins Mate accesses your photo library to upload progress photos and payment receipts.",
-          "cameraPermission": "Project Reins Mate uses your camera to upload project progress photos."
+          "photosPermission": "Reines Project Mate accesses your photo library to upload progress photos and payment receipts.",
+          "cameraPermission": "Reines Project Mate uses your camera to upload project progress photos."
         }
       ],
       [
@@ -58,6 +59,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "3d156aff-0b5a-43be-a05e-029dff2a0ca3"
+      }
     }
   }
 }

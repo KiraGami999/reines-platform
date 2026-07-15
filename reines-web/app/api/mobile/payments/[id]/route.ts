@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
+import { resolveStorageUrl } from "@/lib/storage";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -32,7 +33,11 @@ export async function GET(req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ error: "Forbidden." }, { status: 403 });
 
     return NextResponse.json({
-      payment: { ...payment, amount: payment.amount.toString() },
+      payment: {
+        ...payment,
+        amount:     payment.amount.toString(),
+        receiptUrl: resolveStorageUrl(payment.receiptUrl),
+      },
     });
   } catch (err) {
     console.error("[GET /api/mobile/payments/:id]", err);

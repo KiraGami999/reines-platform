@@ -13,9 +13,10 @@ const schema = z.object({
 /**
  * POST /api/mobile/login
  *
- * Authenticates a CLIENT or PROJECT_MANAGER and returns a JWT.
+ * Authenticates a CLIENT, PROJECT_MANAGER or ADMIN and returns a JWT.
  * Uses the same User table and bcrypt passwords as the web portal.
- * ADMIN accounts are intentionally excluded from mobile access.
+ * The mobile app renders each role's existing web portal inside a WebView,
+ * so all roles (including ADMIN) can sign in here.
  */
 export async function POST(req: NextRequest) {
   // 10 login attempts per IP per 15 minutes.
@@ -47,10 +48,6 @@ export async function POST(req: NextRequest) {
 
   if (!user || !user.password) {
     return NextResponse.json({ error: "Invalid email or password." }, { status: 401 });
-  }
-
-  if (user.role === "ADMIN") {
-    return NextResponse.json({ error: "Admin accounts must use the web portal." }, { status: 403 });
   }
 
   const valid = await verifyPassword(password, user.password);

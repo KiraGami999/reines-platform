@@ -54,6 +54,7 @@ export default function ManagerLayout() {
         options={{
           title:       "Dashboard",
           tabBarLabel: "Dashboard",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={LayoutDashboard} color={color} focused={focused} />
           ),
@@ -65,6 +66,7 @@ export default function ManagerLayout() {
         options={{
           title:       "Projects",
           tabBarLabel: "Projects",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={FolderKanban} color={color} focused={focused} />
           ),
@@ -76,6 +78,7 @@ export default function ManagerLayout() {
         options={{
           title:       "Messages",
           tabBarLabel: "Messages",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <View>
               <TabBarIcon icon={MessageSquare} color={color} focused={focused} />
@@ -90,6 +93,7 @@ export default function ManagerLayout() {
         options={{
           title:       "Gallery",
           tabBarLabel: "Gallery",
+          headerShown: false,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={ImageIcon} color={color} focused={focused} />
           ),

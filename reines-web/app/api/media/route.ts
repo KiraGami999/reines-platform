@@ -61,9 +61,15 @@ export async function GET(req: NextRequest) {
     }
 
     if (!authenticated) {
-      const bearer = extractBearer(req.headers.get("authorization"));
-      if (bearer) {
-        const payload = await verifyToken(bearer);
+      // Mobile clients authenticate with a JWT. Images loaded by the native
+      // image component can send it via the Authorization header; files opened
+      // in an external/in-app browser tab (which can't set headers) fall back
+      // to a ?token= query param.
+      const bearer     = extractBearer(req.headers.get("authorization"));
+      const queryToken = req.nextUrl.searchParams.get("token");
+      const rawToken   = bearer ?? queryToken;
+      if (rawToken) {
+        const payload = await verifyToken(rawToken);
         if (payload?.id) authenticated = true;
       }
     }
@@ -80,14 +86,26 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
+    // Buffer the body so mobile image loaders get a Content-Length and a
+    // complete response. Chunked streams without Content-Length frequently
+    // fail silently on Android / Expo Go Image components.
+    const chunks: Uint8Array[] = [];
+    for await (const chunk of result.stream as unknown as AsyncIterable<Uint8Array>) {
+      chunks.push(chunk);
+    }
+    const body = Buffer.concat(chunks.map((c) => Buffer.from(c)));
+
     const cacheControl = publicAsset
       ? "public, max-age=3600, stale-while-revalidate=86400"
       : "private, max-age=3600, stale-while-revalidate=86400";
 
-    return new NextResponse(result.stream, {
+    // Force inline so native image decoders display the bytes (Blob may
+    // return Content-Disposition: attachment, which Android refuses to render).
+    return new NextResponse(body, {
       headers: {
         "Content-Type":        result.blob.contentType ?? "application/octet-stream",
-        "Content-Disposition": result.blob.contentDisposition ?? "inline",
+        "Content-Disposition": "inline",
+        "Content-Length":      String(body.length),
         "Cache-Control":       cacheControl,
       },
     });

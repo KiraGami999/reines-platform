@@ -6,9 +6,8 @@ import {
   ScrollView,
   RefreshControl,
   TouchableOpacity,
-  Image,
-  Linking,
 } from "react-native";
+import * as WebBrowser from "expo-web-browser";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import {
   ArrowLeft,
@@ -28,6 +27,9 @@ import {
 } from "lucide-react-native";
 import { useProject }           from "@/hooks/useProjects";
 import { useMilestones }        from "@/hooks/useMilestones";
+import { useAuth }              from "@/hooks/useAuth";
+import { buildDocumentUrl } from "@/lib/media";
+import { AuthenticatedImage } from "@/components/media/AuthenticatedImage";
 import { COLORS, PROJECT_STATUS_CONFIG, PAYMENT_STATUS_CONFIG } from "@/constants";
 import { formatMWK, shortDate, timeAgo, truncate } from "@/lib/format";
 import { MilestoneProgressBar } from "@/components/milestones/MilestoneProgressBar";
@@ -160,8 +162,14 @@ function BudgetBar({
 // ---------------------------------------------------------------------------
 
 function UpdateEntry({ update, isLast }: { update: ProjectUpdate; isLast: boolean }) {
+  const { token } = useAuth();
   const hasImage = !!update.imageUrl;
   const hasDoc   = !!update.documentUrl;
+
+  const openDocument = async () => {
+    const url = buildDocumentUrl(update.documentUrl, token);
+    if (url) await WebBrowser.openBrowserAsync(url);
+  };
 
   return (
     <View style={styles.timelineEntry}>
@@ -189,8 +197,8 @@ function UpdateEntry({ update, isLast }: { update: ProjectUpdate; isLast: boolea
 
         {/* Thumbnail */}
         {hasImage && (
-          <Image
-            source={{ uri: update.imageUrl! }}
+          <AuthenticatedImage
+            url={update.imageUrl}
             style={styles.updateImage}
             resizeMode="cover"
           />
@@ -200,7 +208,7 @@ function UpdateEntry({ update, isLast }: { update: ProjectUpdate; isLast: boolea
         {hasDoc && (
           <TouchableOpacity
             style={styles.docRow}
-            onPress={() => Linking.openURL(update.documentUrl!)}
+            onPress={openDocument}
           >
             <FileText size={13} color={COLORS.primary} />
             <Text style={styles.docName} numberOfLines={1}>

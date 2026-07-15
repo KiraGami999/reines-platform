@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
-import { Image } from "expo-image";
 import { TrendingUp } from "lucide-react-native";
 import { COLORS } from "@/constants";
 import { timeAgo } from "@/lib/format";
+import { AuthenticatedImage } from "@/components/media/AuthenticatedImage";
 import type { GalleryImage } from "@/types";
 
 const SCREEN_W  = Dimensions.get("window").width;
@@ -31,13 +31,11 @@ export function GalleryItem({ item, onPress }: GalleryItemProps) {
       activeOpacity={0.88}
       onPress={() => onPress(item)}
     >
-      <Image
-        source={{ uri: item.imageUrl }}
+      <AuthenticatedImage
+        url={item.imageUrl}
         style={styles.image}
         contentFit="cover"
         transition={200}
-        placeholder={{ blurhash: "L6PZfSi_.AyE_3t7t7R**0o#DgR4" }}
-        cachePolicy="memory-disk"
         recyclingKey={item.id}
       />
 

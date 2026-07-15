@@ -6,6 +6,7 @@ import { AuthContext, type AuthContextValue } from "@/hooks/useAuth";
 import { queryClient } from "@/lib/queryClient";
 import { getToken, saveToken, deleteToken, deletePushToken } from "@/lib/storage";
 import { onAuthEvent } from "@/lib/authEvents";
+import { resetWebSession } from "@/lib/webSessionState";
 import { fetchCurrentUser, logout as authLogout } from "@/services/auth.service";
 import { unregisterPushToken } from "@/services/notifications.service";
 import type { AuthUser } from "@/types";
@@ -105,6 +106,7 @@ export function AuthProvider({ children }: Props) {
       // Cannot reliably unregister on the server without a valid token —
       // clear local push storage only. signOut() handles server unregister.
       deletePushToken().catch(console.warn);
+      resetWebSession();
       setToken(null);
       setUser(null);
       queryClient.clear();
@@ -130,6 +132,7 @@ export function AuthProvider({ children }: Props) {
       // Non-fatal — authLogout still clears local state
     }
     await authLogout();
+    resetWebSession();
     setToken(null);
     setUser(null);
     queryClient.clear();
