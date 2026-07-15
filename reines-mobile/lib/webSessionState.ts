@@ -10,7 +10,11 @@
  * This is module-level (not React state) so it is shared across all tab
  * WebView instances and reset only on logout or app restart.
  */
+
 let established = false;
+
+/** Dedupes concurrent bridge-token fetches across multiple tab WebViews. */
+let bridgeInFlight: Promise<string> | null = null;
 
 export function isWebSessionEstablished(): boolean {
   return established;
@@ -22,4 +26,25 @@ export function markWebSessionEstablished(): void {
 
 export function resetWebSession(): void {
   established = false;
+  bridgeInFlight = null;
+}
+
+/** Marks the cookie as invalid so the next open will re-run the bridge handoff. */
+export function clearWebSessionEstablished(): void {
+  established = false;
+}
+
+/**
+ * Ensures only one POST /api/mobile/web-bridge runs at a time. Multiple tabs
+ * mounting together used to each burn bridge attempts against the same race.
+ */
+export function withSharedBridgeToken(
+  fetchToken: () => Promise<string>
+): Promise<string> {
+  if (!bridgeInFlight) {
+    bridgeInFlight = fetchToken().finally(() => {
+      bridgeInFlight = null;
+    });
+  }
+  return bridgeInFlight;
 }

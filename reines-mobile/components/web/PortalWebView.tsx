@@ -13,14 +13,16 @@ import { WebView, type WebViewNavigation } from "react-native-webview";
 import { useWebSession } from "@/hooks/useWebSession";
 import { buildBridgeUrl, isLoginUrl, toWebUrl } from "@/lib/webPortal";
 import {
+  clearWebSessionEstablished,
   isWebSessionEstablished,
   markWebSessionEstablished,
+  withSharedBridgeToken,
 } from "@/lib/webSessionState";
 import { COLORS } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { Button } from "@/components/ui/Button";
 
-const MAX_BRIDGE_ATTEMPTS = 2;
+const MAX_BRIDGE_ATTEMPTS = 3;
 
 interface PortalWebViewProps {
   /** Web route to display, e.g. "/dashboard/projects". */
@@ -37,8 +39,8 @@ interface PortalWebViewProps {
  * Session handling:
  *   1. First load runs a server-side /mobile-bridge handoff (JWT → NextAuth cookie).
  *   2. Later tabs reuse that cookie for the rest of the app run.
- *   3. If the web drops to /login, we re-bridge at most twice, then show an error
- *      instead of looping forever on "Opening your portal…".
+ *   3. If the web drops to /login, we re-bridge a few times, then show an error.
+ *   4. Tabs that failed early auto-recover on focus once another tab succeeded.
  */
 export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   const insets             = useSafeAreaInsets();
@@ -55,8 +57,24 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   const bridging      = useRef(false);
   const bridgeAttempts = useRef(0);
 
+  const loadDirect = useCallback((path: string) => {
+    bridging.current = false;
+    setError(false);
+    setLoading(true);
+    // Cache-bust so a stuck tab actually reloads after recovery.
+    const base = toWebUrl(path);
+    const sep  = base.includes("?") ? "&" : "?";
+    setSource(`${base}${sep}_t=${Date.now()}`);
+  }, []);
+
   const startBridge = useCallback(async () => {
     if (bridging.current) return;
+
+    // Cookie already good (another tab opened successfully) — skip re-bridge.
+    if (isWebSessionEstablished()) {
+      loadDirect(route);
+      return;
+    }
 
     if (bridgeAttempts.current >= MAX_BRIDGE_ATTEMPTS) {
       setError(true);
@@ -70,26 +88,27 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
     setLoading(true);
 
     try {
-      const bridgeToken = await getBridgeToken();
+      const bridgeToken = await withSharedBridgeToken(getBridgeToken);
       setSource(buildBridgeUrl(bridgeToken, route));
     } catch {
       bridging.current = false;
       setError(true);
       setLoading(false);
     }
-  }, [getBridgeToken, route]);
+  }, [getBridgeToken, loadDirect, route]);
 
   const retry = useCallback(() => {
     bridging.current = false;
     bridgeAttempts.current = 0;
-    setError(false);
-    setLoading(true);
-    void startBridge();
-  }, [startBridge]);
+    if (isWebSessionEstablished()) {
+      loadDirect(route);
+    } else {
+      void startBridge();
+    }
+  }, [loadDirect, route, startBridge]);
 
   const handleShouldStart = useCallback(
     (req: WebViewNavigation): boolean => {
-      // Never block the bridge page or auth callback.
       if (req.url.includes("/mobile-bridge") || req.url.includes("/api/auth/")) {
         return true;
       }
@@ -112,28 +131,45 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
       if (onBridge) return;
 
       if (isLoginUrl(nav.url)) {
-        // Bridge (or cookie) failed — allow another attempt, or surface error.
         bridging.current = false;
+        const hadSession = isWebSessionEstablished();
+        clearWebSessionEstablished();
+        // Only reset attempts if a working cookie was lost mid-session.
+        // If we never established, keep counting toward MAX_BRIDGE_ATTEMPTS.
+        if (hadSession) bridgeAttempts.current = 0;
         void startBridge();
         return;
       }
 
-      // Landed on a real portal page → session is good.
       bridging.current = false;
       bridgeAttempts.current = 0;
       markWebSessionEstablished();
+      setError(false);
     },
     [startBridge]
   );
 
+  // Soften hard failures: a one-off WebView error (heavy SSR page, flaky Wi‑Fi)
+  // should not leave the tab permanently dead if we already have a session.
   const handleError = useCallback(() => {
+    bridging.current = false;
+    if (isWebSessionEstablished()) {
+      // Keep the WebView mounted; let the user pull-to-refresh / tap Retry.
+      setLoading(false);
+      return;
+    }
     setError(true);
     setLoading(false);
-    bridging.current = false;
   }, []);
 
+  // When the user returns to a tab that failed early, recover if another tab
+  // already established the web session (very common for Dashboard = first tab).
   useFocusEffect(
     useCallback(() => {
+      if (error && isWebSessionEstablished()) {
+        loadDirect(route);
+      }
+
       const sub = BackHandler.addEventListener("hardwareBackPress", () => {
         if (canGoBack) {
           webRef.current?.goBack();
@@ -142,12 +178,12 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
         return false;
       });
       return () => sub.remove();
-    }, [canGoBack])
+    }, [canGoBack, error, loadDirect, route])
   );
 
   useEffect(() => {
     if (isWebSessionEstablished()) {
-      setSource(toWebUrl(route));
+      loadDirect(route);
     } else {
       bridgeAttempts.current = 0;
       void startBridge();
@@ -161,8 +197,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
         <View style={styles.centered}>
           <Text style={styles.errTitle}>Couldn&apos;t open the portal</Text>
           <Text style={styles.errBody}>
-            Sign-in to the web portal failed. Check that the website is running
-            on the same Wi‑Fi, then try again.
+            Check that the website is running on the same Wi‑Fi, then try again.
           </Text>
           <Button variant="primary" size="md" onPress={retry} style={styles.retryBtn}>
             Try again
@@ -181,7 +216,6 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
               onLoadEnd={() => setLoading(false)}
               onError={handleError}
               onHttpError={(e) => {
-                // Ignore transient 3xx/auth noise; flag real failures.
                 if (e.nativeEvent.statusCode >= 500) handleError();
               }}
               javaScriptEnabled

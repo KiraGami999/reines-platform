@@ -67,7 +67,19 @@ const securityHeaders = [
   },
 ];
 
+// In dev the mobile app opens the portal inside a WebView via the PC's LAN IP
+// (e.g. http://192.168.1.134:3000). Next.js 15.2+ blocks cross-origin access to
+// dev resources (/_next/*, HMR) by default, which breaks client-side hydration
+// and image loads in the WebView. Allow the LAN host(s) during development only.
+// Override / extend via DEV_LAN_ORIGINS="192.168.1.50,10.0.0.5".
+const devLanOrigins = (process.env.DEV_LAN_ORIGINS ?? "192.168.1.134")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 const nextConfig: NextConfig = {
+  ...(isDev ? { allowedDevOrigins: devLanOrigins } : {}),
+
   async headers() {
     return [
       {
