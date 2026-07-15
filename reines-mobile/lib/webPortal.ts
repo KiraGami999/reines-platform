@@ -64,3 +64,28 @@ export function isLoginUrl(url: string): boolean {
     return /\/login(\?|$)/.test(url);
   }
 }
+
+/** True when the user initiated a web portal Sign out (Auth.js). */
+export function isSignOutUrl(url: string): boolean {
+  return /\/api\/auth\/signout/i.test(url) || /\/api\/auth\/session.*signOut/i.test(url);
+}
+
+/**
+ * Auth.js sometimes redirects to NEXTAUTH_URL (localhost) after a failed
+ * session check. Rewrite those URLs onto WEB_BASE_URL so a physical phone
+ * can still reach the portal.
+ */
+export function rewritePortalUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    if (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1") {
+      const base = new URL(WEB_BASE_URL);
+      parsed.protocol = base.protocol;
+      parsed.host     = base.host;
+      return parsed.toString();
+    }
+  } catch {
+    /* keep original */
+  }
+  return url;
+}

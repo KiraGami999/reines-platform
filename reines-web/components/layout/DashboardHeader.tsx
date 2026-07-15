@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { cn } from "@/lib/utils";
 
 // ─── Breadcrumb helper ─────────────────────────────────────────────────────────
@@ -79,7 +80,7 @@ function SearchBar() {
   return (
     <div className="relative hidden sm:block">
       {open ? (
-        <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 shadow-sm ring-1 ring-[#8fb9e8]/30">
+        <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 shadow-sm ring-1 ring-[#8fb9e8]/30 dark:border-[var(--border)] dark:bg-[var(--surface)]">
           <Search size={14} className="shrink-0 text-zinc-400" />
           <input
             ref={inputRef}
@@ -87,11 +88,11 @@ function SearchBar() {
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search projects, messages…"
-            className="w-52 bg-transparent text-sm text-zinc-700 outline-none placeholder:text-zinc-400"
+            className="w-52 bg-transparent text-sm text-zinc-700 outline-none placeholder:text-zinc-400 dark:text-[var(--foreground)]"
           />
           <button
             onClick={() => { setOpen(false); setQuery(""); }}
-            className="text-zinc-400 hover:text-zinc-600"
+            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-[var(--foreground)]"
           >
             <X size={13} />
           </button>
@@ -99,11 +100,11 @@ function SearchBar() {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-600"
+          className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-600 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:text-[var(--foreground)]"
         >
           <Search size={14} />
           <span className="hidden lg:block">Search…</span>
-          <kbd className="hidden rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400 lg:block">
+          <kbd className="hidden rounded bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-400 dark:bg-[var(--surface-muted)] lg:block">
             ⌘K
           </kbd>
         </button>
@@ -142,38 +143,38 @@ function NotificationBell() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700"
+        className="relative flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
         aria-label="Notifications"
       >
         <Bell size={17} />
         {unreadCount > 0 && (
-          <span className="absolute right-1.5 top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-blue-500 ring-2 ring-white" />
+          <span className="absolute right-1.5 top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-blue-500 ring-2 ring-white dark:ring-[var(--surface)]" />
         )}
       </button>
 
       {open && (
-        <div className="fixed inset-x-3 top-14 z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
-          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3">
-            <h3 className="text-sm font-semibold text-zinc-900">Notifications</h3>
+        <div className="fixed inset-x-3 top-14 z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-[var(--border)] dark:bg-[var(--surface)] sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
+          <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-[var(--border)]">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Notifications</h3>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-600">
+              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-600 dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
                 {unreadCount} new
               </span>
             )}
           </div>
 
-          <div className="divide-y divide-zinc-50">
+          <div className="divide-y divide-zinc-50 dark:divide-[var(--border-subtle)]">
             {notifications.map((n, i) => {
               const Icon = n.icon;
               return (
-                <div key={i} className="flex gap-3 px-4 py-3 hover:bg-zinc-50 cursor-pointer">
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm">
-                  <Icon size={16} strokeWidth={1.8} className="text-blue-600" />
+                <div key={i} className="flex cursor-pointer gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[var(--surface-hover)]">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm dark:bg-[#8fb9e8]/15">
+                  <Icon size={16} strokeWidth={1.8} className="text-blue-600 dark:text-[#8fb9e8]" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-800">{n.title}</p>
-                  <p className="mt-0.5 text-xs text-zinc-400 leading-snug">{n.body}</p>
-                  <p className="mt-1 text-xs text-zinc-300">{n.time}</p>
+                  <p className="text-sm font-medium text-zinc-800 dark:text-[var(--foreground)]">{n.title}</p>
+                  <p className="mt-0.5 text-xs leading-snug text-zinc-400">{n.body}</p>
+                  <p className="mt-1 text-xs text-zinc-300 dark:text-[#7d8b9c]">{n.time}</p>
                 </div>
                 {n.unread && (
                   <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
@@ -183,7 +184,7 @@ function NotificationBell() {
             })}
           </div>
 
-          <div className="border-t border-zinc-100 px-4 py-2.5 text-center">
+          <div className="border-t border-zinc-100 px-4 py-2.5 text-center dark:border-[var(--border)]">
             <button className="text-xs font-medium text-[#8fb9e8] hover:underline">
               View all notifications
             </button>
@@ -234,36 +235,36 @@ function UserMenu({ user }: UserMenuProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 sm:gap-2 sm:px-2.5"
+        className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)] sm:gap-2 sm:px-2.5"
         aria-label="User menu"
         aria-expanded={open}
       >
         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d4a6b] text-[10px] font-bold uppercase text-[#8fb9e8]">
           {initials}
         </div>
-        <span className="hidden max-w-[120px] truncate font-medium text-zinc-700 sm:block">
+        <span className="hidden max-w-[120px] truncate font-medium text-zinc-700 dark:text-[var(--text-secondary)] sm:block">
           {user.name}
         </span>
         <ChevronDown size={13} className={cn("shrink-0 text-zinc-400 transition-transform", open && "rotate-180")} />
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg sm:w-64">
+        <div className="absolute right-0 top-full z-50 mt-2 w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-[var(--border)] dark:bg-[var(--surface)] sm:w-64">
           {/* User info header */}
-          <div className="border-b border-zinc-100 px-4 py-3">
+          <div className="border-b border-zinc-100 px-4 py-3 dark:border-[var(--border)]">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-sm font-bold text-[#8fb9e8]">
                 {initials}
               </div>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-zinc-900">{user.name}</p>
+                <p className="truncate text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">{user.name}</p>
                 <p className="truncate text-xs text-zinc-400">{user.email}</p>
               </div>
             </div>
             <span
               className={cn(
                 "mt-2.5 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                roleColour[user.role] ?? "bg-zinc-100 text-zinc-600"
+                roleColour[user.role] ?? "bg-zinc-100 text-zinc-600 dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]"
               )}
             >
               {roleLabel[user.role] ?? user.role}
@@ -282,7 +283,7 @@ function UserMenu({ user }: UserMenuProps) {
                 href={item.href}
                 target={(item as { target?: string }).target}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900"
+                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
               >
                 <item.icon size={14} className="shrink-0 text-zinc-400" />
                 {item.label}
@@ -290,10 +291,10 @@ function UserMenu({ user }: UserMenuProps) {
             ))}
           </div>
 
-          <div className="border-t border-zinc-100 p-1">
+          <div className="border-t border-zinc-100 p-1 dark:border-[var(--border)]">
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-blue-600 transition-colors hover:bg-blue-50"
+              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-blue-600 transition-colors hover:bg-blue-50 dark:text-[#8fb9e8] dark:hover:bg-[#8fb9e8]/10"
             >
               <LogOut size={14} className="shrink-0" />
               Sign out
@@ -316,26 +317,28 @@ interface DashboardHeaderProps {
 export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const pathname = usePathname();
   const crumbs   = buildBreadcrumbs(pathname);
+  const { resolved } = useTheme();
+  const logoVariant = resolved === "dark" ? "on-dark" : "on-light";
 
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 sm:h-16 sm:px-6 print:hidden">
+    <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:h-16 sm:px-6 print:hidden">
       {/* Left — mobile logo + hamburger + breadcrumbs */}
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <div className="shrink-0 lg:hidden">
-          <ReinesLogo size="header" variant="on-light" className="block" />
+          <ReinesLogo size="header" variant={logoVariant} className="block" />
         </div>
 
         {/* Mobile hamburger */}
         <button
           onClick={onMenuClick}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 lg:hidden"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)] lg:hidden"
           aria-label="Open sidebar"
         >
           <Menu size={18} />
         </button>
 
         {/* Mobile page title */}
-        <span className="truncate text-sm font-semibold text-zinc-800 sm:hidden">
+        <span className="truncate text-sm font-semibold text-zinc-800 dark:text-[var(--foreground)] sm:hidden">
           {crumbs[crumbs.length - 1]?.label}
         </span>
 
@@ -343,15 +346,15 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
         <nav className="hidden min-w-0 items-center gap-1 text-sm sm:flex" aria-label="Breadcrumb">
           {crumbs.map((crumb, i) => (
             <span key={crumb.href} className="flex items-center gap-1">
-              {i > 0 && <span className="text-zinc-300 select-none">/</span>}
+              {i > 0 && <span className="select-none text-zinc-300 dark:text-[#3d4a5e]">/</span>}
               {i === crumbs.length - 1 ? (
-                <span className="max-w-[200px] truncate font-semibold text-zinc-800">
+                <span className="max-w-[200px] truncate font-semibold text-zinc-800 dark:text-[var(--foreground)]">
                   {crumb.label}
                 </span>
               ) : (
                 <Link
                   href={crumb.href}
-                  className="max-w-[120px] truncate text-zinc-400 transition-colors hover:text-zinc-700"
+                  className="max-w-[120px] truncate text-zinc-400 transition-colors hover:text-zinc-700 dark:hover:text-[var(--foreground)]"
                 >
                   {crumb.label}
                 </Link>

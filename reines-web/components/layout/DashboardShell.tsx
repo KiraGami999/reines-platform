@@ -31,7 +31,10 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-50 print:block print:h-auto print:overflow-visible print:bg-white">
+    <div
+      data-portal
+      className="flex h-screen overflow-hidden bg-zinc-50 dark:bg-[var(--surface-shell)] print:block print:h-auto print:overflow-visible print:bg-white"
+    >
       <Sidebar
         role={user.role}
         open={sidebarOpen}

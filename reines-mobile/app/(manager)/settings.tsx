@@ -1,29 +1,25 @@
-import { useRouter } from "expo-router";
-import { FolderKanban, ImageIcon } from "lucide-react-native";
-import { SettingsScreen } from "@/components/layout/SettingsScreen";
-import { COLORS } from "@/constants";
+import { View, StyleSheet } from "react-native";
+import { PortalWebView } from "@/components/web/PortalWebView";
+import { SignOutBar } from "@/components/layout/SignOutBar";
+import { WEB_ROUTES } from "@/lib/webPortal";
 
 /**
- * PROJECT_MANAGER Settings screen.
- * Extends the shared SettingsScreen with manager-specific rows.
+ * PROJECT_MANAGER · Settings tab.
+ *
+ * Web Appearance settings + a native Sign out bar.
  */
 export default function ManagerSettings() {
-  const router = useRouter();
-
   return (
-    <SettingsScreen
-      extraRows={[
-        {
-          icon:    <FolderKanban size={16} color={COLORS.primary} />,
-          label:   "My Projects",
-          onPress: () => router.push("/(manager)/projects"),
-        },
-        {
-          icon:    <ImageIcon size={16} color={COLORS.primary} />,
-          label:   "Progress Gallery",
-          onPress: () => router.push("/(manager)/gallery"),
-        },
-      ]}
-    />
+    <View style={styles.root}>
+      <View style={styles.web}>
+        <PortalWebView route={WEB_ROUTES.manager.settings} padTop={false} />
+      </View>
+      <SignOutBar />
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  web:  { flex: 1 },
+});

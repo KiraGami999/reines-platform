@@ -7,10 +7,12 @@ import {
   LockKeyhole,
   Mail,
   MessageSquare,
+  Moon,
   Settings,
   ShieldCheck,
   UserCircle,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export const metadata = { title: "Settings - Reines Portal" };
 
@@ -41,6 +43,28 @@ export default async function SettingsPage() {
           Review account access and portal preferences for your Reines dashboard.
         </p>
       </div>
+
+      {/* Appearance — Light / Dark (navy) / System */}
+      <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+              <Moon size={18} />
+            </div>
+            <div>
+              <h2 className="text-sm font-semibold text-zinc-900">Appearance</h2>
+              <p className="mt-1 max-w-md text-xs leading-relaxed text-zinc-500">
+                Choose light, dark, or match your device. Dark mode uses a black
+                base with Reines navy and light-blue accents so the brand stays
+                clear on both the website and the mobile app.
+              </p>
+            </div>
+          </div>
+          <div className="w-full shrink-0 sm:w-64">
+            <ThemeToggle />
+          </div>
+        </div>
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-2xl border border-zinc-200 bg-white p-6 lg:col-span-2">
@@ -83,7 +107,7 @@ export default async function SettingsPage() {
             <Settings className="h-5 w-5 text-zinc-500" />
             <h2 className="mt-3 text-sm font-semibold text-zinc-900">Portal Status</h2>
             <p className="mt-1 text-xs leading-relaxed text-zinc-500">
-              Account preferences are ready for future notification and profile editing controls.
+              Appearance syncs across the portal and the mobile app WebViews on this device.
             </p>
           </div>
           <div className="rounded-2xl border border-zinc-200 bg-white p-5">

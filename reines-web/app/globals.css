@@ -1,21 +1,57 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (manual Light / Dark / System), not OS-only. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Light (day) ───────────────────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --surface: #ffffff;
+  --surface-muted: #f4f4f5; /* zinc-100 */
+  --surface-shell: #fafafa; /* zinc-50 */
+  --border: #e4e4e7; /* zinc-200 */
+  --border-subtle: #f4f4f5; /* zinc-100 */
+  --text-muted: #71717a; /* zinc-500 */
+  --brand: #2d4a6b;
+  --brand-hover: #1a2f4a;
+  --brand-accent: #8fb9e8;
+  color-scheme: light;
+}
+
+/* ── Dark (black canvas + brand blues — ~70% black / 30% blue tint) ───────────
+ * Pure #000 washes out; a near-black with a cool blue undertone keeps depth.
+ * Surfaces lift slightly so cards remain readable. #2d4a6b + #8fb9e8 stay
+ * unchanged as the brand signal on both website and mobile WebViews.
+ */
+.dark {
+  --background: #0a0c10;
+  --foreground: #f0f4f8;
+  --surface: #141820;
+  --surface-muted: #0f1319;
+  --surface-shell: #0a0c10;
+  --surface-hover: #1c2430;
+  --border: #2a3344;
+  --border-subtle: #1e2633;
+  --text-muted: #9aa8b8;
+  --text-secondary: #c5cfdc;
+  --brand: #2d4a6b;
+  --brand-hover: #1a2f4a;
+  --brand-accent: #8fb9e8;
+  --heading-on-dark: #a8c9eb;
+  color-scheme: dark;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-shell: var(--surface-shell);
+  --color-border: var(--border);
+  --color-brand: var(--brand);
+  --color-brand-accent: var(--brand-accent);
   --font-sans: var(--font-montserrat);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 html {
@@ -30,25 +66,88 @@ body {
   min-width: 0;
 }
 
+/* Form controls — follow theme tokens (was hard-locked to light). */
 input,
 textarea,
 select {
-  color: #18181b;
-  background-color: #ffffff;
-  caret-color: #2d4a6b;
+  color: var(--foreground);
+  background-color: var(--surface);
+  caret-color: var(--brand);
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #a1a1aa;
+  color: var(--text-muted);
   opacity: 1;
 }
 
 input:disabled,
 textarea:disabled,
 select:disabled {
-  color: #52525b;
-  -webkit-text-fill-color: #52525b;
+  color: var(--text-muted);
+  -webkit-text-fill-color: var(--text-muted);
+}
+
+/*
+ * Portal content remap: most dashboard pages hard-code zinc / white utilities.
+ * Scope under [data-portal] so public marketing pages stay clean until themed.
+ * Brand navy + accent hex utilities are left alone (except body text navy → accent).
+ */
+.dark [data-portal] :is(.bg-white) {
+  background-color: var(--surface);
+}
+.dark [data-portal] :is(.bg-zinc-50) {
+  background-color: var(--surface-muted);
+}
+.dark [data-portal] :is(.bg-zinc-100) {
+  background-color: var(--surface-hover);
+}
+.dark [data-portal] :is(.border-zinc-200, .border-zinc-100) {
+  border-color: var(--border);
+}
+.dark [data-portal] :is(.divide-zinc-100, .divide-zinc-50, .divide-zinc-200) > :not([hidden]) ~ :not([hidden]) {
+  border-color: var(--border-subtle);
+}
+.dark [data-portal] :is(.text-zinc-900, .text-zinc-800) {
+  color: var(--foreground);
+}
+.dark [data-portal] :is(.text-zinc-700, .text-zinc-600) {
+  color: var(--text-secondary);
+}
+.dark [data-portal] :is(.text-zinc-500) {
+  color: var(--text-muted);
+}
+.dark [data-portal] :is(.text-zinc-400, .text-zinc-300) {
+  color: #7d8b9c;
+}
+/* Navy headings → soft brand accent so they stay clear on black */
+.dark [data-portal] :is(.text-\[\#2d4a6b\]) {
+  color: var(--heading-on-dark);
+}
+.dark [data-portal] :is(.hover\:bg-zinc-50:hover) {
+  background-color: var(--surface-hover);
+}
+.dark [data-portal] :is(.hover\:bg-white:hover) {
+  background-color: var(--surface);
+}
+.dark [data-portal] :is(.hover\:text-zinc-900:hover, .hover\:text-zinc-800:hover, .hover\:text-zinc-700:hover) {
+  color: var(--foreground);
+}
+.dark [data-portal] :is(.ring-white) {
+  --tw-ring-color: var(--surface);
+}
+/* Soft blue badges / chips */
+.dark [data-portal] :is(.bg-blue-100) {
+  background-color: rgba(143, 185, 232, 0.15);
+}
+.dark [data-portal] :is(.text-blue-700, .text-blue-600) {
+  color: #8fb9e8;
+}
+.dark [data-portal] :is(.bg-blue-50, .bg-blue-50\/30) {
+  background-color: rgba(143, 185, 232, 0.08);
+}
+.dark [data-portal] :is(.hover\:bg-blue-50:hover) {
+  background-color: rgba(143, 185, 232, 0.12);
 }
 
 @keyframes reines-loader-bar {

@@ -16,7 +16,14 @@ import {
 } from "react-native-webview";
 
 import { useWebSession } from "@/hooks/useWebSession";
-import { buildBridgeUrl, isLoginUrl, toWebUrl } from "@/lib/webPortal";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  buildBridgeUrl,
+  isLoginUrl,
+  isSignOutUrl,
+  rewritePortalUrl,
+  toWebUrl,
+} from "@/lib/webPortal";
 import {
   clearWebSessionEstablished,
   isWebSessionEstablished,
@@ -34,6 +41,11 @@ interface PortalWebViewProps {
   route: string;
   /** Optional CSS injected into every page (e.g. to hide redundant chrome). */
   injectedCss?: string;
+  /**
+   * When false, skip safe-area top padding (use when a native header already
+   * owns the status-bar inset — e.g. Settings with Sign out).
+   */
+  padTop?: boolean;
 }
 
 /**
@@ -44,12 +56,14 @@ interface PortalWebViewProps {
  * Session handling:
  *   1. First load runs a server-side /mobile-bridge handoff (JWT → NextAuth cookie).
  *   2. Later tabs reuse that cookie for the rest of the app run.
- *   3. If the web drops to /login, we re-bridge a few times, then show an error.
- *   4. Tabs that failed early auto-recover on focus once another tab succeeded.
+ *   3. If the web drops to /login (cookie lost), we re-bridge a few times.
+ *   4. If the user signs out on the web, we run native signOut (no re-bridge).
+ *   5. Tabs that failed early auto-recover on focus once another tab succeeded.
  */
-export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
+export function PortalWebView({ route, injectedCss, padTop = true }: PortalWebViewProps) {
   const insets             = useSafeAreaInsets();
   const { getBridgeToken } = useWebSession();
+  const { signOut }        = useAuth();
   const webRef             = useRef<WebView>(null);
 
   const [source,  setSource]  = useState<string | null>(() =>
@@ -61,6 +75,8 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
 
   const bridging      = useRef(false);
   const bridgeAttempts = useRef(0);
+  /** User clicked Sign out in the web portal — do not auto re-bridge. */
+  const signingOut     = useRef(false);
 
   const loadDirect = useCallback((path: string) => {
     bridging.current = false;
@@ -75,7 +91,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   }, [route]);
 
   const startBridge = useCallback(async () => {
-    if (bridging.current) return;
+    if (bridging.current || signingOut.current) return;
 
     // Cookie already good (another tab opened successfully) — skip re-bridge.
     if (isWebSessionEstablished()) {
@@ -108,6 +124,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   }, [getBridgeToken, loadDirect, route]);
 
   const retry = useCallback(() => {
+    if (signingOut.current) return;
     bridging.current = false;
     bridgeAttempts.current = 0;
     if (isWebSessionEstablished()) {
@@ -117,31 +134,66 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
     }
   }, [loadDirect, route, startBridge]);
 
+  const handleNativeSignOut = useCallback(() => {
+    if (signingOut.current) return;
+    signingOut.current = true;
+    bridging.current = false;
+    clearWebSessionEstablished();
+    console.log(`[PortalWebView:${route}] web Sign out → native signOut`);
+    void signOut();
+  }, [route, signOut]);
+
   const handleShouldStart = useCallback(
     (req: WebViewNavigation): boolean => {
-      if (req.url.includes("/mobile-bridge") || req.url.includes("/api/auth/")) {
+      const url = rewritePortalUrl(req.url);
+
+      // Intentional web logout — clear the native JWT instead of re-bridging.
+      if (isSignOutUrl(url)) {
+        handleNativeSignOut();
+        return false;
+      }
+
+      if (url !== req.url) {
+        // Auth.js bounced to localhost — load the LAN URL instead.
+        setSource(url);
+        return false;
+      }
+
+      if (url.includes("/mobile-bridge") || url.includes("/api/auth/")) {
         return true;
       }
-      if (isLoginUrl(req.url) && !bridging.current) {
+      if (isLoginUrl(url) && !bridging.current && !signingOut.current) {
         void startBridge();
         return false;
       }
       return true;
     },
-    [startBridge]
+    [handleNativeSignOut, startBridge]
   );
 
   const handleNavChange = useCallback(
     (nav: WebViewNavigation) => {
       setCanGoBack(nav.canGoBack);
-      console.log(`[PortalWebView:${route}] nav ->`, nav.url, "loading:", nav.loading);
+      const url = rewritePortalUrl(nav.url);
+      console.log(`[PortalWebView:${route}] nav ->`, url, "loading:", nav.loading);
+
+      if (isSignOutUrl(url)) {
+        handleNativeSignOut();
+        return;
+      }
+
+      if (url !== nav.url) {
+        setSource(url);
+        return;
+      }
 
       const onBridge =
-        nav.url.includes("/mobile-bridge") || nav.url.includes("/api/auth/");
+        url.includes("/mobile-bridge") || url.includes("/api/auth/");
 
       if (onBridge) return;
 
-      if (isLoginUrl(nav.url)) {
+      if (isLoginUrl(url)) {
+        if (signingOut.current) return;
         bridging.current = false;
         const hadSession = isWebSessionEstablished();
         clearWebSessionEstablished();
@@ -157,7 +209,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
       markWebSessionEstablished();
       setError(false);
     },
-    [route, startBridge]
+    [handleNativeSignOut, route, startBridge]
   );
 
   // Soften hard failures: a one-off WebView error (heavy SSR page, flaky Wi‑Fi)
@@ -219,7 +271,7 @@ export function PortalWebView({ route, injectedCss }: PortalWebViewProps) {
   }, [loading, source]);
 
   return (
-    <View style={[styles.root, { paddingTop: insets.top }]}>
+    <View style={[styles.root, padTop && { paddingTop: insets.top }]}>
       {error ? (
         <View style={styles.centered}>
           <Text style={styles.errTitle}>Couldn&apos;t open the portal</Text>

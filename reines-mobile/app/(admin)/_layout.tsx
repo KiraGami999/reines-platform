@@ -92,6 +92,8 @@ export default function AdminLayout() {
         options={{
           title:       "Settings",
           tabBarLabel: "Settings",
+          headerShown: true,
+          headerRight: () => <HeaderRight />,
           tabBarIcon:  ({ color, focused }) => (
             <TabBarIcon icon={Settings} color={color} focused={focused} />
           ),

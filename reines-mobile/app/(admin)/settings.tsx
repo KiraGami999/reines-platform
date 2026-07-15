@@ -1,11 +1,25 @@
-import { SettingsScreen } from "@/components/layout/SettingsScreen";
+import { View, StyleSheet } from "react-native";
+import { PortalWebView } from "@/components/web/PortalWebView";
+import { SignOutBar } from "@/components/layout/SignOutBar";
+import { WEB_ROUTES } from "@/lib/webPortal";
 
 /**
- * ADMIN Settings screen (native).
+ * ADMIN · Settings tab.
  *
- * Kept native so signing out also clears the native JWT + push token (a web
- * logout inside the WebView alone would leave the app "signed in").
+ * Web Appearance settings + a native Sign out bar.
  */
 export default function AdminSettings() {
-  return <SettingsScreen />;
+  return (
+    <View style={styles.root}>
+      <View style={styles.web}>
+        <PortalWebView route={WEB_ROUTES.admin.settings} padTop={false} />
+      </View>
+      <SignOutBar />
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  root: { flex: 1 },
+  web:  { flex: 1 },
+});

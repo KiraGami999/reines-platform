@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import { SessionProvider } from "@/components/auth/SessionProvider";
 import { ReinesLoaderProvider } from "@/components/layout/ReinesLoaderProvider";
+import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
@@ -23,10 +25,19 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${montserrat.variable} h-full antialiased`}>
-      <body className="min-h-full bg-white font-[family-name:var(--font-montserrat)] text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+    <html
+      lang="en"
+      className={`${montserrat.variable} h-full antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOTSTRAP_SCRIPT }} />
+      </head>
+      <body className="min-h-full bg-background font-[family-name:var(--font-montserrat)] text-foreground">
         <SessionProvider>
-          <ReinesLoaderProvider>{children}</ReinesLoaderProvider>
+          <ThemeProvider>
+            <ReinesLoaderProvider>{children}</ReinesLoaderProvider>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>
