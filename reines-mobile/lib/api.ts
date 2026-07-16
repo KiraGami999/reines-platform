@@ -84,6 +84,19 @@ api.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
 
 // ── Response: silent token refresh on 401 ────────────────────────────────────
 
+/**
+ * Endpoints where a 401 means "bad credentials / this request itself", NOT an
+ * expired session. These must never trigger the silent-refresh flow — otherwise
+ * a wrong password on /login fires /refresh → SESSION_EXPIRED and the login
+ * screen just reloads instead of showing "Invalid email or password".
+ */
+const AUTH_ENDPOINTS = [
+  "/api/mobile/login",
+  "/api/mobile/refresh",
+  "/api/mobile/logout",
+  "/api/auth/register",
+];
+
 api.interceptors.response.use(
   (res) => res,
   async (error: AxiosError) => {
@@ -94,10 +107,13 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // A failing refresh call must not trigger another refresh (infinite loop guard)
-    if (original.url?.includes("/api/mobile/refresh")) {
-      await deleteToken();
-      emitAuthEvent("SESSION_EXPIRED");
+    // Auth endpoints: let the caller handle the 401 (e.g. show a login error).
+    // Refresh specifically also clears the session so a stale token doesn't stick.
+    if (AUTH_ENDPOINTS.some((path) => original.url?.includes(path))) {
+      if (original.url?.includes("/api/mobile/refresh")) {
+        await deleteToken();
+        emitAuthEvent("SESSION_EXPIRED");
+      }
       return Promise.reject(error);
     }
 
