@@ -9,17 +9,22 @@ const LOGO_WIDTH = 684;
 const LOGO_HEIGHT = 143;
 
 const HEIGHT_CLASS = {
-  xs: "h-8",
-  sm: "h-10",
-  md: "h-12 sm:h-14",
-  lg: "h-14 sm:h-16",
+  xs: "h-7",
+  sm: "h-8",
+  md: "h-10 sm:h-11",
+  lg: "h-12 sm:h-14",
   /** Fills the h-20 navbar while keeping the hexagon icon clearly readable. */
   nav: "h-12 min-h-12 sm:h-14 lg:h-16",
+  /**
+   * Portal sidebar logo row (h-16). Sized so the wordmark has clear vertical
+   * padding — previously md filled the bar and looked cramped.
+   */
+  sidebar: "h-8 max-w-[9.5rem] sm:h-9 sm:max-w-[11rem]",
   /**
    * Compact portal header mark (mobile top-left).
    * Caps width so the wide wordmark doesn’t crowd the hamburger + title.
    */
-  header: "h-7 max-w-[7.75rem] sm:h-8 sm:max-w-[9.5rem]",
+  header: "h-6 max-w-[6.5rem] sm:h-7 sm:max-w-[8rem]",
   xl: "h-24 sm:h-28 md:h-32",
 } as const;
 

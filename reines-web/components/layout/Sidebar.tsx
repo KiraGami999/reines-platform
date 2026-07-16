@@ -219,11 +219,11 @@ export function Sidebar({
           sidebarWidth
         )}
       >
-        {/* Logo row */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-4">
+        {/* Logo row — keep mark smaller than the bar so it has breathing room */}
+        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-3 sm:px-4">
           <Link href="/" className="flex min-w-0 items-center" onClick={handleLinkClick}>
             <BrandLogoAnchor>
-              <ReinesLogo size={collapsed ? "sm" : "md"} variant="on-dark" />
+              <ReinesLogo size={collapsed ? "xs" : "sidebar"} variant="on-dark" />
             </BrandLogoAnchor>
           </Link>
 
