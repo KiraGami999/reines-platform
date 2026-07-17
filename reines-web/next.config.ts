@@ -25,8 +25,8 @@ const ContentSecurityPolicy = [
   "connect-src 'self' https:",
   // Media — no audio/video used.
   "media-src 'none'",
-  // Frames — we embed nothing and disallow being embedded.
-  "frame-src 'none'",
+  // Frames — Google Maps embed on the Contact page; still disallow embedding us.
+  "frame-src 'self' https://www.google.com https://maps.google.com",
   "frame-ancestors 'none'",
   // Forms only submit to same origin.
   "form-action 'self'",

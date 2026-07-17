@@ -56,7 +56,7 @@ export default function ContactPage() {
       </section>
 
       {/* Main content */}
-      <section className="bg-white py-12 sm:py-20">
+      <section className="bg-white py-12 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-3">
 
@@ -91,16 +91,16 @@ export default function ContactPage() {
               })}
 
               {/* Temporary Blantyre map until the client confirms the exact pin. */}
-              <div className="overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50">
+              <div className="overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
                 <iframe
                   title="Google Map focused on Blantyre, Malawi"
                   src="https://www.google.com/maps?q=Blantyre%2C%20Malawi&z=13&output=embed"
-                  className="h-56 w-full border-0"
+                  className="h-56 w-full border-0 bg-[var(--surface-muted)]"
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
                   allowFullScreen
                 />
-                <div className="flex items-start gap-2 border-t border-zinc-100 bg-white px-4 py-3">
+                <div className="flex items-start gap-2 border-t border-zinc-100 bg-white px-4 py-3 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                   <Map size={16} strokeWidth={1.8} className="mt-0.5 shrink-0 text-[#8fb9e8]" />
                   <div>
                     <p className="text-xs font-semibold text-[#2d4a6b]">Blantyre, Malawi</p>
@@ -116,13 +116,13 @@ export default function ContactPage() {
             <div className="lg:col-span-2 space-y-5">
 
               {/* Quote callout */}
-              <div className="flex items-start gap-4 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b]/10">
-                  <ArrowRight size={16} className="text-[#2d4a6b]" />
+              <div className="flex items-start gap-4 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
+                  <ArrowRight size={16} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-[#2d4a6b]">Starting a new project?</p>
-                  <p className="mt-0.5 text-xs text-zinc-500 leading-relaxed">
+                  <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
                     If you&apos;d like a detailed quotation for a project, use our dedicated{" "}
                     <Link href="/quote" className="font-medium text-[#2d4a6b] underline underline-offset-2 hover:text-[#8fb9e8]">
                       Get a Quote
@@ -132,7 +132,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4 sm:p-8">
+              <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] sm:p-8">
                 <h2 className="text-xl font-bold text-[#2d4a6b]">Send us a message</h2>
                 <p className="mt-1 text-sm text-zinc-500">For general enquiries, questions, or feedback. All messages are responded to within 24 hours.</p>
                 <div className="mt-6">
@@ -145,7 +145,7 @@ export default function ContactPage() {
       </section>
 
       {/* FAQ strip */}
-      <section className="bg-zinc-50 py-16">
+      <section className="bg-zinc-50 py-16 dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-xl font-bold text-[#2d4a6b]">Common Questions</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
@@ -154,7 +154,7 @@ export default function ContactPage() {
               { q: "Do you work outside Blantyre?", a: "Yes. We operate across Malawi including Lilongwe, Zomba, and Mzuzu." },
               { q: "What payment terms do you offer?", a: "We use a 30/40/30 milestone payment structure. No upfront full payment." },
             ].map((faq) => (
-              <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6">
+              <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                 <h3 className="font-semibold text-[#2d4a6b]">{faq.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500">{faq.a}</p>
               </div>

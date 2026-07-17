@@ -107,14 +107,14 @@ export function ContactForm() {
           error={fieldErrors.phone?.[0]}
         />
         <div className="space-y-1">
-          <label htmlFor="subject" className="block text-sm font-medium text-zinc-700">
+          <label htmlFor="subject" className="block text-sm font-medium text-zinc-700 dark:text-[var(--text-secondary)]">
             Subject
           </label>
           <select
             id="subject"
             value={form.subject}
             onChange={update("subject")}
-            className="block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200"
+            className="block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 focus:border-[#8fb9e8]/60 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8]/20 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--foreground)]"
             required
           >
             <option value="">Select a subject…</option>
@@ -132,7 +132,7 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="message" className="block text-sm font-medium text-zinc-700">
+        <label htmlFor="message" className="block text-sm font-medium text-zinc-700 dark:text-[var(--text-secondary)]">
           Message
         </label>
         <textarea
@@ -141,7 +141,7 @@ export function ContactForm() {
           placeholder="Tell us about your project or question…"
           value={form.message}
           onChange={update("message")}
-          className="block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-200"
+          className="block w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[#8fb9e8]/60 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8]/20 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--foreground)]"
           required
         />
         {fieldErrors.message?.[0] && (

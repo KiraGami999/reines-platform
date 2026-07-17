@@ -13,8 +13,8 @@ const HEIGHT_CLASS = {
   sm: "h-8",
   md: "h-10 sm:h-11",
   lg: "h-12 sm:h-14",
-  /** Fills the h-20 navbar while keeping the hexagon icon clearly readable. */
-  nav: "h-12 min-h-12 sm:h-14 lg:h-16",
+  /** Public site navbar (h-20) — kept under the bar height for clear padding. */
+  nav: "h-9 min-h-9 sm:h-10 lg:h-11",
   /**
    * Portal sidebar logo row (h-16). Sized so the wordmark has clear vertical
    * padding — previously md filled the bar and looked cramped.
