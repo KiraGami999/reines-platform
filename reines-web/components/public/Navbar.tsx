@@ -1,12 +1,17 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { ReinesLogo } from "@/components/layout/ReinesLogo";
 import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
+
+/** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
+const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
+const NAV_LOGO_WIDTH = 825;
+const NAV_LOGO_HEIGHT = 179;
 
 const links = [
   { label: "Home", href: "/" },
@@ -37,8 +42,21 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#2d4a6b]/95 shadow-lg shadow-black/5 backdrop-blur-md">
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
-        {/* Logo */}
-        <ReinesLogo size="nav" linked priority className="shrink-0" />
+        {/* Logo — rebranded Reines Group mark (navbar only) */}
+        <Link
+          href="/"
+          className="group inline-flex shrink-0 items-center transition-transform duration-300 hover:scale-[1.02]"
+          aria-label="Reines Group — Home"
+        >
+          <Image
+            src={NAV_LOGO_SRC}
+            alt="Reines Group"
+            width={NAV_LOGO_WIDTH}
+            height={NAV_LOGO_HEIGHT}
+            priority
+            className="h-9 w-auto min-h-9 object-contain object-left sm:h-10 lg:h-11"
+          />
+        </Link>
 
         {/* Desktop nav */}
         <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 xl:flex">
