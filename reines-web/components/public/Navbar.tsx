@@ -10,8 +10,8 @@ import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
 const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
-const NAV_LOGO_WIDTH = 825;
-const NAV_LOGO_HEIGHT = 179;
+const NAV_LOGO_WIDTH = 795;
+const NAV_LOGO_HEIGHT = 163;
 
 const links = [
   { label: "Home", href: "/" },
@@ -39,7 +39,7 @@ export function Navbar() {
   const isSignedIn = status === "authenticated" && !!session?.user;
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#2d4a6b]/95 shadow-lg shadow-black/5 backdrop-blur-md">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#2d4a6b] shadow-lg shadow-black/5">
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
         {/* Logo — rebranded Reines Group mark (navbar only) */}
