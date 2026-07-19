@@ -12,8 +12,12 @@ export const metadata: Metadata = {
   title: "Reines Property Development",
   description: "Modern client portal and project management platform.",
   icons: {
-    icon: "/logo-icon.png",
-    apple: "/logo-icon.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/logo-icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
 };
 
