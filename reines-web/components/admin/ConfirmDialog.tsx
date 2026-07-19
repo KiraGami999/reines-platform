@@ -55,7 +55,7 @@ export default function ConfirmDialog({
         <div className="border-b border-zinc-100 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-100">
-              <AlertTriangle size={19} className="text-blue-600" />
+              <AlertTriangle size={19} className="text-zinc-500" />
             </div>
             <div>
               <p id="confirm-title" className="text-sm font-semibold text-zinc-900">

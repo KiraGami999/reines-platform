@@ -55,9 +55,9 @@ export function ConversationList({ conversations, activeProjectId }: Conversatio
                   className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold",
                     isActive
-                      ? "bg-[#2d4a6b] text-[#8fb9e8]"
+                      ? "bg-[#2d4a6b] text-zinc-300"
                       : isUnread
-                      ? "bg-[#8fb9e8]/15 text-[#8fb9e8]"
+                      ? "bg-zinc-200 text-zinc-600"
                       : "bg-zinc-100 text-zinc-500"
                   )}
                 >

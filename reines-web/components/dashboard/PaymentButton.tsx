@@ -102,7 +102,7 @@ export default function PaymentButton({
     return (
       <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
-          <CreditCard size={16} className="text-[#8fb9e8]" />
+          <CreditCard size={16} className="text-zinc-500" />
           <h3 className="text-sm font-semibold text-zinc-900">How would you like to pay?</h3>
         </div>
 
@@ -124,7 +124,7 @@ export default function PaymentButton({
               <p className="text-sm font-semibold text-zinc-900">Pay Online</p>
               <p className="text-xs text-zinc-400">Mobile Money, Bank Transfer, Card</p>
             </div>
-            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-[#8fb9e8]" />
+            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
           </button>
 
           {/* Cash */}
@@ -139,7 +139,7 @@ export default function PaymentButton({
               <p className="text-sm font-semibold text-zinc-900">Pay in Cash</p>
               <p className="text-xs text-zinc-400">Upload receipt · Admin confirms</p>
             </div>
-            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-[#8fb9e8]" />
+            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
           </button>
         </div>
 
@@ -158,7 +158,7 @@ export default function PaymentButton({
     return (
       <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
         <div className="flex items-center gap-2">
-          <CreditCard size={16} className="text-[#8fb9e8]" />
+          <CreditCard size={16} className="text-zinc-500" />
           <h3 className="text-sm font-semibold text-zinc-900">Pay Online via Paychangu</h3>
         </div>
         <p className="text-xs text-zinc-500">

@@ -35,7 +35,7 @@ export default async function AdminOverviewPage() {
       desc:    "Create accounts, assign roles (Admin, Project Manager, Client), and manage access.",
       stat:    `${stats.users} users`,
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/clients",
@@ -44,7 +44,7 @@ export default async function AdminOverviewPage() {
       desc:    "View every registered client and their linked project count.",
       stat:    `${stats.clients} clients`,
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/projects",
@@ -53,7 +53,7 @@ export default async function AdminOverviewPage() {
       desc:    "Create projects, assign clients and project managers, and track all work.",
       stat:    `${stats.projects} projects`,
       accent:  "from-[#8fb9e8]/10 to-[#8fb9e8]/5 border-[#8fb9e8]/30",
-      iconBg:  "bg-[#8fb9e8]/10 text-[#8fb9e8]",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/enquiries",
@@ -64,7 +64,7 @@ export default async function AdminOverviewPage() {
       accent:  stats.unreadEnquiries > 0
         ? "from-blue-500/10 to-blue-500/5 border-blue-200"
         : "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  stats.unreadEnquiries > 0 ? "bg-blue-100 text-blue-600" : "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/payments",
@@ -73,7 +73,7 @@ export default async function AdminOverviewPage() {
       desc:    "View all Paychangu payment transactions, statuses, and receipts.",
       stat:    "Via Paychangu",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/homepage",
@@ -82,7 +82,7 @@ export default async function AdminOverviewPage() {
       desc:    "Choose which promotional images and copy appear on the public homepage.",
       stat:    "Public content",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/products",
@@ -91,7 +91,7 @@ export default async function AdminOverviewPage() {
       desc:    "Edit public products by subsidiary, including images, price labels, promotions, and catalogue copy.",
       stat:    "Public products",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/public-projects",
@@ -100,7 +100,7 @@ export default async function AdminOverviewPage() {
       desc:    "Control the project images, descriptions, and statuses shown on the public Projects page.",
       stat:    "Public portfolio",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
     {
       href:    "/dashboard/admin/public-services",
@@ -109,7 +109,7 @@ export default async function AdminOverviewPage() {
       desc:    "Edit the services, descriptions, feature lists, and icons shown on the public Services page.",
       stat:    "Public services",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
-      iconBg:  "bg-blue-100 text-blue-600",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
   ];
 
@@ -118,7 +118,7 @@ export default async function AdminOverviewPage() {
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
         <div className="w-10 h-10 rounded-xl bg-[#2d4a6b] flex items-center justify-center">
-          <ShieldCheck className="w-5 h-5 text-[#8fb9e8]" />
+          <ShieldCheck className="w-5 h-5 text-zinc-400" />
         </div>
         <div>
           <h1 className="text-2xl font-bold text-[#2d4a6b]">Admin Panel</h1>

@@ -131,7 +131,7 @@ export default async function ProjectGalleryPage({ params, searchParams }: PageP
 
           {/* Tips banner */}
           <div className="mx-6 mt-5 flex items-start gap-2.5 rounded-xl border border-blue-100 bg-blue-50 p-4">
-            <Info size={14} className="mt-0.5 shrink-0 text-blue-500" />
+            <Info size={14} className="mt-0.5 shrink-0 text-zinc-500" />
             <p className="text-xs leading-relaxed text-blue-700">
               <span className="font-semibold">Tips for great updates:</span> Include clear photos showing progress,
               and write notes that explain what was completed — clients value detail. Each update is

@@ -383,7 +383,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                   {(() => {
                     const Icon = getServiceIcon(selectedService.iconKey);
                     return (
-                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
                         <Icon size={22} strokeWidth={1.8} />
                       </div>
                     );

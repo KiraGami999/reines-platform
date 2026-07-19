@@ -5,7 +5,7 @@ interface StatCardProps {
   accent?:  string;
 }
 
-export default function StatCard({ label, value, icon, accent = "bg-[#8fb9e8]/10 text-[#8fb9e8]" }: StatCardProps) {
+export default function StatCard({ label, value, icon, accent = "bg-zinc-100 text-zinc-500" }: StatCardProps) {
   return (
     <div className="flex min-w-0 items-center gap-3 rounded-xl border border-zinc-200 bg-white p-3 sm:gap-4 sm:p-5">
       <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-12 sm:w-12 ${accent}`}>

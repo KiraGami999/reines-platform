@@ -48,7 +48,7 @@ export default async function SettingsPage() {
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-zinc-800 dark:text-zinc-400">
               <Moon size={18} />
             </div>
             <div>

@@ -291,7 +291,7 @@ export function Sidebar({
                         "group flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-sm font-medium transition-colors",
                         collapsed && "justify-center px-0",
                         isActive
-                          ? "bg-[#8fb9e8]/15 text-[#8fb9e8]"
+                          ? "bg-white/10 text-zinc-100"
                           : "text-zinc-400 hover:bg-white/5 hover:text-white"
                       )}
                     >
@@ -299,7 +299,7 @@ export function Sidebar({
                         size={17}
                         className={cn(
                           "shrink-0 transition-colors",
-                          isActive ? "text-[#8fb9e8]" : "text-zinc-500 group-hover:text-zinc-300"
+                          isActive ? "text-zinc-300" : "text-zinc-500 group-hover:text-zinc-300"
                         )}
                       />
                       {!collapsed && (

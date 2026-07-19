@@ -157,7 +157,7 @@ function NotificationBell() {
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-[var(--border)]">
             <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Notifications</h3>
             {unreadCount > 0 && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-600 dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-600 dark:bg-zinc-800 dark:text-zinc-400">
                 {unreadCount} new
               </span>
             )}
@@ -168,8 +168,8 @@ function NotificationBell() {
               const Icon = n.icon;
               return (
                 <div key={i} className="flex cursor-pointer gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[var(--surface-hover)]">
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm dark:bg-[#8fb9e8]/15">
-                  <Icon size={16} strokeWidth={1.8} className="text-blue-600 dark:text-[#8fb9e8]" />
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm dark:bg-[var(--surface-muted)]">
+                  <Icon size={16} strokeWidth={1.8} className="text-zinc-500 dark:text-[var(--text-muted)]" />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-zinc-800 dark:text-[var(--foreground)]">{n.title}</p>
@@ -264,7 +264,7 @@ function UserMenu({ user }: UserMenuProps) {
             <span
               className={cn(
                 "mt-2.5 inline-flex rounded-full px-2.5 py-0.5 text-xs font-semibold",
-                roleColour[user.role] ?? "bg-zinc-100 text-zinc-600 dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]"
+                roleColour[user.role] ?? "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400"
               )}
             >
               {roleLabel[user.role] ?? user.role}
@@ -294,9 +294,9 @@ function UserMenu({ user }: UserMenuProps) {
           <div className="border-t border-zinc-100 p-1 dark:border-[var(--border)]">
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-blue-600 transition-colors hover:bg-blue-50 dark:text-[#8fb9e8] dark:hover:bg-[#8fb9e8]/10"
+              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)]"
             >
-              <LogOut size={14} className="shrink-0" />
+              <LogOut size={14} className="shrink-0 text-zinc-400" />
               Sign out
             </button>
           </div>

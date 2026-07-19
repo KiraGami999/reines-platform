@@ -80,7 +80,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
           { label: "Redemptions",     value: redemptions.length,                            icon: <Gift     size={16} /> },
         ].map((s) => (
           <div key={s.label} className="rounded-xl border border-zinc-200 bg-white p-4 flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 shrink-0">
               {s.icon}
             </div>
             <div>
@@ -103,7 +103,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
         <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
           <div className="border-b border-zinc-100 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Wallet size={15} className="text-[#8fb9e8]" />
+              <Wallet size={15} className="text-zinc-500" />
               <h2 className="text-sm font-semibold text-zinc-900">Payment History</h2>
             </div>
           </div>
@@ -130,7 +130,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
         <div className="rounded-2xl border border-zinc-200 bg-white overflow-hidden">
           <div className="border-b border-zinc-100 px-5 py-4">
             <div className="flex items-center gap-2">
-              <Gift size={15} className="text-[#8fb9e8]" />
+              <Gift size={15} className="text-zinc-500" />
               <h2 className="text-sm font-semibold text-zinc-900">Redemption History</h2>
             </div>
           </div>

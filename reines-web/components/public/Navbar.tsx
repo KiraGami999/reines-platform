@@ -6,6 +6,7 @@ import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
+import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 const links = [
   { label: "Home", href: "/" },
@@ -71,8 +72,10 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* CTA + mobile toggle */}
+        {/* Theme toggle + CTA + mobile toggle */}
         <div className="flex shrink-0 items-center gap-2">
+          <ThemeIconButton variant="on-dark" />
+
           {isSignedIn ? (
             <div className="hidden items-center gap-2 xl:flex">
               <span className="hidden items-center gap-1 rounded-xl border border-white/10 px-3 py-2 text-xs font-medium text-zinc-300 2xl:flex">

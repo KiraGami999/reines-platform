@@ -80,8 +80,8 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
       {/* Stats */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4 mb-6">
         <StatCard label="Total Enquiries" value={total}  icon={<MessageSquare className="w-5 h-5" />} />
-        <StatCard label="Unread"          value={unread} icon={<MailX className="w-5 h-5" />}          accent="bg-blue-50 text-blue-600" />
-        <StatCard label="Read"            value={read}   icon={<MailCheck className="w-5 h-5" />}       accent="bg-blue-50 text-blue-600" />
+        <StatCard label="Unread"          value={unread} icon={<MailX className="w-5 h-5" />}          accent="bg-zinc-100 text-zinc-500" />
+        <StatCard label="Read"            value={read}   icon={<MailCheck className="w-5 h-5" />}       accent="bg-zinc-100 text-zinc-500" />
       </div>
 
       {/* Filter Tabs */}
@@ -123,7 +123,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
                 className="flex items-start gap-2 px-3 py-3 cursor-pointer hover:bg-zinc-50 rounded-xl transition-colors sm:gap-4 sm:px-5 sm:py-4"
                 onClick={() => toggleExpand(enq.id)}
               >
-                <div className={`mt-0.5 shrink-0 ${enq.read ? "text-zinc-400" : "text-[#8fb9e8]"}`}>
+                <div className={`mt-0.5 shrink-0 ${enq.read ? "text-zinc-400" : "text-zinc-500"}`}>
                   {enq.read ? <MailOpen className="w-5 h-5" /> : <Mail className="w-5 h-5" />}
                 </div>
 
@@ -151,7 +151,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
                   <button
                     onClick={(e) => { e.stopPropagation(); handleDelete(enq.id); }}
                     disabled={deleting === enq.id}
-                    className="p-1.5 rounded-lg text-zinc-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                    className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-600 hover:bg-zinc-50 transition-colors"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />

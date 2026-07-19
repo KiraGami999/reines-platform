@@ -66,7 +66,7 @@ function DeleteDialog({
         <div className="border-b border-zinc-100 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100">
-              <AlertCircle size={20} className="text-blue-600" />
+              <AlertCircle size={20} className="text-zinc-500" />
             </div>
             <div>
               <p className="font-semibold text-zinc-900">Delete update?</p>
@@ -208,7 +208,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
 
           {/* Note + meta + thumbnail strip */}
           <div className="border-t border-white/10 px-6 py-5">
-            <div className="flex items-center gap-2 text-xs text-[#8fb9e8]">
+            <div className="flex items-center gap-2 text-xs text-zinc-400">
               <Calendar size={12} />
               {fmtDate(item.createdAt)}
             </div>
@@ -218,9 +218,9 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
                 href={item.documentUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-[#8fb9e8] transition-colors hover:bg-white/10"
+                className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10"
               >
-                <FileText size={14} className="shrink-0" />
+                <FileText size={14} className="shrink-0 text-zinc-400" />
                 <span className="truncate">{item.documentName ?? "Project document"}</span>
               </a>
             )}
@@ -464,7 +464,7 @@ function BatchUpdateCard({
       <div className="flex items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3 sm:px-5">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-            <Calendar size={12} className="shrink-0 text-[#8fb9e8]" />
+            <Calendar size={12} className="shrink-0 text-zinc-500" />
             <span>{fmtDate(batch.createdAt)}</span>
             {isMulti && (
               <span className="rounded-full bg-zinc-100 px-2 py-0.5 font-medium text-zinc-600">

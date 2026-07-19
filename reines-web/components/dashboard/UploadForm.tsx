@@ -380,7 +380,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               : "border-zinc-300 bg-white hover:border-zinc-400 hover:bg-zinc-50"
           )}
         >
-          <UploadCloud size={32} className={dragging ? "text-[#8fb9e8]" : "text-zinc-300"} />
+          <UploadCloud size={32} className={dragging ? "text-zinc-500" : "text-zinc-300"} />
           <div className="text-center">
             <p className="text-sm font-medium text-zinc-600">
               {dragging ? "Drop files here" : "Drag & drop, or click to browse"}

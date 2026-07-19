@@ -146,7 +146,7 @@ export default function AdminQuotationsPage() {
       {/* Stats */}
       <div className="grid gap-4 sm:grid-cols-4">
         <StatCard icon={<FileText size={17} className="text-zinc-600" />} label="Total" value={stats.total} color="bg-zinc-100" />
-        <StatCard icon={<Clock size={17} className="text-blue-600" />} label="New" value={stats.newCount} color="bg-blue-100" />
+        <StatCard icon={<Clock size={17} className="text-zinc-500" />} label="New" value={stats.newCount} color="bg-blue-100" />
         <StatCard icon={<CheckCircle size={17} className="text-green-600" />} label="Quoted" value={stats.quoted} color="bg-green-100" />
         <StatCard icon={<XCircle size={17} className="text-zinc-400" />} label="Closed" value={stats.closed} color="bg-zinc-100" />
       </div>

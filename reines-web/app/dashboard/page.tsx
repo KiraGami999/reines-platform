@@ -40,8 +40,8 @@ function StatCard({
   return (
     <div className={`min-w-0 rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
       <div className="flex items-start justify-between">
-        <div className={`rounded-lg p-2 ${accent ? "bg-[#8fb9e8]/15" : "bg-zinc-100"}`}>
-          <Icon size={18} className={accent ? "text-[#8fb9e8]" : "text-zinc-600"} />
+        <div className={`rounded-lg p-2 ${accent ? "bg-white/10" : "bg-zinc-100"}`}>
+          <Icon size={18} className={accent ? "text-zinc-300" : "text-zinc-500"} />
         </div>
       </div>
       <p className={`mt-3 min-w-0 break-words text-xl font-extrabold tabular-nums leading-tight sm:mt-4 sm:text-2xl lg:text-3xl ${valueColour}`}>
@@ -845,7 +845,7 @@ function ClientDashboard({
 function UnauthorizedBanner() {
   return (
     <div className="mb-6 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 px-5 py-4">
-      <ShieldOff size={18} className="mt-0.5 shrink-0 text-blue-500" />
+      <ShieldOff size={18} className="mt-0.5 shrink-0 text-zinc-500" />
       <div>
         <p className="text-sm font-semibold text-blue-800">Access Restricted</p>
         <p className="mt-0.5 text-xs text-blue-600">

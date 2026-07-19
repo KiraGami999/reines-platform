@@ -164,7 +164,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
 
                     <div className="flex items-center justify-between pt-1">
                       <div className="flex items-center gap-1 text-[#2d4a6b] font-bold text-sm">
-                        <Star size={13} className="text-[#8fb9e8]" />
+                        <Star size={13} className="text-zinc-500" />
                         {rw.pointsCost} pts
                       </div>
                       {canAfford ? (

@@ -134,7 +134,7 @@ export function CashPaymentForm({
       <div className="rounded-xl border border-zinc-200 bg-white p-6 space-y-3 shadow-sm text-center">
         <div className="flex items-center justify-center">
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50">
-            <CheckCircle2 size={28} className="text-blue-500" />
+            <CheckCircle2 size={28} className="text-zinc-500" />
           </div>
         </div>
         <h3 className="text-base font-semibold text-zinc-900">Cash Payment Submitted</h3>
@@ -156,7 +156,7 @@ export function CashPaymentForm({
     <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Banknote size={16} className="text-[#8fb9e8]" />
+        <Banknote size={16} className="text-zinc-500" />
         <h3 className="text-sm font-semibold text-zinc-900">Cash Payment</h3>
       </div>
 
@@ -207,7 +207,7 @@ export function CashPaymentForm({
             <img src={preview} alt="Receipt preview" className="h-40 w-full object-contain p-2" />
             {uploading && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/70">
-                <Loader2 size={20} className="animate-spin text-[#8fb9e8]" />
+                <Loader2 size={20} className="animate-spin text-zinc-500" />
               </div>
             )}
             {!uploading && (

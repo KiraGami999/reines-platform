@@ -79,7 +79,7 @@ export default async function AdminLoyaltyPage() {
             key={s.label}
             className={`rounded-xl p-5 flex items-center gap-4 ${s.dark ? "bg-[#2d4a6b] text-white" : "bg-white border border-zinc-200"}`}
           >
-            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${s.dark ? "bg-[#8fb9e8]/20 text-[#8fb9e8]" : "bg-blue-50 text-blue-600"}`}>
+            <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${s.dark ? "bg-zinc-100 text-zinc-500" : "bg-zinc-100 text-zinc-500"}`}>
               {s.icon}
             </div>
             <div>

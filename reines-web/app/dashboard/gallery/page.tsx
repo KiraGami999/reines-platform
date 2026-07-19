@@ -139,10 +139,10 @@ export default async function GalleryPage() {
             >
               <div
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
-                  s.accent ? "bg-[#8fb9e8]/20" : "bg-zinc-100"
+                  s.accent ? "bg-white/10" : "bg-zinc-100"
                 }`}
               >
-                <Icon size={16} className={s.accent ? "text-[#8fb9e8]" : "text-zinc-500"} />
+                <Icon size={16} className="text-zinc-500" />
               </div>
               <div>
                 <p className={`text-xl font-extrabold ${s.accent ? "text-white" : "text-[#2d4a6b]"}`}>

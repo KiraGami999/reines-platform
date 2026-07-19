@@ -110,9 +110,9 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
       {/* Stats strip */}
       <div className="mb-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
         <StatCard label="Total Projects" value={counts.ALL}         icon={<FolderKanban className="w-5 h-5" />} />
-        <StatCard label="In Progress"    value={counts.IN_PROGRESS} icon={<Clock4       className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
-        <StatCard label="Completed"      value={counts.COMPLETED}   icon={<CheckCircle2 className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
-        <StatCard label="Planning"       value={counts.PLANNING}    icon={<AlertCircle  className="w-5 h-5" />} accent="bg-blue-50 text-blue-600" />
+        <StatCard label="In Progress"    value={counts.IN_PROGRESS} icon={<Clock4       className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
+        <StatCard label="Completed"      value={counts.COMPLETED}   icon={<CheckCircle2 className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
+        <StatCard label="Planning"       value={counts.PLANNING}    icon={<AlertCircle  className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
       </div>
 
       {/* Toolbar */}
@@ -283,7 +283,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                         {isAdmin && (
                           <button
                             onClick={() => setDeleteId(project.id)}
-                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-blue-50 hover:text-blue-600"
+                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-600"
                             title="Delete project"
                           >
                             <Trash2 className="h-3.5 w-3.5" />

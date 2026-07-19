@@ -83,7 +83,7 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
           <ArrowRight
             size={16}
-            className="mt-1 shrink-0 text-zinc-300 transition-colors group-hover:text-[#8fb9e8]"
+            className="mt-1 shrink-0 text-zinc-300 transition-colors group-hover:text-zinc-500"
           />
         </div>
 

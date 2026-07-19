@@ -89,7 +89,7 @@ export default async function ClientLoyaltyPage() {
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         <div className="rounded-xl border border-zinc-200 bg-white p-4 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 shrink-0">
             <Wallet size={16} />
           </div>
           <div>
@@ -98,7 +98,7 @@ export default async function ClientLoyaltyPage() {
           </div>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-4 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 shrink-0">
             <Gift size={16} />
           </div>
           <div>
@@ -107,7 +107,7 @@ export default async function ClientLoyaltyPage() {
           </div>
         </div>
         <div className="col-span-2 sm:col-span-1 rounded-xl border border-zinc-200 bg-white p-4 flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 shrink-0">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 shrink-0">
             <Star size={16} />
           </div>
           <div>

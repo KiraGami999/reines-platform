@@ -76,7 +76,7 @@ export function LoyaltyRuleForm({ initial }: LoyaltyRuleFormProps) {
   return (
     <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4">
       <div className="flex items-center gap-2">
-        <Settings2 size={15} className="text-[#8fb9e8]" />
+        <Settings2 size={15} className="text-zinc-500" />
         <h3 className="text-sm font-semibold text-zinc-900">Points Earn Rule</h3>
       </div>
 

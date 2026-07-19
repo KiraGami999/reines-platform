@@ -86,28 +86,28 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
             value: fmtPaymentAmount(total),
             icon:  <Wallet size={18} />,
             bg:    "bg-[#2d4a6b] text-white",
-            iconBg: "bg-[#8fb9e8]/20 text-[#8fb9e8]",
+            iconBg: "bg-white/15 text-zinc-300",
           },
           {
             label: "Successful",
             value: succeeded,
             icon:  <CheckCircle2 size={18} />,
             bg:    "bg-white border border-zinc-200",
-            iconBg: "bg-blue-100 text-blue-600",
+            iconBg: "bg-zinc-100 text-zinc-500",
           },
           {
             label: "Pending",
             value: pending,
             icon:  <Clock size={18} />,
             bg:    "bg-white border border-zinc-200",
-            iconBg: "bg-blue-100 text-blue-600",
+            iconBg: "bg-zinc-100 text-zinc-500",
           },
           {
             label: "Failed / Cancelled",
             value: failed,
             icon:  <XCircle size={18} />,
             bg:    "bg-white border border-zinc-200",
-            iconBg: "bg-blue-100 text-blue-600",
+            iconBg: "bg-zinc-100 text-zinc-500",
           },
         ].map((s) => (
           <div key={s.label} className={`min-w-0 rounded-xl p-3 flex items-center gap-3 sm:p-5 sm:gap-4 ${s.bg}`}>

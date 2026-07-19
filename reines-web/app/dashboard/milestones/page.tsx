@@ -134,7 +134,7 @@ export default async function MilestonesPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#2d4a6b] p-4">
-          <CalendarClock className="h-5 w-5 text-[#8fb9e8]" />
+          <CalendarClock className="h-5 w-5 text-zinc-500" />
           <p className="mt-3 text-2xl font-extrabold text-white">{activeProjects.length}</p>
           <p className="text-sm font-medium text-zinc-300">Active checkpoints</p>
         </div>

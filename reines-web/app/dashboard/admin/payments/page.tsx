@@ -107,19 +107,19 @@ export default async function AdminPaymentsPage() {
           label="Successful"
           value={succeeded}
           icon={<CheckCircle2 className="w-5 h-5" />}
-          accent="bg-blue-50 text-blue-600"
+          accent="bg-zinc-100 text-zinc-500"
         />
         <StatCard
           label="Pending"
           value={pending}
           icon={<Clock className="w-5 h-5" />}
-          accent="bg-blue-50 text-blue-600"
+          accent="bg-zinc-100 text-zinc-500"
         />
         <StatCard
           label="Failed / Cancelled"
           value={failed}
           icon={<XCircle className="w-5 h-5" />}
-          accent="bg-blue-50 text-blue-600"
+          accent="bg-zinc-100 text-zinc-500"
         />
       </div>
 

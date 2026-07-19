@@ -416,7 +416,7 @@ function UpdateDocument({
       rel="noopener noreferrer"
       className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-[#2d4a6b] transition-colors hover:bg-zinc-50"
     >
-      <FileText size={14} className="shrink-0 text-[#8fb9e8]" />
+      <FileText size={14} className="shrink-0 text-zinc-500" />
       <span className="truncate">{name ?? "Project document"}</span>
     </a>
   );

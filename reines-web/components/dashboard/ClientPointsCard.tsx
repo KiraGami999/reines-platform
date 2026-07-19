@@ -72,7 +72,7 @@ export function ClientPointsCard({
     <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
       <div className="border-b border-zinc-100 px-5 py-4">
         <div className="flex items-center gap-2">
-          <Star size={16} className="text-[#8fb9e8]" />
+          <Star size={16} className="text-zinc-500" />
           <h2 className="text-sm font-semibold text-zinc-900">Client Rewards</h2>
         </div>
         <p className="mt-1 text-xs text-zinc-400">Track loyalty points for Reines projects, investments, promotions, and member exclusives.</p>

@@ -18,7 +18,7 @@ export default function DashboardError({
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
       <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 mb-5">
-        <AlertCircle className="h-7 w-7 text-blue-500" />
+        <AlertCircle className="h-7 w-7 text-zinc-500" />
       </div>
       <h2 className="text-lg font-bold text-zinc-900">Something went wrong</h2>
       <p className="mt-2 text-sm text-zinc-500 max-w-sm">

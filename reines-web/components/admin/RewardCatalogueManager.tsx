@@ -181,7 +181,7 @@ export function RewardCatalogueManager({ rewards: initial }: { rewards: RewardIt
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Gift size={15} className="text-[#8fb9e8]" />
+          <Gift size={15} className="text-zinc-500" />
           <h3 className="text-sm font-semibold text-zinc-900">Reward Catalogue</h3>
           <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs font-medium text-zinc-500">{rewards.length}</span>
         </div>

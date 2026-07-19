@@ -61,7 +61,7 @@ export default async function AdminClientsPage() {
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
               <UserCheck className="h-5 w-5" />
             </div>
             <div>
@@ -84,19 +84,19 @@ export default async function AdminClientsPage() {
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-zinc-200 bg-white p-5">
-          <Users className="h-5 w-5 text-blue-600" />
+          <Users className="h-5 w-5 text-zinc-500" />
           <p className="mt-4 text-3xl font-extrabold text-zinc-900">{clients.length}</p>
           <p className="mt-0.5 text-sm font-medium text-zinc-700">Registered Clients</p>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-5">
-          <FolderKanban className="h-5 w-5 text-[#8fb9e8]" />
+          <FolderKanban className="h-5 w-5 text-zinc-500" />
           <p className="mt-4 text-3xl font-extrabold text-zinc-900">
             {clients.reduce((sum, client) => sum + client.projectCount, 0)}
           </p>
           <p className="mt-0.5 text-sm font-medium text-zinc-700">Linked Projects</p>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-5">
-          <UserCheck className="h-5 w-5 text-blue-600" />
+          <UserCheck className="h-5 w-5 text-zinc-500" />
           <p className="mt-4 text-3xl font-extrabold text-zinc-900">
             {clients.reduce((sum, client) => sum + client.totalPoints, 0).toLocaleString("en-MW")}
           </p>
