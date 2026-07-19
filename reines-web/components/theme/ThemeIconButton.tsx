@@ -12,8 +12,7 @@ interface ThemeIconButtonProps {
 
 /**
  * Compact sun / moon control for the public site header.
- * Shows a moon in light mode (switch to dark) and a sun in dark mode (switch to light).
- * Preference is stored the same way as portal Settings, so it applies site-wide.
+ * Shows the current mode: white sun in light mode, darker moon in dark mode.
  */
 export function ThemeIconButton({ variant = "on-dark", className }: ThemeIconButtonProps) {
   const { resolved, setPreference } = useTheme();
@@ -24,16 +23,24 @@ export function ThemeIconButton({ variant = "on-dark", className }: ThemeIconBut
       type="button"
       onClick={() => setPreference(isDark ? "light" : "dark")}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      title={isDark ? "Light mode" : "Dark mode"}
+      title={isDark ? "Dark mode" : "Light mode"}
       className={cn(
         "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
         variant === "on-dark"
-          ? "border border-white/15 text-[#8fb9e8] hover:bg-white/10 hover:text-white"
-          : "border border-zinc-200 text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800 dark:border-[var(--border)] dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]",
+          ? isDark
+            ? "border border-white/10 text-zinc-500 hover:bg-white/10 hover:text-zinc-400"
+            : "border border-white/20 text-white hover:bg-white/10 hover:text-white"
+          : isDark
+            ? "border border-[var(--border)] text-zinc-500 hover:bg-[var(--surface-hover)] hover:text-zinc-400"
+            : "border border-zinc-200 text-zinc-800 hover:bg-zinc-50 hover:text-zinc-900",
         className
       )}
     >
-      {isDark ? <Sun size={18} strokeWidth={1.9} /> : <Moon size={18} strokeWidth={1.9} />}
+      {isDark ? (
+        <Moon size={18} strokeWidth={1.9} />
+      ) : (
+        <Sun size={18} strokeWidth={1.9} />
+      )}
     </button>
   );
 }
