@@ -104,7 +104,7 @@ export function ReinesChatbot() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg p-2 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
+              className="rounded-xl p-2 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
               aria-label="Close Reines AI"
             >
               <X size={17} />
@@ -163,7 +163,7 @@ export function ReinesChatbot() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="inline-flex items-center gap-2 rounded-full bg-[#2d4a6b] px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-[#1a2f4a]"
+        className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-[#1a2f4a]"
         aria-label="Open Reines AI chatbot"
       >
         <MessageCircle size={18} />

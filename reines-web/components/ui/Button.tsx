@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { BUTTON_RADIUS } from "@/lib/ui-classes";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -12,7 +13,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={cn(
-          "inline-flex items-center justify-center rounded-lg font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8fb9e8]/50 disabled:pointer-events-none disabled:opacity-50",
+          BUTTON_RADIUS,
+          "inline-flex items-center justify-center font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8fb9e8]/50 disabled:pointer-events-none disabled:opacity-50",
           {
             "bg-[#2d4a6b] text-white hover:bg-[#1a2f4a]":   variant === "primary",
             "border border-zinc-200 bg-white text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--foreground)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)]": variant === "secondary",

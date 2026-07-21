@@ -29,7 +29,7 @@ export default function RegisterPage() {
           <div className="space-y-4">
             {benefits.map((b, i) => (
               <div key={i} className="flex items-center gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/15 text-[#8fb9e8]">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center /15 text-[#8fb9e8]">
                   {b.icon}
                 </div>
                 <p className="text-sm text-zinc-300">{b.text}</p>

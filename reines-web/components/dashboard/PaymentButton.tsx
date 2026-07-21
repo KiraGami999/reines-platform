@@ -89,7 +89,7 @@ export default function PaymentButton({
       <button
         onClick={() => setStep("choose")}
         disabled={disabled}
-        className={`inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        className={`[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
       >
         <CreditCard size={15} />
         Make a Payment
@@ -117,7 +117,7 @@ export default function PaymentButton({
             onClick={() => setStep("online-confirm")}
             className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b] text-white group-hover:bg-[#1a2f4a] transition-colors">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b] text-white group-hover:bg-[#1a2f4a] transition-colors">
               <CreditCard size={18} />
             </div>
             <div className="min-w-0">
@@ -203,7 +203,7 @@ export default function PaymentButton({
         <div className="flex gap-2">
           <button
             onClick={handleOnlinePay}
-            className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="flex-1 bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
           >
             <ExternalLink size={13} />
             {editAmount && Number(editAmount) > 0 ? `Pay ${fmt(Number(editAmount))}` : "Pay Now"}
@@ -240,7 +240,7 @@ export default function PaymentButton({
 
   // ── Online loading redirect ─────────────────────────────────────────────────
   return (
-    <div className="flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
+    <div className="border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-[#8fb9e8]" />
       Redirecting to Paychangu checkout…
     </div>

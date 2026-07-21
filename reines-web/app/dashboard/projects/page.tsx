@@ -155,7 +155,7 @@ function PendingProjectCard({ project }: { project: Project }) {
         <AcceptProjectButton projectId={project.id} className="flex-1" />
         <Link
           href={`/dashboard/projects/${project.id}`}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-600 transition-colors hover:bg-zinc-50"
+          className="border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-600 transition-colors hover:bg-zinc-50"
         >
           Review details <ArrowRight size={14} />
         </Link>
@@ -183,7 +183,7 @@ function EmptyState({ filtered, role }: { filtered: boolean; role: string }) {
       {!filtered && (
         <Link
           href="/dashboard/messages"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="mt-6 [#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
         >
           <MessageSquare size={14} />
           {role === "PROJECT_MANAGER" ? "Open messages" : "Message your manager"}
@@ -308,7 +308,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
               <Link
                 key={tab.key}
                 href={tab.key === "ALL" ? "/dashboard/projects" : `/dashboard/projects?status=${tab.key}`}
-                className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+                className={`flex shrink-0 items-center gap-1.5  ${
                   isActive
                     ? "bg-[#2d4a6b] text-white"
                     : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"

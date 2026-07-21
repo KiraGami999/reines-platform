@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { cn } from "@/lib/utils";
+import { BUTTON_RADIUS } from "@/lib/ui-classes";
 
 interface ThemeIconButtonProps {
   /** Visual style for the navy public navbar vs light portal chrome. */
@@ -25,7 +26,8 @@ export function ThemeIconButton({ variant = "on-dark", className }: ThemeIconBut
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       title={isDark ? "Dark mode" : "Light mode"}
       className={cn(
-        "flex h-10 w-10 items-center justify-center rounded-xl transition-colors",
+        BUTTON_RADIUS,
+        "flex h-10 w-10 items-center justify-center transition-colors",
         variant === "on-dark"
           ? isDark
             ? "border border-white/10 text-zinc-500 hover:bg-white/10 hover:text-zinc-400"

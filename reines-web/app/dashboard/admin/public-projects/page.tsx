@@ -15,7 +15,7 @@ export default async function AdminPublicProjectsPage() {
     <div className="mx-auto max-w-7xl">
       <div className="mb-8 flex items-start justify-between gap-6">
         <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#2d4a6b]">
+          <div className="flex h-11 w-11 items-center justify-center ">
             <FolderKanban className="h-5 w-5 text-zinc-500" />
           </div>
           <div>

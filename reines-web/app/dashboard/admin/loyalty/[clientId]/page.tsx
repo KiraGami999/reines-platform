@@ -65,7 +65,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
           <h1 className="text-2xl font-bold text-[#2d4a6b]">{client.name}</h1>
           <p className="text-sm text-zinc-500">{client.email}</p>
         </div>
-        <div className={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 text-sm font-semibold ${meetsMin ? "border-green-200 bg-green-50 text-green-700" : "border-zinc-200 bg-zinc-50 text-zinc-500"}`}>
+        <div className={` px-4 py-2 text-sm font-semibold ${meetsMin ? "border-green-200 bg-green-50 text-green-700" : "border-zinc-200 bg-zinc-50 text-zinc-500"}`}>
           <Star size={14} />
           {meetsMin ? "Earning points" : `MK ${(rule.minSpendToEarn - lifetimeSpend).toLocaleString("en-MW")} to unlock earning`}
         </div>

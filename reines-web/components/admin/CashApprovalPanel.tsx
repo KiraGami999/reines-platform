@@ -208,7 +208,7 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
             </div>
             <button
               onClick={() => setShowReceipt(true)}
-              className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
+              className=" border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
             >
               <Eye size={13} /> View Receipt
             </button>
@@ -251,7 +251,7 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
             <button
               onClick={() => submit("approve")}
               disabled={!!loading}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors disabled:opacity-60"
+              className="flex-1 bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors disabled:opacity-60"
             >
               {loading === "approve" ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
               Confirm Approval
@@ -269,7 +269,7 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
             <button
               onClick={() => submit("reject")}
               disabled={!!loading}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-60"
+              className="flex-1 bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 transition-colors disabled:opacity-60"
             >
               {loading === "reject" ? <Loader2 size={13} className="animate-spin" /> : <XCircle size={13} />}
               Confirm Rejection
@@ -286,13 +286,13 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
           <>
             <button
               onClick={() => setShowNotes("approve")}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+              className="flex-1 bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
             >
               <CheckCircle2 size={14} /> Approve
             </button>
             <button
               onClick={() => setShowNotes("reject")}
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
+              className="flex-1 border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-100 transition-colors"
             >
               <XCircle size={14} /> Reject
             </button>

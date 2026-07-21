@@ -138,7 +138,7 @@ export default function AdminQuotationsPage() {
           <h1 className="text-2xl font-bold text-zinc-900">Quotation Requests</h1>
           <p className="mt-0.5 text-sm text-zinc-500">Review and manage inbound project quotation requests.</p>
         </div>
-        <button onClick={load} className="flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50 self-start">
+        <button onClick={load} className="flex shrink-0 items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-600 hover:bg-zinc-50 self-start">
           <RefreshCw size={14} /> Refresh
         </button>
       </div>
@@ -308,14 +308,14 @@ export default function AdminQuotationsPage() {
                 <button
                   onClick={saveChanges}
                   disabled={!!savingId}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+                  className="w-full bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
                 >
                   {savingId ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : "Save Changes"}
                 </button>
 
                 <a
                   href={`mailto:${selected.email}?subject=Your%20Quotation%20Request%20-%20Reines%20Property%20Development&body=Dear%20${encodeURIComponent(selected.name)}%2C%0A%0AThank%20you%20for%20your%20quotation%20request%20for%20${encodeURIComponent(selected.projectType)}%20in%20${encodeURIComponent(selected.location)}.%0A%0A`}
-                  className="block w-full text-center rounded-lg border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
+                  className="block w-full text-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
                 >
                   <MessageSquare size={13} className="inline mr-1.5" />
                   Reply via Email

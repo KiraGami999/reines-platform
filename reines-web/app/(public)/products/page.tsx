@@ -32,10 +32,10 @@ export default async function ProductsPage() {
               Browse Reines products by subsidiary — ProCrete, ProBuild, ProSteel, and Workshop — then request a quote for project or bulk supply.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="#catalog" className="inline-flex items-center gap-2 rounded-lg bg-[#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+              <Link href="#catalog" className="[#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
                 Browse catalogue <ArrowRight size={16} />
               </Link>
-              <Link href="/contact" className="inline-flex items-center gap-2 rounded-lg border border-white/15 px-5 py-3 text-sm font-medium text-zinc-200 hover:bg-white/10">
+              <Link href="/contact" className=" border-white/15 px-5 py-3 text-sm font-medium text-zinc-200 hover:bg-white/10">
                 Talk to sales
               </Link>
             </div>
@@ -58,7 +58,7 @@ export default async function ProductsPage() {
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
             Send us your walling, paving, stone cladding, adhesive, or binding material requirement and we can advise on product fit, quantities, availability, and delivery planning.
           </p>
-          <Link href="/quote" className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
+          <Link href="/quote" className="mt-8 [#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
             Request assistance <ArrowRight size={16} />
           </Link>
         </div>

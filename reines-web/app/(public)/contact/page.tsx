@@ -71,7 +71,7 @@ export default function ContactPage() {
                 const Icon = c.icon;
                 return (
                   <div key={c.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-lg">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-lg">
                     <Icon size={19} strokeWidth={1.8} className="text-[#8fb9e8]" />
                   </div>
                   <div>
@@ -117,7 +117,7 @@ export default function ContactPage() {
 
               {/* Quote callout */}
               <div className="flex items-start gap-4 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center /10 dark:bg-[#8fb9e8]/15">
                   <ArrowRight size={16} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
                 </div>
                 <div>

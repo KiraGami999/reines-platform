@@ -100,7 +100,7 @@ function SearchBar() {
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-600 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:text-[var(--foreground)]"
+          className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-600 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:text-[var(--foreground)]"
         >
           <Search size={14} />
           <span className="hidden lg:block">Search…</span>
@@ -143,7 +143,7 @@ function NotificationBell() {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="relative flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
+        className="relative flex h-8 w-8 items-center justify-center rounded-xl text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
         aria-label="Notifications"
       >
         <Bell size={17} />
@@ -235,7 +235,7 @@ function UserMenu({ user }: UserMenuProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)] sm:gap-2 sm:px-2.5"
+        className=" border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)] sm:gap-2 sm:px-2.5"
         aria-label="User menu"
         aria-expanded={open}
       >
@@ -283,7 +283,7 @@ function UserMenu({ user }: UserMenuProps) {
                 href={item.href}
                 target={(item as { target?: string }).target}
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
+                className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 hover:text-zinc-900 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
               >
                 <item.icon size={14} className="shrink-0 text-zinc-400" />
                 {item.label}
@@ -294,7 +294,7 @@ function UserMenu({ user }: UserMenuProps) {
           <div className="border-t border-zinc-100 p-1 dark:border-[var(--border)]">
             <button
               onClick={() => signOut({ callbackUrl: "/login" })}
-              className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)]"
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)]"
             >
               <LogOut size={14} className="shrink-0 text-zinc-400" />
               Sign out
@@ -331,7 +331,7 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
         {/* Mobile hamburger */}
         <button
           onClick={onMenuClick}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)] lg:hidden"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)] lg:hidden"
           aria-label="Open sidebar"
         >
           <Menu size={18} />

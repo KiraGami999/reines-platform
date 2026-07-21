@@ -45,7 +45,7 @@ export function AcceptProjectButton({
         type="button"
         onClick={acceptProject}
         disabled={loading}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+        className="inline-flex w-full items-center justify-center gap-2  px-3 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
       >
         {loading ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
         Accept project

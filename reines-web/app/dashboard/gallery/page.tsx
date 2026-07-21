@@ -41,14 +41,14 @@ function ProjectSection({
           {canUpload && (
             <Link
               href={`/dashboard/projects/${project.id}/gallery?tab=upload`}
-              className="flex items-center gap-1.5 rounded-lg bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-800"
+              className="flex items-center gap-1.5  px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-800"
             >
               <Plus size={12} /> Add Update
             </Link>
           )}
           <Link
             href={`/dashboard/projects/${project.id}/gallery`}
-            className="flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
+            className="flex items-center gap-1.5  text-zinc-600 transition-colors hover:bg-zinc-50"
           >
             <FolderKanban size={12} /> View Project
           </Link>
@@ -78,7 +78,7 @@ function EmptyGallery({ canUpload }: { canUpload: boolean }) {
       {canUpload && (
         <Link
           href="/dashboard/manage/projects"
-          className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="mt-6 [#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
         >
           <FolderKanban size={14} /> Go to Projects
         </Link>

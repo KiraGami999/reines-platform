@@ -117,7 +117,7 @@ export default async function AdminOverviewPage() {
     <div className="max-w-5xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-xl bg-[#2d4a6b] flex items-center justify-center">
+        <div className="w-10 h-10  flex items-center justify-center">
           <ShieldCheck className="w-5 h-5 text-zinc-400" />
         </div>
         <div>

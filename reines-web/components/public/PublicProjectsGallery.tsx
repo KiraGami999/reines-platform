@@ -234,7 +234,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                 <div className="mt-8">
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+                    className="[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
                   >
                     Ask about a similar project <ArrowRight size={15} />
                   </Link>
@@ -259,7 +259,7 @@ function DetailRow({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-zinc-100 bg-white px-4 py-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10 text-[#8fb9e8]">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
         <Icon size={16} />
       </div>
       <div>

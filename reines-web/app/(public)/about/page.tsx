@@ -49,7 +49,7 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="rounded-2xl border border-zinc-100 p-8">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+              <div className="flex h-11 w-11 items-center justify-center /10 text-[#8fb9e8]">
                 <Target size={22} strokeWidth={1.8} />
               </div>
               <h2 className="mt-4 text-2xl font-bold text-[#2d4a6b]">Our Mission</h2>
@@ -82,7 +82,7 @@ export default function AboutPage() {
               const Icon = v.icon;
               return (
                 <div key={v.title} className="rounded-xl border border-zinc-200 bg-white p-6">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                  <div className="flex h-10 w-10 items-center justify-center /10 text-[#8fb9e8]">
                     <Icon size={20} strokeWidth={1.8} />
                   </div>
                 <h3 className="mt-3 font-semibold text-[#2d4a6b]">{v.title}</h3>
@@ -174,7 +174,7 @@ export default function AboutPage() {
       <section className="bg-[#2d4a6b] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold text-white">Work with a team you can trust.</h2>
-          <Link href="/contact" className="mt-6 inline-block rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/contact" className="mt-6 inline-block  px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
             Contact Us
           </Link>
         </div>

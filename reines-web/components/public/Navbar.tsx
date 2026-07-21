@@ -30,6 +30,14 @@ const roleLabels: Record<string, string> = {
   CLIENT: "Client",
 };
 
+/** Mobile drawer links — same colours as Home / About (readable in dark mode). */
+function mobileNavItemClass(active: boolean) {
+  return cn(
+    "group relative overflow-hidden rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-300",
+    active ? "bg-white/10 text-[#8fb9e8]" : "text-zinc-300 hover:bg-white/5 hover:text-white"
+  );
+}
+
 export function Navbar() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -102,7 +110,7 @@ export function Navbar() {
               </span>
               <Link
                 href="/dashboard"
-                className="rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
+                className=" px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
               >
                 Dashboard
               </Link>
@@ -130,7 +138,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/quote"
-                className="hidden rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
+                className="hidden  px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
               >
                 Get a Quote
               </Link>
@@ -140,7 +148,7 @@ export function Navbar() {
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl transition-colors hover:bg-white/10 xl:hidden"
+            className=" transition-colors hover:bg-white/10 xl:hidden"
             aria-label="Toggle menu"
           >
             <span className={cn("h-0.5 w-5 bg-white transition-all", open && "translate-y-2 rotate-45")} />
@@ -159,23 +167,24 @@ export function Navbar() {
                 key={l.href}
                 href={l.href}
                 onClick={() => setOpen(false)}
-                className={cn(
-                  "group relative overflow-hidden rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-300",
-                  pathname === l.href ? "bg-white/10 text-[#8fb9e8]" : "text-zinc-300 hover:bg-white/5 hover:text-white"
-                )}
+                className={mobileNavItemClass(pathname === l.href)}
               >
                 <span className="relative z-10">{l.label}</span>
                 <span className="absolute bottom-1.5 left-3 h-0.5 w-0 rounded-full bg-[#8fb9e8] transition-all duration-300 group-hover:w-8" />
               </Link>
             ))}
-            <div className="mt-3 flex flex-col gap-2">
+            <div className="mt-3 flex flex-col gap-1.5">
               {isSignedIn ? (
                 <>
-                  <div className="flex items-center justify-center gap-1 rounded-md border border-white/10 px-4 py-2 text-center text-xs font-medium text-zinc-300">
-                    <span>Signed in as</span>
+                  <div className={mobileNavItemClass(false)}>
+                    <span>Signed in as </span>
                     <span className="text-[#8fb9e8]">{userRole}</span>
                   </div>
-                  <Link href="/dashboard" onClick={() => setOpen(false)} className="rounded-md bg-[#8fb9e8] px-4 py-2 text-center text-sm font-semibold text-[#2d4a6b]">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setOpen(false)}
+                    className={mobileNavItemClass(pathname.startsWith("/dashboard"))}
+                  >
                     Dashboard
                   </Link>
                   <button
@@ -184,20 +193,32 @@ export function Navbar() {
                       setOpen(false);
                       signOut({ callbackUrl: "/" });
                     }}
-                    className="rounded-md border border-white/10 px-4 py-2 text-center text-sm font-medium text-zinc-300"
+                    className={mobileNavItemClass(false)}
                   >
                     Log out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="/login" onClick={() => setOpen(false)} className="rounded-md border border-white/15 px-4 py-2 text-center text-sm font-medium text-zinc-200">
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className={mobileNavItemClass(pathname === "/login")}
+                  >
                     Log In
                   </Link>
-                  <Link href="/register" onClick={() => setOpen(false)} className="rounded-md border border-[#8fb9e8]/40 px-4 py-2 text-center text-sm font-medium text-[#8fb9e8]">
+                  <Link
+                    href="/register"
+                    onClick={() => setOpen(false)}
+                    className={mobileNavItemClass(pathname === "/register")}
+                  >
                     Sign Up
                   </Link>
-                  <Link href="/quote" onClick={() => setOpen(false)} className="rounded-md bg-[#8fb9e8] px-4 py-2 text-center text-sm font-semibold text-[#2d4a6b]">
+                  <Link
+                    href="/quote"
+                    onClick={() => setOpen(false)}
+                    className={mobileNavItemClass(pathname === "/quote")}
+                  >
                     Get a Quote
                   </Link>
                 </>

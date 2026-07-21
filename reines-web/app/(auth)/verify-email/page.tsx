@@ -161,7 +161,7 @@ function VerifyEmailForm() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
+                  className="[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? "Verifying…" : "Verify email"}

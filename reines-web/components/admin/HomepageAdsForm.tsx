@@ -256,7 +256,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
               type="button"
               disabled={uploadingImage}
               onClick={() => fileInputRef.current?.click()}
-              className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
+              className=" border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
             >
               {uploadingImage ? <Loader2 size={15} className="animate-spin" /> : <UploadIcon size={15} />}
               {uploadingImage ? "Uploading..." : "Upload Image"}
@@ -339,7 +339,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
             type="button"
             onClick={save}
             disabled={saving}
-            className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+            className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             Save Selection
@@ -364,10 +364,10 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
                       Position {index + 1}
                     </span>
                     <div className="flex gap-2">
-                      <button type="button" onClick={() => moveAd(ad.imageUrl, -1)} disabled={index === 0} className="rounded-lg border border-zinc-200 p-2 text-zinc-500 disabled:opacity-30">
+                      <button type="button" onClick={() => moveAd(ad.imageUrl, -1)} disabled={index === 0} className="rounded-xl border border-zinc-200 p-2 text-zinc-500 disabled:opacity-30">
                         <ArrowUp size={14} />
                       </button>
-                      <button type="button" onClick={() => moveAd(ad.imageUrl, 1)} disabled={index === ads.length - 1} className="rounded-lg border border-zinc-200 p-2 text-zinc-500 disabled:opacity-30">
+                      <button type="button" onClick={() => moveAd(ad.imageUrl, 1)} disabled={index === ads.length - 1} className="rounded-xl border border-zinc-200 p-2 text-zinc-500 disabled:opacity-30">
                         <ArrowDown size={14} />
                       </button>
                     </div>

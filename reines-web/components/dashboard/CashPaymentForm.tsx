@@ -144,7 +144,7 @@ export function CashPaymentForm({
         </p>
         <button
           onClick={onCancel}
-          className="mt-2 inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          className="mt-2 border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
         >
           Close
         </button>
@@ -226,7 +226,7 @@ export function CashPaymentForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading || submitting}
-            className="mt-1 flex w-full flex-col items-center gap-2 rounded-lg border-2 border-dashed border-zinc-300 px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#8fb9e8] hover:text-[#8fb9e8] disabled:opacity-50"
+            className="mt-1 flex w-full flex-col items-center gap-2  border-zinc-300 px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#8fb9e8] hover:text-[#8fb9e8] disabled:opacity-50"
           >
             <ImageIcon size={22} />
             <span>Click to upload receipt image</span>
@@ -268,7 +268,7 @@ export function CashPaymentForm({
         <button
           onClick={handleSubmit}
           disabled={submitting || uploading}
-          className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className="flex-1 bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <><Loader2 size={13} className="animate-spin" /> Submitting…</>

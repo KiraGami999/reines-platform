@@ -101,7 +101,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+          className="flex items-center gap-2  px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
         >
           <Plus className="w-4 h-4" /> Add User
         </button>
@@ -113,7 +113,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
           <button
             key={tab.key}
             onClick={() => setRoleFilter(tab.key)}
-            className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`flex shrink-0 items-center gap-1.5  ${
               roleFilter === tab.key
                 ? "bg-[#2d4a6b] text-white"
                 : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
@@ -173,14 +173,14 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
                       <div className="flex items-center justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100">
                         <button
                           onClick={() => openEdit(user)}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#2d4a6b]"
+                          className="bg-zinc-100 hover:text-[#2d4a6b]"
                           title="Edit user"
                         >
                           <Pencil className="h-3.5 w-3.5" />
                         </button>
                         <button
                           onClick={() => setDeleteId(user.id)}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-600"
+                          className="bg-zinc-50 hover:text-zinc-600"
                           title="Delete user"
                         >
                           <Trash2 className="h-3.5 w-3.5" />

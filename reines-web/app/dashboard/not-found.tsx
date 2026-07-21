@@ -13,7 +13,7 @@ export default function DashboardNotFound() {
       </p>
       <Link
         href="/dashboard"
-        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+        className="mt-6 [#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
       >
         <LayoutDashboard size={13} /> Back to Dashboard
       </Link>

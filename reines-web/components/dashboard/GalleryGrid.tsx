@@ -78,14 +78,14 @@ function DeleteDialog({
           <button
             onClick={onCancel}
             disabled={loading}
-            className="flex-1 rounded-lg border border-zinc-200 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 transition-colors"
+            className=" text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className=" py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading
               ? <><Loader2 size={14} className="animate-spin" /> Deleting…</>
@@ -218,7 +218,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
                 href={item.documentUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10"
+                className="mt-3  border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10"
               >
                 <FileText size={14} className="shrink-0 text-zinc-400" />
                 <span className="truncate">{item.documentName ?? "Project document"}</span>
@@ -390,7 +390,7 @@ function TabBar({
             key={t.id}
             onClick={() => onChange(t.id)}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
+              "flex shrink-0 items-center gap-1.5 ",
               active
                 ? "bg-white text-zinc-900 shadow-sm"
                 : "text-zinc-500 hover:text-zinc-700"
@@ -526,7 +526,7 @@ function BatchUpdateCard({
                 key={u.id}
                 className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center /10">
                   <FileText size={16} strokeWidth={1.8} className="text-[#2d4a6b]" />
                 </div>
                 <div className="min-w-0 flex-1">

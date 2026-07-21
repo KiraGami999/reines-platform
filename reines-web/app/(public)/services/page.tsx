@@ -46,7 +46,7 @@ export default async function ServicesPage() {
                   className={`flex flex-col gap-8 rounded-2xl border border-zinc-100 p-4 sm:p-8 lg:flex-row ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
                 >
                   <div className="flex-1">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                    <div className="flex h-12 w-12 items-center justify-center /10 text-[#8fb9e8]">
                       <Icon size={24} strokeWidth={1.8} />
                     </div>
                     <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
@@ -99,7 +99,7 @@ export default async function ServicesPage() {
           <p className="mt-3 text-zinc-400">Request a quote or ask a question — our team responds within 24 hours.</p>
           <Link
             href="/quote"
-            className="mt-6 inline-block rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
+            className="mt-6 inline-block  px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
           >
             Request a Quote
           </Link>

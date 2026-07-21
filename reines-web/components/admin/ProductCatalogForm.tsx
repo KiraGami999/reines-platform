@@ -348,14 +348,14 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               <button
                 type="button"
                 onClick={addProduct}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+                className="inline-flex items-center gap-1.5  px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
               >
                 <Plus size={14} /> Add
               </button>
               <button
                 type="button"
                 onClick={importSampleCatalogue}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-600 hover:bg-zinc-50"
+                className="inline- border-zinc-200 px-3 py-2 text-xs font-semibold text-zinc-600 hover:bg-zinc-50"
               >
                 <Sparkles size={14} /> Import sample
               </button>
@@ -407,7 +407,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               type="button"
               onClick={save}
               disabled={saving}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+              className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Catalogue
@@ -421,16 +421,16 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
           ) : (
             <div className="space-y-6">
               <div className="flex flex-wrap items-center gap-2">
-                <button type="button" onClick={() => moveProduct(selectedProduct.id, -1)} className="rounded-lg border border-zinc-200 p-2 text-zinc-500">
+                <button type="button" onClick={() => moveProduct(selectedProduct.id, -1)} className="rounded-xl border border-zinc-200 p-2 text-zinc-500">
                   <ArrowUp size={14} />
                 </button>
-                <button type="button" onClick={() => moveProduct(selectedProduct.id, 1)} className="rounded-lg border border-zinc-200 p-2 text-zinc-500">
+                <button type="button" onClick={() => moveProduct(selectedProduct.id, 1)} className="rounded-xl border border-zinc-200 p-2 text-zinc-500">
                   <ArrowDown size={14} />
                 </button>
-                <button type="button" onClick={() => duplicateProduct(selectedProduct)} className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600">
+                <button type="button" onClick={() => duplicateProduct(selectedProduct)} className="inline- border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600">
                   <Copy size={14} /> Duplicate
                 </button>
-                <button type="button" onClick={() => removeProduct(selectedProduct.id)} className="inline-flex items-center gap-1.5 rounded-lg border border-blue-200 px-3 py-2 text-xs font-medium text-blue-700">
+                <button type="button" onClick={() => removeProduct(selectedProduct.id)} className="inline- border-blue-200 px-3 py-2 text-xs font-medium text-blue-700">
                   <Trash2 size={14} /> Remove
                 </button>
                 <label className="ml-auto inline-flex items-center gap-2 text-sm font-medium text-zinc-600">
@@ -548,7 +548,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
                           type="button"
                           disabled={uploadingImage}
                           onClick={() => fileInputRef.current?.click()}
-                          className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
+                          className=" border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
                         >
                           {uploadingImage ? (
                             <Loader2 size={15} className="animate-spin" />

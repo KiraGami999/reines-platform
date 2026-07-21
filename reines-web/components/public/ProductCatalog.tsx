@@ -79,7 +79,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           </p>
           <Link
             href="/quote"
-            className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+            className="mt-8 [#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
           >
             Request a quote <ArrowRight size={16} />
           </Link>
@@ -208,7 +208,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
 
                     <Link
                       href="/quote"
-                      className="mt-8 inline-flex items-center gap-2 rounded-lg bg-[#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
+                      className="mt-8 [#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
                     >
                       Request product quote
                       <ArrowRight size={16} />
@@ -268,7 +268,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
             const Icon = subsidiaryIcons[item.value as ProductSubsidiary];
             return (
               <div key={item.value} className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
@@ -289,7 +289,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
             const Icon = item.icon;
             return (
               <div key={item.title} className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>

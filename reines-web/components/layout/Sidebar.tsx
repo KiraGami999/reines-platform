@@ -337,7 +337,7 @@ export function Sidebar({
               <Link
                 href="/"
                 onClick={handleLinkClick}
-                className="flex items-center justify-center rounded-lg p-2 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
+                className="flex items-center justify-center rounded-xl p-2 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
                 aria-label="Back to public site"
               >
                 <ChevronLeft size={16} />
@@ -347,7 +347,7 @@ export function Sidebar({
             <Link
               href="/"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 rounded-lg px-3 py-3 text-xs text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
+              className="flex items-center gap-2 rounded-xl px-3 py-3 text-xs text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
             >
               <ChevronLeft size={13} />
               Back to public site

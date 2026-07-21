@@ -215,7 +215,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
         <button
           type="submit"
           disabled={loading}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+          className="flex flex-1 items-center justify-center gap-2  py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
         >
           {loading
             ? <><Loader2 size={14} className="animate-spin" /> {isEdit ? "Saving…" : "Creating…"}</>

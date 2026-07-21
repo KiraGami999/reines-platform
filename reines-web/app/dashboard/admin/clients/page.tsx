@@ -75,7 +75,7 @@ export default async function AdminClientsPage() {
 
         <Link
           href="/dashboard/admin/users"
-          className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+          className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
         >
           Manage User Access
           <ArrowRight size={15} />

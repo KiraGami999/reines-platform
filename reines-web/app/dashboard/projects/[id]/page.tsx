@@ -143,7 +143,7 @@ function HeroBar({ project }: { project: Project }) {
           </div>
           <Link
             href="/dashboard/messages"
-            className="flex w-full shrink-0 items-center justify-center gap-1.5 rounded-lg bg-[#8fb9e8]/15 px-3 py-2 text-xs font-medium text-[#8fb9e8] transition-colors hover:bg-[#8fb9e8]/25 sm:w-auto sm:py-1.5"
+            className="bg-[#8fb9e8]/15 px-3 py-2 text-xs font-medium text-[#8fb9e8] transition-colors hover:bg-[#8fb9e8]/25 sm:w-auto sm:py-1.5"
           >
             <MessageSquare size={12} />
             Message
@@ -414,7 +414,7 @@ function UpdateDocument({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="mt-3 inline-flex max-w-full items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-[#2d4a6b] transition-colors hover:bg-zinc-50"
+      className="mt-3  border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-[#2d4a6b] transition-colors hover:bg-zinc-50"
     >
       <FileText size={14} className="shrink-0 text-zinc-500" />
       <span className="truncate">{name ?? "Project document"}</span>

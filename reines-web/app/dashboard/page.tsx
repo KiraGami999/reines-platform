@@ -372,7 +372,7 @@ function AdminDashboard({ name, data }: { name: string; data: AdminOverviewData 
             ].map((a) => {
               const Icon = a.icon;
               return (
-                <Link key={a.href} href={a.href} className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900">
+                <Link key={a.href} href={a.href} className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900">
                   <Icon size={15} className="text-zinc-400" />
                   {a.label}
                   <span className="ml-auto text-zinc-300">→</span>
@@ -440,10 +440,10 @@ function ManagerProjectCard({ project }: { project: ManagerProject }) {
           <AcceptProjectButton projectId={project.id} className="flex-1" />
         ) : (
           <>
-            <Link href={`/dashboard/projects/${project.id}`} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+            <Link href={`/dashboard/projects/${project.id}`} className="bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
               View project <ArrowRight size={14} />
             </Link>
-            <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
+            <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
               Add update <ImageIcon size={14} />
             </Link>
           </>
@@ -656,10 +656,10 @@ function ClientProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href={`/dashboard/projects/${project.id}`} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+        <Link href={`/dashboard/projects/${project.id}`} className="bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
           View project <ArrowRight size={14} />
         </Link>
-        <Link href={`/dashboard/messages/${project.id}`} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
+        <Link href={`/dashboard/messages/${project.id}`} className="border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
           Chat <MessageSquare size={14} />
         </Link>
       </div>

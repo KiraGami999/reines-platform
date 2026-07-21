@@ -38,7 +38,7 @@ export function ThemeToggle() {
             aria-checked={active}
             onClick={() => setPreference(value)}
             className={cn(
-              "flex items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-xs font-semibold transition-colors",
+              "flex items-center justify-center gap-1.5 rounded-xl px-2 py-2 text-xs font-semibold transition-colors",
               active
                 ? "bg-[#2d4a6b] text-white shadow-sm dark:bg-[#2d4a6b] dark:text-[#8fb9e8]"
                 : "text-zinc-500 hover:bg-white hover:text-zinc-800 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface)] dark:hover:text-[var(--foreground)]"

@@ -44,7 +44,7 @@ export default async function ProjectsPage() {
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold text-white">Your project could be next.</h2>
           <p className="mt-3 text-zinc-400">Reach out and let&apos;s discuss what you&apos;re building.</p>
-          <Link href="/contact" className="mt-6 inline-block rounded-lg bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/contact" className="mt-6 inline-block  px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
             Start a Conversation
           </Link>
         </div>

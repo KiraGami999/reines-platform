@@ -299,14 +299,14 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           {galleryHref && (
             <a
               href={galleryHref}
-              className="inline-flex items-center gap-2 rounded-lg bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
+              className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
             >
               <Images size={14} /> View Gallery
             </a>
           )}
           <button
             onClick={reset}
-            className="rounded-lg border border-green-200 bg-white px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-50 transition-colors"
+            className=" text-green-700 hover:bg-green-50 transition-colors"
           >
             Post another update
           </button>
@@ -374,7 +374,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           onDragLeave={() => setDragging(false)}
           onClick={() => inputRef.current?.click()}
           className={cn(
-            "flex cursor-pointer flex-col items-center gap-2.5 rounded-xl border-2 border-dashed py-8 transition-colors",
+            "flex cursor-pointer flex-col items-center gap-2.5  py-8 transition-colors",
             dragging
               ? "border-[#8fb9e8] bg-[#8fb9e8]/5"
               : "border-zinc-300 bg-white hover:border-zinc-400 hover:bg-zinc-50"
@@ -428,7 +428,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
                         <Image src={entry.preview} alt="" fill className="object-cover" sizes="48px" />
                       </div>
                     ) : (
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/10 text-[#2d4a6b]">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center /10 text-[#2d4a6b]">
                         {entry.kind === "image" ? <FileImage size={20} /> : <FileText size={20} />}
                       </div>
                     )}

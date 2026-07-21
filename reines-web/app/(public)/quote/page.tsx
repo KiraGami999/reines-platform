@@ -78,7 +78,7 @@ export default function QuotationPage() {
               const Icon = step.icon;
               return (
                 <div key={step.title} className="relative flex flex-col items-start gap-3 rounded-xl border border-zinc-200 bg-white p-6">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2d4a6b]/10">
+                  <div className="flex h-9 w-9 items-center justify-center /10">
                     <Icon size={17} strokeWidth={1.8} className="text-[#2d4a6b]" />
                   </div>
                   <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-400">
