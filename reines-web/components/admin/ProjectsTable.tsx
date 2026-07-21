@@ -109,10 +109,10 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
     <>
       {/* Stats strip */}
       <div className="mb-6 grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 sm:grid-cols-4 sm:gap-4">
-        <StatCard label="Total Projects" value={counts.ALL}         icon={<FolderKanban className="w-5 h-5" />} />
-        <StatCard label="In Progress"    value={counts.IN_PROGRESS} icon={<Clock4       className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
-        <StatCard label="Completed"      value={counts.COMPLETED}   icon={<CheckCircle2 className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
-        <StatCard label="Planning"       value={counts.PLANNING}    icon={<AlertCircle  className="w-5 h-5" />} accent="bg-zinc-100 text-zinc-500" />
+        <StatCard label="Total Projects" value={counts.ALL}         icon={<FolderKanban className="w-5 h-5" />} accent="text-zinc-500" />
+        <StatCard label="In Progress"    value={counts.IN_PROGRESS} icon={<Clock4       className="w-5 h-5" />} accent="text-zinc-500" />
+        <StatCard label="Completed"      value={counts.COMPLETED}   icon={<CheckCircle2 className="w-5 h-5" />} accent="text-zinc-500" />
+        <StatCard label="Planning"       value={counts.PLANNING}    icon={<AlertCircle  className="w-5 h-5" />} accent="text-zinc-500" />
       </div>
 
       {/* Toolbar */}
