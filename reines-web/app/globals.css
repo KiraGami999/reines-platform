@@ -124,6 +124,18 @@ select:disabled {
 .dark [data-portal] :is(.text-\[\#2d4a6b\]) {
   color: var(--heading-on-dark);
 }
+/*
+ * EXCEPTION: fixed brand CTA pairing — solid light-blue pill + navy text
+ * (e.g. navbar "Dashboard" / "Get a Quote", chat send button, unread badges).
+ * This must render identically in both themes; the pale remap above turned
+ * navy text pale-on-pale against the light-blue background, making it
+ * unreadable. Higher specificity (two classes) wins over the rule above.
+ * Diluted/opacity backgrounds (bg-[#8fb9e8]/10 etc.) are untouched and keep
+ * the pale-on-dark remap since they sit on a mostly-dark surface.
+ */
+.dark [data-portal] :is(.bg-\[\#8fb9e8\].text-\[\#2d4a6b\]) {
+  color: #2d4a6b;
+}
 .dark [data-portal] :is(.hover\:bg-zinc-50:hover) {
   background-color: var(--surface-hover);
 }

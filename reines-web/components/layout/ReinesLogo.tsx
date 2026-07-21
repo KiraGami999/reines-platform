@@ -9,9 +9,9 @@ export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
 const LOGO_WIDTH = 684;
 const LOGO_HEIGHT = 143;
 
-/** Project Mate wordmark aspect ratio from trimmed transparent asset (738×134) — wider than the corporate mark. */
-const PROJECT_MATE_WIDTH = 738;
-const PROJECT_MATE_HEIGHT = 134;
+/** Project Mate wordmark aspect ratio from trimmed transparent asset (707×162). */
+const PROJECT_MATE_WIDTH = 707;
+const PROJECT_MATE_HEIGHT = 162;
 
 /** Sizing for the corporate (Reines Property Development) wordmark. */
 const CORPORATE_SIZE_CLASS = {
@@ -36,20 +36,19 @@ const CORPORATE_SIZE_CLASS = {
 
 /**
  * Sizing for the Reines Project Mate wordmark (client / project manager portals).
- * Its aspect ratio is ~15% wider than the corporate mark, so heights are scaled
- * down proportionally to land at the same rendered width — keeps it fitting
- * cleanly inside the sidebar logo row and mobile header without crowding the
- * collapse / hamburger buttons next to it.
+ * Its aspect ratio (707×162) is close to the corporate mark's (684×143), so it
+ * reuses the same height classes — just with slightly roomier max-width caps
+ * since it's a touch narrower per unit height.
  */
 const PROJECT_MATE_SIZE_CLASS = {
-  xs: "h-6",
-  sm: "h-7",
-  md: "h-9 sm:h-10",
-  lg: "h-10 sm:h-12",
-  nav: "h-8 min-h-8 sm:h-9 lg:h-10",
-  sidebar: "h-7 max-w-[9.5rem] sm:h-8 sm:max-w-[11rem]",
-  header: "h-5 max-w-[7rem] sm:h-6 sm:max-w-[8.5rem]",
-  xl: "h-20 sm:h-24 md:h-28",
+  xs: "h-7",
+  sm: "h-8",
+  md: "h-10 sm:h-11",
+  lg: "h-12 sm:h-14",
+  nav: "h-9 min-h-9 sm:h-10 lg:h-11",
+  sidebar: "h-8 max-w-[9.5rem] sm:h-9 sm:max-w-[11rem]",
+  header: "h-6 max-w-[6.5rem] sm:h-7 sm:max-w-[8rem]",
+  xl: "h-24 sm:h-28 md:h-32",
 } as const;
 
 type ReinesLogoProps = {
