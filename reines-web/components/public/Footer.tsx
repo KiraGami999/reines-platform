@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
-import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 const footerLinks = {
   Company: [
@@ -57,10 +56,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs sm:flex-row">
           <p>© {new Date().getFullYear()} Reines Property Development Limited. All rights reserved.</p>
-          <div className="flex items-center gap-3">
-            <p>Built with care in Malawi.</p>
-            <ThemeIconButton variant="on-dark" />
-          </div>
+          <p>Built with care in Malawi.</p>
         </div>
       </div>
     </footer>

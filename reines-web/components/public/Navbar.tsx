@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
 const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
@@ -29,11 +30,18 @@ const roleLabels: Record<string, string> = {
   CLIENT: "Client",
 };
 
-/** Mobile drawer links — same colours as Home / About (readable in dark mode). */
+/**
+ * Mobile drawer links — the drawer itself follows the site's light/dark
+ * colour scheme (white surface in light mode, dark surface in dark mode),
+ * unlike the fixed navy top bar. Plain zinc/navy utilities here are
+ * auto-remapped for dark mode by the [data-portal] rules in globals.css.
+ */
 function mobileNavItemClass(active: boolean) {
   return cn(
     "group relative overflow-hidden rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-300",
-    active ? "bg-white/10 text-[#8fb9e8]" : "text-zinc-300 hover:bg-white/5 hover:text-white"
+    active
+      ? "bg-[#8fb9e8]/15 text-[#2d4a6b]"
+      : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
   );
 }
 
@@ -142,6 +150,10 @@ export function Navbar() {
             </>
           )}
 
+          {/* Theme toggle — sits at the far top-right, left of the hamburger so it
+              never overlaps the menu trigger on mobile. */}
+          <ThemeIconButton variant="on-dark" />
+
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
@@ -155,9 +167,10 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile menu — follows the site's light/dark theme rather than the
+          fixed navy top bar, so it matches whatever mode the user picked. */}
       {open && (
-        <div className="border-t border-white/10 bg-[#2d4a6b] px-4 pb-5 xl:hidden">
+        <div className="border-t border-zinc-200 bg-white px-4 pb-5 xl:hidden">
           <nav className="flex flex-col gap-1.5 pt-3">
             {links.map((l) => (
               <Link
@@ -175,7 +188,7 @@ export function Navbar() {
                 <>
                   <div className={mobileNavItemClass(false)}>
                     <span>Signed in as </span>
-                    <span className="text-[#8fb9e8]">{userRole}</span>
+                    <span className="text-[#2d4a6b]">{userRole}</span>
                   </div>
                   <Link
                     href="/dashboard"
