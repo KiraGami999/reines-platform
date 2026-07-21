@@ -78,14 +78,14 @@ function DeleteDialog({
           <button
             onClick={onCancel}
             disabled={loading}
-            className=" text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 transition-colors"
+            className="flex-1 rounded-xl border border-zinc-200 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 disabled:opacity-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={onConfirm}
             disabled={loading}
-            className=" py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-blue-600 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50 transition-colors"
           >
             {loading
               ? <><Loader2 size={14} className="animate-spin" /> Deleting…</>

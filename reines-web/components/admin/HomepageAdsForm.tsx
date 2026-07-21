@@ -256,7 +256,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
               type="button"
               disabled={uploadingImage}
               onClick={() => fileInputRef.current?.click()}
-              className=" border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 disabled:opacity-60"
             >
               {uploadingImage ? <Loader2 size={15} className="animate-spin" /> : <UploadIcon size={15} />}
               {uploadingImage ? "Uploading..." : "Upload Image"}
@@ -339,7 +339,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
             type="button"
             onClick={save}
             disabled={saving}
-            className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             Save Selection

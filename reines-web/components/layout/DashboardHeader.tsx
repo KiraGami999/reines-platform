@@ -235,7 +235,7 @@ function UserMenu({ user }: UserMenuProps) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className=" border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)] sm:gap-2 sm:px-2.5"
+        className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-2 py-1.5 text-sm transition-colors hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:bg-[var(--surface-hover)] sm:gap-2 sm:px-2.5"
         aria-label="User menu"
         aria-expanded={open}
       >
@@ -319,13 +319,15 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const crumbs   = buildBreadcrumbs(pathname);
   const { resolved } = useTheme();
   const logoVariant = resolved === "dark" ? "on-dark" : "on-light";
+  /** Client + project manager portals are branded as Reines Project Mate; admin keeps the corporate mark. */
+  const logoMark = user.role === "CLIENT" || user.role === "PROJECT_MANAGER" ? "project-mate" : "corporate";
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:h-16 sm:px-6 print:hidden">
       {/* Left — mobile logo + hamburger + breadcrumbs */}
       <div className="flex min-w-0 items-center gap-2 sm:gap-3">
         <div className="shrink-0 lg:hidden">
-          <ReinesLogo size="header" variant={logoVariant} className="block" />
+          <ReinesLogo size="header" variant={logoVariant} mark={logoMark} className="block" />
         </div>
 
         {/* Mobile hamburger */}

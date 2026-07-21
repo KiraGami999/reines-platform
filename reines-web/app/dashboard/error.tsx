@@ -30,13 +30,13 @@ export default function DashboardError({
       <div className="mt-6 flex flex-wrap gap-3 justify-center">
         <button
           onClick={reset}
-          className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
         >
           <RefreshCw size={13} /> Retry
         </button>
         <Link
           href="/dashboard"
-          className=" px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
         >
           <LayoutDashboard size={13} /> Dashboard
         </Link>

@@ -188,6 +188,8 @@ export function Sidebar({
   const pathname = usePathname();
   const sections = navByRole[role] ?? navByRole.CLIENT;
   const meta     = roleMeta[role] ?? roleMeta.CLIENT;
+  /** Client + project manager portals are branded as Reines Project Mate; admin keeps the corporate mark. */
+  const logoMark = role === "CLIENT" || role === "PROJECT_MANAGER" ? "project-mate" : "corporate";
 
   function handleLinkClick() {
     if (onClose) onClose();
@@ -223,7 +225,7 @@ export function Sidebar({
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-3 sm:px-4">
           <Link href="/" className="flex min-w-0 items-center" onClick={handleLinkClick}>
             <BrandLogoAnchor>
-              <ReinesLogo size={collapsed ? "xs" : "sidebar"} variant="on-dark" />
+              <ReinesLogo size={collapsed ? "xs" : "sidebar"} variant="on-dark" mark={logoMark} />
             </BrandLogoAnchor>
           </Link>
 

@@ -173,7 +173,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                             <button
                               onClick={() => handleRedeem(rw)}
                               disabled={isRedeeming}
-                              className="inline-flex items-center gap-1  px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+                              className="inline-flex items-center gap-1 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
                             >
                               {isRedeeming ? <Loader2 size={11} className="animate-spin" /> : <CheckCircle2 size={11} />}
                               Confirm
@@ -188,7 +188,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                         ) : (
                           <button
                             onClick={() => handleRedeem(rw)}
-                            className="inline-flex items-center gap-1.5  px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors"
                           >
                             <Gift size={11} /> Redeem
                           </button>

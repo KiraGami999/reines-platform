@@ -234,7 +234,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                 <div className="mt-8">
                   <Link
                     href="/contact"
-                    className="[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
                   >
                     Ask about a similar project <ArrowRight size={15} />
                   </Link>

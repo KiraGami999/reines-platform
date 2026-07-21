@@ -208,7 +208,7 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
             </div>
             <button
               onClick={() => setShowReceipt(true)}
-              className=" border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600 hover:bg-zinc-50 transition-colors"
             >
               <Eye size={13} /> View Receipt
             </button>

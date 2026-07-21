@@ -177,14 +177,14 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
           {!isSuccess && !isCancelled && (
             <Link
               href={`/dashboard/projects/${payment.project.id}`}
-              className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
             >
               Try Payment Again
             </Link>
           )}
           <Link
             href="/dashboard/payments"
-            className=" px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition-colors"
           >
             <Receipt size={13} /> All Payments
           </Link>

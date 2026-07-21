@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
 const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
@@ -98,10 +97,8 @@ export function Navbar() {
           ))}
         </nav>
 
-        {/* Theme toggle + CTA + mobile toggle */}
+        {/* CTA + mobile toggle */}
         <div className="flex shrink-0 items-center gap-2">
-          <ThemeIconButton variant="on-dark" />
-
           {isSignedIn ? (
             <div className="hidden items-center gap-2 xl:flex">
               <span className="hidden items-center gap-1 rounded-xl border border-white/10 px-3 py-2 text-xs font-medium text-zinc-300 2xl:flex">
@@ -110,7 +107,7 @@ export function Navbar() {
               </span>
               <Link
                 href="/dashboard"
-                className=" px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
+                className="rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
               >
                 Dashboard
               </Link>
@@ -138,7 +135,7 @@ export function Navbar() {
               </Link>
               <Link
                 href="/quote"
-                className="hidden  px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
+                className="hidden rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
               >
                 Get a Quote
               </Link>
@@ -148,7 +145,7 @@ export function Navbar() {
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className=" transition-colors hover:bg-white/10 xl:hidden"
+            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl transition-colors hover:bg-white/10 xl:hidden"
             aria-label="Toggle menu"
           >
             <span className={cn("h-0.5 w-5 bg-white transition-all", open && "translate-y-2 rotate-45")} />

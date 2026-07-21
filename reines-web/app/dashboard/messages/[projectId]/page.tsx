@@ -110,7 +110,7 @@ export default async function ProjectChatPage({ params }: PageProps) {
             <div className="flex shrink-0 items-center gap-2">
               <Link
                 href={`/dashboard/projects/${projectId}`}
-                className="hidden sm:flex items-center gap-1.5  text-zinc-500 transition-colors hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-800"
+                className="hidden sm:flex items-center gap-1.5 rounded-xl border border-transparent px-3 py-1.5 text-sm text-zinc-500 transition-colors hover:border-zinc-200 hover:bg-zinc-50 hover:text-zinc-800"
               >
                 <FolderKanban size={12} /> Project
               </Link>

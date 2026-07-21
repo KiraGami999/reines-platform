@@ -119,7 +119,7 @@ export function LoyaltyRuleForm({ initial }: LoyaltyRuleFormProps) {
       </div>
 
       {preview && (
-        <div className="/10 border border-[#8fb9e8]/30 px-4 py-2 text-sm text-[#2d4a6b] font-medium">
+        <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/10 px-4 py-2 text-sm text-[#2d4a6b] font-medium">
           Rule preview: {preview}{Number(form.minSpendToEarn) > 0 ? ` · only after MK ${Number(form.minSpendToEarn).toLocaleString("en-MW")} total spend` : ""}
         </div>
       )}
@@ -130,7 +130,7 @@ export function LoyaltyRuleForm({ initial }: LoyaltyRuleFormProps) {
         <button
           onClick={handleSave}
           disabled={saving}
-          className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
         >
           {saving ? <Loader2 size={13} className="animate-spin" /> : <Settings2 size={13} />}
           Save Rule

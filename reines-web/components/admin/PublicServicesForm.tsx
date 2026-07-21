@@ -201,7 +201,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
             <button
               type="button"
               onClick={addService}
-              className="inline-flex items-center gap-1.5  px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
             >
               <Plus size={14} /> Add
             </button>
@@ -249,7 +249,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
               type="button"
               onClick={save}
               disabled={saving}
-              className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Services
@@ -280,14 +280,14 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                 <button
                   type="button"
                   onClick={() => duplicateService(selectedService)}
-                  className="inline- border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-medium text-zinc-600"
                 >
                   <Copy size={14} /> Duplicate
                 </button>
                 <button
                   type="button"
                   onClick={() => removeService(selectedService.id)}
-                  className="inline- border-blue-200 px-3 py-2 text-xs font-medium text-blue-700"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 px-3 py-2 text-xs font-medium text-blue-700"
                 >
                   <Trash2 size={14} /> Remove
                 </button>

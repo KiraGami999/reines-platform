@@ -304,7 +304,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
             <button
               type="button"
               onClick={addProject}
-              className="inline-flex items-center gap-1.5  px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
             >
               <Plus size={14} /> Add
             </button>
@@ -515,7 +515,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                                 <button
                                   type="button"
                                   onClick={() => setCoverImage(imageUrl)}
-                                  className=" text-zinc-600 hover:bg-zinc-50"
+                                  className="rounded-xl border border-zinc-200 px-2 py-1 text-[11px] font-medium text-zinc-600 hover:bg-zinc-50"
                                 >
                                   Set cover
                                 </button>
@@ -576,7 +576,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   type="button"
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading || selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES}
-                  className="inline-flex w-full items-center justify-center gap-2  border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
                 >
                   {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadIcon size={16} />}
                   {uploading ? "Uploading…" : "Upload another image"}
@@ -596,7 +596,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
           type="button"
           onClick={save}
           disabled={saving}
-          className="[#2d4a6b] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-zinc-900/10 hover:bg-[#1a2f4a] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-zinc-900/10 hover:bg-[#1a2f4a] disabled:opacity-60"
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           Save public projects

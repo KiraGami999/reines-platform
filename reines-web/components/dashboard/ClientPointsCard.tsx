@@ -79,7 +79,7 @@ export function ClientPointsCard({
       </div>
 
       <div className="p-5">
-        <div className=" p-4 text-white">
+        <div className="rounded-xl bg-[#2d4a6b] p-4 text-white">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Current balance</p>
           <p className="mt-2 text-3xl font-extrabold">{summary.totalPoints.toLocaleString("en-MW")} pts</p>
           <p className="mt-1 text-xs text-zinc-400">Can later be used for discounts, free promotions, or member exclusives.</p>
@@ -125,7 +125,7 @@ export function ClientPointsCard({
             <button
               type="submit"
               disabled={saving}
-              className="inline-flex w-full items-center justify-center gap-2  px-4 py-2 text-sm font-semibold text-white hover:bg-[#1a2f4a] disabled:opacity-60"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-semibold text-white hover:bg-[#1a2f4a] disabled:opacity-60"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <PlusCircle size={15} />}
               Save points

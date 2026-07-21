@@ -36,7 +36,7 @@ export function ClearRecentActivityButton() {
         type="button"
         onClick={clearActivity}
         disabled={loading}
-        className="inline- border-zinc-200 px-3 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-1.5 text-xs font-semibold text-zinc-500 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700 disabled:opacity-60"
       >
         {loading ? <Loader2 size={13} className="animate-spin" /> : <Trash2 size={13} />}
         Clear

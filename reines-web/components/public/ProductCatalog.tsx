@@ -79,7 +79,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           </p>
           <Link
             href="/quote"
-            className="mt-8 [#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
           >
             Request a quote <ArrowRight size={16} />
           </Link>

@@ -183,7 +183,7 @@ export default function MarketInsightsPage() {
               transport, and labour demand. Reines uses structured quotations and milestone reporting
               to help clients make decisions with clarity.
             </p>
-            <Link href="/contact" className="mt-8 [#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
+            <Link href="/contact" className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
               Discuss Your Project
               <ArrowRight size={16} />
             </Link>

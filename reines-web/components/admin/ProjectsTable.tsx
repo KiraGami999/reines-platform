@@ -160,7 +160,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
         {isAdmin && (
           <button
             onClick={openCreate}
-            className="flex items-center gap-2  px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+            className="flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
           >
             <Plus className="w-4 h-4" /> New Project
           </button>
@@ -173,7 +173,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
           <button
             key={tab.key}
             onClick={() => setStatusFilter(tab.key)}
-            className={`flex shrink-0 items-center gap-1.5  ${
+            className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${
               statusFilter === tab.key
                 ? "bg-[#2d4a6b] text-white"
                 : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"

@@ -308,7 +308,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
               <Link
                 key={tab.key}
                 href={tab.key === "ALL" ? "/dashboard/projects" : `/dashboard/projects?status=${tab.key}`}
-                className={`flex shrink-0 items-center gap-1.5  ${
+                className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-[#2d4a6b] text-white"
                     : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"

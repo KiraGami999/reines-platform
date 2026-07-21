@@ -41,14 +41,14 @@ function ProjectSection({
           {canUpload && (
             <Link
               href={`/dashboard/projects/${project.id}/gallery?tab=upload`}
-              className="flex items-center gap-1.5  px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-800"
+              className="flex items-center gap-1.5 rounded-xl bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-800"
             >
               <Plus size={12} /> Add Update
             </Link>
           )}
           <Link
             href={`/dashboard/projects/${project.id}/gallery`}
-            className="flex items-center gap-1.5  text-zinc-600 transition-colors hover:bg-zinc-50"
+            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
           >
             <FolderKanban size={12} /> View Project
           </Link>

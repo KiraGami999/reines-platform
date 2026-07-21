@@ -299,14 +299,14 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           {galleryHref && (
             <a
               href={galleryHref}
-              className="[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
             >
               <Images size={14} /> View Gallery
             </a>
           )}
           <button
             onClick={reset}
-            className=" text-green-700 hover:bg-green-50 transition-colors"
+            className="rounded-xl border border-green-200 bg-white px-4 py-2 text-sm font-medium text-green-700 hover:bg-green-50 transition-colors"
           >
             Post another update
           </button>
