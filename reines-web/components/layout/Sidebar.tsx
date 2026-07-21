@@ -211,19 +211,23 @@ export function Sidebar({
       {/* Sidebar panel */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 flex flex-col bg-[#2d4a6b] print:hidden",
+          "fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-[#2d4a6b] print:hidden",
           "transition-all duration-200 ease-in-out",
-          /* Mobile: slides in/out as a full 256px panel */
-          "w-64 max-w-[calc(100vw-3.5rem)]",
+          /* Mobile: slides in/out as a full 256px panel. The vw-based cap only
+             matters for very narrow viewports, so it's dropped again at lg —
+             it must never be able to shrink the desktop column. */
+          "w-64 max-w-[calc(100vw-3.5rem)] lg:max-w-none",
           open ? "translate-x-0" : "-translate-x-full",
           /* Desktop: always visible, width driven by collapsed state */
           "lg:static lg:translate-x-0",
           sidebarWidth
         )}
       >
-        {/* Logo row — keep mark smaller than the bar so it has breathing room */}
-        <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-3 sm:px-4">
-          <Link href="/" className="flex min-w-0 items-center" onClick={handleLinkClick}>
+        {/* Logo row — keep mark smaller than the bar so it has breathing room.
+            overflow-hidden + min-w-0 so the wordmark can never bleed past the
+            row into the collapse toggle or the main column beside it. */}
+        <div className="flex h-16 shrink-0 items-center justify-between overflow-hidden border-b border-white/10 px-3 sm:px-4">
+          <Link href="/" className="flex min-w-0 items-center overflow-hidden" onClick={handleLinkClick}>
             <BrandLogoAnchor>
               <ReinesLogo size={collapsed ? "xs" : "sidebar"} variant="on-dark" mark={logoMark} />
             </BrandLogoAnchor>
