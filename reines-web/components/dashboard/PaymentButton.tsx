@@ -203,7 +203,7 @@ export default function PaymentButton({
         <div className="flex gap-2">
           <button
             onClick={handleOnlinePay}
-            className="flex-1 bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
           >
             <ExternalLink size={13} />
             {editAmount && Number(editAmount) > 0 ? `Pay ${fmt(Number(editAmount))}` : "Pay Now"}
@@ -240,7 +240,7 @@ export default function PaymentButton({
 
   // ── Online loading redirect ─────────────────────────────────────────────────
   return (
-    <div className="border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
+    <div className="rounded-xl border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-[#8fb9e8]" />
       Redirecting to Paychangu checkout…
     </div>

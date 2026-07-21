@@ -308,7 +308,7 @@ export default function AdminQuotationsPage() {
                 <button
                   onClick={saveChanges}
                   disabled={!!savingId}
-                  className="w-full bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
                 >
                   {savingId ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : "Save Changes"}
                 </button>

@@ -409,7 +409,7 @@ export function QuotationForm() {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full bg-[#2d4a6b] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#2d4a6b]/20 hover:bg-[#1a2f4a] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+        className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#2d4a6b]/20 hover:bg-[#1a2f4a] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
       >
         {state === "loading" ? (
           <><Loader2 size={16} className="animate-spin" /> Submitting…</>

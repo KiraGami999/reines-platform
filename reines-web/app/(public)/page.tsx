@@ -120,12 +120,6 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
           </div>
         </div>
       </div>
-
-      {/* Blue → white fade only at the very bottom edge (below CTAs on mobile) */}
-      <div
-        className="pointer-events-none h-10 bg-gradient-to-b from-[#243040] to-white sm:h-14 md:h-16 lg:h-20"
-        aria-hidden
-      />
     </section>
   );
 }
@@ -268,10 +262,10 @@ function CtaBanner() {
           Partner with a development, construction, and sustainable construction manufacturing company focused on strong foundations and long-term value.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-          <Link href="/quote" className="bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/quote" className="rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
             Get a Free Quote
           </Link>
-          <Link href="/projects" className="border border-zinc-600 px-8 py-3 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white">
+          <Link href="/projects" className="rounded-xl border border-zinc-600 px-8 py-3 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white">
             View Projects
           </Link>
         </div>

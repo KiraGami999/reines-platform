@@ -183,17 +183,17 @@ export function Navbar() {
                 <span className="absolute bottom-1.5 left-3 h-0.5 w-0 rounded-full bg-[#8fb9e8] transition-all duration-300 group-hover:w-8" />
               </Link>
             ))}
-            <div className="mt-3 flex flex-col gap-1.5">
+            <div className="mt-3 flex flex-col gap-2 border-t border-zinc-200 pt-3">
               {isSignedIn ? (
                 <>
-                  <div className={mobileNavItemClass(false)}>
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-500">
                     <span>Signed in as </span>
-                    <span className="text-[#2d4a6b]">{userRole}</span>
+                    <span className="font-semibold text-[#2d4a6b]">{userRole}</span>
                   </div>
                   <Link
                     href="/dashboard"
                     onClick={() => setOpen(false)}
-                    className={mobileNavItemClass(pathname.startsWith("/dashboard"))}
+                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
                   >
                     Dashboard
                   </Link>
@@ -203,7 +203,7 @@ export function Navbar() {
                       setOpen(false);
                       signOut({ callbackUrl: "/" });
                     }}
-                    className={mobileNavItemClass(false)}
+                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
                   >
                     Log out
                   </button>
@@ -213,21 +213,21 @@ export function Navbar() {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className={mobileNavItemClass(pathname === "/login")}
+                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
                   >
                     Log In
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setOpen(false)}
-                    className={mobileNavItemClass(pathname === "/register")}
+                    className="inline-flex items-center justify-center rounded-xl border border-[#8fb9e8]/40 px-4 py-2.5 text-sm font-medium text-[#2d4a6b] transition-colors hover:bg-[#8fb9e8]/10"
                   >
                     Sign Up
                   </Link>
                   <Link
                     href="/quote"
                     onClick={() => setOpen(false)}
-                    className={mobileNavItemClass(pathname === "/quote")}
+                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
                   >
                     Get a Quote
                   </Link>

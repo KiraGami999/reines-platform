@@ -270,11 +270,11 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                       )}
                     </td>
                     <td className="px-2.5 py-2 sm:px-4 sm:py-3">
-                      <div className="flex items-center justify-end gap-1 sm:opacity-0 sm:group-hover:opacity-100">
+                      <div className="flex items-center justify-end gap-1">
                         {(isAdmin || project.managerAccepted) && (
                           <button
                             onClick={() => openEdit(project)}
-                            className="bg-zinc-100 hover:text-[#2d4a6b]"
+                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#2d4a6b]"
                             title="Edit project"
                           >
                             <Pencil className="h-3.5 w-3.5" />
@@ -283,7 +283,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                         {isAdmin && (
                           <button
                             onClick={() => setDeleteId(project.id)}
-                            className="bg-zinc-50 hover:text-zinc-600"
+                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-600"
                             title="Delete project"
                           >
                             <Trash2 className="h-3.5 w-3.5" />

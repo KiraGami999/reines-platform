@@ -144,7 +144,7 @@ export function CashPaymentForm({
         </p>
         <button
           onClick={onCancel}
-          className="mt-2 border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
+          className="mt-2 rounded-xl border border-zinc-300 px-5 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 transition-colors"
         >
           Close
         </button>
@@ -268,7 +268,7 @@ export function CashPaymentForm({
         <button
           onClick={handleSubmit}
           disabled={submitting || uploading}
-          className="flex-1 bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className="flex-1 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <><Loader2 size={13} className="animate-spin" /> Submitting…</>

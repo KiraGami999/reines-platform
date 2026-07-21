@@ -98,13 +98,13 @@ function MilestoneCard({ project }: { project: ManagerProject }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+        <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
           <ImageIcon size={14} /> Post update
         </Link>
-        <Link href={`/dashboard/messages/${project.id}`} className="border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
+        <Link href={`/dashboard/messages/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
           <MessageSquare size={14} /> Message client
         </Link>
-        <Link href={`/dashboard/projects/${project.id}`} className="border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
+        <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
           Project <ArrowRight size={14} />
         </Link>
       </div>

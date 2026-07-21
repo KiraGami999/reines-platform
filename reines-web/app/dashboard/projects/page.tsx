@@ -155,7 +155,7 @@ function PendingProjectCard({ project }: { project: Project }) {
         <AcceptProjectButton projectId={project.id} className="flex-1" />
         <Link
           href={`/dashboard/projects/${project.id}`}
-          className="border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-600 transition-colors hover:bg-zinc-50"
+          className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-semibold text-zinc-600 transition-colors hover:bg-zinc-50"
         >
           Review details <ArrowRight size={14} />
         </Link>

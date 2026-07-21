@@ -31,13 +31,13 @@ export default function GlobalError({
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={reset}
-            className="bg-[#2d4a6b] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
           >
             <RefreshCw size={14} /> Try again
           </button>
           <Link
             href="/"
-            className="border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition-colors"
+            className="rounded-xl border border-zinc-300 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:bg-zinc-100 transition-colors"
           >
             Go to Homepage
           </Link>
