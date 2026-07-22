@@ -3,10 +3,12 @@ import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { getDashboardProject } from "@/lib/projects";
 import { getClientPointSummary } from "@/lib/client-points";
-import { STATUS_CONFIG, PHASE_CONFIG, fmtMWK, fmtDate, daysRemaining } from "@/lib/mock-data";
-import type { Project, ProjectPhase, BudgetBreakdown, ProjectUpdate } from "@/models/project";
+import { STATUS_CONFIG, MILESTONE_STATUS_CONFIG, fmtMWK, fmtDate, daysRemaining } from "@/lib/mock-data";
+import type { Project, Milestone, BudgetBreakdown, ProjectUpdate } from "@/models/project";
 import { groupGalleryUpdates } from "@/lib/gallery-batches";
 import { cn } from "@/lib/utils";
+import { Section } from "@/components/dashboard/Section";
+import { ProjectTimelineManager } from "@/components/dashboard/ProjectTimelineManager";
 import {
   ArrowLeft,
   CalendarDays,
@@ -17,6 +19,7 @@ import {
   CheckCircle2,
   Clock,
   AlertCircle,
+  XCircle,
   ImageIcon,
   MessageSquare,
   Receipt,
@@ -32,33 +35,6 @@ import { ClientPointsCard } from "@/components/dashboard/ClientPointsCard";
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Project Details – Reines Portal" };
-
-// ─── Section wrapper ───────────────────────────────────────────────────────────
-
-function Section({
-  title,
-  subtitle,
-  action,
-  children,
-}: {
-  title:     string;
-  subtitle?: string;
-  action?:   React.ReactNode;
-  children:  React.ReactNode;
-}) {
-  return (
-    <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
-      <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 sm:px-6 sm:py-4">
-        <div>
-          <h2 className="text-sm font-semibold text-zinc-900">{title}</h2>
-          {subtitle && <p className="mt-0.5 text-xs text-zinc-400">{subtitle}</p>}
-        </div>
-        {action}
-      </div>
-      <div className="p-4 sm:p-6">{children}</div>
-    </div>
-  );
-}
 
 // ─── Hero status bar ───────────────────────────────────────────────────────────
 
@@ -207,10 +183,10 @@ function ScopeSection({ project }: { project: Project }) {
   );
 }
 
-// ─── Timeline ─────────────────────────────────────────────────────────────────
+// ─── Timeline (read-only — clients see the checkpoints their PM published) ────
 
-function TimelineSection({ phases }: { phases: ProjectPhase[] }) {
-  if (phases.length === 0) {
+function TimelineSection({ milestones }: { milestones: Milestone[] }) {
+  if (milestones.length === 0) {
     return (
       <Section title="Project Timeline" subtitle="Construction phases and milestones">
         <div className="flex flex-col items-center py-8 text-center">
@@ -223,53 +199,48 @@ function TimelineSection({ phases }: { phases: ProjectPhase[] }) {
     );
   }
 
-  const doneCount   = phases.filter((p) => p.status === "DONE").length;
-  const activeCount = phases.filter((p) => p.status === "ACTIVE").length;
+  const doneCount   = milestones.filter((m) => m.status === "COMPLETED").length;
+  const activeCount = milestones.filter((m) => m.status === "IN_PROGRESS").length;
 
   return (
     <Section
       title="Project Timeline"
-      subtitle={`${doneCount} of ${phases.length} phases complete${activeCount > 0 ? " · 1 active" : ""}`}
+      subtitle={`${doneCount} of ${milestones.length} phases complete${activeCount > 0 ? ` · ${activeCount} active` : ""}`}
     >
       <ol className="relative ml-3.5 border-l border-zinc-200">
-        {phases.map((phase, i) => {
-          const cfg = PHASE_CONFIG[phase.status];
+        {milestones.map((m) => {
+          const cfg  = MILESTONE_STATUS_CONFIG[m.status];
           const Icon =
-            phase.status === "DONE"   ? CheckCircle2
-            : phase.status === "ACTIVE" ? Clock
+            m.status === "COMPLETED"   ? CheckCircle2
+            : m.status === "IN_PROGRESS" ? Clock
+            : m.status === "CANCELLED"   ? XCircle
             : AlertCircle;
 
           return (
-            <li key={i} className={`mb-7 ml-6 last:mb-0`}>
+            <li key={m.id} className="mb-7 ml-6 last:mb-0">
               {/* Timeline node */}
               <span
                 className={`absolute -left-[14px] flex h-7 w-7 items-center justify-center rounded-full border-2 ${cfg.ring}`}
               >
                 <Icon
                   size={13}
-                  className={phase.status === "UPCOMING" ? "text-zinc-400" : "text-white"}
+                  className={m.status === "PENDING" ? "text-zinc-400" : "text-white"}
                 />
               </span>
 
-              <div
-                className={`rounded-xl border p-4 ${
-                  phase.status === "ACTIVE"
-                    ? "border-[#8fb9e8]/30 bg-[#8fb9e8]/5"
-                    : phase.status === "DONE"
-                    ? "border-blue-100 bg-blue-50/50"
-                    : "border-zinc-100 bg-zinc-50"
-                }`}
-              >
+              <div className={`rounded-xl border p-4 ${cfg.card}`}>
                 <div className="flex flex-wrap items-center gap-2">
                   <span
                     className={`rounded-full border border-current/20 bg-white px-2 py-0.5 text-[10px] font-bold uppercase ${cfg.text}`}
                   >
                     {cfg.label}
                   </span>
-                  <span className="text-xs text-zinc-400">{phase.weeks}</span>
+                  {m.dueDate && <span className="text-xs text-zinc-400">Target: {fmtDate(m.dueDate)}</span>}
                 </div>
-                <h3 className="mt-1.5 text-sm font-semibold text-zinc-900">{phase.label}</h3>
-                <p className="mt-1 text-sm leading-relaxed text-zinc-500">{phase.description}</p>
+                <h3 className="mt-1.5 text-sm font-semibold text-zinc-900">{m.title}</h3>
+                {m.description && (
+                  <p className="mt-1 text-sm leading-relaxed text-zinc-500">{m.description}</p>
+                )}
               </div>
             </li>
           );
@@ -665,7 +636,11 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         {/* Left column */}
         <div className="space-y-5 xl:col-span-2">
           <ScopeSection    project={project} />
-          <TimelineSection phases={project.phases} />
+          {role === "CLIENT" ? (
+            <TimelineSection milestones={project.milestones} />
+          ) : (
+            <ProjectTimelineManager projectId={project.id} initialMilestones={project.milestones} />
+          )}
           <UpdatesSection  updates={project.updates} />
         </div>
 

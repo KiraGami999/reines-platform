@@ -112,6 +112,31 @@ export const createGalleryUpdateSchema = z.object({
   progressPercent: z.number().int().min(0).max(100).optional().nullable(),
 });
 
+/**
+ * Project timeline checkpoint (Milestone) schemas.
+ * Shared shape with the mobile API — see app/api/mobile/projects/[id]/milestones.
+ */
+export const milestoneStatusEnum = z.enum(["PENDING", "IN_PROGRESS", "COMPLETED", "CANCELLED"] as const);
+
+export const createMilestoneSchema = z.object({
+  title:       z.string().min(2, "Title must be at least 2 characters").max(200),
+  description: z.string().max(1000).optional().nullable(),
+  status:      milestoneStatusEnum.optional(),
+  dueDate:     z.string().datetime({ offset: true }).optional().nullable(),
+  sortOrder:   z.number().int().min(0).optional(),
+});
+
+export const updateMilestoneSchema = z.object({
+  title:       z.string().min(2).max(200).optional(),
+  description: z.string().max(1000).optional().nullable(),
+  status:      milestoneStatusEnum.optional(),
+  dueDate:     z.string().datetime({ offset: true }).optional().nullable(),
+  sortOrder:   z.number().int().min(0).optional(),
+});
+
+export type CreateMilestoneInput = z.infer<typeof createMilestoneSchema>;
+export type UpdateMilestoneInput = z.infer<typeof updateMilestoneSchema>;
+
 const galleryBatchItemSchema = createGalleryUpdateSchema.omit({ progressPercent: true });
 
 export const createGalleryBatchSchema = z.object({

@@ -3,13 +3,6 @@
 
 export type ProjectStatus = "PLANNING" | "IN_PROGRESS" | "ON_HOLD" | "COMPLETED" | "CANCELLED";
 
-export interface ProjectPhase {
-  label: string;
-  weeks: string;
-  description: string;
-  status: "DONE" | "ACTIVE" | "UPCOMING";
-}
-
 export interface BudgetBreakdown {
   label: string;
   amount: number;
@@ -48,16 +41,29 @@ export interface Project {
   budgetBreakdown: BudgetBreakdown[];
   startDate: string | null;
   endDate: string | null;
-  phases: ProjectPhase[];
+  milestones: Milestone[];
   updates: ProjectUpdate[];
   completionPercent: number;
   createdAt: string;
 }
 
+/**
+ * Project timeline checkpoint — created by a PROJECT_MANAGER (or ADMIN) to
+ * show the client the construction phases/checkpoints for a project.
+ * Mirrors the Prisma `Milestone` model exactly. Also consumed by the mobile
+ * app (see app/api/mobile/projects/[id]/milestones).
+ */
+export type MilestoneStatus = "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+
 export interface Milestone {
   id: string;
   projectId: string;
   title: string;
+  description: string | null;
+  status: MilestoneStatus;
   dueDate: string | null;
-  completed: boolean;
+  completedAt: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
 }

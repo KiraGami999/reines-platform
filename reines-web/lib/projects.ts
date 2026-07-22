@@ -17,6 +17,7 @@ type ProjectRow = Prisma.ProjectGetPayload<{
     client: { select: { id: true; name: true; email: true } };
     manager: { select: { id: true; name: true; email: true } };
     updates: { orderBy: { createdAt: "desc" } };
+    milestones: { orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] };
     payments: {
       select: {
         id: true;
@@ -37,7 +38,8 @@ export type ManagerProject = Project & {
 
 /**
  * Maps a raw Prisma row to the app-level Project type.
- * Fields not stored in the DB (phases, breakdown) are derived or defaulted.
+ * budgetBreakdown/completionPercent are derived from payments/updates —
+ * milestones (the project timeline) are read directly from the DB.
  */
 function mapRow(row: ProjectRow): Project {
   const successPayments = row.payments.filter((p) => p.status === "SUCCESS");
@@ -87,7 +89,18 @@ function mapRow(row: ProjectRow): Project {
     budgetBreakdown:  breakdown,
     startDate:        row.startDate ? row.startDate.toISOString().slice(0, 10) : null,
     endDate:          row.endDate   ? row.endDate.toISOString().slice(0, 10)   : null,
-    phases:           [],
+    milestones:       row.milestones.map((m) => ({
+      id:          m.id,
+      projectId:   m.projectId,
+      title:       m.title,
+      description: m.description ?? null,
+      status:      m.status,
+      dueDate:     m.dueDate     ? m.dueDate.toISOString()     : null,
+      completedAt: m.completedAt ? m.completedAt.toISOString() : null,
+      sortOrder:   m.sortOrder,
+      createdAt:   m.createdAt.toISOString(),
+      updatedAt:   m.updatedAt.toISOString(),
+    })),
     updates:          row.updates.map((u) => ({
       id:              u.id,
       note:            u.note,
@@ -108,6 +121,7 @@ const INCLUDE = {
   client:  { select: { id: true, name: true, email: true } },
   manager: { select: { id: true, name: true, email: true } },
   updates: { orderBy: { createdAt: "desc" as const } },
+  milestones: { orderBy: [{ sortOrder: "asc" as const }, { createdAt: "asc" as const }] },
   payments: {
     select: {
       id:          true,
