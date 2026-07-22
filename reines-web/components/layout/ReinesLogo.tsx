@@ -1,16 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import type { PortalLogoMark } from "@/lib/portal-branding";
 
-export const REINES_LOGO_SRC = "/logo.png";
+/** White-on-transparent corporate wordmark (legacy). Kept for reference/fallbacks. */
+export const REINES_LOGO_LEGACY_SRC = "/logo.png";
+/** Current Reines Property Development rebrand — admin portal + public footer. */
+export const REINES_LOGO_SRC = "/logo-nav-rebrand.png";
 export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
 /** Pre-rendered navy foreground — used for "on-light" instead of a brightness(0)
  *  filter, so the mark reads as brand navy rather than flat black. */
 export const PROJECT_MATE_LOGO_NAVY_SRC = "/logo-project-mate-navy.png";
 
-/** Logo aspect ratio from trimmed transparent asset (684×143). */
-const LOGO_WIDTH = 684;
-const LOGO_HEIGHT = 143;
+/** Corporate rebrand aspect ratio from trimmed asset (795×163). */
+const LOGO_WIDTH = 795;
+const LOGO_HEIGHT = 163;
 
 /** Project Mate wordmark aspect ratio from trimmed transparent asset (707×162). */
 const PROJECT_MATE_WIDTH = 707;
@@ -77,7 +81,7 @@ type ReinesLogoProps = {
    * `corporate` = Reines Property Development wordmark (default, admin portal + public site).
    * `project-mate` = Reines Project Mate wordmark (client + project manager portals).
    */
-  mark?: "corporate" | "project-mate";
+  mark?: PortalLogoMark;
 };
 
 const MARK_CONFIG = {

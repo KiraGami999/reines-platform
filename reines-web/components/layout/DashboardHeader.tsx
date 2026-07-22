@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
+import { getPortalLogoMark } from "@/lib/portal-branding";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { cn } from "@/lib/utils";
 
@@ -319,8 +320,7 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const crumbs   = buildBreadcrumbs(pathname);
   const { resolved } = useTheme();
   const logoVariant = resolved === "dark" ? "on-dark" : "on-light";
-  /** Client + project manager portals are branded as Reines Project Mate; admin keeps the corporate mark. */
-  const logoMark = user.role === "CLIENT" || user.role === "PROJECT_MANAGER" ? "project-mate" : "corporate";
+  const logoMark = getPortalLogoMark(user.role);
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:h-16 sm:px-6 print:hidden">

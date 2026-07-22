@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { BrandLogoAnchor } from "@/components/layout/BrandLogoAnchor";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
+import { getPortalLogoMark } from "@/lib/portal-branding";
 import {
   LayoutDashboard,
   FolderKanban,
@@ -188,8 +189,7 @@ export function Sidebar({
   const pathname = usePathname();
   const sections = navByRole[role] ?? navByRole.CLIENT;
   const meta     = roleMeta[role] ?? roleMeta.CLIENT;
-  /** Client + project manager portals are branded as Reines Project Mate; admin keeps the corporate mark. */
-  const logoMark = role === "CLIENT" || role === "PROJECT_MANAGER" ? "project-mate" : "corporate";
+  const logoMark = getPortalLogoMark(role);
 
   function handleLinkClick() {
     if (onClose) onClose();
