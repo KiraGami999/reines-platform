@@ -95,28 +95,57 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
     updateProject(id, syncCoverImage(imageUrls));
   }
 
-  async function handleImageUpload(file: File) {
-    if (!selectedProject) return;
+  /** Batch upload — accepts one or many files selected at once and adds them all to the gallery. */
+  async function handleImageBatchUpload(files: File[]) {
+    if (!selectedProject || files.length === 0) return;
 
-    if (selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES) {
+    const remainingSlots = MAX_PUBLIC_PROJECT_IMAGES - selectedProject.imageUrls.length;
+    if (remainingSlots <= 0) {
       setError(`Each project can have up to ${MAX_PUBLIC_PROJECT_IMAGES} images.`);
       return;
     }
 
+    const filesToUpload = files.slice(0, remainingSlots);
+    const skippedCount = files.length - filesToUpload.length;
+
     setUploading(true);
     clearStatus();
-    try {
-      const blob = await upload(
-        `uploads/public-projects/${file.name}`,
-        file,
-        { access: "private", handleUploadUrl: "/api/upload/client" },
-      );
-      updateProjectImages(selectedProject.id, [...selectedProject.imageUrls, blob.url]);
-    } catch {
-      setError("Image upload failed. Try again.");
-    } finally {
-      setUploading(false);
+
+    const uploadedUrls: string[] = [];
+    let failedCount = 0;
+
+    for (const file of filesToUpload) {
+      try {
+        const blob = await upload(
+          `uploads/public-projects/${file.name}`,
+          file,
+          { access: "private", handleUploadUrl: "/api/upload/client" },
+        );
+        uploadedUrls.push(blob.url);
+      } catch {
+        failedCount += 1;
+      }
     }
+
+    if (uploadedUrls.length > 0) {
+      updateProjectImages(selectedProject.id, [...selectedProject.imageUrls, ...uploadedUrls]);
+    }
+
+    if (failedCount > 0) {
+      setError(
+        uploadedUrls.length > 0
+          ? `${uploadedUrls.length} image(s) uploaded, but ${failedCount} failed. Try again for the failed ones.`
+          : "Image upload failed. Try again."
+      );
+    } else if (skippedCount > 0) {
+      setMessage(
+        `${uploadedUrls.length} image(s) uploaded. ${skippedCount} skipped — this project is at the ${MAX_PUBLIC_PROJECT_IMAGES}-image limit.`
+      );
+    } else if (uploadedUrls.length > 1) {
+      setMessage(`${uploadedUrls.length} images uploaded.`);
+    }
+
+    setUploading(false);
   }
 
   function addPresetImage(imageUrl: string) {
@@ -565,10 +594,11 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   ref={fileRef}
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif"
+                  multiple
                   className="hidden"
                   onChange={(e) => {
-                    const f = e.target.files?.[0];
-                    if (f) void handleImageUpload(f);
+                    const files = Array.from(e.target.files ?? []);
+                    if (files.length > 0) void handleImageBatchUpload(files);
                     e.target.value = "";
                   }}
                 />
@@ -579,8 +609,11 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
                 >
                   {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadIcon size={16} />}
-                  {uploading ? "Uploading…" : "Upload another image"}
+                  {uploading ? "Uploading…" : "Upload images"}
                 </button>
+                <p className="text-center text-[11px] text-zinc-400">
+                  Select multiple photos at once to batch-upload a project slideshow.
+                </p>
               </div>
             </div>
           </section>

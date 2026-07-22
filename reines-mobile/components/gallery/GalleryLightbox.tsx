@@ -5,11 +5,14 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  FlatList,
   TouchableOpacity,
   Dimensions,
   SafeAreaView,
   StatusBar,
   Platform,
+  type NativeSyntheticEvent,
+  type NativeScrollEvent,
 } from "react-native";
 import {
   X,
@@ -32,13 +35,40 @@ interface GalleryLightboxProps {
   onClose:     () => void;
 }
 
+/** One swipeable page — its own zoomable ScrollView so pinch-zoom stays per-photo. */
+function LightboxPage({ item }: { item: GalleryImage }) {
+  return (
+    <View style={styles.page}>
+      <ScrollView
+        style={styles.zoomScroll}
+        contentContainerStyle={styles.zoomContent}
+        maximumZoomScale={4}
+        minimumZoomScale={1}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        bouncesZoom
+        centerContent
+      >
+        <AuthenticatedImage
+          url={item.imageUrl}
+          style={styles.fullImage}
+          contentFit="contain"
+          transition={150}
+          recyclingKey={item.id}
+        />
+      </ScrollView>
+    </View>
+  );
+}
+
 /**
  * GalleryLightbox
  *
  * Full-screen image viewer with:
- *   - Pinch-to-zoom via ScrollView's maximumZoomScale (native on iOS;
- *     single-tap fallback double-tap-to-zoom workaround on Android)
- *   - Prev / Next navigation
+ *   - Swipe left/right between photos (horizontal paging FlatList)
+ *   - Pinch-to-zoom per photo via ScrollView's maximumZoomScale (native on
+ *     iOS; single-tap fallback double-tap-to-zoom workaround on Android)
+ *   - Prev / Next arrow buttons as an alternative to swiping
  *   - Update note + progress chip + timestamp in the footer
  *   - Blurred safe-area background so status-bar text remains readable
  */
@@ -49,29 +79,36 @@ export function GalleryLightbox({
   onClose,
 }: GalleryLightboxProps) {
   const [index, setIndex] = React.useState(initialIndex);
-  const scrollRef         = useRef<ScrollView>(null);
-
-  // Sync internal index when the caller changes initialIndex
-  React.useEffect(() => {
-    if (visible) {
-      setIndex(initialIndex);
-    }
-  }, [visible, initialIndex]);
+  const listRef = useRef<FlatList<GalleryImage>>(null);
 
   const canPrev = index > 0;
   const canNext = index < items.length - 1;
 
-  const prev = useCallback(() => {
-    if (!canPrev) return;
-    setIndex((i) => i - 1);
-    scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
-  }, [canPrev]);
+  const goTo = useCallback((nextIndex: number) => {
+    if (nextIndex < 0 || nextIndex >= items.length) return;
+    setIndex(nextIndex);
+    listRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+  }, [items.length]);
 
-  const next = useCallback(() => {
-    if (!canNext) return;
-    setIndex((i) => i + 1);
-    scrollRef.current?.scrollTo({ x: 0, y: 0, animated: false });
-  }, [canNext]);
+  const prev = useCallback(() => goTo(index - 1), [goTo, index]);
+  const next = useCallback(() => goTo(index + 1), [goTo, index]);
+
+  const onMomentumScrollEnd = useCallback(
+    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      const newIndex = Math.round(event.nativeEvent.contentOffset.x / SCREEN_W);
+      setIndex(Math.min(Math.max(newIndex, 0), items.length - 1));
+    },
+    [items.length]
+  );
+
+  const getItemLayout = useCallback(
+    (_: ArrayLike<GalleryImage> | null | undefined, i: number) => ({
+      length: SCREEN_W,
+      offset: SCREEN_W * i,
+      index:  i,
+    }),
+    []
+  );
 
   const item = items[index];
   if (!visible || !item) return null;
@@ -95,27 +132,23 @@ export function GalleryLightbox({
           <View style={{ width: 40 }} />
         </SafeAreaView>
 
-        {/* ── Zoomable image ──────────────────────────────────────── */}
-        <ScrollView
-          ref={scrollRef}
-          style={styles.zoomScroll}
-          contentContainerStyle={styles.zoomContent}
-          maximumZoomScale={4}
-          minimumZoomScale={1}
+        {/* ── Swipeable, zoomable pager ─────────────────────────────── */}
+        <FlatList
+          ref={listRef}
+          data={items}
+          keyExtractor={(galleryItem) => galleryItem.id}
+          renderItem={({ item: pageItem }) => <LightboxPage item={pageItem} />}
+          horizontal
+          pagingEnabled
+          bounces={false}
           showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-          bouncesZoom
-          centerContent
-          scrollEnabled
-        >
-          <AuthenticatedImage
-            url={item.imageUrl}
-            style={styles.fullImage}
-            contentFit="contain"
-            transition={150}
-            recyclingKey={item.id}
-          />
-        </ScrollView>
+          initialScrollIndex={initialIndex}
+          getItemLayout={getItemLayout}
+          onMomentumScrollEnd={onMomentumScrollEnd}
+          onScrollToIndexFailed={({ index: failedIndex }) => {
+            listRef.current?.scrollToOffset({ offset: SCREEN_W * failedIndex, animated: false });
+          }}
+        />
 
         {/* ── Prev / Next arrows ──────────────────────────────────── */}
         <View style={styles.navRow} pointerEvents="box-none">
@@ -189,7 +222,11 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 
-  // Zoomable image
+  // Pager page + zoomable image
+  page: {
+    width: SCREEN_W,
+    flex:  1,
+  },
   zoomScroll: {
     flex: 1,
   },
