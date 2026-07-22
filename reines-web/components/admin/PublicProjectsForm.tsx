@@ -1,8 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  AlertTriangle,
   ArrowDown,
   ArrowUp,
   CheckCircle2,
@@ -66,18 +67,37 @@ function buildBlankProject(sortOrder: number): PublicProjectItem {
 }
 
 export default function PublicProjectsForm({ initialProjects, availableImages, usingFallback }: Props) {
-  const [projects, setProjects] = useState<PublicProjectItem[]>(
-    initialProjects.map((project, sortOrder) => ({
-      ...project,
-      sortOrder,
-      imageUrls: project.imageUrls?.length ? project.imageUrls : [project.imageUrl],
-      imageUrl: getPublicProjectCoverImage(project),
-    }))
+  const normalizedInitial = useMemo(
+    () =>
+      initialProjects.map((project, sortOrder) => ({
+        ...project,
+        sortOrder,
+        imageUrls: project.imageUrls?.length ? project.imageUrls : [project.imageUrl],
+        imageUrl: getPublicProjectCoverImage(project),
+      })),
+    [initialProjects]
   );
+  const [projects, setProjects] = useState<PublicProjectItem[]>(normalizedInitial);
   const [selectedId, setSelectedId] = useState(initialProjects[0]?.id ?? "");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  // Tracks the last-saved (or last-loaded) state so we can warn the admin if
+  // they upload photos / edit projects and then navigate away or forget to
+  // click "Save public projects" — the #1 reason uploads don't show up on
+  // the live website.
+  const [savedSnapshot, setSavedSnapshot] = useState(() => JSON.stringify(normalizedInitial));
+  const isDirty = JSON.stringify(projects) !== savedSnapshot;
+
+  useEffect(() => {
+    if (!isDirty) return;
+    function onBeforeUnload(event: BeforeUnloadEvent) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [isDirty]);
 
   const selectedProject = useMemo(
     () => projects.find((project) => project.id === selectedId) ?? projects[0],
@@ -112,7 +132,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
     clearStatus();
 
     const uploadedUrls: string[] = [];
-    let failedCount = 0;
+    const failures: { name: string; reason: string }[] = [];
 
     for (const file of filesToUpload) {
       try {
@@ -122,8 +142,14 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
           { access: "private", handleUploadUrl: "/api/upload/client" },
         );
         uploadedUrls.push(blob.url);
-      } catch {
-        failedCount += 1;
+      } catch (err) {
+        // Capture the real reason (e.g. unsupported file type, file too
+        // large) instead of a silent count — this is the most common way a
+        // "the photo isn't showing on the website" report turns out to be a
+        // failed upload the admin never noticed.
+        const reason = err instanceof Error ? err.message : "Upload failed";
+        failures.push({ name: file.name, reason });
+        console.warn(`[public-projects] upload failed for "${file.name}":`, reason);
       }
     }
 
@@ -131,18 +157,21 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
       updateProjectImages(selectedProject.id, [...selectedProject.imageUrls, ...uploadedUrls]);
     }
 
-    if (failedCount > 0) {
+    if (failures.length > 0) {
+      const detail = failures.map((f) => `${f.name} (${f.reason})`).join("; ");
       setError(
         uploadedUrls.length > 0
-          ? `${uploadedUrls.length} image(s) uploaded, but ${failedCount} failed. Try again for the failed ones.`
-          : "Image upload failed. Try again."
+          ? `${uploadedUrls.length} image(s) uploaded, but ${failures.length} failed — ${detail}`
+          : `Image upload failed — ${detail}`
       );
     } else if (skippedCount > 0) {
       setMessage(
         `${uploadedUrls.length} image(s) uploaded. ${skippedCount} skipped — this project is at the ${MAX_PUBLIC_PROJECT_IMAGES}-image limit.`
       );
-    } else if (uploadedUrls.length > 1) {
-      setMessage(`${uploadedUrls.length} images uploaded.`);
+    } else if (uploadedUrls.length > 0) {
+      setMessage(
+        `${uploadedUrls.length} image${uploadedUrls.length > 1 ? "s" : ""} uploaded. Click "Save public projects" below to publish ${uploadedUrls.length > 1 ? "them" : "it"} to the website.`
+      );
     }
 
     setUploading(false);
@@ -266,6 +295,10 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
 
     const payload = {
       projects: projects.map((project, sortOrder) => ({
+        // Real ids round-trip so the server can update in place; draft ids
+        // (new/duplicated projects that were never saved) are dropped so the
+        // server treats them as new rows.
+        id: project.id.startsWith("draft-") ? undefined : project.id,
         title: project.title.trim(),
         location: project.location.trim(),
         type: project.type.trim(),
@@ -287,14 +320,27 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
       const data = await res.json();
 
       if (!res.ok) {
+        // Surface the *specific* reason (e.g. which project/field failed)
+        // instead of a generic message — otherwise a bad value on one
+        // project silently blocks saving everything else in the batch.
         setError(data.error ?? "Could not save public projects.");
         return;
       }
 
       const saved = data.projects ?? projects;
+      // Real ids match directly; brand-new (formerly "draft-…") projects get
+      // a fresh id from the server, so fall back to matching by title.
+      const currentlySelected =
+        saved.find((p: PublicProjectItem) => p.id === selectedProject?.id) ??
+        (selectedProject?.id.startsWith("draft-")
+          ? saved.find((p: PublicProjectItem) => p.title === selectedProject.title)
+          : undefined);
       setProjects(saved);
-      setSelectedId(saved[0]?.id ?? "");
-      setMessage("Public projects saved successfully.");
+      setSavedSnapshot(JSON.stringify(saved));
+      // Keep editing the same project after save (ids are now stable across
+      // saves) instead of always jumping back to the first project.
+      setSelectedId(currentlySelected?.id ?? saved[0]?.id ?? "");
+      setMessage("Public projects saved successfully — now live on the website.");
     } catch {
       setError("Could not save public projects. Check your connection and try again.");
     } finally {
@@ -320,6 +366,14 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
       {error && (
         <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
           {error}
+        </div>
+      )}
+
+      {isDirty && !error && (
+        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          <AlertTriangle size={16} className="shrink-0" />
+          You have unsaved changes — new uploads and edits won&apos;t appear on the live website until you click
+          &quot;Save public projects&quot; below.
         </div>
       )}
 
@@ -624,12 +678,19 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         )}
       </div>
 
-      <div className="sticky bottom-4 flex justify-end">
+      <div className="sticky bottom-4 flex items-center justify-end gap-3">
+        {isDirty && !saving && (
+          <span className="hidden text-xs font-medium text-amber-700 sm:inline">Unsaved changes</span>
+        )}
         <button
           type="button"
           onClick={save}
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-zinc-900/10 hover:bg-[#1a2f4a] disabled:opacity-60"
+          className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all disabled:opacity-60 ${
+            isDirty
+              ? "bg-[#2d4a6b] shadow-[#2d4a6b]/30 ring-4 ring-[#8fb9e8]/40 hover:bg-[#1a2f4a]"
+              : "bg-[#2d4a6b] shadow-zinc-900/10 hover:bg-[#1a2f4a]"
+          }`}
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
           Save public projects
