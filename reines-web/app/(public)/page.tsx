@@ -2,7 +2,9 @@ import Link from "next/link";
 import type { ElementType } from "react";
 import { Building2, Factory, Hammer, House, Landmark, Layers3 } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
+import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
+import { getFeaturedPublicProjects } from "@/lib/public-projects";
 
 export const dynamic = "force-dynamic";
 
@@ -277,13 +279,17 @@ function CtaBanner() {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const homepageAds = await getHomepageAds();
+  const [homepageAds, featuredProjects] = await Promise.all([
+    getHomepageAds(),
+    getFeaturedPublicProjects(),
+  ]);
 
   return (
     <>
       <Hero ads={homepageAds} />
       <Stats />
       <Services />
+      <FeaturedProjectsSlideshow projects={featuredProjects} />
       <WhyReines />
       <CtaBanner />
     </>

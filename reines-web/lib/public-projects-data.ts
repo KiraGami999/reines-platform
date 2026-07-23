@@ -3,6 +3,9 @@ export type PublicProjectStatus = "COMPLETED" | "IN_PROGRESS" | "PLANNING";
 /** Maximum gallery images per public project (detail view). */
 export const MAX_PUBLIC_PROJECT_IMAGES = 10;
 
+/** Maximum projects that can be featured in the homepage slideshow at once. */
+export const MAX_FEATURED_PUBLIC_PROJECTS = 8;
+
 export type PublicProjectItem = {
   id: string;
   title: string;
@@ -16,6 +19,8 @@ export type PublicProjectItem = {
   /** Full gallery shown when a visitor opens the project. */
   imageUrls: string[];
   active: boolean;
+  /** Shown in the "Featured Projects" slideshow on the homepage. */
+  featured: boolean;
   sortOrder: number;
 };
 
@@ -80,6 +85,7 @@ export const FALLBACK_PUBLIC_PROJECTS: PublicProjectItem[] = [
     imageUrl: "/homepage-ads/procrete-chileka-front.png",
     imageUrls: ["/homepage-ads/procrete-chileka-front.png"],
     active: true,
+    featured: true,
     sortOrder: 0,
   },
   {
@@ -94,6 +100,7 @@ export const FALLBACK_PUBLIC_PROJECTS: PublicProjectItem[] = [
     imageUrl: "/homepage-ads/procrete-chileka-yard.png",
     imageUrls: ["/homepage-ads/procrete-chileka-yard.png"],
     active: true,
+    featured: true,
     sortOrder: 1,
   },
   {
@@ -108,6 +115,7 @@ export const FALLBACK_PUBLIC_PROJECTS: PublicProjectItem[] = [
     imageUrl: "/product-images/tile-adhesive-info.png",
     imageUrls: ["/product-images/tile-adhesive-info.png"],
     active: true,
+    featured: false,
     sortOrder: 2,
   },
 ];

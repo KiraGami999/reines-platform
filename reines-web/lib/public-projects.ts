@@ -11,6 +11,7 @@ import {
 export {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
   FALLBACK_PUBLIC_PROJECTS,
+  MAX_FEATURED_PUBLIC_PROJECTS,
   MAX_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
   getPublicProjectCoverImage,
@@ -35,6 +36,7 @@ function serializeProject(project: {
   imageUrl: string;
   imageUrls: string[];
   active: boolean;
+  featured: boolean;
   sortOrder: number;
 }): PublicProjectItem {
   const rawUrls = normalizePublicProjectImages(project);
@@ -52,6 +54,7 @@ function serializeProject(project: {
     imageUrl: resolveImageUrl(cover),
     imageUrls,
     active: project.active,
+    featured: project.featured,
     sortOrder: project.sortOrder,
   };
 }
@@ -67,6 +70,31 @@ export async function getPublicProjects(): Promise<PublicProjectItem[]> {
     return projects.map(serializeProject);
   } catch {
     return FALLBACK_PUBLIC_PROJECTS;
+  }
+}
+
+/**
+ * Projects the admin has flagged for the homepage "Featured Projects"
+ * slideshow. Falls back to the fallback dataset's featured entries so the
+ * section still renders sensibly before any admin has published real data.
+ */
+export async function getFeaturedPublicProjects(): Promise<PublicProjectItem[]> {
+  try {
+    const projects = await prisma.publicProject.findMany({
+      where: { active: true, featured: true },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+
+    if (projects.length > 0) return projects.map(serializeProject);
+
+    const anyProjectsExist = (await prisma.publicProject.count()) > 0;
+    // Real projects exist but none are marked featured yet — let the admin's
+    // choice (none) stand rather than silently substituting fallback data.
+    if (anyProjectsExist) return [];
+
+    return FALLBACK_PUBLIC_PROJECTS.filter((p) => p.featured);
+  } catch {
+    return FALLBACK_PUBLIC_PROJECTS.filter((p) => p.featured);
   }
 }
 
@@ -95,6 +123,7 @@ export async function getAdminPublicProjects(): Promise<{ projects: PublicProjec
           imageUrl: cover,
           imageUrls,
           active: p.active,
+          featured: p.featured,
           sortOrder: p.sortOrder,
         };
       }),

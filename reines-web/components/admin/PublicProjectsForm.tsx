@@ -13,6 +13,7 @@ import {
   Loader2,
   Plus,
   Save,
+  Sparkles,
   Star,
   Trash2,
   Upload as UploadIcon,
@@ -21,6 +22,7 @@ import {
 import { upload } from "@vercel/blob/client";
 import {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
+  MAX_FEATURED_PUBLIC_PROJECTS,
   MAX_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
   getPublicProjectCoverImage,
@@ -62,6 +64,7 @@ function buildBlankProject(sortOrder: number): PublicProjectItem {
     imageUrl: image.imageUrl,
     imageUrls: [image.imageUrl],
     active: true,
+    featured: false,
     sortOrder,
   };
 }
@@ -240,6 +243,19 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
     );
   }
 
+  const featuredCount = projects.filter((p) => p.featured).length;
+
+  /** Toggles whether a project appears in the homepage "Featured Projects" slideshow. */
+  function toggleFeatured(project: PublicProjectItem) {
+    if (!project.featured && featuredCount >= MAX_FEATURED_PUBLIC_PROJECTS) {
+      setError(
+        `You can feature up to ${MAX_FEATURED_PUBLIC_PROJECTS} projects on the homepage at once. Unfeature another project first.`
+      );
+      return;
+    }
+    updateProject(project.id, { featured: !project.featured });
+  }
+
   function addProject() {
     clearStatus();
     const project = buildBlankProject(projects.length);
@@ -307,6 +323,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         year: project.year.trim(),
         imageUrls: project.imageUrls,
         active: project.active,
+        featured: project.featured,
         sortOrder,
       })),
     };
@@ -393,6 +410,13 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
             </button>
           </div>
 
+          <div className="mb-4 flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-500">
+            <Sparkles size={13} className="shrink-0 text-[#8fb9e8]" />
+            <span>
+              <span className="font-semibold text-zinc-700">{featuredCount}/{MAX_FEATURED_PUBLIC_PROJECTS}</span> featured on homepage slideshow
+            </span>
+          </div>
+
           <div className="space-y-2">
             {projects.map((project, index) => (
               <button
@@ -416,6 +440,11 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       <span>#{index + 1}</span>
                       <span>{project.status.replace("_", " ")}</span>
                       <span>{project.imageUrls.length} img</span>
+                      {project.featured && (
+                        <span className="inline-flex items-center gap-0.5 font-semibold text-[#8fb9e8]">
+                          <Sparkles size={10} /> Featured
+                        </span>
+                      )}
                       {!project.active && <span className="font-semibold text-blue-700">Hidden</span>}
                     </div>
                   </div>
@@ -430,7 +459,10 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
             <div className="mb-6 flex flex-col gap-3 border-b border-zinc-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h2 className="text-lg font-bold text-[#2d4a6b]">Edit Project</h2>
-                <p className="mt-1 text-sm text-zinc-500">This controls what appears on the public Projects page.</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  This controls what appears on the public Projects page. Use &quot;Feature on homepage&quot; to also
+                  show it in the homepage slideshow.
+                </p>
               </div>
               <div className="flex flex-wrap gap-2">
                 <button
@@ -464,6 +496,20 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   aria-label={selectedProject.active ? "Hide project" : "Show project"}
                 >
                   {selectedProject.active ? <Eye size={15} /> : <EyeOff size={15} />}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => toggleFeatured(selectedProject)}
+                  className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-semibold transition-colors ${
+                    selectedProject.featured
+                      ? "border-[#8fb9e8] bg-[#8fb9e8]/10 text-[#2d4a6b]"
+                      : "border-zinc-200 text-zinc-500 hover:bg-zinc-50"
+                  }`}
+                  aria-pressed={selectedProject.featured}
+                  aria-label={selectedProject.featured ? "Remove from homepage slideshow" : "Feature on homepage slideshow"}
+                >
+                  <Sparkles size={15} />
+                  {selectedProject.featured ? "Featured" : "Feature on homepage"}
                 </button>
                 <button
                   type="button"

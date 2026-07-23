@@ -267,11 +267,14 @@ model PublicProject {
   imageUrl    String
   imageUrls   String[]            @default([])
   active      Boolean             @default(true)
+  /** Shown in the "Featured Projects" slideshow on the homepage, controlled by admins. */
+  featured    Boolean             @default(false)
   sortOrder   Int                 @default(0)
   createdAt   DateTime            @default(now())
   updatedAt   DateTime            @updatedAt
 
   @@index([active, sortOrder])
+  @@index([active, featured, sortOrder])
   @@index([status])
 }
 

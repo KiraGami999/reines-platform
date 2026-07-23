@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import {
   AVAILABLE_PUBLIC_PROJECT_IMAGES,
   FALLBACK_PUBLIC_PROJECTS,
+  MAX_FEATURED_PUBLIC_PROJECTS,
   MAX_PUBLIC_PROJECT_IMAGES,
   PUBLIC_PROJECT_STATUS_OPTIONS,
   getPublicProjectCoverImage,
@@ -42,6 +43,9 @@ const publicProjectSchema = z.object({
     .min(1, "Add at least one project image")
     .max(MAX_PUBLIC_PROJECT_IMAGES, `A project can have up to ${MAX_PUBLIC_PROJECT_IMAGES} images`),
   active: z.boolean().default(true),
+  // Controls the homepage "Featured Projects" slideshow — separate from the
+  // full /projects listing, which always shows every active project.
+  featured: z.boolean().default(false),
   sortOrder: z.number().int().min(0).max(100),
 });
 
@@ -87,6 +91,7 @@ function serializeProject(project: {
   imageUrl: string;
   imageUrls: string[];
   active: boolean;
+  featured: boolean;
   sortOrder: number;
 }) {
   const imageUrls = normalizePublicProjectImages(project);
@@ -103,6 +108,7 @@ function serializeProject(project: {
     imageUrl: cover,
     imageUrls,
     active: project.active,
+    featured: project.featured,
     sortOrder: project.sortOrder,
   };
 }
@@ -145,6 +151,14 @@ export async function PUT(req: NextRequest) {
     );
   }
 
+  const featuredCount = parsed.data.projects.filter((p) => p.featured && p.active).length;
+  if (featuredCount > MAX_FEATURED_PUBLIC_PROJECTS) {
+    return NextResponse.json(
+      { error: `You can feature up to ${MAX_FEATURED_PUBLIC_PROJECTS} projects on the homepage at once. Unfeature ${featuredCount - MAX_FEATURED_PUBLIC_PROJECTS} project(s) first.` },
+      { status: 422 }
+    );
+  }
+
   try {
     const existing = await prisma.publicProject.findMany({ select: { id: true } });
     const existingIds = new Set(existing.map((p) => p.id));
@@ -171,6 +185,7 @@ export async function PUT(req: NextRequest) {
         imageUrl:    cover,
         imageUrls,
         active:      project.active,
+        featured:    project.featured,
         sortOrder,
       };
 
