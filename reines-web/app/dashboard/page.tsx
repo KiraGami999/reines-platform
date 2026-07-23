@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { getClientProjects, getManagerProjects, type ManagerProject } from "@/lib/projects";
 import { getConversations } from "@/lib/messages";
 import { STATUS_CONFIG, daysRemaining, fmtDate, fmtMWK } from "@/lib/mock-data";
+import { getPortalGreeting } from "@/lib/greetings";
 import { MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES, MOCK_USERS } from "@/lib/mock-admin";
 import { AcceptProjectButton } from "@/components/dashboard/AcceptProjectButton";
 import { ClearRecentActivityButton } from "@/components/admin/ClearRecentActivityButton";
@@ -327,7 +328,7 @@ function AdminDashboard({ name, data }: { name: string; data: AdminOverviewData 
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={`Welcome back, ${name}`}
+        title={getPortalGreeting(name)}
         description="Here is a live system overview connected to users, clients, managers, projects, messages, payments, and public content."
       />
 
@@ -477,7 +478,7 @@ function ManagerDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={`Good day, ${name}`}
+        title={getPortalGreeting(name)}
         description="Manage your assigned projects and keep your clients updated."
       />
 
@@ -695,7 +696,7 @@ function ClientDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={`Hello, ${name}`}
+        title={getPortalGreeting(name)}
         description="Track assigned projects, review progress history, and communicate with your project managers."
       />
 
