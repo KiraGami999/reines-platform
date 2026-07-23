@@ -61,7 +61,7 @@ export default async function ClientLoyaltyPage() {
             <p className="mt-2 text-3xl font-extrabold sm:text-5xl">{summary.totalPoints.toLocaleString()}</p>
             <p className="mt-1 text-sm text-zinc-300">points</p>
           </div>
-          <div className={` px-4 py-2 text-sm font-bold ${tier.color}`}>
+          <div className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-bold ${tier.color}`}>
             <Trophy size={15} />
             {tier.label} Member
           </div>
