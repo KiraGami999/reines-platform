@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/public/Navbar";
 import { Footer } from "@/components/public/Footer";
 import { ReinesChatbot } from "@/components/public/ReinesChatbot";
+import { StructuredData } from "@/components/public/StructuredData";
 import { isMarketInsightsVisible } from "@/lib/market-insights";
 
 /**
@@ -24,6 +25,7 @@ export default async function PublicLayout({ children }: { children: React.React
       data-portal
       className="flex min-h-screen flex-col overflow-x-clip bg-background text-foreground"
     >
+      <StructuredData includeMarketInsights={showMarketInsights} />
       <Navbar showMarketInsights={showMarketInsights} />
       <main className="flex-1">{children}</main>
       <Footer />

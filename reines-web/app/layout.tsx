@@ -4,13 +4,18 @@ import { SessionProvider } from "@/components/auth/SessionProvider";
 import { ReinesLoaderProvider } from "@/components/layout/ReinesLoaderProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat" });
 
 export const metadata: Metadata = {
-  title: "Reines Property Development",
-  description: "Modern client portal and project management platform.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s — ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "48x48" },
@@ -18,6 +23,14 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.ico",
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: [{ url: "/logo-icon.png" }],
   },
 };
 

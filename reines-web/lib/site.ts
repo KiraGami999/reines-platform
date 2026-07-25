@@ -1,0 +1,46 @@
+/**
+ * Canonical site-wide constants for SEO (sitemap, robots, structured data,
+ * metadataBase). Centralised here so the domain only has to be updated in
+ * one place if it ever changes.
+ */
+
+function normalizeBaseUrl(url: string) {
+  return url.replace(/\/+$/, "");
+}
+
+export const SITE_URL = normalizeBaseUrl(
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://reines.co.mw"
+);
+
+export const SITE_NAME = "Reines Property Development";
+
+export const SITE_DESCRIPTION =
+  "Property development, construction, concrete products, and manufacturing in Malawi. Client portal for live project tracking, milestones, and progress galleries.";
+
+export const ORGANIZATION = {
+  name: "Reines Property Development Limited",
+  logoPath: "/logo-icon.png",
+  telephone: "+265883157209",
+  email: "contact@reines.co.mw",
+  streetAddress: "Kamuzu Highway, Mandala",
+  postOfficeBox: "P.O Box 3494",
+  addressLocality: "Blantyre",
+  addressCountry: "MW",
+};
+
+/** Main public navigation, used for the sitemap and SiteNavigationElement structured data. */
+export function getPublicNavPages(options: { includeMarketInsights: boolean }) {
+  const pages: { path: string; label: string; priority: number }[] = [
+    { path: "/", label: "Home", priority: 1 },
+    { path: "/about", label: "About", priority: 0.8 },
+    { path: "/services", label: "Services", priority: 0.8 },
+    { path: "/products", label: "Products", priority: 0.7 },
+    ...(options.includeMarketInsights
+      ? [{ path: "/market-insights", label: "Market Insights", priority: 0.6 }]
+      : []),
+    { path: "/projects", label: "Projects", priority: 0.8 },
+    { path: "/contact", label: "Contact", priority: 0.7 },
+    { path: "/quote", label: "Get a Quote", priority: 0.7 },
+  ];
+  return pages;
+}
