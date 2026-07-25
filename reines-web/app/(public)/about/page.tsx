@@ -174,7 +174,7 @@ export default function AboutPage() {
       <section className="bg-[#2d4a6b] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold text-white">Work with a team you can trust.</h2>
-          <Link href="/contact" className="mt-6 inline-block  px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/contact" className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
             Contact Us
           </Link>
         </div>

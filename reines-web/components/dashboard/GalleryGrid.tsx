@@ -218,7 +218,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
                 href={item.documentUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-3  border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10"
+                className="mt-3 inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/10"
               >
                 <FileText size={14} className="shrink-0 text-zinc-400" />
                 <span className="truncate">{item.documentName ?? "Project document"}</span>

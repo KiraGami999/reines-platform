@@ -99,7 +99,7 @@ export default async function ServicesPage() {
           <p className="mt-3 text-zinc-400">Request a quote or ask a question — our team responds within 24 hours.</p>
           <Link
             href="/quote"
-            className="mt-6 inline-block  px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
+            className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
           >
             Request a Quote
           </Link>
