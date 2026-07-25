@@ -143,7 +143,7 @@ export default function MarketInsightsPage() {
               const Icon = card.icon;
               return (
                 <div key={`${card.title}-${card.subtitle ?? "main"}`} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
-                  <div className="flex h-11 w-11 items-center justify-center /10 text-[#8fb9e8]">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                     <Icon size={22} strokeWidth={1.8} />
                   </div>
                   <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">

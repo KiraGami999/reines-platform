@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ElementType } from "react";
-import { Binoculars, Building2, CheckCircle2, Factory, Leaf, Medal, Scale, ShieldCheck, Target, Users } from "lucide-react";
+import { Binoculars, Building2, CheckCircle2, Factory, Leaf, ShieldCheck, Target } from "lucide-react";
 import { AboutStoryHero } from "@/components/public/AboutStoryHero";
 import { AboutCompanyBanner } from "@/components/public/AboutCompanyBanner";
 
@@ -10,13 +10,12 @@ export const metadata: Metadata = {
   description: "Learn about our story, mission, and the team behind Reines Property Development.",
 };
 
+// Kept identical to the homepage's "Built on values" section so both pages
+// present the same core values.
 const values = [
-  { icon: ShieldCheck, title: "Integrity", body: "We approach every project and client relationship with honesty, accountability, and responsible decision-making." },
-  { icon: Medal, title: "Standards", body: "We uphold strong construction and manufacturing standards across our work, products, and service delivery." },
-  { icon: Building2, title: "Workmanship", body: "We value skilled work, durable finishes, and consistent execution from planning through handover." },
-  { icon: Scale, title: "Ethics", body: "We conduct business with professionalism, fairness, and respect for the people and communities we serve." },
-  { icon: Users, title: "People", body: "We invest in capable teams, practical collaboration, and client-focused communication." },
-  { icon: Leaf, title: "Environment", body: "We aim to support sustainable building practices and responsible construction manufacturing." },
+  { icon: ShieldCheck, title: "Integrity & Ethics", body: "Integrity, ethical conduct, and responsible decision-making sit at the core of how Reines approaches development." },
+  { icon: Building2, title: "Workmanship & People", body: "Strong workmanship and skilled people enable the company to deliver consistent value across projects and sites." },
+  { icon: Leaf, title: "Environment & Value Chain", body: "The business builds strong foundations through in-house materials, responsible planning, and sustainable manufacturing focus." },
 ] satisfies { icon: ElementType; title: string; body: string }[];
 
 const companyInfo = [
@@ -49,12 +48,12 @@ export default function AboutPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 md:grid-cols-2">
             <div className="rounded-2xl border border-zinc-100 p-8">
-              <div className="flex h-11 w-11 items-center justify-center /10 text-[#8fb9e8]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                 <Target size={22} strokeWidth={1.8} />
               </div>
               <h2 className="mt-4 text-2xl font-bold text-[#2d4a6b]">Our Mission</h2>
               <p className="mt-3 leading-relaxed text-zinc-500">
-                To drive Malawi&apos;s development through high-quality property, construction and manufacturing excellence with consistency and value.
+                Drive Malawi&apos;s development through property, construction, concrete products, building, and binding material manufacturing excellence.
               </p>
             </div>
             <div className="rounded-2xl bg-[#2d4a6b] p-8">
@@ -63,7 +62,7 @@ export default function AboutPage() {
               </div>
               <h2 className="mt-4 text-2xl font-bold text-white">Our Vision</h2>
               <p className="mt-3 leading-relaxed text-zinc-400">
-                To be Malawi and Southern Africa&apos;s most trusted infrastructure development and construction manufacturers.
+                Become Malawi and Southern Africa&apos;s most trusted and innovative property development, construction, and sustainable building manufacturer.
               </p>
             </div>
           </div>
@@ -82,7 +81,7 @@ export default function AboutPage() {
               const Icon = v.icon;
               return (
                 <div key={v.title} className="rounded-xl border border-zinc-200 bg-white p-6">
-                  <div className="flex h-10 w-10 items-center justify-center /10 text-[#8fb9e8]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                     <Icon size={20} strokeWidth={1.8} />
                   </div>
                 <h3 className="mt-3 font-semibold text-[#2d4a6b]">{v.title}</h3>

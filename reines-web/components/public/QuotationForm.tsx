@@ -81,7 +81,7 @@ const ERR   = "mt-1 text-xs text-red-500";
 function SectionHeading({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) {
   return (
     <div className="flex items-start gap-3 border-b border-zinc-100 pb-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center /10 text-[#2d4a6b]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
         {icon}
       </div>
       <div>

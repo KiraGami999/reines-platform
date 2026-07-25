@@ -428,7 +428,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
                         <Image src={entry.preview} alt="" fill className="object-cover" sizes="48px" />
                       </div>
                     ) : (
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center /10 text-[#2d4a6b]">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b]/10 text-[#2d4a6b]">
                         {entry.kind === "image" ? <FileImage size={20} /> : <FileText size={20} />}
                       </div>
                     )}

@@ -160,7 +160,7 @@ function Services() {
             const Icon = s.icon;
             return (
               <div key={s.title} className="group rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
-                <div className="flex h-11 w-11 items-center justify-center /10 text-[#8fb9e8]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Icon size={22} strokeWidth={1.8} />
                 </div>
               <h3 className="mt-4 text-base font-semibold text-[#2d4a6b]">{s.title}</h3>

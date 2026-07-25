@@ -526,7 +526,7 @@ function BatchUpdateCard({
                 key={u.id}
                 className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center /10">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10">
                   <FileText size={16} strokeWidth={1.8} className="text-[#2d4a6b]" />
                 </div>
                 <div className="min-w-0 flex-1">

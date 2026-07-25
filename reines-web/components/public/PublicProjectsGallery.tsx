@@ -358,7 +358,7 @@ function DetailRow({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-zinc-100 bg-white px-4 py-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
+      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
         <Icon size={16} />
       </div>
       <div>

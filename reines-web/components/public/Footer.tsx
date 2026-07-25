@@ -25,11 +25,11 @@ export function Footer() {
           <div className="md:col-span-2">
             <ReinesLogo size="lg" variant="on-dark" />
             <p className="mt-4 max-w-xs text-sm leading-relaxed">
-              Redefining Homes, One Project at a Time. Property development, construction, concrete products, adhesives, and building materials for Malawi.
+              Redefining homes, one project at a time. Property, construction, concrete, manufacturing for Malawi.
             </p>
             <div className="mt-6 space-y-1 text-sm">
-              <p>Old Highway, Chichiri</p>
-              <p>P.O. Box 3494, Blantyre, Malawi</p>
+              <p>Kamuzu Highway, Mandala</p>
+              <p>P.O Box 3494, Blantyre</p>
               <a href="tel:+265883157209" className="block hover:text-white">+(265) 883 15 72 09</a>
               <a href="mailto:contact@reines.co.mw" className="block hover:text-white">contact@reines.co.mw</a>
             </div>

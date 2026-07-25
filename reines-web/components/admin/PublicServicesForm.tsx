@@ -222,7 +222,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#2d4a6b]">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
                       <Icon size={18} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0 flex-1">

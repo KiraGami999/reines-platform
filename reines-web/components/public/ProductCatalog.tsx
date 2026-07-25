@@ -268,7 +268,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
             const Icon = subsidiaryIcons[item.value as ProductSubsidiary];
             return (
               <div key={item.value} className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
@@ -289,7 +289,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
             const Icon = item.icon;
             return (
               <div key={item.title} className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#8fb9e8]">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>

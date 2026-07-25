@@ -13,7 +13,7 @@ const contactDetails = [
   {
     icon: MapPin,
     title: "Visit Us",
-    lines: ["Old Highway, Chichiri", "P.O. Box 3494", "Blantyre, Malawi"],
+    lines: ["Kamuzu Highway, Mandala", "P.O Box 3494, Blantyre"],
   },
   {
     icon: Phone,
@@ -71,7 +71,7 @@ export default function ContactPage() {
                 const Icon = c.icon;
                 return (
                   <div key={c.title} className="flex gap-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-lg">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10">
                     <Icon size={19} strokeWidth={1.8} className="text-[#8fb9e8]" />
                   </div>
                   <div>
@@ -105,7 +105,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs font-semibold text-[#2d4a6b]">Blantyre, Malawi</p>
                     <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">
-                      Map is currently centered on Blantyre. The exact Old Highway, Chichiri business pin can be added once confirmed by the client.
+                      Map is currently centered on Blantyre. The exact Kamuzu Highway, Mandala business pin can be added once confirmed by the client.
                     </p>
                   </div>
                 </div>
@@ -117,7 +117,7 @@ export default function ContactPage() {
 
               {/* Quote callout */}
               <div className="flex items-start gap-4 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center /10 dark:bg-[#8fb9e8]/15">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
                   <ArrowRight size={16} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
                 </div>
                 <div>

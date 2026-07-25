@@ -149,7 +149,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                     className={`rounded-xl border bg-white p-5 space-y-3 transition-all ${canAfford ? "border-zinc-200" : "border-zinc-100 opacity-60"}`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center /10 text-[#2d4a6b]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
                         <Gift size={18} />
                       </div>
                       <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${CATEGORY_COLORS[rw.category] ?? CATEGORY_COLORS.OTHER}`}>
