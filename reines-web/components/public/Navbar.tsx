@@ -20,8 +20,8 @@ const ALL_LINKS = [
   { label: "Products", href: "/products" },
   { label: "Market Insights", href: "/market-insights" },
   { label: "Projects", href: "/projects" },
-  { label: "Contact", href: "/contact" },
   { label: "Get a Quote", href: "/quote" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const roleLabels: Record<string, string> = {

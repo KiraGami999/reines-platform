@@ -506,13 +506,22 @@ model QuotationRequest {
   phone       String?
   company     String?
 
-  // Project details
+  // What this request is for — a construction project/service, or a direct
+  // product order (e.g. bags of cement, concrete blocks) with no project attached.
+  requestType String @default("PROJECT") // PROJECT | PRODUCTS
+
+  // Project details (requestType = PROJECT)
   projectType   String            // e.g. Property Development, Building Contracting…
-  description   String   @db.Text // Full project brief
-  location      String            // Site / city
+  description   String   @db.Text // Full project brief (optional in practice for PRODUCTS requests)
+  location      String            // Site / delivery city
   budgetRange   String?           // e.g. MK 5M – 10M
-  timeline      String?           // Preferred start / duration
+  timeline      String?           // Preferred start / duration / delivery window
   projectSize   String?           // e.g. Small, Medium, Large / area in m²
+
+  // Product order details (requestType = PRODUCTS)
+  productCategory String?         // Subsidiary — e.g. Reines ProCrete
+  /** Array of { name, quantity, unit } line items. */
+  products        Json?
 
   // Additional
   specialRequirements String? @db.Text

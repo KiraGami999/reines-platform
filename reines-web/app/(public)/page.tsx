@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ElementType } from "react";
-import { Building2, Factory, Hammer, House, Landmark } from "lucide-react";
+import { Blocks, Building2, Factory, House, Road } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
@@ -31,20 +31,20 @@ const services: { icon: ElementType; title: string; description: string }[] = [
       "Construction of buildings for occupancy, delivered with strong workmanship, clear planning, and client confidence.",
   },
   {
-    icon: Landmark,
+    icon: Road,
     title: "Civil Contracting",
     description:
       "Construction of infrastructure and public works across Malawi with practical project management and dependable execution.",
   },
   {
-    icon: Factory,
+    icon: Blocks,
     title: "Concrete Products",
     description:
       "Manufacturing concrete products including blocks and a variety of pavers, plus stone products such as a wide range of stone cladding, for durable, refined building and construction finishes.",
   },
   {
-    icon: Hammer,
-    title: "Building Materials",
+    icon: Factory,
+    title: "Dry-Mix Construction Materials",
     description:
       "Manufacturing adhesives and binding materials, including industrial adhesives for construction applications.",
   },

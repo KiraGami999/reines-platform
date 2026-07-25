@@ -152,7 +152,7 @@ export default function ContactPage() {
             {[
               { q: "How long does a quote take?", a: "We provide detailed quotations within 3–5 business days of an initial consultation." },
               { q: "Do you work outside Blantyre?", a: "Yes. We operate across Malawi including Lilongwe, Zomba, and Mzuzu." },
-              { q: "What payment terms do you offer?", a: "We use a 30/40/30 milestone payment structure. No upfront full payment." },
+              { q: "What payment terms do you offer?", a: "We use a milestone-based payment structure — either 50/25/25 or 75/25 — depending on what the client decides." },
             ].map((faq) => (
               <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                 <h3 className="font-semibold text-[#2d4a6b]">{faq.q}</h3>

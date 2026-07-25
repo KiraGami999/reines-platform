@@ -59,7 +59,7 @@ export const FALLBACK_PUBLIC_SERVICES: PublicServiceItem[] = [
       "Project supervision",
       "Quality control",
     ],
-    iconKey: "Landmark",
+    iconKey: "Road",
     active: true,
     sortOrder: 2,
   },

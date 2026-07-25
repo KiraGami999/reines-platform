@@ -18,7 +18,15 @@ import {
   Building2,
   Phone,
   Mail,
+  Package,
+  HardHat,
 } from "lucide-react";
+
+interface QuotationProductItem {
+  name:     string;
+  quantity: string;
+  unit?:    string;
+}
 
 interface QuotationRequest {
   id:                  string;
@@ -26,18 +34,35 @@ interface QuotationRequest {
   email:               string;
   phone?:              string;
   company?:            string;
+  requestType:         "PROJECT" | "PRODUCTS";
   projectType:         string;
   description:         string;
   location:            string;
   budgetRange?:        string;
   timeline?:           string;
   projectSize?:        string;
+  productCategory?:    string;
+  products?:           QuotationProductItem[];
   specialRequirements?: string;
   howHeardAboutUs?:    string;
   read:                boolean;
   status:              string;
   adminNotes?:         string;
   createdAt:           string;
+}
+
+function RequestTypeBadge({ requestType }: { requestType?: string }) {
+  const isProducts = requestType === "PRODUCTS";
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+        isProducts ? "bg-purple-100 text-purple-700" : "bg-zinc-100 text-zinc-500"
+      }`}
+    >
+      {isProducts ? <Package size={10} /> : <HardHat size={10} />}
+      {isProducts ? "Products" : "Project"}
+    </span>
+  );
 }
 
 const STATUS_CONFIG = {
@@ -118,7 +143,7 @@ export default function AdminQuotationsPage() {
   }
 
   const filtered = rows.filter((r) => {
-    const matchSearch = [r.name, r.email, r.projectType, r.location].join(" ").toLowerCase().includes(search.toLowerCase());
+    const matchSearch = [r.name, r.email, r.projectType, r.productCategory, r.location].join(" ").toLowerCase().includes(search.toLowerCase());
     const matchStatus = filterStatus === "ALL" || r.status === filterStatus;
     return matchSearch && matchStatus;
   });
@@ -202,9 +227,18 @@ export default function AdminQuotationsPage() {
                         <div className="flex items-center gap-2">
                           {!row.read && <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />}
                           <p className="truncate text-sm font-semibold text-zinc-900">{row.name}</p>
+                          <RequestTypeBadge requestType={row.requestType} />
                         </div>
-                        <p className="mt-0.5 truncate text-xs text-zinc-500">{row.projectType} · {row.location}</p>
-                        <p className="mt-1 line-clamp-1 text-xs text-zinc-400">{row.description}</p>
+                        <p className="mt-0.5 truncate text-xs text-zinc-500">
+                          {row.requestType === "PRODUCTS"
+                            ? `${row.products?.length ?? 0} product(s) · ${row.productCategory || "—"}`
+                            : row.projectType} · {row.location}
+                        </p>
+                        <p className="mt-1 line-clamp-1 text-xs text-zinc-400">
+                          {row.requestType === "PRODUCTS"
+                            ? row.products?.map((p) => `${p.quantity}${p.unit ? ` ${p.unit}` : ""} ${p.name}`).join(", ") || row.description
+                            : row.description}
+                        </p>
                       </div>
                       <div className="flex shrink-0 flex-col items-end gap-1.5">
                         <StatusBadge status={row.status} />
@@ -226,7 +260,10 @@ export default function AdminQuotationsPage() {
             <div className="border-b border-zinc-100 px-5 py-4">
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="text-base font-bold text-zinc-900">{selected.name}</h2>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-zinc-900">{selected.name}</h2>
+                    <RequestTypeBadge requestType={selected.requestType} />
+                  </div>
                   <p className="text-xs text-zinc-400 mt-0.5">Submitted {new Date(selected.createdAt).toLocaleString()}</p>
                 </div>
                 <StatusBadge status={selected.status} />
@@ -244,23 +281,65 @@ export default function AdminQuotationsPage() {
                 </div>
               </div>
 
-              {/* Project */}
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Project</p>
-                <div className="grid gap-2 text-sm">
-                  <span className="flex items-center gap-2 text-zinc-700"><FileText size={13} className="text-zinc-400" /> {selected.projectType}</span>
-                  <span className="flex items-center gap-2 text-zinc-700"><MapPin size={13} className="text-zinc-400" /> {selected.location}</span>
-                  {selected.budgetRange && <span className="flex items-center gap-2 text-zinc-700"><Banknote size={13} className="text-zinc-400" /> {selected.budgetRange}</span>}
-                  {selected.timeline && <span className="flex items-center gap-2 text-zinc-700"><Calendar size={13} className="text-zinc-400" /> {selected.timeline}</span>}
-                  {selected.projectSize && <span className="text-xs text-zinc-500">Size: {selected.projectSize}</span>}
-                </div>
-              </div>
+              {selected.requestType === "PRODUCTS" ? (
+                <>
+                  {/* Product order */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Product Order</p>
+                    <div className="grid gap-2 text-sm">
+                      {selected.productCategory && (
+                        <span className="flex items-center gap-2 text-zinc-700"><Package size={13} className="text-zinc-400" /> {selected.productCategory}</span>
+                      )}
+                      <span className="flex items-center gap-2 text-zinc-700"><MapPin size={13} className="text-zinc-400" /> {selected.location}</span>
+                      {selected.budgetRange && <span className="flex items-center gap-2 text-zinc-700"><Banknote size={13} className="text-zinc-400" /> {selected.budgetRange}</span>}
+                      {selected.timeline && <span className="flex items-center gap-2 text-zinc-700"><Calendar size={13} className="text-zinc-400" /> {selected.timeline}</span>}
+                    </div>
+                  </div>
 
-              {/* Description */}
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Project Description</p>
-                <p className="text-sm leading-relaxed text-zinc-700 whitespace-pre-line">{selected.description}</p>
-              </div>
+                  {/* Product items */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Products Requested</p>
+                    <ul className="divide-y divide-zinc-100 rounded-lg border border-zinc-100">
+                      {(selected.products ?? []).map((p, i) => (
+                        <li key={i} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                          <span className="text-zinc-700">{p.name}</span>
+                          <span className="shrink-0 text-xs font-medium text-zinc-500">{p.quantity}{p.unit ? ` ${p.unit}` : ""}</span>
+                        </li>
+                      ))}
+                      {(!selected.products || selected.products.length === 0) && (
+                        <li className="px-3 py-2 text-xs text-zinc-400">No line items recorded.</li>
+                      )}
+                    </ul>
+                  </div>
+
+                  {selected.description && (
+                    <div className="space-y-2">
+                      <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Notes</p>
+                      <p className="text-sm leading-relaxed text-zinc-700 whitespace-pre-line">{selected.description}</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Project */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Project</p>
+                    <div className="grid gap-2 text-sm">
+                      <span className="flex items-center gap-2 text-zinc-700"><FileText size={13} className="text-zinc-400" /> {selected.projectType}</span>
+                      <span className="flex items-center gap-2 text-zinc-700"><MapPin size={13} className="text-zinc-400" /> {selected.location}</span>
+                      {selected.budgetRange && <span className="flex items-center gap-2 text-zinc-700"><Banknote size={13} className="text-zinc-400" /> {selected.budgetRange}</span>}
+                      {selected.timeline && <span className="flex items-center gap-2 text-zinc-700"><Calendar size={13} className="text-zinc-400" /> {selected.timeline}</span>}
+                      {selected.projectSize && <span className="text-xs text-zinc-500">Size: {selected.projectSize}</span>}
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="space-y-2">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Project Description</p>
+                    <p className="text-sm leading-relaxed text-zinc-700 whitespace-pre-line">{selected.description}</p>
+                  </div>
+                </>
+              )}
 
               {/* Special Requirements */}
               {selected.specialRequirements && (

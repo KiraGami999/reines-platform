@@ -9,12 +9,15 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { QuotationForm } from "@/components/public/QuotationForm";
+import { getProductCatalog } from "@/lib/product-catalog";
 
 export const metadata: Metadata = {
   title: "Get a Quotation — Reines Property Development",
   description:
     "Request a detailed project quotation from Reines Property Development. Submit your project brief and we'll prepare a tailored estimate within 3–5 business days.",
 };
+
+export const dynamic = "force-dynamic";
 
 const steps = [
   {
@@ -39,7 +42,9 @@ const steps = [
   },
 ];
 
-export default function QuotationPage() {
+export default async function QuotationPage() {
+  const products = await getProductCatalog();
+
   return (
     <>
       {/* ── Hero ── */}
@@ -53,7 +58,7 @@ export default function QuotationPage() {
           </h1>
           <p className="mt-4 max-w-xl text-zinc-400">
             Tell us about your project and we&apos;ll prepare a detailed, itemised quotation tailored
-            to your scope, location, and budget — at no cost to you.
+            to your scope, location, and budget.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-zinc-400">
             <span className="flex items-center gap-1.5">
@@ -104,7 +109,8 @@ export default function QuotationPage() {
                 <h2 className="text-xl font-bold text-[#2d4a6b]">Ready to get started?</h2>
                 <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
                   Use this form to tell us about your project. The more detail you provide, the
-                  more accurate your quotation will be.
+                  more accurate your quotation will be. Just need to order products, not a full
+                  project? Select &quot;Products Only&quot; in the form.
                 </p>
               </div>
 
@@ -117,8 +123,7 @@ export default function QuotationPage() {
                   "Building Contracting",
                   "Civil Contracting",
                   "Concrete Products",
-                  "Adhesives & Binding Materials",
-                  "Stone Products",
+                  "Dry-Mix Construction Materials",
                 ].map((s) => (
                   <div key={s} className="flex items-center gap-2 text-sm text-zinc-700">
                     <div className="h-1.5 w-1.5 rounded-full bg-[#8fb9e8]" />
@@ -161,7 +166,7 @@ export default function QuotationPage() {
                 Fields marked <span className="text-red-400 font-medium">*</span> are required.
               </p>
               <div className="mt-7">
-                <QuotationForm />
+                <QuotationForm products={products} />
               </div>
             </div>
 
@@ -181,11 +186,11 @@ export default function QuotationPage() {
               },
               {
                 q: "Is the quotation free?",
-                a: "Yes — all project quotations are completely free and carry no obligation to proceed.",
+                a: "Initial quotations carry no obligation to proceed. A Bill of Quantities (BOQ) or an on-site assessment may attract a separate fee, which we'll always confirm with you upfront before any work begins.",
               },
               {
                 q: "What payment structure do you use?",
-                a: "We use a milestone-based 30/40/30 payment plan: deposit, mid-project, and completion.",
+                a: "We use a milestone-based payment structure — either 50/25/25 or 75/25 — depending on what works best for you. We'll agree on the split before your project begins.",
               },
               {
                 q: "Can I request changes after submitting?",

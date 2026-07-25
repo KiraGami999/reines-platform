@@ -592,7 +592,9 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                     </span>
                   </div>
                   <p className="mb-3 text-xs leading-relaxed text-zinc-500">
-                    The first image is the cover on the Projects page. Visitors can scroll through all images when they open a project.
+                    The first image is the cover on the Projects page and homepage slideshow — the site automatically
+                    draws the title, status, and description on top of it, so avoid using a photo that already has
+                    text or a logo baked in as the first image (put those later in the gallery instead).
                   </p>
 
                   <div className="space-y-3">
