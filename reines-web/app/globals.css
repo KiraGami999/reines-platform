@@ -102,10 +102,16 @@ select:disabled {
 .dark [data-portal] :is(.bg-zinc-100) {
   background-color: var(--surface-hover);
 }
-.dark [data-portal] :is(.border-zinc-200, .border-zinc-100) {
+.dark [data-portal] :is(.border-zinc-200, .border-zinc-100, .border-zinc-300) {
   border-color: var(--border);
 }
-.dark [data-portal] :is(.divide-zinc-100, .divide-zinc-50, .divide-zinc-200) > :not([hidden]) ~ :not([hidden]) {
+.dark [data-portal] :is(.border-zinc-50) {
+  border-color: var(--border-subtle);
+}
+/* Tailwind v4 generates divide-* color rules as `> :not(:last-child)` (not the
+ * old v3 `:not([hidden]) ~ :not([hidden])` pattern) — the selector must match
+ * exactly or the very first divider in a list keeps its raw light-mode color. */
+.dark [data-portal] :is(.divide-zinc-100, .divide-zinc-50, .divide-zinc-200) > :not(:last-child) {
   border-color: var(--border-subtle);
 }
 .dark [data-portal] :is(.text-zinc-900, .text-zinc-800) {
@@ -136,6 +142,15 @@ select:disabled {
 .dark [data-portal] :is(.bg-\[\#8fb9e8\].text-\[\#2d4a6b\]) {
   color: #2d4a6b;
 }
+.dark [data-portal] :is(.hover\:border-zinc-200:hover, .hover\:border-zinc-300:hover, .hover\:border-zinc-400:hover) {
+  border-color: #3d4a5e;
+}
+.dark [data-portal] :is(.focus\:border-zinc-300:focus, .focus\:border-zinc-400:focus) {
+  border-color: var(--brand-accent);
+}
+.dark [data-portal] :is(.focus\:ring-zinc-100:focus, .focus\:ring-zinc-200:focus) {
+  --tw-ring-color: var(--border);
+}
 .dark [data-portal] :is(.hover\:bg-zinc-50:hover) {
   background-color: var(--surface-hover);
 }
@@ -157,6 +172,17 @@ select:disabled {
 }
 .dark [data-portal] :is(.bg-blue-50, .bg-blue-50\/30) {
   background-color: rgba(143, 185, 232, 0.08);
+}
+/* Catch bg-blue-50/50, /60, /70 etc. — any opacity suffix on the blue-50 chip
+ * background used for info banners and the "Complete" timeline checkpoint card. */
+.dark [data-portal] [class*="bg-blue-50/"] {
+  background-color: rgba(143, 185, 232, 0.08);
+}
+.dark [data-portal] :is(.border-blue-100, .border-blue-200) {
+  border-color: rgba(143, 185, 232, 0.25);
+}
+.dark [data-portal] :is(.bg-zinc-200) {
+  background-color: var(--surface-hover);
 }
 .dark [data-portal] :is(.hover\:bg-blue-50:hover) {
   background-color: rgba(143, 185, 232, 0.12);
