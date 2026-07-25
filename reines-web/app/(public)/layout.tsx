@@ -8,7 +8,14 @@ import { isMarketInsightsVisible } from "@/lib/market-insights";
  *
  * `data-portal` opts pages into the dark-mode surface remaps in globals.css so
  * Contact / Quote / etc. don't keep a white canvas while inputs go dark.
+ *
+ * Forced dynamic so the Market Insights nav link (and any other admin-toggled
+ * content here) reflects immediately on every public page — static pages like
+ * About/Services/Contact would otherwise keep a stale prerendered layout until
+ * an unrelated on-demand revalidation happened to touch them.
  */
+export const dynamic = "force-dynamic";
+
 export default async function PublicLayout({ children }: { children: React.ReactNode }) {
   const showMarketInsights = await isMarketInsightsVisible();
 

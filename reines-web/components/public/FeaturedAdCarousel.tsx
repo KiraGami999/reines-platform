@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import Image from "next/image";
 import type { HomepageAd } from "@/lib/homepage-ads-shared";
 
 const AUTO_SCROLL_MS = 5500;
+/** Minimum horizontal drag distance (px) before a release counts as a swipe. */
+const SWIPE_THRESHOLD = 50;
 
 type FeaturedAdCarouselProps = {
   ads: HomepageAd[];
@@ -15,8 +18,18 @@ type FeaturedAdCarouselProps = {
 export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouselProps) {
   const visibleAds = useMemo(() => ads.filter((ad) => ad.active), [ads]);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const dragStartX = useRef<number | null>(null);
+  const pointerId = useRef<number | null>(null);
 
+  const safeActiveIndex = visibleAds.length > 0 ? activeIndex % visibleAds.length : 0;
+  const activeAd = visibleAds[safeActiveIndex];
+
+  // Auto-advance, but every manual drag resets the countdown so an ad someone
+  // just swiped to is never yanked away mid-read. Pauses entirely while dragging.
   useEffect(() => {
+    if (dragging) return;
     if (visibleAds.length <= 1) return;
 
     const timer = window.setInterval(() => {
@@ -24,10 +37,45 @@ export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouse
     }, AUTO_SCROLL_MS);
 
     return () => window.clearInterval(timer);
-  }, [visibleAds.length]);
+  }, [visibleAds.length, activeIndex, dragging]);
 
-  const safeActiveIndex = visibleAds.length > 0 ? activeIndex % visibleAds.length : 0;
-  const activeAd = visibleAds[safeActiveIndex];
+  function goTo(direction: -1 | 1) {
+    setActiveIndex((current) => (current + direction + visibleAds.length) % visibleAds.length);
+  }
+
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (visibleAds.length <= 1) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    dragStartX.current = event.clientX;
+    pointerId.current = event.pointerId;
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dragging || dragStartX.current === null) return;
+    setDragOffset(event.clientX - dragStartX.current);
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dragging) return;
+    if (pointerId.current !== null) {
+      try {
+        event.currentTarget.releasePointerCapture(pointerId.current);
+      } catch {
+        // Pointer capture may already be released — safe to ignore.
+      }
+    }
+    const finalOffset = dragOffset;
+    setDragging(false);
+    setDragOffset(0);
+    dragStartX.current = null;
+    pointerId.current = null;
+
+    if (Math.abs(finalOffset) > SWIPE_THRESHOLD) {
+      goTo(finalOffset < 0 ? 1 : -1);
+    }
+  }
 
   if (variant !== "panel") return null;
 
@@ -49,19 +97,32 @@ export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouse
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-[#344055]">
+      <div
+        className="relative aspect-square w-full touch-pan-y select-none overflow-hidden rounded-3xl bg-[#344055]"
+        style={{ cursor: visibleAds.length > 1 ? (dragging ? "grabbing" : "grab") : undefined }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onPointerLeave={(event) => {
+          if (dragging) endDrag(event);
+        }}
+      >
         {visibleAds.map((ad, index) => (
           <Image
             key={ad.id}
             src={ad.imageUrl}
             alt={ad.title}
             fill
+            draggable={false}
             unoptimized={ad.imageUrl.startsWith("/api/media")}
             priority={index === 0}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 560px"
-            className={`object-cover object-center transition-opacity duration-1000 ease-out ${
-              index === safeActiveIndex ? "opacity-100" : "opacity-0"
-            }`}
+            className="pointer-events-none object-cover object-center"
+            style={{
+              transform: `translateX(calc(${(index - safeActiveIndex) * 100}% + ${dragging ? dragOffset : 0}px))`,
+              transition: dragging ? "none" : "transform 450ms ease",
+            }}
           />
         ))}
       </div>

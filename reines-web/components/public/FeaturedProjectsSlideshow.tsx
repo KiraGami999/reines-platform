@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import type { TouchEvent as ReactTouchEvent } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 import type { PublicProjectItem, PublicProjectStatus } from "@/lib/public-projects-data";
 
 const AUTO_SCROLL_MS = 6000;
-/** Minimum horizontal drag distance (px) before a touch gesture counts as a swipe. */
-const SWIPE_THRESHOLD = 40;
+/** Minimum horizontal drag distance (px) before a release counts as a swipe. */
+const SWIPE_THRESHOLD = 50;
 
 const statusConfig: Record<PublicProjectStatus, { label: string; classes: string }> = {
   COMPLETED:   { label: "Completed",   classes: "bg-white/15 text-white" },
@@ -28,15 +28,21 @@ function isProxyUrl(url: string) {
  */
 export function FeaturedProjectsSlideshow({ projects }: { projects: PublicProjectItem[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const startX = useRef<number | null>(null);
+  const [dragging, setDragging] = useState(false);
+  const [dragOffset, setDragOffset] = useState(0);
+  const dragStartX = useRef<number | null>(null);
+  const pointerId = useRef<number | null>(null);
 
+  // Auto-advance, but every manual drag/click resets the countdown so a slide
+  // someone just navigated to is never yanked away mid-read. Pauses while dragging.
   useEffect(() => {
+    if (dragging) return;
     if (projects.length <= 1) return;
     const timer = window.setInterval(() => {
       setActiveIndex((index) => (index + 1) % projects.length);
     }, AUTO_SCROLL_MS);
     return () => window.clearInterval(timer);
-  }, [projects.length]);
+  }, [projects.length, activeIndex, dragging]);
 
   // Nothing to show until an admin features at least one project.
   if (projects.length === 0) return null;
@@ -51,17 +57,38 @@ export function FeaturedProjectsSlideshow({ projects }: { projects: PublicProjec
     });
   }
 
-  function onTouchStart(event: ReactTouchEvent) {
-    startX.current = event.touches[0]?.clientX ?? null;
+  function handlePointerDown(event: ReactPointerEvent<HTMLDivElement>) {
+    if (projects.length <= 1) return;
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    dragStartX.current = event.clientX;
+    pointerId.current = event.pointerId;
+    setDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function onTouchEnd(event: ReactTouchEvent) {
-    if (startX.current === null) return;
-    const endX = event.changedTouches[0]?.clientX ?? startX.current;
-    const delta = endX - startX.current;
-    startX.current = null;
-    if (Math.abs(delta) < SWIPE_THRESHOLD) return;
-    goTo(delta < 0 ? 1 : -1);
+  function handlePointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dragging || dragStartX.current === null) return;
+    setDragOffset(event.clientX - dragStartX.current);
+  }
+
+  function endDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    if (!dragging) return;
+    if (pointerId.current !== null) {
+      try {
+        event.currentTarget.releasePointerCapture(pointerId.current);
+      } catch {
+        // Pointer capture may already be released — safe to ignore.
+      }
+    }
+    const finalOffset = dragOffset;
+    setDragging(false);
+    setDragOffset(0);
+    dragStartX.current = null;
+    pointerId.current = null;
+
+    if (Math.abs(finalOffset) > SWIPE_THRESHOLD) {
+      goTo(finalOffset < 0 ? 1 : -1);
+    }
   }
 
   return (
@@ -84,9 +111,15 @@ export function FeaturedProjectsSlideshow({ projects }: { projects: PublicProjec
         </div>
 
         <div
-          className="relative mt-10 touch-pan-y overflow-hidden rounded-3xl"
-          onTouchStart={onTouchStart}
-          onTouchEnd={onTouchEnd}
+          className="relative mt-10 touch-pan-y select-none overflow-hidden rounded-3xl"
+          style={{ cursor: projects.length > 1 ? (dragging ? "grabbing" : "grab") : undefined }}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={endDrag}
+          onPointerCancel={endDrag}
+          onPointerLeave={(event) => {
+            if (dragging) endDrag(event);
+          }}
         >
           <div className="relative h-[420px] w-full sm:h-[460px] lg:h-[520px]">
             {projects.map((project, index) => (
@@ -95,12 +128,15 @@ export function FeaturedProjectsSlideshow({ projects }: { projects: PublicProjec
                 src={project.imageUrl}
                 alt={project.title}
                 fill
+                draggable={false}
                 priority={index === 0}
                 unoptimized={isProxyUrl(project.imageUrl)}
                 sizes="100vw"
-                className={`object-cover transition-opacity duration-700 ease-out ${
-                  index === safeIndex ? "opacity-100" : "opacity-0"
-                }`}
+                className="pointer-events-none object-cover"
+                style={{
+                  transform: `translateX(calc(${(index - safeIndex) * 100}% + ${dragging ? dragOffset : 0}px))`,
+                  transition: dragging ? "none" : "transform 500ms ease",
+                }}
               />
             ))}
 
