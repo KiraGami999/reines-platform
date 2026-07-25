@@ -13,7 +13,7 @@ const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
 const NAV_LOGO_WIDTH = 795;
 const NAV_LOGO_HEIGHT = 163;
 
-const links = [
+const ALL_LINKS = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Services", href: "/services" },
@@ -45,13 +45,21 @@ function mobileNavItemClass(active: boolean) {
   );
 }
 
-export function Navbar() {
+type NavbarProps = {
+  /** When false, the Market Insights link is dropped from the nav entirely. */
+  showMarketInsights?: boolean;
+};
+
+export function Navbar({ showMarketInsights = true }: NavbarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [hoveredHref, setHoveredHref] = useState<string | null>(null);
   const { data: session, status } = useSession();
   const userRole = session?.user?.role ? roleLabels[session.user.role] ?? session.user.role : null;
   const isSignedIn = status === "authenticated" && !!session?.user;
+  const links = showMarketInsights
+    ? ALL_LINKS
+    : ALL_LINKS.filter((l) => l.href !== "/market-insights");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#2d4a6b] shadow-lg shadow-black/5">

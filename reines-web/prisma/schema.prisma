@@ -299,6 +299,62 @@ model PublicService {
 }
 
 // ---------------------------------------------------------------------------
+// Market Insights
+// Admin-controlled content for the public Market Insights page — the
+// underlying rates/indices change often, so all copy lives in the database
+// instead of hardcoded JSX. `MarketInsightsSetting.visible` is the master
+// switch that lets admins hide the entire public page until figures are
+// refreshed.
+// ---------------------------------------------------------------------------
+
+model MarketInsightsSetting {
+  id                  String   @id @default("global")
+  /** Master switch — when false, the public /market-insights page is hidden. */
+  visible             Boolean  @default(true)
+  heroTag             String   @default("Market Intelligence")
+  heroTitle           String   @default("Market insights for confident property decisions.")
+  heroDescription     String   @db.Text
+  snapshotTitle       String   @default("Current Market Snapshot")
+  snapshotDescription String   @db.Text
+  planningTag         String   @default("Client Planning Notes")
+  planningTitle       String   @default("How these indicators affect your project.")
+  planningDescription String   @db.Text
+  planningNotes       String[] @default([])
+  ctaLabel            String   @default("Discuss Your Project")
+  ctaHref             String   @default("/contact")
+  updatedAt           DateTime @updatedAt
+}
+
+// One row per top KPI stat card (Policy Rate, Inflation, etc.).
+model MarketInsightHighlight {
+  id        String   @id @default(cuid())
+  label     String
+  value     String
+  note      String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+// One row per detailed insight card. `metrics` stores "Label: Value" lines,
+// mirroring how PublicService stores its feature list.
+model MarketInsightCard {
+  id        String   @id @default(cuid())
+  iconKey   String   @default("Percent")
+  title     String
+  subtitle  String?
+  body      String   @db.Text
+  metrics   String[] @default([])
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+// ---------------------------------------------------------------------------
 // ProjectUpdate
 // Each update represents a progress milestone entry with an optional photo.
 // Deleting a project cascades and removes all its updates.

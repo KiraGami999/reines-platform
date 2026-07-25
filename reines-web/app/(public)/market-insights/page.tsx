@@ -1,15 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BarChart3,
-  Building2,
-  CircleDollarSign,
-  Lightbulb,
-  LineChart,
-  Percent,
-  TrendingUp,
-} from "lucide-react";
+import { ArrowRight, Clock, Lightbulb } from "lucide-react";
+import { getMarketInsightsPageData } from "@/lib/market-insights";
+import { getMarketInsightIcon } from "@/lib/market-insight-icons";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Market Insights — Reines Property Development",
@@ -17,99 +12,46 @@ export const metadata: Metadata = {
     "Construction, property, inflation, and market indicators to help clients plan confidently.",
 };
 
-const highlights = [
-  {
-    label: "Policy Rate",
-    value: "26.00%",
-    note: "Reserve Bank benchmark rate",
-  },
-  {
-    label: "Reference Rate",
-    value: "25.30%",
-    note: "Commercial lending benchmark",
-  },
-  {
-    label: "Headline Inflation",
-    value: "28.20%",
-    note: "General price movement indicator",
-  },
-  {
-    label: "Non-Food Inflation",
-    value: "19.50%",
-    note: "Useful for construction cost tracking",
-  },
-];
+export default async function MarketInsightsPage() {
+  const { settings, highlights, cards } = await getMarketInsightsPageData();
 
-const insightCards = [
-  {
-    icon: Percent,
-    title: "Interest Rates",
-    body: "Higher interest rates can affect mortgage affordability, construction financing, and staged payment planning.",
-    metrics: [
-      { label: "Policy Rate", value: "26.00%" },
-      { label: "Reference Rate", value: "25.30%" },
-    ],
-  },
-  {
-    icon: LineChart,
-    title: "Inflation Rates",
-    body: "Inflation influences material prices, labour rates, and how long quotations can remain valid.",
-    metrics: [
-      { label: "Headline Inflation", value: "28.20%" },
-      { label: "Non-Food Inflation", value: "19.50%" },
-    ],
-  },
-  {
-    icon: TrendingUp,
-    title: "Market Demand",
-    body: "Property demand remains active, with increased interest in secure residential builds and practical commercial spaces.",
-    metrics: [
-      { label: "Demand movement", value: "+15%" },
-      { label: "Compared with", value: "2024" },
-    ],
-  },
-  {
-    icon: Building2,
-    title: "Building Construction",
-    subtitle: "Input Price Index",
-    body: "Tracks the cost pressure on common construction inputs such as cement, steel, aggregates, timber, and finishing materials.",
-  },
-  {
-    icon: BarChart3,
-    title: "Building Construction",
-    subtitle: "Trade Price Index",
-    body: "Helps clients understand market-level pricing shifts across contractors, suppliers, and construction trades.",
-  },
-  {
-    icon: CircleDollarSign,
-    title: "General Construction",
-    subtitle: "Input Price Index",
-    body: "A broader view of construction cost movement, useful when planning budgets for mixed-use or phased developments.",
-  },
-];
+  if (!settings.visible) {
+    return (
+      <section className="flex min-h-[70vh] items-center bg-zinc-50 py-20">
+        <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+            <Clock size={26} strokeWidth={1.8} />
+          </div>
+          <h1 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl">
+            Market insights are being updated.
+          </h1>
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-zinc-500">
+            We&apos;re refreshing our rates and indicators to make sure they&apos;re accurate. Please check back
+            soon, or get in touch if you&apos;d like to discuss your project in the meantime.
+          </p>
+          <Link
+            href="/contact"
+            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+          >
+            Discuss Your Project
+            <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
-const planningNotes = [
-  "Request updated quotations before committing to major procurement decisions.",
-  "Use milestone-based payments to keep cash flow aligned with visible progress.",
-  "Build a contingency allowance into construction budgets where prices are moving quickly.",
-  "Start planning approvals and material sourcing early to reduce schedule risk.",
-];
-
-export default function MarketInsightsPage() {
   return (
     <>
       <section className="bg-[#2d4a6b] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
-            Market Intelligence
+            {settings.heroTag}
           </span>
           <h1 className="mt-3 max-w-3xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-            Market insights for confident property decisions.
+            {settings.heroTitle}
           </h1>
-          <p className="mt-4 max-w-2xl text-zinc-400">
-            A simple snapshot of the economic and construction indicators that can affect budgets,
-            timelines, material procurement, and project planning in Malawi.
-          </p>
+          <p className="mt-4 max-w-2xl text-zinc-400">{settings.heroDescription}</p>
         </div>
       </section>
 
@@ -120,17 +62,16 @@ export default function MarketInsightsPage() {
               <Lightbulb size={24} strokeWidth={1.8} />
             </div>
             <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl lg:text-4xl">
-              Current Market Snapshot
+              {settings.snapshotTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500">
-              These figures are provided as planning context. We recommend confirming current rates
-              before finalising project budgets or financing decisions.
+              {settings.snapshotDescription}
             </p>
           </div>
 
           <div className="grid gap-4 rounded-3xl bg-[#2d4a6b] p-4 shadow-xl sm:grid-cols-2 lg:grid-cols-4">
             {highlights.map((item) => (
-              <div key={item.label} className="rounded-2xl bg-white/95 p-5 shadow-sm">
+              <div key={item.id} className="rounded-2xl bg-white/95 p-5 shadow-sm">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{item.label}</p>
                 <p className="mt-2 text-3xl font-extrabold text-[#2d4a6b]">{item.value}</p>
                 <p className="mt-1 text-xs leading-relaxed text-zinc-500">{item.note}</p>
@@ -139,20 +80,20 @@ export default function MarketInsightsPage() {
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            {insightCards.map((card) => {
-              const Icon = card.icon;
+            {cards.map((card) => {
+              const Icon = getMarketInsightIcon(card.iconKey);
               return (
-                <div key={`${card.title}-${card.subtitle ?? "main"}`} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <div key={card.id} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                     <Icon size={22} strokeWidth={1.8} />
                   </div>
                   <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
-                    {card.subtitle ?? "Market Indicator"}
+                    {card.subtitle || "Market Indicator"}
                   </p>
                   <h3 className="mt-1 text-lg font-bold text-[#2d4a6b]">{card.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-zinc-500">{card.body}</p>
 
-                  {card.metrics && (
+                  {card.metrics.length > 0 && (
                     <div className="mt-5 space-y-2 rounded-xl bg-zinc-50 p-4">
                       {card.metrics.map((metric) => (
                         <div key={metric.label} className="flex items-center justify-between gap-3 text-sm">
@@ -173,18 +114,15 @@ export default function MarketInsightsPage() {
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
-              Client Planning Notes
+              {settings.planningTag}
             </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2d4a6b]">
-              How these indicators affect your project.
-            </h2>
-            <p className="mt-4 text-sm leading-7 text-zinc-500">
-              Construction costs are influenced by interest rates, inflation, material availability,
-              transport, and labour demand. Reines uses structured quotations and milestone reporting
-              to help clients make decisions with clarity.
-            </p>
-            <Link href="/contact" className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]">
-              Discuss Your Project
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2d4a6b]">{settings.planningTitle}</h2>
+            <p className="mt-4 text-sm leading-7 text-zinc-500">{settings.planningDescription}</p>
+            <Link
+              href={settings.ctaHref}
+              className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+            >
+              {settings.ctaLabel}
               <ArrowRight size={16} />
             </Link>
           </div>
@@ -192,7 +130,7 @@ export default function MarketInsightsPage() {
           <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
             <h3 className="text-sm font-semibold text-zinc-900">Recommended planning approach</h3>
             <div className="mt-5 space-y-4">
-              {planningNotes.map((note, index) => (
+              {settings.planningNotes.map((note, index) => (
                 <div key={note} className="flex gap-3">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
                     {index + 1}

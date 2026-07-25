@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench } from "lucide-react";
+import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart } from "lucide-react";
 import { MOCK_USERS, MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
+import { isMarketInsightsVisible } from "@/lib/market-insights";
 
 async function getStats() {
   try {
@@ -25,7 +26,7 @@ async function getStats() {
 export const metadata = { title: "Admin Panel � Reines" };
 
 export default async function AdminOverviewPage() {
-  const stats = await getStats();
+  const [stats, marketInsightsVisible] = await Promise.all([getStats(), isMarketInsightsVisible()]);
 
   const CARDS = [
     {
@@ -110,6 +111,17 @@ export default async function AdminOverviewPage() {
       stat:    "Public services",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
       iconBg:  "bg-zinc-100 text-zinc-500",
+    },
+    {
+      href:    "/dashboard/admin/market-insights",
+      icon:    <LineChart className="w-7 h-7" />,
+      title:   "Market Insights",
+      desc:    "Update rates, indices, and copy on the public Market Insights page, or hide it entirely.",
+      stat:    marketInsightsVisible ? "Page is live" : "Page is hidden",
+      accent:  marketInsightsVisible
+        ? "from-blue-500/10 to-blue-500/5 border-blue-200"
+        : "from-amber-500/10 to-amber-500/5 border-amber-200",
+      iconBg:  marketInsightsVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
     },
   ];
 
