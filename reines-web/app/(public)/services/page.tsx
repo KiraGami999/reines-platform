@@ -9,9 +9,9 @@ export const metadata: Metadata = {
 };
 
 const process = [
-  { step: "01", title: "Initial Consultation", body: "We meet to understand your vision, site, and budget. No commitment required." },
+  { step: "01", title: "Initial Consultation", body: "We meet to understand your vision, site, and budget. No commitment required — an on-site assessment may attract a separate fee, confirmed upfront." },
   { step: "02", title: "Detailed Quotation", body: "Receive a transparent, itemised quote with timeline and payment milestones." },
-  { step: "03", title: "Agreement & Kickoff", body: "Sign the contract, pay the 30% commencement deposit, and work begins." },
+  { step: "03", title: "Agreement & Kickoff", body: "Sign the contract, pay your agreed deposit — a 50/25/25 or 75/25 milestone structure — and work begins." },
   { step: "04", title: "Live Progress Updates", body: "Track every milestone through your personal client portal — photos included." },
   { step: "05", title: "Handover", body: "Project completion, final review, and practical support after handover." },
 ];
