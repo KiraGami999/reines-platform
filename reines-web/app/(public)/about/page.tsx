@@ -53,7 +53,7 @@ export default function AboutPage() {
               </div>
               <h2 className="mt-4 text-2xl font-bold text-[#2d4a6b]">Our Mission</h2>
               <p className="mt-3 leading-relaxed text-zinc-500">
-                Drive Malawi&apos;s development through property, construction, concrete products, building, and binding material manufacturing excellence.
+                To drive Malawi&apos;s development through property, construction and manufacturing excellence.
               </p>
             </div>
             <div className="rounded-2xl bg-[#2d4a6b] p-8">

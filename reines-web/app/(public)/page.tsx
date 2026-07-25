@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ElementType } from "react";
-import { Building2, Factory, Hammer, House, Landmark, Layers3 } from "lucide-react";
+import { Building2, Factory, Hammer, House, Landmark } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
@@ -40,19 +40,13 @@ const services: { icon: ElementType; title: string; description: string }[] = [
     icon: Factory,
     title: "Concrete Products",
     description:
-      "Manufacturing concrete products including blocks and a variety of pavers for building and construction needs.",
+      "Manufacturing concrete products including blocks and a variety of pavers, plus stone products such as a wide range of stone cladding, for durable, refined building and construction finishes.",
   },
   {
     icon: Hammer,
-    title: "Binding Materials",
+    title: "Building Materials",
     description:
       "Manufacturing adhesives and binding materials, including industrial adhesives for construction applications.",
-  },
-  {
-    icon: Layers3,
-    title: "Stone Products",
-    description:
-      "Supplying stone products including a wide range of stone cladding for durable, refined finishes.",
   },
 ];
 
@@ -192,14 +186,14 @@ function WhyReines() {
               Built on values.<br />Strengthened by execution.
             </h2>
             <p className="mt-4 text-zinc-500">
-              Our mission is to drive Malawi&apos;s development through high-quality property, construction, concrete products, building, and binding material manufacturing excellence with efficiency and value.
+              Our mission is to drive Malawi&apos;s development through property, construction and manufacturing excellence.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Mission</p>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                  Drive Malawi&apos;s development through property, construction, concrete products, building, and binding material manufacturing excellence.
+                  To drive Malawi&apos;s development through property, construction and manufacturing excellence.
                 </p>
               </div>
               <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
