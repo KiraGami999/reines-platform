@@ -4,7 +4,7 @@ import {
   AVAILABLE_HOMEPAGE_IMAGES,
   type AvailableHomepageImage,
 } from "@/lib/homepage-ads-shared";
-import { isManagedHomepageAdLibraryImageUrl, resolveStorageUrl } from "@/lib/storage";
+import { isManagedHomepageAdLibraryImageUrl } from "@/lib/storage";
 
 const SETTING_ID = "global";
 const IMAGE_EXTENSIONS = new Set([".png", ".jpg", ".jpeg", ".webp", ".gif"]);
@@ -91,12 +91,13 @@ export async function getHomepageImageLibrary(): Promise<AvailableHomepageImage[
     (image) => !hidden.has(image.imageUrl)
   );
 
-  // Resolve blob URLs to /api/media proxy URLs for display
-  const all = mergeImages(fromPresets, fromBlob, fromAds);
-  return all.map((img) => ({
-    ...img,
-    imageUrl: resolveStorageUrl(img.imageUrl) ?? img.imageUrl,
-  }));
+  // Keep RAW urls here (blob URL or static /homepage-ads/ path) — this is the
+  // admin-facing library, and its imageUrl doubles as the identifier used for
+  // selecting, saving, and deleting images. The admin form resolves each
+  // image to a displayable /api/media proxy URL itself at render time, so
+  // resolving here too would silently swap the identifier for a proxy URL,
+  // breaking save/delete for any blob-sourced image after a page reload.
+  return mergeImages(fromPresets, fromBlob, fromAds);
 }
 
 export async function hideHomepageLibraryImage(imageUrl: string): Promise<void> {
