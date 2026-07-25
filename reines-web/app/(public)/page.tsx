@@ -265,7 +265,7 @@ function CtaBanner() {
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
           <Link href="/quote" className="rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
-            Get a Free Quote
+            Get a Quote
           </Link>
           <Link href="/projects" className="rounded-xl border border-zinc-600 px-8 py-3 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white">
             View Projects
