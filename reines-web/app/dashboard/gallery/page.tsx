@@ -23,25 +23,25 @@ function ProjectSection({
   return (
     <section className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
       {/* Section header */}
-      <div className="flex items-center justify-between border-b border-zinc-100 px-6 py-4">
+      <div className="flex flex-col gap-3 border-b border-zinc-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h2 className="truncate text-sm font-semibold text-zinc-900">{project.title}</h2>
-          <p className="mt-0.5 text-xs text-zinc-400">
+          <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-zinc-400">
             <span className="inline-flex items-center gap-1">
               <Camera size={10} /> {photoCount} photo{photoCount !== 1 ? "s" : ""}
             </span>
-            <span className="mx-1.5 text-zinc-200">·</span>
+            <span className="text-zinc-200">·</span>
             <span className="inline-flex items-center gap-1">
               <FileText size={10} /> {totalCount} update{totalCount !== 1 ? "s" : ""}
             </span>
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center gap-2">
           {canUpload && (
             <Link
               href={`/dashboard/projects/${project.id}/gallery?tab=upload`}
-              className="flex items-center gap-1.5 rounded-xl bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-zinc-800"
+              className="flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#1a2f4a]"
             >
               <Plus size={12} /> Add Update
             </Link>
