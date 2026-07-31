@@ -56,7 +56,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-xs sm:flex-row">
           <p>© {new Date().getFullYear()} Reines Property Development Limited. All rights reserved.</p>
-          <p>Built with care in Malawi.</p>
+          <p>Built with care in Malawi by Kiragami Korp.</p>
         </div>
       </div>
     </footer>
