@@ -17,9 +17,12 @@ import { COLORS } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { ReinesLogo } from "@/components/brand/ReinesLogo";
 
+/** How long the intro animation plays before the user is allowed to continue. */
+const MIN_DISPLAY_MS = 5000;
+
 /**
  * First screen a signed-out user sees on every cold start (see app/index.tsx).
- * Tap anywhere, or swipe in any direction, to continue to the login screen.
+ * Plays for MIN_DISPLAY_MS, then a tap anywhere (or a swipe) continues to login.
  */
 export default function WelcomeScreen() {
   const router = useRouter();
@@ -32,16 +35,24 @@ export default function WelcomeScreen() {
   const sceneOpacity = useSharedValue(1);
   const sceneTranslateX = useSharedValue(0);
   const isLeaving = useRef(false);
+  const canContinue = useRef(false);
 
   useEffect(() => {
     logoOpacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
     logoTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.cubic) });
     copyOpacity.value = withDelay(200, withTiming(1, { duration: 600 }));
     copyTranslateY.value = withDelay(200, withTiming(0, { duration: 600, easing: Easing.out(Easing.cubic) }));
+    // Hint fades in right as the screen becomes interactive, so it doesn't
+    // invite taps before MIN_DISPLAY_MS has elapsed.
     hintOpacity.value = withDelay(
-      1000,
+      MIN_DISPLAY_MS,
       withRepeat(withSequence(withTiming(1, { duration: 900 }), withTiming(0.3, { duration: 900 })), -1, true),
     );
+
+    const timer = setTimeout(() => {
+      canContinue.current = true;
+    }, MIN_DISPLAY_MS);
+    return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -50,7 +61,7 @@ export default function WelcomeScreen() {
   }
 
   function continueToLogin() {
-    if (isLeaving.current) return;
+    if (!canContinue.current || isLeaving.current) return;
     isLeaving.current = true;
     sceneOpacity.value = withTiming(0, { duration: 260 });
     sceneTranslateX.value = withTiming(-32, { duration: 260, easing: Easing.in(Easing.cubic) }, (finished) => {
