@@ -7,7 +7,8 @@ import { LoadingScreen } from "@/components/ui/LoadingScreen";
  * Entry point — redirects immediately based on auth state and role.
  *
  * Loading → shows splash/loading screen
- * Not signed in → (auth)/login
+ * Not signed in → (auth)/welcome (animated intro, shown on every cold start),
+ *                 which itself hands off to (auth)/login on tap/swipe
  * CLIENT → (client)
  * PROJECT_MANAGER → (manager)
  * ADMIN → (admin)
@@ -20,7 +21,7 @@ export default function Index() {
     if (isLoading) return;
 
     if (!isSignedIn) {
-      router.replace("/(auth)/login");
+      router.replace("/(auth)/welcome");
       return;
     }
 
