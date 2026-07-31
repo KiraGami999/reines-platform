@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Eye, EyeOff, AlertCircle } from "lucide-react-native";
@@ -83,6 +84,8 @@ export default function RegisterScreen() {
       style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      {/* Navy brand panel sits under the status bar — needs light icons. */}
+      <StatusBar style="light" />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"

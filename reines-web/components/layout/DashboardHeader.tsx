@@ -19,6 +19,7 @@ import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
 import { getPortalLogoMark } from "@/lib/portal-branding";
 import { useTheme } from "@/components/theme/ThemeProvider";
+import { postToNativeApp } from "@/lib/mobileBridge";
 import { cn } from "@/lib/utils";
 
 // ─── Breadcrumb helper ─────────────────────────────────────────────────────────
@@ -232,6 +233,17 @@ function UserMenu({ user }: UserMenuProps) {
     .join("")
     .toUpperCase();
 
+  function handleSignOut() {
+    // Inside the mobile app's WebView, a plain next-auth signOut() redirects
+    // to /login, but the app still holds a valid native JWT and immediately
+    // re-bridges the session back in — so it looks like the button does
+    // nothing. Let the native shell own sign-out there instead (it clears
+    // the JWT and swaps to the native login screen); fall back to the normal
+    // web sign-out everywhere else.
+    if (postToNativeApp({ type: "reines-signout" })) return;
+    signOut({ callbackUrl: "/login" });
+  }
+
   return (
     <div ref={ref} className="relative">
       <button
@@ -294,7 +306,7 @@ function UserMenu({ user }: UserMenuProps) {
 
           <div className="border-t border-zinc-100 p-1 dark:border-[var(--border)]">
             <button
-              onClick={() => signOut({ callbackUrl: "/login" })}
+              onClick={handleSignOut}
               className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-zinc-600 transition-colors hover:bg-zinc-50 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)]"
             >
               <LogOut size={14} className="shrink-0 text-zinc-400" />

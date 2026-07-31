@@ -11,6 +11,7 @@ import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useLocalSearchParams } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react-native";
 
@@ -66,6 +67,8 @@ export default function LoginScreen() {
       style={styles.root}
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      {/* Navy brand panel sits under the status bar — needs light icons. */}
+      <StatusBar style="light" />
       <ScrollView
         contentContainerStyle={styles.scroll}
         keyboardShouldPersistTaps="handled"

@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { StyleSheet, Text, PanResponder } from "react-native";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import { ChevronRight } from "lucide-react-native";
 import Animated, {
   useSharedValue,
@@ -27,8 +28,6 @@ const MIN_DISPLAY_MS = 5000;
 export default function WelcomeScreen() {
   const router = useRouter();
 
-  const logoOpacity = useSharedValue(0);
-  const logoTranslateY = useSharedValue(16);
   const copyOpacity = useSharedValue(0);
   const copyTranslateY = useSharedValue(12);
   const hintOpacity = useSharedValue(0);
@@ -38,9 +37,7 @@ export default function WelcomeScreen() {
   const canContinue = useRef(false);
 
   useEffect(() => {
-    logoOpacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
-    logoTranslateY.value = withTiming(0, { duration: 600, easing: Easing.out(Easing.cubic) });
-    copyOpacity.value = withDelay(200, withTiming(1, { duration: 600 }));
+    copyOpacity.value = withTiming(1, { duration: 600, easing: Easing.out(Easing.cubic) });
     copyTranslateY.value = withDelay(200, withTiming(0, { duration: 600, easing: Easing.out(Easing.cubic) }));
     // Hint fades in right as the screen becomes interactive, so it doesn't
     // invite taps before MIN_DISPLAY_MS has elapsed.
@@ -80,10 +77,6 @@ export default function WelcomeScreen() {
     }),
   ).current;
 
-  const logoStyle = useAnimatedStyle(() => ({
-    opacity: logoOpacity.value,
-    transform: [{ translateY: logoTranslateY.value }],
-  }));
   const copyStyle = useAnimatedStyle(() => ({
     opacity: copyOpacity.value,
     transform: [{ translateY: copyTranslateY.value }],
@@ -96,13 +89,10 @@ export default function WelcomeScreen() {
 
   return (
     <Animated.View style={[styles.root, sceneStyle]} {...panResponder.panHandlers}>
-      <Animated.View style={[styles.logo, logoStyle]}>
-        <ReinesLogo mode="icon" variant="on-dark" height={80} />
-      </Animated.View>
-
+      {/* Navy background needs light icons — overrides the app-wide dark default. */}
+      <StatusBar style="light" />
       <Animated.View style={[styles.copy, copyStyle]}>
-        <Text style={styles.kicker}>Welcome to</Text>
-        <ReinesLogo mode="wordmark" mark="project-mate" variant="on-dark" height={30} />
+        <ReinesLogo mode="wordmark" mark="project-mate" variant="on-dark" height={34} />
         <Text style={styles.subtitle}>Track every milestone of your project, in real time.</Text>
       </Animated.View>
 
@@ -122,15 +112,7 @@ const styles = StyleSheet.create({
     justifyContent:  "center",
     paddingHorizontal: 32,
   },
-  logo: { marginBottom: 32 },
   copy: { alignItems: "center", gap: 14 },
-  kicker: {
-    fontFamily:    FONTS.medium,
-    fontSize:      13,
-    letterSpacing: 1,
-    color:         "rgba(255,255,255,0.65)",
-    textTransform: "uppercase",
-  },
   subtitle: {
     fontFamily: FONTS.regular,
     fontSize:   14,

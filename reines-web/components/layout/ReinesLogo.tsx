@@ -66,7 +66,8 @@ const PROJECT_MATE_SIZE_CLASS = {
   lg: "h-12 max-w-none sm:h-14",
   nav: "h-9 min-h-9 max-w-none sm:h-10 lg:h-11",
   sidebar: "h-8 max-w-[9.5rem] sm:h-9 sm:max-w-[11rem]",
-  header: "h-6 max-w-[6.5rem] sm:h-7 sm:max-w-[8rem]",
+  /** Slightly roomier than the corporate mark's header size — requested bump. */
+  header: "h-7 max-w-[7.5rem] sm:h-8 sm:max-w-[9rem]",
   xl: "h-24 max-w-none sm:h-28 md:h-32",
 } as const;
 

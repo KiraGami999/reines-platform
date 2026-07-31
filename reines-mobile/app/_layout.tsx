@@ -33,7 +33,17 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <FontProvider>
           <AuthProvider>
-            <StatusBar style="auto" />
+            {/*
+              Most screens (native tab headers, PortalWebView's white inset strip)
+              have a light/white top edge, so dark icons are the sane default.
+              "auto" instead followed the OS theme setting rather than each
+              screen's actual background, which made time/battery/signal icons
+              invisible whenever the device's system theme didn't match — e.g.
+              dark system theme + our white header = white-on-white icons.
+              Screens with a navy top (Welcome, Login/Register, LoadingScreen)
+              render their own <StatusBar style="light" /> to override this.
+            */}
+            <StatusBar style="dark" />
             <OfflineBanner />
             <NotificationsProvider>
               <Stack screenOptions={{ headerShown: false, animation: "fade" }}>

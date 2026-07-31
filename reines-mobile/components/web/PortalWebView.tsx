@@ -13,6 +13,7 @@ import {
   type WebViewNavigation,
   type WebViewErrorEvent,
   type WebViewHttpErrorEvent,
+  type WebViewMessageEvent,
 } from "react-native-webview";
 
 import { useWebSession } from "@/hooks/useWebSession";
@@ -142,6 +143,27 @@ export function PortalWebView({ route, injectedCss, padTop = true }: PortalWebVi
     console.log(`[PortalWebView:${route}] web Sign out → native signOut`);
     void signOut();
   }, [route, signOut]);
+
+  // The web portal's own "Sign out" button (top-right user menu) can't rely on
+  // NextAuth's signOut() inside a WebView: that call fires a fetch() to
+  // /api/auth/signout (invisible to WebView navigation listeners) and then
+  // redirects to /login, which we auto re-bridge using the still-valid native
+  // JWT — the sign-out silently undoes itself. Instead the web page posts a
+  // message here (see reines-web's DashboardHeader + lib/mobileBridge.ts) so
+  // the native shell can own sign-out directly.
+  const handleMessage = useCallback(
+    (e: WebViewMessageEvent) => {
+      try {
+        const data = JSON.parse(e.nativeEvent.data) as { type?: string };
+        if (data?.type === "reines-signout") {
+          handleNativeSignOut();
+        }
+      } catch {
+        // Ignore malformed / unrelated messages.
+      }
+    },
+    [handleNativeSignOut]
+  );
 
   const handleShouldStart = useCallback(
     (req: WebViewNavigation): boolean => {
@@ -306,6 +328,7 @@ export function PortalWebView({ route, injectedCss, padTop = true }: PortalWebVi
               onLoadProgress={({ nativeEvent }) => {
                 if (nativeEvent.progress >= 0.7) setLoading(false);
               }}
+              onMessage={handleMessage}
               onError={handleError}
               onHttpError={(e: WebViewHttpErrorEvent) => {
                 console.log(

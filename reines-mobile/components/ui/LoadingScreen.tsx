@@ -1,5 +1,6 @@
 import { View, ActivityIndicator, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
 import { COLORS } from "@/constants";
 import { FONTS } from "@/constants/theme";
 
@@ -10,6 +11,8 @@ interface Props {
 export function LoadingScreen({ message }: Props) {
   return (
     <View style={styles.root}>
+      {/* Navy background needs light icons — overrides the app-wide dark default. */}
+      <StatusBar style="light" />
       <Image
         source={require("@/assets/logo-icon-white.png")}
         style={styles.logoIcon}
