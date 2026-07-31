@@ -77,6 +77,34 @@ export const COLORS = {
   infoText:     "#1d4ed8",
 } as const;
 
+/**
+ * Dark "portal" palette — mirrors the website's dark-mode CSS variables
+ * (see reines-web/app/globals.css `.dark { ... }`). The Login/Register
+ * screens use this permanently so they match the web portal's dark look,
+ * independent of the rest of the (currently light-only) native app.
+ */
+export const PORTAL_DARK = {
+  background:    "#0a0c10",
+  surfaceMuted:  "#0f1319",
+  surface:       "#141820",
+  surfaceHover:  "#1c2430",
+  border:        "#2a3344",
+  borderSubtle:  "#1e2633",
+  foreground:    "#f0f4f8",
+  textMuted:     "#9aa8b8",
+  textSecondary: "#c5cfdc",
+  heading:       "#a8c9eb",
+  greenBg:       "rgba(34, 197, 94, 0.1)",
+  greenBorder:   "rgba(34, 197, 94, 0.3)",
+  greenText:     "#4ade80",
+  redBg:         "rgba(239, 68, 68, 0.1)",
+  redBorder:     "rgba(239, 68, 68, 0.3)",
+  redText:       "#f87171",
+  blueBg:        "rgba(143, 185, 232, 0.08)",
+  blueBorder:    "rgba(143, 185, 232, 0.25)",
+  blueText:      "#8fb9e8",
+} as const;
+
 /** Role display labels */
 export const ROLE_LABELS: Record<string, string> = {
   CLIENT:          "Client",

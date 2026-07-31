@@ -12,6 +12,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Eye, EyeOff, AlertCircle } from "lucide-react-native";
@@ -19,10 +20,10 @@ import { Eye, EyeOff, AlertCircle } from "lucide-react-native";
 import { register } from "@/services/auth.service";
 import { getErrorMessage } from "@/lib/api";
 import { registerSchema, type RegisterForm } from "@/lib/validation";
-import { APP_NAME, COLORS } from "@/constants";
+import { APP_NAME, PORTAL_DARK } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { ReinesLogo } from "@/components/brand/ReinesLogo";
-import { Input } from "@/components/ui/Input";
+import { AuthInput } from "@/components/auth/AuthInput";
 import { Button } from "@/components/ui/Button";
 import { PasswordStrengthBar } from "@/components/auth/PasswordStrengthBar";
 
@@ -41,6 +42,7 @@ function parseFieldErrors(error: unknown): FieldErrors | null {
 
 export default function RegisterScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [showPassword, setShowPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
@@ -80,25 +82,25 @@ export default function RegisterScreen() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      {/* Navy brand panel sits under the status bar — needs light icons. */}
+    <View style={styles.root}>
+      {/* Dark portal background top-to-bottom — needs light icons. */}
       <StatusBar style="light" />
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <View style={styles.brandPanel}>
-          <ReinesLogo variant="on-dark" height={56} />
-        </View>
+        <ScrollView
+          contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 40 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.logoWrap}>
+            <ReinesLogo variant="on-dark" height={40} />
+          </View>
 
-        <View style={styles.formPanel}>
-          <View style={styles.formHeader}>
-            <Text style={styles.formTitle}>Create your account</Text>
-            <Text style={styles.formSub}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Create your account</Text>
+            <Text style={styles.subtitle}>
               Join {APP_NAME} to access your project portal.
             </Text>
           </View>
@@ -107,7 +109,7 @@ export default function RegisterScreen() {
             control={control}
             name="name"
             render={({ field: { onChange, value, onBlur } }) => (
-              <Input
+              <AuthInput
                 label="Full name"
                 placeholder="Jane Smith"
                 autoCapitalize="words"
@@ -128,7 +130,7 @@ export default function RegisterScreen() {
             control={control}
             name="email"
             render={({ field: { onChange, value, onBlur } }) => (
-              <Input
+              <AuthInput
                 label="Email address"
                 placeholder="you@example.com"
                 keyboardType="email-address"
@@ -151,32 +153,34 @@ export default function RegisterScreen() {
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
               <View>
-                <Input
-                  label="Password"
-                  placeholder="Min. 8 chars, 1 uppercase, 1 number"
-                  secureTextEntry={!showPassword}
-                  returnKeyType="done"
-                  onSubmitEditing={handleSubmit(submit)}
-                  value={value}
-                  onChangeText={(v) => {
-                    onChange(v);
-                    setFieldErrors((p) => ({ ...p, password: undefined }));
-                  }}
-                  onBlur={onBlur}
-                  error={fieldError("password")}
-                  style={{ paddingRight: 44 }}
-                />
-                <TouchableOpacity
-                  style={styles.eyeBtn}
-                  onPress={() => setShowPassword((v) => !v)}
-                  hitSlop={10}
-                >
-                  {showPassword ? (
-                    <EyeOff size={18} color={COLORS.zinc400} />
-                  ) : (
-                    <Eye size={18} color={COLORS.zinc400} />
-                  )}
-                </TouchableOpacity>
+                <View style={styles.inputRow}>
+                  <AuthInput
+                    label="Password"
+                    placeholder="Min. 8 chars, 1 uppercase, 1 number"
+                    secureTextEntry={!showPassword}
+                    returnKeyType="done"
+                    onSubmitEditing={handleSubmit(submit)}
+                    value={value}
+                    onChangeText={(v) => {
+                      onChange(v);
+                      setFieldErrors((p) => ({ ...p, password: undefined }));
+                    }}
+                    onBlur={onBlur}
+                    error={fieldError("password")}
+                    style={{ paddingRight: 44 }}
+                  />
+                  <TouchableOpacity
+                    style={styles.eyeBtn}
+                    onPress={() => setShowPassword((v) => !v)}
+                    hitSlop={10}
+                  >
+                    {showPassword ? (
+                      <EyeOff size={18} color={PORTAL_DARK.textMuted} />
+                    ) : (
+                      <Eye size={18} color={PORTAL_DARK.textMuted} />
+                    )}
+                  </TouchableOpacity>
+                </View>
                 <PasswordStrengthBar password={passwordValue} />
               </View>
             )}
@@ -184,7 +188,7 @@ export default function RegisterScreen() {
 
           {serverError && (
             <View style={styles.errorBanner}>
-              <AlertCircle size={15} color={COLORS.blueText} />
+              <AlertCircle size={15} color={PORTAL_DARK.blueText} />
               <Text style={styles.errorBannerText}>{serverError}</Text>
             </View>
           )}
@@ -211,57 +215,48 @@ export default function RegisterScreen() {
           <Text style={styles.footer}>
             © {new Date().getFullYear()} {APP_NAME}
           </Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLORS.zinc50 },
-  scroll: { flexGrow: 1 },
+  root: { flex: 1, backgroundColor: PORTAL_DARK.surfaceMuted },
+  flex: { flex: 1 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
 
-  brandPanel: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 56,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  logoWrap: { marginBottom: 28 },
 
-  formPanel: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 40,
-    backgroundColor: COLORS.zinc50,
-  },
-  formHeader: { marginBottom: 24 },
-  formTitle: {
+  header: { marginBottom: 24 },
+  title: {
     fontFamily: FONTS.bold,
     fontSize: 24,
-    color: COLORS.primary,
+    color: PORTAL_DARK.heading,
   },
-  formSub: {
+  subtitle: {
     fontFamily: FONTS.regular,
     fontSize: 14,
-    color: COLORS.zinc500,
+    color: PORTAL_DARK.textMuted,
     marginTop: 4,
     lineHeight: 20,
   },
+
+  inputRow: { position: "relative" },
   eyeBtn: {
     position: "absolute",
-    right: 12,
-    top: 38,
-    padding: 4,
+    right: 4,
+    top: 34,
+    padding: 8,
   },
+
   errorBanner: {
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
-    backgroundColor: COLORS.blueBg,
+    backgroundColor: PORTAL_DARK.blueBg,
     borderWidth: 1,
-    borderColor: COLORS.blueBorder,
+    borderColor: PORTAL_DARK.blueBorder,
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -270,7 +265,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: FONTS.regular,
     fontSize: 13,
-    color: COLORS.blueText,
+    color: PORTAL_DARK.blueText,
     lineHeight: 18,
   },
   submitBtn: { marginTop: 4 },
@@ -279,17 +274,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: FONTS.regular,
     fontSize: 14,
-    color: COLORS.zinc500,
+    color: PORTAL_DARK.textMuted,
   },
   signInLink: {
     fontFamily: FONTS.semibold,
-    color: COLORS.primary,
+    color: PORTAL_DARK.heading,
   },
   footer: {
     marginTop: 32,
     textAlign: "center",
     fontFamily: FONTS.regular,
     fontSize: 11,
-    color: COLORS.zinc400,
+    color: PORTAL_DARK.textMuted,
   },
 });

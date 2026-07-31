@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
-import { COLORS } from "@/constants";
+import { PORTAL_DARK } from "@/constants";
 import { FONTS } from "@/constants/theme";
 
 interface Props {
   password: string;
 }
 
+/** Only used on the (dark) Register screen — colours match the portal dark palette. */
 export function PasswordStrengthBar({ password }: Props) {
   const checks = [
     password.length >= 8,
@@ -14,7 +15,7 @@ export function PasswordStrengthBar({ password }: Props) {
   ];
   const score = checks.filter(Boolean).length;
   const label = ["", "Weak", "Fair", "Strong"][score] ?? "";
-  const barColor = score === 3 ? COLORS.blue : COLORS.blueLight;
+  const barColor = score === 3 ? PORTAL_DARK.greenText : PORTAL_DARK.heading;
 
   if (!password) return null;
 
@@ -49,15 +50,15 @@ const styles = StyleSheet.create({
   root: { gap: 6, marginTop: -8, marginBottom: 8 },
   bars:  { flexDirection: "row", gap: 4 },
   bar:   { flex: 1, height: 4, borderRadius: 2 },
-  barEmpty: { backgroundColor: COLORS.zinc100 },
+  barEmpty: { backgroundColor: PORTAL_DARK.border },
   meta: {
     flexDirection:  "row",
     alignItems:     "center",
     justifyContent: "space-between",
   },
   checks: { flexDirection: "row", gap: 10 },
-  check:  { fontSize: 11, fontFamily: FONTS.regular, color: COLORS.zinc400 },
-  checkMet: { color: COLORS.blue },
-  label:  { fontSize: 11, fontFamily: FONTS.medium, color: COLORS.zinc400 },
-  labelStrong: { color: COLORS.blue },
+  check:  { fontSize: 11, fontFamily: FONTS.regular, color: PORTAL_DARK.textMuted },
+  checkMet: { color: PORTAL_DARK.heading },
+  label:  { fontSize: 11, fontFamily: FONTS.medium, color: PORTAL_DARK.textMuted },
+  labelStrong: { color: PORTAL_DARK.heading },
 });

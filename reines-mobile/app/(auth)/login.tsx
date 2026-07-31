@@ -6,12 +6,14 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
+  Linking,
 } from "react-native";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useMutation } from "@tanstack/react-query";
 import { Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react-native";
 
@@ -19,15 +21,16 @@ import { useAuth } from "@/hooks/useAuth";
 import { login } from "@/services/auth.service";
 import { getErrorMessage } from "@/lib/api";
 import { loginSchema, type LoginForm } from "@/lib/validation";
-import { APP_NAME, COLORS } from "@/constants";
+import { APP_NAME, WEB_BASE_URL, PORTAL_DARK } from "@/constants";
 import { FONTS } from "@/constants/theme";
 import { ReinesLogo } from "@/components/brand/ReinesLogo";
-import { Input } from "@/components/ui/Input";
+import { AuthInput } from "@/components/auth/AuthInput";
 import { Button } from "@/components/ui/Button";
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { registered } = useLocalSearchParams<{ registered?: string }>();
   const [showPassword, setShowPassword] = useState(false);
   const justRegistered = registered === "1";
@@ -62,33 +65,37 @@ export default function LoginScreen() {
     mutate(data);
   }
 
-  return (
-    <KeyboardAvoidingView
-      style={styles.root}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      {/* Navy brand panel sits under the status bar — needs light icons. */}
-      <StatusBar style="light" />
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-        showsVerticalScrollIndicator={false}
-      >
-        <View style={styles.brandPanel}>
-          <ReinesLogo variant="on-dark" height={56} />
-        </View>
+  function openForgotPassword() {
+    Linking.openURL(`${WEB_BASE_URL}/forgot-password`).catch(() => {});
+  }
 
-        <View style={styles.formPanel}>
-          <View style={styles.formHeader}>
-            <Text style={styles.formTitle}>Welcome back</Text>
-            <Text style={styles.formSub}>
+  return (
+    <View style={styles.root}>
+      {/* Dark portal background top-to-bottom — needs light icons. */}
+      <StatusBar style="light" />
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+      >
+        <ScrollView
+          contentContainerStyle={[styles.scroll, { paddingTop: insets.top + 40 }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.logoWrap}>
+            <ReinesLogo variant="on-dark" height={40} />
+          </View>
+
+          <View style={styles.header}>
+            <Text style={styles.title}>Welcome back</Text>
+            <Text style={styles.subtitle}>
               Sign in to access {APP_NAME}.
             </Text>
           </View>
 
           {justRegistered && (
             <View style={styles.successBanner}>
-              <CheckCircle2 size={15} color={COLORS.greenText} />
+              <CheckCircle2 size={15} color={PORTAL_DARK.greenText} />
               <Text style={styles.successBannerText}>
                 Account created successfully. Sign in with your email and password.
               </Text>
@@ -99,7 +106,7 @@ export default function LoginScreen() {
             control={control}
             name="email"
             render={({ field: { onChange, value, onBlur } }) => (
-              <Input
+              <AuthInput
                 label="Email address"
                 placeholder="you@example.com"
                 keyboardType="email-address"
@@ -114,13 +121,19 @@ export default function LoginScreen() {
             )}
           />
 
+          <View style={styles.labelRow}>
+            <Text style={styles.fieldLabel}>Password</Text>
+            <TouchableOpacity onPress={openForgotPassword} hitSlop={8}>
+              <Text style={styles.forgotLink}>Forgot password?</Text>
+            </TouchableOpacity>
+          </View>
+
           <Controller
             control={control}
             name="password"
             render={({ field: { onChange, value, onBlur } }) => (
-              <View>
-                <Input
-                  label="Password"
+              <View style={styles.inputRow}>
+                <AuthInput
                   placeholder="••••••••"
                   secureTextEntry={!showPassword}
                   returnKeyType="done"
@@ -137,9 +150,9 @@ export default function LoginScreen() {
                   hitSlop={10}
                 >
                   {showPassword ? (
-                    <EyeOff size={18} color={COLORS.zinc400} />
+                    <EyeOff size={18} color={PORTAL_DARK.textMuted} />
                   ) : (
-                    <Eye size={18} color={COLORS.zinc400} />
+                    <Eye size={18} color={PORTAL_DARK.textMuted} />
                   )}
                 </TouchableOpacity>
               </View>
@@ -148,7 +161,7 @@ export default function LoginScreen() {
 
           {serverError && (
             <View style={styles.errorBanner}>
-              <AlertCircle size={15} color={COLORS.redText} />
+              <AlertCircle size={15} color={PORTAL_DARK.redText} />
               <Text style={styles.errorBannerText}>{serverError}</Text>
             </View>
           )}
@@ -175,57 +188,67 @@ export default function LoginScreen() {
           <Text style={styles.footer}>
             © {new Date().getFullYear()} {APP_NAME}
           </Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLORS.zinc50 },
-  scroll: { flexGrow: 1 },
+  root: { flex: 1, backgroundColor: PORTAL_DARK.surfaceMuted },
+  flex: { flex: 1 },
+  scroll: { flexGrow: 1, paddingHorizontal: 24, paddingBottom: 40 },
 
-  brandPanel: {
-    backgroundColor: COLORS.primary,
-    paddingHorizontal: 24,
-    paddingVertical: 56,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+  logoWrap: { marginBottom: 28 },
 
-  formPanel: {
-    flex: 1,
-    paddingHorizontal: 24,
-    paddingTop: 28,
-    paddingBottom: 40,
-    backgroundColor: COLORS.zinc50,
-  },
-  formHeader: { marginBottom: 24 },
-  formTitle: {
+  header: { marginBottom: 24 },
+  title: {
     fontFamily: FONTS.bold,
     fontSize: 24,
-    color: COLORS.primary,
+    color: PORTAL_DARK.heading,
   },
-  formSub: {
+  subtitle: {
     fontFamily: FONTS.regular,
     fontSize: 14,
-    color: COLORS.zinc500,
+    color: PORTAL_DARK.textMuted,
     marginTop: 4,
     lineHeight: 20,
   },
+
+  labelRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 6,
+  },
+  fieldLabel: {
+    fontSize: 14,
+    fontFamily: FONTS.medium,
+    color: PORTAL_DARK.textSecondary,
+  },
+  forgotLink: {
+    fontSize: 12,
+    fontFamily: FONTS.medium,
+    color: PORTAL_DARK.heading,
+  },
+
+  inputRow: { position: "relative" },
   eyeBtn: {
     position: "absolute",
-    right: 12,
-    top: 38,
-    padding: 4,
+    right: 4,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    paddingHorizontal: 10,
   },
+
   errorBanner: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-    backgroundColor: COLORS.redBg,
+    backgroundColor: PORTAL_DARK.redBg,
     borderWidth: 1,
-    borderColor: COLORS.redBorder,
+    borderColor: PORTAL_DARK.redBorder,
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -234,7 +257,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: FONTS.regular,
     fontSize: 13,
-    color: COLORS.redText,
+    color: PORTAL_DARK.redText,
     lineHeight: 18,
   },
   submitBtn: { marginTop: 4 },
@@ -242,9 +265,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     gap: 8,
-    backgroundColor: COLORS.greenBg,
+    backgroundColor: PORTAL_DARK.greenBg,
     borderWidth: 1,
-    borderColor: COLORS.greenBorder,
+    borderColor: PORTAL_DARK.greenBorder,
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -253,7 +276,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontFamily: FONTS.regular,
     fontSize: 13,
-    color: COLORS.greenText,
+    color: PORTAL_DARK.greenText,
     lineHeight: 18,
   },
   registerPrompt: {
@@ -261,17 +284,17 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontFamily: FONTS.regular,
     fontSize: 14,
-    color: COLORS.zinc500,
+    color: PORTAL_DARK.textMuted,
   },
   registerLink: {
     fontFamily: FONTS.semibold,
-    color: COLORS.primary,
+    color: PORTAL_DARK.heading,
   },
   footer: {
     marginTop: 32,
     textAlign: "center",
     fontFamily: FONTS.regular,
     fontSize: 11,
-    color: COLORS.zinc400,
+    color: PORTAL_DARK.textMuted,
   },
 });
