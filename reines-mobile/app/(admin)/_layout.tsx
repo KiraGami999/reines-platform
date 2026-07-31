@@ -1,3 +1,4 @@
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs } from "expo-router";
 import {
   LayoutDashboard,
@@ -29,13 +30,14 @@ import { HeaderRight }      from "@/components/layout/HeaderRight";
  */
 export default function AdminLayout() {
   const { ready } = useRoleGuard({ allowedRole: "ADMIN" });
+  const insets    = useSafeAreaInsets();
 
   if (!ready) return <LoadingScreen />;
 
   return (
     <Tabs
       screenOptions={{
-        ...portalTabScreenOptions(),
+        ...portalTabScreenOptions(insets.bottom),
         headerRight: () => <HeaderRight />,
       }}
     >

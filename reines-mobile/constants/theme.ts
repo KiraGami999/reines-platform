@@ -35,8 +35,15 @@ export const SHADOW = {
   },
 } as const;
 
-/** Shared tab navigator options — navy bar like web sidebar */
-export function portalTabScreenOptions(): BottomTabNavigationOptions {
+/**
+ * Shared tab navigator options — navy bar like web sidebar.
+ *
+ * @param bottomInset - Safe-area inset from `useSafeAreaInsets().bottom`.
+ *   Required on Android, which draws edge-to-edge by default (SDK 54 /
+ *   targetSdk 35): without adding this padding, the tab bar sits underneath
+ *   the system gesture pill / 3-button navigation bar instead of above it.
+ */
+export function portalTabScreenOptions(bottomInset = 0): BottomTabNavigationOptions {
   return {
     tabBarActiveTintColor:   COLORS.accent,
     tabBarInactiveTintColor: COLORS.zinc400,
@@ -44,8 +51,8 @@ export function portalTabScreenOptions(): BottomTabNavigationOptions {
       backgroundColor: COLORS.primary,
       borderTopWidth:  0,
       paddingTop:      6,
-      paddingBottom:   6,
-      height:          64,
+      paddingBottom:   6 + bottomInset,
+      height:          64 + bottomInset,
     },
     tabBarLabelStyle: {
       fontSize:     10,

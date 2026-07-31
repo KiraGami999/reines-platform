@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Tabs } from "expo-router";
 import {
   LayoutDashboard,
@@ -38,13 +39,14 @@ export default function ClientLayout() {
   const { ready }      = useRoleGuard({ allowedRole: "CLIENT" });
   const { user }       = useAuth();
   const unreadMessages = useUnreadCount(user?.id ?? "");
+  const insets         = useSafeAreaInsets();
 
   if (!ready) return <LoadingScreen />;
 
   return (
     <Tabs
       screenOptions={{
-        ...portalTabScreenOptions(),
+        ...portalTabScreenOptions(insets.bottom),
         headerRight: () => <HeaderRight />,
       }}
     >

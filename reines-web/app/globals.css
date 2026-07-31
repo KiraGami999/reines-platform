@@ -188,6 +188,71 @@ select:disabled {
   background-color: rgba(143, 185, 232, 0.12);
 }
 
+/* Soft green (success) badges / banners — e.g. "Update posted!" confirmation
+ * cards, approval panels, loyalty status pills. Pale light-mode backgrounds
+ * become a translucent tint instead of a jarring white card on black. */
+.dark [data-portal] :is(.bg-green-50, .bg-green-100) {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+.dark [data-portal] [class*="bg-green-50/"] {
+  background-color: rgba(34, 197, 94, 0.1);
+}
+.dark [data-portal] :is(.border-green-100, .border-green-200) {
+  border-color: rgba(34, 197, 94, 0.3);
+}
+.dark [data-portal] :is(.text-green-800, .text-green-700, .text-green-600, .text-green-500) {
+  color: #4ade80;
+}
+.dark [data-portal] :is(.hover\:bg-green-50:hover, .hover\:bg-green-100:hover) {
+  background-color: rgba(34, 197, 94, 0.16);
+}
+.dark [data-portal] :is(.hover\:bg-green-700:hover) {
+  background-color: #15803d;
+}
+
+/* Soft red (error/danger) badges / banners */
+.dark [data-portal] :is(.bg-red-50, .bg-red-100) {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.dark [data-portal] [class*="bg-red-50/"] {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+.dark [data-portal] :is(.border-red-100, .border-red-200, .border-red-400) {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+.dark [data-portal] :is(.text-red-800, .text-red-700, .text-red-600, .text-red-500, .text-red-400) {
+  color: #f87171;
+}
+.dark [data-portal] :is(.hover\:bg-red-50:hover, .hover\:bg-red-100:hover) {
+  background-color: rgba(239, 68, 68, 0.16);
+}
+.dark [data-portal] :is(.hover\:text-red-500:hover, .hover\:text-red-600:hover, .hover\:text-red-700:hover) {
+  color: #fca5a5;
+}
+.dark [data-portal] :is(.hover\:bg-red-700:hover) {
+  background-color: #b91c1c;
+}
+.dark [data-portal] :is(.focus\:border-red-400:focus) {
+  border-color: #f87171;
+}
+.dark [data-portal] :is(.focus\:ring-red-100:focus) {
+  --tw-ring-color: rgba(239, 68, 68, 0.2);
+}
+
+/* Soft amber (warning) badges / banners */
+.dark [data-portal] :is(.bg-amber-50, .bg-amber-100) {
+  background-color: rgba(245, 158, 11, 0.12);
+}
+.dark [data-portal] :is(.border-amber-200, .border-amber-300) {
+  border-color: rgba(245, 158, 11, 0.35);
+}
+.dark [data-portal] :is(.text-amber-900, .text-amber-800, .text-amber-700, .text-amber-600, .text-amber-500) {
+  color: #fbbf24;
+}
+.dark [data-portal] :is(.hover\:bg-amber-50:hover) {
+  background-color: rgba(245, 158, 11, 0.18);
+}
+
 @keyframes reines-loader-bar {
   0%,
   100% {

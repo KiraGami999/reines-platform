@@ -390,7 +390,7 @@ function TabBar({
             key={t.id}
             onClick={() => onChange(t.id)}
             className={cn(
-              "flex shrink-0 items-center gap-1.5 ",
+              "flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
               active
                 ? "bg-white text-zinc-900 shadow-sm"
                 : "text-zinc-500 hover:text-zinc-700"
@@ -461,7 +461,7 @@ function BatchUpdateCard({
 
   return (
     <article className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
-      <div className="flex items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3 sm:px-5">
+      <div className="flex items-start justify-between gap-3 border-b border-zinc-100 px-5 py-3">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
             <Calendar size={12} className="shrink-0 text-zinc-500" />
@@ -498,7 +498,7 @@ function BatchUpdateCard({
         )}
       </div>
 
-      <div className="space-y-4 p-4 sm:p-5">
+      <div className="space-y-4 p-5">
         {showPhotos && photos.length > 0 && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {photos.map((u, i) => (

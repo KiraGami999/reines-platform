@@ -23,7 +23,7 @@ function ProjectSection({
   return (
     <section className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
       {/* Section header */}
-      <div className="flex flex-col gap-3 border-b border-zinc-100 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-b border-zinc-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="min-w-0">
           <h2 className="truncate text-sm font-semibold text-zinc-900">{project.title}</h2>
           <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-zinc-400">
@@ -37,18 +37,18 @@ function ProjectSection({
           </p>
         </div>
 
-        <div className="flex shrink-0 flex-wrap items-center gap-2">
+        <div className="flex w-full gap-2 sm:w-auto sm:shrink-0">
           {canUpload && (
             <Link
               href={`/dashboard/projects/${project.id}/gallery?tab=upload`}
-              className="flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#1a2f4a] sm:flex-none"
             >
               <Plus size={12} /> Add Update
             </Link>
           )}
           <Link
             href={`/dashboard/projects/${project.id}/gallery`}
-            className="flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
+            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-50 sm:flex-none"
           >
             <FolderKanban size={12} /> View Project
           </Link>
