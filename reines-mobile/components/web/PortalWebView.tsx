@@ -37,6 +37,28 @@ import { Button } from "@/components/ui/Button";
 
 const MAX_BRIDGE_ATTEMPTS = 3;
 
+/**
+ * Re-reads the web portal's stored Appearance preference (see reines-web's
+ * `lib/theme.ts` — same "reines-theme" localStorage key) and re-applies the
+ * dark/light class. Each mobile-app tab renders the portal in its own
+ * separate WebView instance, so a preference change made in the Settings
+ * tab doesn't automatically repaint an already-loaded Dashboard/Gallery/
+ * Messages tab — the web `storage` event *should* catch this across
+ * same-origin documents, but Android WebView doesn't reliably guarantee
+ * that across separate WebView instances. Re-running this on every tab
+ * focus is a cheap, reliable safety net regardless.
+ */
+const REAPPLY_THEME_JS = `(function () {
+  try {
+    var k = 'reines-theme';
+    var t = localStorage.getItem(k) || 'system';
+    var d = t === 'dark' || (t !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.classList.toggle('dark', d);
+    document.documentElement.style.colorScheme = d ? 'dark' : 'light';
+  } catch (e) {}
+  true;
+})();`;
+
 interface PortalWebViewProps {
   /** Web route to display, e.g. "/dashboard/projects". */
   route: string;
@@ -262,6 +284,12 @@ export function PortalWebView({ route, injectedCss, padTop = true }: PortalWebVi
         loadDirect(route);
       }
 
+      // Catch up this tab's dark/light class in case the Appearance setting
+      // changed in another tab while this one was backgrounded.
+      if (!error && source) {
+        webRef.current?.injectJavaScript(REAPPLY_THEME_JS);
+      }
+
       const sub = BackHandler.addEventListener("hardwareBackPress", () => {
         if (canGoBack) {
           webRef.current?.goBack();
@@ -270,7 +298,7 @@ export function PortalWebView({ route, injectedCss, padTop = true }: PortalWebVi
         return false;
       });
       return () => sub.remove();
-    }, [canGoBack, error, loadDirect, route])
+    }, [canGoBack, error, loadDirect, route, source])
   );
 
   useEffect(() => {

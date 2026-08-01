@@ -71,6 +71,23 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     return () => mq.removeEventListener("change", onChange);
   }, []);
 
+  // Keep every open tab/WebView in sync. The `storage` event only fires in
+  // *other* documents of the same origin — not the one that made the change —
+  // so a preference set on, say, the Settings page (its own tab/WebView) is
+  // picked up here by the Dashboard/Gallery/Messages tabs too, instead of
+  // those already-mounted pages staying stuck on whatever theme they loaded
+  // with. (Each mobile-app tab renders this page in its own WebView instance;
+  // see reines-mobile's PortalWebView for the extra native-side re-sync.)
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== THEME_STORAGE_KEY) return;
+      const next = isThemePreference(e.newValue) ? e.newValue : "system";
+      setPreferenceState(next);
+    }
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
+
   const resolved = useMemo(
     () => resolveTheme(preference, systemDark),
     [preference, systemDark]
