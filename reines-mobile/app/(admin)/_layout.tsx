@@ -32,7 +32,7 @@ export default function AdminLayout() {
   const { ready } = useRoleGuard({ allowedRole: "ADMIN" });
   const insets    = useSafeAreaInsets();
 
-  if (!ready) return <LoadingScreen />;
+  if (!ready) return <LoadingScreen mark="corporate" />;
 
   return (
     <Tabs
