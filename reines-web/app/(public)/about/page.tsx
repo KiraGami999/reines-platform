@@ -3,7 +3,6 @@ import Link from "next/link";
 import type { ElementType } from "react";
 import { Binoculars, Building2, CheckCircle2, Factory, Leaf, ShieldCheck, Target } from "lucide-react";
 import { AboutStoryHero } from "@/components/public/AboutStoryHero";
-import { AboutCompanyBanner } from "@/components/public/AboutCompanyBanner";
 
 export const metadata: Metadata = {
   title: "About Us — Reines Property Development",
@@ -40,8 +39,6 @@ export default function AboutPage() {
   return (
     <>
       <AboutStoryHero />
-
-      <AboutCompanyBanner />
 
       {/* Mission & Vision */}
       <section className="bg-white py-14 sm:py-24">
