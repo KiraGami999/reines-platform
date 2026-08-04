@@ -114,6 +114,10 @@ export function isAssignableProductImageUrl(url: string): boolean {
   return isManagedProductLibraryImageUrl(url);
 }
 
+export function isSafeClientLogoUploadUrl(url: string): boolean {
+  return isVercelBlobUrl(url);
+}
+
 export function isSafeHomepageAdUploadUrl(url: string): boolean {
   return isVercelBlobUrl(url) || (url.startsWith("/uploads/homepage-ads/") && !url.includes(".."));
 }
@@ -200,4 +204,14 @@ export async function deleteHomepageAdLibraryImageFile(url: string): Promise<voi
     throw new StorageError("Only homepage ad images can be deleted.", 400);
   }
   if (isVercelBlobUrl(url)) await blobDel(url);
+}
+
+/** Best-effort cleanup for client logo images no longer referenced after a save. Never throws. */
+export async function deleteClientLogoImageFile(url: string): Promise<void> {
+  if (!isVercelBlobUrl(url)) return;
+  try {
+    await blobDel(url);
+  } catch (err) {
+    console.error("[storage/deleteClientLogoImageFile]", err);
+  }
 }

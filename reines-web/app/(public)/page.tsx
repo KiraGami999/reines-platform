@@ -3,10 +3,10 @@ import type { ElementType } from "react";
 import { Blocks, Building2, Factory, House, Road } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
-import { TestimonialsSection } from "@/components/public/TestimonialsSection";
+import { ClientLogosSection } from "@/components/public/ClientLogosSection";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
 import { getFeaturedPublicProjects } from "@/lib/public-projects";
-import { getTestimonialsPageData } from "@/lib/testimonials";
+import { getClientLogosPageData } from "@/lib/client-logos";
 
 export const dynamic = "force-dynamic";
 
@@ -275,10 +275,10 @@ function CtaBanner() {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [homepageAds, featuredProjects, testimonialsData] = await Promise.all([
+  const [homepageAds, featuredProjects, clientLogosData] = await Promise.all([
     getHomepageAds(),
     getFeaturedPublicProjects(),
-    getTestimonialsPageData(),
+    getClientLogosPageData(),
   ]);
 
   return (
@@ -288,8 +288,8 @@ export default async function HomePage() {
       <Services />
       <FeaturedProjectsSlideshow projects={featuredProjects} />
       <WhyReines />
-      {testimonialsData.settings.visible && (
-        <TestimonialsSection testimonials={testimonialsData.testimonials} />
+      {clientLogosData.settings.visible && (
+        <ClientLogosSection logos={clientLogosData.logos} />
       )}
       <CtaBanner />
     </>

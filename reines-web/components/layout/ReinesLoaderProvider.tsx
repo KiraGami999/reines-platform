@@ -12,6 +12,7 @@ import {
 } from "react";
 import { usePathname } from "next/navigation";
 import { ReinesPageLoader } from "@/components/layout/ReinesPageLoader";
+import { isInsideMobileApp } from "@/lib/mobileBridge";
 
 type LoaderPhase = "hidden" | "loading" | "exiting";
 
@@ -26,6 +27,31 @@ const ReinesLoaderContext = createContext<ReinesLoaderContextValue | null>(null)
 const INTRO_LOADER_KEY = "reines:intro-loader-shown";
 const MIN_LOAD_MS = 900;
 const MAX_LOAD_MS = 8000;
+
+/**
+ * Inside the mobile app, every portal tab (Dashboard, Gallery, Messages…)
+ * renders the web app in its own separate WebView instance, each with its
+ * own sessionStorage (sessionStorage is scoped per top-level browsing
+ * context, not shared across WebViews the way localStorage is). A
+ * sessionStorage flag alone would replay the intro animation every time a
+ * new tab's WebView first loads, stacking on top of the native loading
+ * spinner. localStorage is shared across all WebView instances for the
+ * same origin, so use it there instead — it's cleared on sign-out (see
+ * DashboardHeader) so the animation plays again on the next login.
+ */
+function getIntroLoaderStorage(): Storage {
+  return isInsideMobileApp() ? window.localStorage : window.sessionStorage;
+}
+
+/** Clears the "intro shown" flag so the loader plays again on next login. */
+export function clearIntroLoaderFlag() {
+  try {
+    window.localStorage.removeItem(INTRO_LOADER_KEY);
+    window.sessionStorage.removeItem(INTRO_LOADER_KEY);
+  } catch {
+    // Storage unavailable (e.g. private browsing) — nothing to clear.
+  }
+}
 
 export function useReinesLoader() {
   const context = useContext(ReinesLoaderContext);
@@ -50,7 +76,7 @@ export function ReinesLoaderProvider({ children }: { children: ReactNode }) {
 
   const completeLoader = useCallback(() => {
     if (loaderReasonRef.current === "intro") {
-      sessionStorage.setItem(INTRO_LOADER_KEY, "1");
+      getIntroLoaderStorage().setItem(INTRO_LOADER_KEY, "1");
     }
     loaderReasonRef.current = null;
     exitStartedRef.current = false;
@@ -100,7 +126,7 @@ export function ReinesLoaderProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     reducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (introStartedRef.current || sessionStorage.getItem(INTRO_LOADER_KEY)) return;
+    if (introStartedRef.current || getIntroLoaderStorage().getItem(INTRO_LOADER_KEY)) return;
     introStartedRef.current = true;
     startLoading("intro");
   }, [startLoading]);

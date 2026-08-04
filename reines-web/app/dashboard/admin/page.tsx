@@ -1,9 +1,9 @@
 import Link from "next/link";
-import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Quote } from "lucide-react";
+import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Building } from "lucide-react";
 import { MOCK_USERS, MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import { isMarketInsightsVisible } from "@/lib/market-insights";
-import { isTestimonialsVisible } from "@/lib/testimonials";
+import { isClientLogosVisible } from "@/lib/client-logos";
 
 async function getStats() {
   try {
@@ -27,10 +27,10 @@ async function getStats() {
 export const metadata = { title: "Admin Panel � Reines" };
 
 export default async function AdminOverviewPage() {
-  const [stats, marketInsightsVisible, testimonialsVisible] = await Promise.all([
+  const [stats, marketInsightsVisible, clientLogosVisible] = await Promise.all([
     getStats(),
     isMarketInsightsVisible(),
-    isTestimonialsVisible(),
+    isClientLogosVisible(),
   ]);
 
   const CARDS = [
@@ -129,15 +129,15 @@ export default async function AdminOverviewPage() {
       iconBg:  marketInsightsVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
     },
     {
-      href:    "/dashboard/admin/testimonials",
-      icon:    <Quote className="w-7 h-7" />,
-      title:   "Testimonials",
-      desc:    "Manage the \u201cWhat Our Clients Say\u201d section shown on the public homepage.",
-      stat:    testimonialsVisible ? "Section is live" : "Section is hidden",
-      accent:  testimonialsVisible
+      href:    "/dashboard/admin/client-logos",
+      icon:    <Building className="w-7 h-7" />,
+      title:   "Client Logos",
+      desc:    "Manage the \u201cClients We\u2019ve Worked With\u201d logo strip shown on the public homepage.",
+      stat:    clientLogosVisible ? "Section is live" : "Section is hidden",
+      accent:  clientLogosVisible
         ? "from-blue-500/10 to-blue-500/5 border-blue-200"
         : "from-amber-500/10 to-amber-500/5 border-amber-200",
-      iconBg:  testimonialsVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
+      iconBg:  clientLogosVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
     },
   ];
 

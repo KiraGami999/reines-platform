@@ -20,6 +20,7 @@ import { ReinesLogo } from "@/components/layout/ReinesLogo";
 import { getPortalLogoMark } from "@/lib/portal-branding";
 import { useTheme } from "@/components/theme/ThemeProvider";
 import { postToNativeApp } from "@/lib/mobileBridge";
+import { clearIntroLoaderFlag } from "@/components/layout/ReinesLoaderProvider";
 import { cn } from "@/lib/utils";
 
 // ─── Breadcrumb helper ─────────────────────────────────────────────────────────
@@ -240,6 +241,9 @@ function UserMenu({ user }: UserMenuProps) {
     // nothing. Let the native shell own sign-out there instead (it clears
     // the JWT and swaps to the native login screen); fall back to the normal
     // web sign-out everywhere else.
+    // Reset the "intro shown" flag so the loading animation plays again the
+    // next time someone signs in, rather than staying suppressed forever.
+    clearIntroLoaderFlag();
     if (postToNativeApp({ type: "reines-signout" })) return;
     signOut({ callbackUrl: "/login" });
   }

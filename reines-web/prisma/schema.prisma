@@ -359,13 +359,16 @@ model MarketInsightCard {
 }
 
 // ---------------------------------------------------------------------------
-// Testimonials
-// Admin-managed client testimonials shown in the "What Our Clients Say"
-// section on the public homepage. `TestimonialsSetting.visible` is the master
-// switch that lets admins hide the whole section without deleting content.
+// Client Logos
+// Admin-managed logos of clients Reines has worked with, shown in the
+// "Clients We've Worked With" section on the public homepage.
+// `ClientLogoSetting.visible` is the master switch that lets admins hide the
+// whole section without deleting content. Each logo has a light-background
+// variant and an optional dark-background variant so it stays legible in
+// both site themes (falls back to the light variant if no dark one is set).
 // ---------------------------------------------------------------------------
 
-model TestimonialsSetting {
+model ClientLogoSetting {
   id        String   @id @default("global")
   /**
    * Master switch — when false, the section is hidden on the public homepage.
@@ -374,18 +377,21 @@ model TestimonialsSetting {
   updatedAt DateTime @updatedAt
 }
 
-model Testimonial {
-  id          String   @id @default(cuid())
-  clientName  String
-  clientTitle String // role / company shown under the name, e.g. "Director, Nyanja Residences"
-  quote       String   @db.Text
+model ClientLogo {
+  id           String   @id @default(cuid())
+  name         String
   /**
-   * Hex color used for the initials avatar badge shown in place of a photo.
+   * Logo variant shown when the site is in light mode.
    */
-  accentColor String   @default("#8fb9e8")
-  sortOrder   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  lightLogoUrl String
+  /**
+   * Logo variant shown when the site is in dark mode. Falls back to lightLogoUrl if not set.
+   */
+  darkLogoUrl  String?
+  websiteUrl   String?
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([sortOrder])
 }
