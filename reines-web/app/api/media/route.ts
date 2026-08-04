@@ -7,6 +7,7 @@ const PUBLIC_PATH_PREFIXES = [
   "uploads/homepage-ads/",
   "uploads/product-images/",
   "uploads/public-projects/",
+  "uploads/client-logos/",
 ];
 
 function isPublicAsset(blobUrl: string): boolean {
