@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { upload } from "@vercel/blob/client";
 import {
+  AlertCircle,
   ArrowDown,
   ArrowUp,
   Building,
@@ -124,14 +125,11 @@ export default function ClientLogosForm({ initialSettings, initialLogos, usingFa
   }
 
   async function save() {
-    if (logos.length === 0) {
-      setError("Add at least one client logo before saving.");
-      return;
-    }
-    if (logos.some((l) => !l.lightLogoUrl)) {
-      setError("Every client needs a light-mode logo uploaded before saving.");
-      return;
-    }
+    // Drafts without an uploaded light-mode logo aren't ready to publish yet —
+    // skip them instead of blocking the whole save (which would also block an
+    // unrelated visibility toggle change from ever reaching the database).
+    const readyLogos = logos.filter((l) => l.lightLogoUrl);
+    const skippedCount = logos.length - readyLogos.length;
 
     setSaving(true);
     setMessage("");
@@ -139,8 +137,8 @@ export default function ClientLogosForm({ initialSettings, initialLogos, usingFa
 
     const payload = {
       settings,
-      logos: logos.map((l, sortOrder) => ({
-        name: l.name.trim(),
+      logos: readyLogos.map((l, sortOrder) => ({
+        name: l.name.trim() || "Client",
         lightLogoUrl: l.lightLogoUrl,
         darkLogoUrl: l.darkLogoUrl,
         websiteUrl: l.websiteUrl.trim(),
@@ -161,10 +159,21 @@ export default function ClientLogosForm({ initialSettings, initialLogos, usingFa
         return;
       }
 
+      // Keep any still-incomplete drafts around locally (they never round-tripped
+      // to the server, so they wouldn't be in the response) alongside the
+      // now-canonical saved logos.
+      const incompleteDrafts = logos.filter((l) => !l.lightLogoUrl);
+      const savedLogos: ClientLogoItem[] = data.logos ?? readyLogos;
+      const nextLogos = [...savedLogos, ...incompleteDrafts];
+
       setSettings(data.settings ?? settings);
-      setLogos(data.logos ?? logos);
-      setSelectedId((data.logos ?? logos)[0]?.id ?? "");
-      setMessage("Client logos saved successfully.");
+      setLogos(nextLogos);
+      setSelectedId((selected && nextLogos.some((l) => l.id === selected.id)) ? selected.id : nextLogos[0]?.id ?? "");
+      setMessage(
+        skippedCount > 0
+          ? `Saved. ${skippedCount} client${skippedCount > 1 ? "s" : ""} skipped — upload a light-mode logo for ${skippedCount > 1 ? "them" : "it"} first.`
+          : "Client logos saved successfully."
+      );
     } catch {
       setError("Could not save client logos. Check your connection and try again.");
     } finally {
@@ -188,7 +197,10 @@ export default function ClientLogosForm({ initialSettings, initialLogos, usingFa
       )}
 
       {error && (
-        <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">{error}</div>
+        <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">
+          <AlertCircle size={16} />
+          {error}
+        </div>
       )}
 
       {/* Sticky-ish header with the master save action */}
@@ -295,7 +307,13 @@ export default function ClientLogosForm({ initialSettings, initialLogos, usingFa
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-zinc-900">{l.name}</p>
-                    <p className="mt-0.5 text-xs text-zinc-400">Position {index + 1}</p>
+                    {l.lightLogoUrl ? (
+                      <p className="mt-0.5 text-xs text-zinc-400">Position {index + 1}</p>
+                    ) : (
+                      <p className="mt-0.5 inline-flex items-center gap-1 text-xs font-medium text-amber-600">
+                        <AlertCircle size={11} /> Needs a logo — won&apos;t be saved yet
+                      </p>
+                    )}
                   </div>
                 </div>
               </button>

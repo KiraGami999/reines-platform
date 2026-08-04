@@ -65,23 +65,32 @@ export async function PUT(req: NextRequest) {
       .flatMap((row) => [row.lightLogoUrl, row.darkLogoUrl].filter(Boolean) as string[])
       .filter((url) => !keptUrls.has(url));
 
-    await prisma.$transaction([
-      prisma.clientLogoSetting.upsert({
-        where: { id: "global" },
-        create: { id: "global", ...settings },
-        update: { ...settings },
-      }),
-      prisma.clientLogo.deleteMany(),
-      prisma.clientLogo.createMany({
-        data: logos.map((logo, sortOrder) => ({
-          name: logo.name,
-          lightLogoUrl: logo.lightLogoUrl,
-          darkLogoUrl: logo.darkLogoUrl || null,
-          websiteUrl: logo.websiteUrl || null,
-          sortOrder,
-        })),
-      }),
-    ]);
+    // Prisma's createMany rejects an empty data array, but saving zero logos
+    // is a valid state (e.g. toggling visibility before any logo is uploaded).
+    const settingsUpsert = prisma.clientLogoSetting.upsert({
+      where: { id: "global" },
+      create: { id: "global", ...settings },
+      update: { ...settings },
+    });
+    const deleteAll = prisma.clientLogo.deleteMany();
+
+    if (logos.length > 0) {
+      await prisma.$transaction([
+        settingsUpsert,
+        deleteAll,
+        prisma.clientLogo.createMany({
+          data: logos.map((logo, sortOrder) => ({
+            name: logo.name,
+            lightLogoUrl: logo.lightLogoUrl,
+            darkLogoUrl: logo.darkLogoUrl || null,
+            websiteUrl: logo.websiteUrl || null,
+            sortOrder,
+          })),
+        }),
+      ]);
+    } else {
+      await prisma.$transaction([settingsUpsert, deleteAll]);
+    }
 
     // Best-effort cleanup of images removed from the library — never blocks the save.
     await Promise.all(orphanedUrls.map((url) => deleteClientLogoImageFile(url)));
