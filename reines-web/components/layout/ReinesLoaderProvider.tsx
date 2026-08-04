@@ -147,24 +147,34 @@ export function ReinesLoaderProvider({ children }: { children: ReactNode }) {
     return () => window.clearInterval(interval);
   }, [phase, pageReady]);
 
-  // Mark page ready while the loader is active
+  // Mark page ready while the loader is active.
+  // Do not wait for window "load" — a slow or broken favicon/image keeps that
+  // event from firing and leaves the intro overlay blocking the site indefinitely.
   useEffect(() => {
     if (phase !== "loading") return;
 
     const markReady = () => {
+      if (loaderReasonRef.current === "intro") {
+        setPageReady(true);
+        return;
+      }
       if (!isLoaderTargetReady()) return;
       setPageReady(true);
     };
 
-    if (document.readyState === "complete") {
-      markReady();
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", markReady, { once: true });
     } else {
-      window.addEventListener("load", markReady, { once: true });
+      markReady();
     }
 
-    markReady();
+    // Safety net for sign-in transitions if DOM is ready but route hasn't settled.
+    const timeout = window.setTimeout(markReady, 1200);
 
-    return () => window.removeEventListener("load", markReady);
+    return () => {
+      document.removeEventListener("DOMContentLoaded", markReady);
+      window.clearTimeout(timeout);
+    };
   }, [phase, pathname, isLoaderTargetReady]);
 
   // Jump to 100 once the page is ready

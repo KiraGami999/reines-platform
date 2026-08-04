@@ -17,10 +17,7 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   icons: {
-    icon: [
-      { url: "/favicon.ico", sizes: "48x48" },
-      { url: "/logo-icon.png", type: "image/png", sizes: "512x512" },
-    ],
+    icon: [{ url: "/favicon.ico", sizes: "32x32" }],
     shortcut: "/favicon.ico",
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },
