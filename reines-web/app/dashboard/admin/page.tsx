@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart } from "lucide-react";
+import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Quote } from "lucide-react";
 import { MOCK_USERS, MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import { isMarketInsightsVisible } from "@/lib/market-insights";
+import { isTestimonialsVisible } from "@/lib/testimonials";
 
 async function getStats() {
   try {
@@ -26,7 +27,11 @@ async function getStats() {
 export const metadata = { title: "Admin Panel � Reines" };
 
 export default async function AdminOverviewPage() {
-  const [stats, marketInsightsVisible] = await Promise.all([getStats(), isMarketInsightsVisible()]);
+  const [stats, marketInsightsVisible, testimonialsVisible] = await Promise.all([
+    getStats(),
+    isMarketInsightsVisible(),
+    isTestimonialsVisible(),
+  ]);
 
   const CARDS = [
     {
@@ -122,6 +127,17 @@ export default async function AdminOverviewPage() {
         ? "from-blue-500/10 to-blue-500/5 border-blue-200"
         : "from-amber-500/10 to-amber-500/5 border-amber-200",
       iconBg:  marketInsightsVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
+    },
+    {
+      href:    "/dashboard/admin/testimonials",
+      icon:    <Quote className="w-7 h-7" />,
+      title:   "Testimonials",
+      desc:    "Manage the \u201cWhat Our Clients Say\u201d section shown on the public homepage.",
+      stat:    testimonialsVisible ? "Section is live" : "Section is hidden",
+      accent:  testimonialsVisible
+        ? "from-blue-500/10 to-blue-500/5 border-blue-200"
+        : "from-amber-500/10 to-amber-500/5 border-amber-200",
+      iconBg:  testimonialsVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
     },
   ];
 

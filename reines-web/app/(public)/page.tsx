@@ -3,8 +3,10 @@ import type { ElementType } from "react";
 import { Blocks, Building2, Factory, House, Road } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
+import { TestimonialsSection } from "@/components/public/TestimonialsSection";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
 import { getFeaturedPublicProjects } from "@/lib/public-projects";
+import { getTestimonialsPageData } from "@/lib/testimonials";
 
 export const dynamic = "force-dynamic";
 
@@ -273,9 +275,10 @@ function CtaBanner() {
 // ─── Page ────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
-  const [homepageAds, featuredProjects] = await Promise.all([
+  const [homepageAds, featuredProjects, testimonialsData] = await Promise.all([
     getHomepageAds(),
     getFeaturedPublicProjects(),
+    getTestimonialsPageData(),
   ]);
 
   return (
@@ -285,6 +288,9 @@ export default async function HomePage() {
       <Services />
       <FeaturedProjectsSlideshow projects={featuredProjects} />
       <WhyReines />
+      {testimonialsData.settings.visible && (
+        <TestimonialsSection testimonials={testimonialsData.testimonials} />
+      )}
       <CtaBanner />
     </>
   );

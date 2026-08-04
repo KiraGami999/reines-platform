@@ -110,7 +110,7 @@ model User {
   id            String    @id @default(cuid())
   name          String
   email         String    @unique
-  password      String?   // hashed with bcrypt; null for OAuth-only users
+  password      String? // hashed with bcrypt; null for OAuth-only users
   emailVerified DateTime?
   image         String?
   role          Role      @default(CLIENT)
@@ -123,14 +123,14 @@ model User {
 
   // Application relations
   // Named relations are required because User is referenced twice in Project
-  projectsAsClient  Project[]  @relation("ClientProjects")
-  projectsAsManager Project[]  @relation("ManagerProjects")
-  sentMessages      Message[]
-  payments          Payment[]
-  clientPointEntries ClientPointEntry[] @relation("ClientPointEntries")
+  projectsAsClient    Project[]          @relation("ClientProjects")
+  projectsAsManager   Project[]          @relation("ManagerProjects")
+  sentMessages        Message[]
+  payments            Payment[]
+  clientPointEntries  ClientPointEntry[] @relation("ClientPointEntries")
   awardedPointEntries ClientPointEntry[] @relation("AwardedPointEntries")
-  rewardRedemptions  RewardRedemption[]
-  pushDevices        PushDevice[]
+  rewardRedemptions   RewardRedemption[]
+  pushDevices         PushDevice[]
 }
 
 // ---------------------------------------------------------------------------
@@ -140,24 +140,24 @@ model User {
 // ---------------------------------------------------------------------------
 
 model Project {
-  id          String        @id @default(cuid())
-  title       String
-  description String?       @db.Text
-  status      ProjectStatus @default(PLANNING)
-  budget      Decimal?      @db.Decimal(15, 2) // MWK amounts can be large
-  startDate   DateTime?
-  endDate     DateTime?
-  managerAccepted   Boolean   @default(false)
+  id                String        @id @default(cuid())
+  title             String
+  description       String?       @db.Text
+  status            ProjectStatus @default(PLANNING)
+  budget            Decimal?      @db.Decimal(15, 2) // MWK amounts can be large
+  startDate         DateTime?
+  endDate           DateTime?
+  managerAccepted   Boolean       @default(false)
   managerAcceptedAt DateTime?
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
 
   // Foreign keys
   clientId  String
   managerId String
 
   // Relations
-  client  User @relation("ClientProjects",  fields: [clientId],  references: [id])
+  client  User @relation("ClientProjects", fields: [clientId], references: [id])
   manager User @relation("ManagerProjects", fields: [managerId], references: [id])
 
   updates      ProjectUpdate[]
@@ -175,7 +175,7 @@ model Project {
 
 model PointRule {
   id             String   @id @default("global")
-  pointsPerUnit  Int      @default(1)      // points awarded per unit of spend
+  pointsPerUnit  Int      @default(1) // points awarded per unit of spend
   unitAmount     Int      @default(100000) // MWK per point (default 1 pt per MK 100,000)
   minSpendToEarn Int      @default(2000000) // minimum lifetime spend (MWK) before auto-earning starts
   updatedAt      DateTime @updatedAt
@@ -231,11 +231,11 @@ model RewardRedemption {
 // ---------------------------------------------------------------------------
 
 model ClientPointEntry {
-  id          String   @id @default(cuid())
-  points      Int
-  reason      String   @db.Text
-  rewardType  String   @default("PROJECT")
-  createdAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  points     Int
+  reason     String   @db.Text
+  rewardType String   @default("PROJECT")
+  createdAt  DateTime @default(now())
 
   clientId    String
   projectId   String?
@@ -267,7 +267,9 @@ model PublicProject {
   imageUrl    String
   imageUrls   String[]            @default([])
   active      Boolean             @default(true)
-  /** Shown in the "Featured Projects" slideshow on the homepage, controlled by admins. */
+  /**
+   * Shown in the "Featured Projects" slideshow on the homepage, controlled by admins.
+   */
   featured    Boolean             @default(false)
   sortOrder   Int                 @default(0)
   createdAt   DateTime            @default(now())
@@ -309,7 +311,9 @@ model PublicService {
 
 model MarketInsightsSetting {
   id                  String   @id @default("global")
-  /** Master switch — when false, the public /market-insights page is hidden. */
+  /**
+   * Master switch — when false, the public /market-insights page is hidden.
+   */
   visible             Boolean  @default(true)
   heroTag             String   @default("Market Intelligence")
   heroTitle           String   @default("Market insights for confident property decisions.")
@@ -355,21 +359,53 @@ model MarketInsightCard {
 }
 
 // ---------------------------------------------------------------------------
+// Testimonials
+// Admin-managed client testimonials shown in the "What Our Clients Say"
+// section on the public homepage. `TestimonialsSetting.visible` is the master
+// switch that lets admins hide the whole section without deleting content.
+// ---------------------------------------------------------------------------
+
+model TestimonialsSetting {
+  id        String   @id @default("global")
+  /**
+   * Master switch — when false, the section is hidden on the public homepage.
+   */
+  visible   Boolean  @default(true)
+  updatedAt DateTime @updatedAt
+}
+
+model Testimonial {
+  id          String   @id @default(cuid())
+  clientName  String
+  clientTitle String // role / company shown under the name, e.g. "Director, Nyanja Residences"
+  quote       String   @db.Text
+  /**
+   * Hex color used for the initials avatar badge shown in place of a photo.
+   */
+  accentColor String   @default("#8fb9e8")
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([sortOrder])
+}
+
+// ---------------------------------------------------------------------------
 // ProjectUpdate
 // Each update represents a progress milestone entry with an optional photo.
 // Deleting a project cascades and removes all its updates.
 // ---------------------------------------------------------------------------
 
 model ProjectUpdate {
-  id        String   @id @default(cuid())
-  note      String   @db.Text
-  imageUrl  String?  // URL to uploaded image (cloud storage or local)
-  documentUrl String?
-  documentName String?
-  documentType String?
+  id              String   @id @default(cuid())
+  note            String   @db.Text
+  imageUrl        String? // URL to uploaded image (cloud storage or local)
+  documentUrl     String?
+  documentName    String?
+  documentType    String?
   progressPercent Int?
-  batchId   String?  // Shared ID when multiple files are posted together
-  createdAt DateTime @default(now())
+  batchId         String? // Shared ID when multiple files are posted together
+  createdAt       DateTime @default(now())
 
   // Foreign key
   projectId String
@@ -398,8 +434,8 @@ model Milestone {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
-  projectId   String
-  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   @@index([projectId, sortOrder])
   @@index([projectId, status])
@@ -422,7 +458,7 @@ model Message {
 
   // Relations
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  sender  User    @relation(fields: [senderId],  references: [id])
+  sender  User    @relation(fields: [senderId], references: [id])
 }
 
 // ---------------------------------------------------------------------------
@@ -432,36 +468,36 @@ model Message {
 // ---------------------------------------------------------------------------
 
 enum PaymentStatus {
-  PENDING    // Session created, awaiting customer payment / awaiting admin approval for cash
-  SUCCESS    // Confirmed by webhook / callback verification, or approved by admin for cash
-  FAILED     // Payment failed or was declined / rejected by admin for cash
-  CANCELLED  // Customer cancelled before completing
+  PENDING // Session created, awaiting customer payment / awaiting admin approval for cash
+  SUCCESS // Confirmed by webhook / callback verification, or approved by admin for cash
+  FAILED // Payment failed or was declined / rejected by admin for cash
+  CANCELLED // Customer cancelled before completing
 }
 
 enum PaymentMethod {
-  PAYCHANGU  // Online payment via Paychangu gateway
-  CASH       // Cash payment submitted offline, requires admin approval
+  PAYCHANGU // Online payment via Paychangu gateway
+  CASH // Cash payment submitted offline, requires admin approval
 }
 
 model Payment {
   id          String        @id @default(cuid())
-  txRef       String        @unique            // Our unique reference
+  txRef       String        @unique // Our unique reference
   amount      Decimal       @db.Decimal(15, 2) // Amount in MWK
   currency    String        @default("MWK")
   status      PaymentStatus @default(PENDING)
   method      PaymentMethod @default(PAYCHANGU)
-  description String?                          // What this payment covers
+  description String? // What this payment covers
 
   // Paychangu-specific fields
-  checkoutUrl String?       @db.Text           // Paychangu hosted checkout URL
-  paychanguId String?                          // charge_id returned by Paychangu
-  paidAt      DateTime?                        // When payment was confirmed (auto for online, admin-set for cash)
+  checkoutUrl String?   @db.Text // Paychangu hosted checkout URL
+  paychanguId String? // charge_id returned by Paychangu
+  paidAt      DateTime? // When payment was confirmed (auto for online, admin-set for cash)
 
   // Cash payment fields
-  receiptUrl       String?   @db.Text          // URL of uploaded payment receipt image
-  adminApprovedBy  String?                     // User ID of admin who approved/rejected
-  adminApprovedAt  DateTime?                   // When admin reviewed the cash payment
-  adminNotes       String?   @db.Text          // Admin notes on approval or rejection
+  receiptUrl      String?   @db.Text // URL of uploaded payment receipt image
+  adminApprovedBy String? // User ID of admin who approved/rejected
+  adminApprovedAt DateTime? // When admin reviewed the cash payment
+  adminNotes      String?   @db.Text // Admin notes on approval or rejection
 
   // Foreign keys
   projectId String
@@ -469,7 +505,7 @@ model Payment {
 
   // Relations
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId],    references: [id])
+  user    User    @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -498,29 +534,31 @@ model Enquiry {
 // ---------------------------------------------------------------------------
 
 model QuotationRequest {
-  id          String   @id @default(cuid())
+  id String @id @default(cuid())
 
   // Applicant contact info
-  name        String
-  email       String
-  phone       String?
-  company     String?
+  name    String
+  email   String
+  phone   String?
+  company String?
 
   // What this request is for — a construction project/service, or a direct
   // product order (e.g. bags of cement, concrete blocks) with no project attached.
   requestType String @default("PROJECT") // PROJECT | PRODUCTS
 
   // Project details (requestType = PROJECT)
-  projectType   String            // e.g. Property Development, Building Contracting…
-  description   String   @db.Text // Full project brief (optional in practice for PRODUCTS requests)
-  location      String            // Site / delivery city
-  budgetRange   String?           // e.g. MK 5M – 10M
-  timeline      String?           // Preferred start / duration / delivery window
-  projectSize   String?           // e.g. Small, Medium, Large / area in m²
+  projectType String // e.g. Property Development, Building Contracting…
+  description String  @db.Text // Full project brief (optional in practice for PRODUCTS requests)
+  location    String // Site / delivery city
+  budgetRange String? // e.g. MK 5M – 10M
+  timeline    String? // Preferred start / duration / delivery window
+  projectSize String? // e.g. Small, Medium, Large / area in m²
 
   // Product order details (requestType = PRODUCTS)
-  productCategory String?         // Subsidiary — e.g. Reines ProCrete
-  /** Array of { name, quantity, unit } line items. */
+  productCategory String? // Subsidiary — e.g. Reines ProCrete
+  /**
+   * Array of { name, quantity, unit } line items.
+   */
   products        Json?
 
   // Additional
@@ -528,12 +566,12 @@ model QuotationRequest {
   howHeardAboutUs     String?
 
   // Status (admin managed)
-  read       Boolean  @default(false)
-  status     String   @default("NEW")  // NEW, REVIEWED, QUOTED, CLOSED
-  adminNotes String?  @db.Text
+  read       Boolean @default(false)
+  status     String  @default("NEW") // NEW, REVIEWED, QUOTED, CLOSED
+  adminNotes String? @db.Text
 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([status, createdAt])
 }
@@ -606,9 +644,9 @@ model ProductCatalogSetting {
 // Stores admin dashboard display preferences such as the recent activity clear point.
 // ---------------------------------------------------------------------------
 model AdminOverviewPreference {
-  id                      String   @id @default("global")
+  id                      String    @id @default("global")
   recentActivityClearedAt DateTime?
-  updatedAt               DateTime @updatedAt
+  updatedAt               DateTime  @updatedAt
 }
 
 // ---------------------------------------------------------------------------
@@ -620,8 +658,8 @@ model AdminOverviewPreference {
 model PushDevice {
   id        String   @id @default(cuid())
   userId    String
-  token     String   @unique   // Expo push token (ExponentPushToken[...])
-  platform  String             // "ios" | "android"
+  token     String   @unique // Expo push token (ExponentPushToken[...])
+  platform  String // "ios" | "android"
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
