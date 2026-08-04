@@ -23,10 +23,10 @@ export function TestimonialsSection({ testimonials }: Props) {
           {testimonials.map((t) => (
             <div
               key={t.id}
-              className="flex flex-col rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm transition-colors hover:bg-white/[0.07]"
+              className="flex flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
             >
-              <Quote size={20} className="text-[#8fb9e8]/60" />
-              <p className="mt-3 flex-1 text-sm leading-relaxed text-zinc-300">{t.quote}</p>
+              <Quote size={20} className="text-[#8fb9e8]" />
+              <p className="mt-3 flex-1 text-sm leading-relaxed text-zinc-500">{t.quote}</p>
               <div className="mt-6 flex items-center gap-3">
                 <div
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
@@ -35,8 +35,8 @@ export function TestimonialsSection({ testimonials }: Props) {
                   {getTestimonialInitials(t.clientName)}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-white">{t.clientName}</p>
-                  <p className="truncate text-xs text-zinc-400">{t.clientTitle}</p>
+                  <p className="truncate text-sm font-semibold text-[#2d4a6b]">{t.clientName}</p>
+                  <p className="truncate text-xs text-zinc-500">{t.clientTitle}</p>
                 </div>
               </div>
             </div>
