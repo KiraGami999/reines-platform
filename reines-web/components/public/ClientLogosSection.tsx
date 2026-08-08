@@ -9,21 +9,21 @@ type Props = {
 const MIN_TRACK_LOGOS = 10;
 /** Constant scroll speed (px/s) so the marquee feels the same pace no matter how many logos exist. */
 const PX_PER_SECOND = 55;
-/** Matches the tile width + gap below (w-36 sm:w-44 + gap-10), used only to size the animation duration. */
-const APPROX_TILE_WIDTH = 200;
+/** Matches the tile width + gap below (w-44 sm:w-56 + gap-10), used only to size the animation duration. */
+const APPROX_TILE_WIDTH = 240;
 
 function LogoMark({ logo, ariaHidden = false }: { logo: ClientLogoItem; ariaHidden?: boolean }) {
   const darkSrc = logo.darkLogoUrl || logo.lightLogoUrl;
 
   const content = (
-    <div className="relative h-12 w-full sm:h-14">
+    <div className="relative h-16 w-full sm:h-20">
       {/* Light-mode variant */}
       <Image
         src={logo.lightLogoUrl}
         alt={logo.name}
         fill
         unoptimized={logo.lightLogoUrl.startsWith("/api/media")}
-        sizes="200px"
+        sizes="240px"
         className="object-contain dark:hidden"
       />
       {/* Dark-mode variant — falls back to the light logo if none was uploaded */}
@@ -32,7 +32,7 @@ function LogoMark({ logo, ariaHidden = false }: { logo: ClientLogoItem; ariaHidd
         alt={logo.name}
         fill
         unoptimized={darkSrc.startsWith("/api/media")}
-        sizes="200px"
+        sizes="240px"
         className="hidden object-contain dark:block"
       />
     </div>
@@ -100,7 +100,7 @@ export function ClientLogosSection({ logos }: Props) {
           {[0, 1].map((pass) => (
             <div key={pass} className="flex shrink-0 items-center gap-10" aria-hidden={pass === 1}>
               {passLogos.map(({ logo, key }) => (
-                <div key={`${pass}-${key}`} className="w-36 shrink-0 sm:w-44">
+                <div key={`${pass}-${key}`} className="w-44 shrink-0 sm:w-56">
                   <LogoMark logo={logo} ariaHidden={pass === 1} />
                 </div>
               ))}
