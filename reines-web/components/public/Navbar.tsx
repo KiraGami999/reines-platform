@@ -20,6 +20,7 @@ const ALL_LINKS = [
   { label: "Products", href: "/products" },
   { label: "Market Insights", href: "/market-insights" },
   { label: "Projects", href: "/projects" },
+  { label: "Project Mate", href: "/project-mate" },
   { label: "Get a Quote", href: "/quote" },
   { label: "Contact", href: "/contact" },
 ];

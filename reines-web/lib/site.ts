@@ -39,6 +39,7 @@ export function getPublicNavPages(options: { includeMarketInsights: boolean }) {
       ? [{ path: "/market-insights", label: "Market Insights", priority: 0.6 }]
       : []),
     { path: "/projects", label: "Projects", priority: 0.8 },
+    { path: "/project-mate", label: "Project Mate", priority: 0.7 },
     { path: "/contact", label: "Contact", priority: 0.7 },
     { path: "/quote", label: "Get a Quote", priority: 0.7 },
   ];

@@ -107,6 +107,7 @@ const nextConfig: NextConfig = {
       { pathname: "/logo-icon2.png" },
       { pathname: "/logo-procrete.png" },
       { pathname: "/logo-nav-rebrand.png" },
+      { pathname: "/project-mate-icon.png" },
       { pathname: "/apple-touch-icon.png" },
       { pathname: "/favicon.ico" },
       { pathname: "/homepage-ads/**" },

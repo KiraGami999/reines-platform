@@ -296,6 +296,37 @@ select:disabled {
   }
 }
 
+/* Client logos marquee — homepage "Clients We've Worked With" strip. Two
+ * identical passes sit side by side; sliding the wrapper left by exactly 50%
+ * moves it one full pass, so the seam between loops is invisible. */
+@keyframes reines-logos-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.reines-logos-track {
+  animation-name: reines-logos-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+
+.reines-logos-marquee:hover .reines-logos-track,
+.reines-logos-marquee:focus-within .reines-logos-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reines-logos-track {
+    animation: none;
+    transform: translateX(0);
+  }
+}
+
 /* Payment receipt — when printing the receipt page, show only #payment-receipt */
 @media print {
   @page {
