@@ -7,6 +7,7 @@ import { ClientLogosSection } from "@/components/public/ClientLogosSection";
 import { getHomepageAds, type HomepageAd } from "@/lib/homepage-ads";
 import { getFeaturedPublicProjects } from "@/lib/public-projects";
 import { getClientLogosPageData } from "@/lib/client-logos";
+import type { ClientLogoItem } from "@/lib/client-logos-data";
 
 export const dynamic = "force-dynamic";
 
@@ -122,11 +123,24 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
   );
 }
 
-function Stats() {
+/**
+ * Merges the client-logos marquee with the stats strip into one section, so
+ * "Clients We've Worked With" is one of the first things visitors see (right
+ * under the hero) with the at-a-glance company stats below it.
+ */
+function ClientsAndStats({ logos, showLogos }: { logos: ClientLogoItem[]; showLogos: boolean }) {
+  const hasLogos = showLogos && logos.length > 0;
+
   return (
-    <section className="relative border-y border-zinc-100 bg-white py-8 sm:py-12">
+    <section className="relative border-y border-zinc-100 bg-white py-10 sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4">
+        {hasLogos && (
+          <div className="border-b border-zinc-100 pb-10 sm:pb-14">
+            <ClientLogosSection logos={logos} />
+          </div>
+        )}
+
+        <div className={`grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4 ${hasLogos ? "pt-10 sm:pt-14" : ""}`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
               <p className="text-2xl font-extrabold text-[#2d4a6b] sm:text-3xl md:text-4xl">{s.value}</p>
@@ -284,13 +298,10 @@ export default async function HomePage() {
   return (
     <>
       <Hero ads={homepageAds} />
-      <Stats />
+      <ClientsAndStats logos={clientLogosData.logos} showLogos={clientLogosData.settings.visible} />
       <Services />
       <FeaturedProjectsSlideshow projects={featuredProjects} />
       <WhyReines />
-      {clientLogosData.settings.visible && (
-        <ClientLogosSection logos={clientLogosData.logos} />
-      )}
       <CtaBanner />
     </>
   );
