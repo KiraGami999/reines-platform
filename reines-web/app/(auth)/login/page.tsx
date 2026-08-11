@@ -41,14 +41,9 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex flex-1 flex-col justify-center px-6 py-12 bg-zinc-50">
+      <div className="flex flex-1 flex-col justify-center px-6 pb-12 pt-20 bg-zinc-50 sm:pt-24 lg:py-12">
         <div className="mx-auto w-full max-w-sm">
           <AuthMobileBrandLogo />
-
-          <div className="mb-8">
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Welcome back</h1>
-            <p className="mt-1 text-sm text-zinc-500">Sign in to access your Reines dashboard.</p>
-          </div>
 
           {params.registered && (
             <div className="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">

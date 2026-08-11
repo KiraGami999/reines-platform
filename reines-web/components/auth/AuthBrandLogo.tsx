@@ -18,7 +18,7 @@ export function AuthMobileBrandLogo() {
   const { resolved } = useTheme();
 
   return (
-    <div className="mb-8 lg:hidden">
+    <div className="mb-10 mt-2 lg:hidden">
       <ReinesLogo
         size="lg"
         variant={resolved === "dark" ? "on-dark" : "on-light"}
