@@ -112,7 +112,7 @@ export default async function GalleryPage() {
       {/* ── Page header ── */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Progress Gallery</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Progress Gallery</h1>
           <p className="mt-0.5 text-sm text-zinc-500">
             {totalPhotos} photo{totalPhotos !== 1 ? "s" : ""} across {totalProjects} project{totalProjects !== 1 ? "s" : ""}
           </p>

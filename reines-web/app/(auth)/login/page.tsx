@@ -45,6 +45,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         <div className="mx-auto w-full max-w-sm">
           <AuthMobileBrandLogo />
 
+          <p className="mb-8 text-sm text-zinc-500">Sign in to access your Reines dashboard.</p>
+
           {params.registered && (
             <div className="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
               Account created successfully. Sign in with your email and password.
