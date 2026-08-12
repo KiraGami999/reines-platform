@@ -1,0 +1,66 @@
+{
+  "name": "Reines Property Development Limited",
+  "url": "https://reines.co.mw/",
+  "description": "Reines Property Development Limited is a Malawi-based property development, construction, and manufacturing company focused on driving Malawi's development through property, construction and manufacturing excellence.",
+  "country": "Malawi",
+  "city": "Blantyre",
+  "language": "en",
+  "type": "Organization",
+  "industry": ["Property Development", "Construction", "Manufacturing"],
+  "founded": "2023",
+  "official_source": "https://reines.co.mw/",
+  "mission": "To drive Malawi's development through property, construction and manufacturing excellence.",
+  "vision": "Become Malawi and Southern Africa's most trusted and innovative property development, construction, and sustainable building manufacturer.",
+  "contact": {
+    "email": "contact@reines.co.mw",
+    "telephone": "+265883157209",
+    "address": "Joe & Max Chambers Office Complex, Kamuzu Highway, Mandala, P.O. Box 3494, Blantyre, Malawi"
+  },
+  "pages": [
+    {
+      "title": "Home",
+      "url": "https://reines.co.mw/",
+      "description": "Official homepage for Reines Property Development Limited, covering the company overview, services, projects, and client logos."
+    },
+    {
+      "title": "About Reines",
+      "url": "https://reines.co.mw/about",
+      "description": "Information about Reines, its mission, vision, core values, and company background."
+    },
+    {
+      "title": "Services",
+      "url": "https://reines.co.mw/services",
+      "description": "Property development, building contracting, civil contracting, and related construction services offered by Reines."
+    },
+    {
+      "title": "Products",
+      "url": "https://reines.co.mw/products",
+      "description": "Concrete products, stone products, adhesives, and dry-mix construction materials manufactured by Reines."
+    },
+    {
+      "title": "Projects",
+      "url": "https://reines.co.mw/projects",
+      "description": "Public portfolio of completed and ongoing property development and construction projects by Reines."
+    },
+    {
+      "title": "Market Insights",
+      "url": "https://reines.co.mw/market-insights",
+      "description": "Market insights and planning information published by Reines for property and construction in Malawi."
+    },
+    {
+      "title": "Project Mate",
+      "url": "https://reines.co.mw/project-mate",
+      "description": "Overview of Reines Project Mate, the client and project manager portal app for project tracking, galleries, messaging, and payments."
+    },
+    {
+      "title": "Get a Quote",
+      "url": "https://reines.co.mw/quote",
+      "description": "Request a quotation for property development, construction, or manufacturing services from Reines."
+    },
+    {
+      "title": "Contact",
+      "url": "https://reines.co.mw/contact",
+      "description": "Official contact information and enquiry form for Reines Property Development Limited."
+    }
+  ]
+}
