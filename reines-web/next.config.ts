@@ -112,6 +112,8 @@ const nextConfig: NextConfig = {
       { pathname: "/favicon.ico" },
       { pathname: "/icon-192.png" },
       { pathname: "/icon-512.png" },
+      { pathname: "/og-image.jpg" },
+      { pathname: "/og-image.png" },
       { pathname: "/homepage-ads/**" },
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
