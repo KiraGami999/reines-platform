@@ -8,9 +8,10 @@ export const REINES_LOGO_LEGACY_SRC = "/logo.png";
 /** Current Reines Property Development rebrand — admin portal + public footer. */
 export const REINES_LOGO_SRC = "/logo-nav-rebrand.png";
 export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
-/** Pre-rendered navy foreground — used for "on-light" instead of a brightness(0)
- *  filter, so the mark reads as brand navy rather than flat black. */
+/** Pre-rendered navy foreground — legacy on-light asset; portal now uses accent blue. */
 export const PROJECT_MATE_LOGO_NAVY_SRC = "/logo-project-mate-navy.png";
+/** Brand accent (#8fb9e8) — used for Project Mate in both light and dark portal chrome. */
+export const PROJECT_MATE_LOGO_ACCENT_SRC = "/logo-project-mate-accent.png";
 
 /** Corporate rebrand aspect ratio from trimmed asset (795×163). */
 const LOGO_WIDTH = 795;
@@ -96,9 +97,9 @@ const MARK_CONFIG = {
     sizeClass: CORPORATE_SIZE_CLASS,
   },
   "project-mate": {
-    src: PROJECT_MATE_LOGO_SRC,
-    /** Pre-rendered brand-navy version — keeps "on-light" contexts navy instead of flat black. */
-    lightSrc: PROJECT_MATE_LOGO_NAVY_SRC as string | null,
+    src: PROJECT_MATE_LOGO_ACCENT_SRC,
+    /** Same accent mark on pale and dark chrome so it matches light-mode brand blue. */
+    lightSrc: PROJECT_MATE_LOGO_ACCENT_SRC as string | null,
     width: PROJECT_MATE_WIDTH,
     height: PROJECT_MATE_HEIGHT,
     alt: "Reines Project Mate",

@@ -100,6 +100,7 @@ const nextConfig: NextConfig = {
       { pathname: "/logo.png" },
       { pathname: "/logo-project-mate.png" },
       { pathname: "/logo-project-mate-navy.png" },
+      { pathname: "/logo-project-mate-accent.png" },
       { pathname: "/reines-logo.png" },
       { pathname: "/logo-icon.png" },
       { pathname: "/logo-loader.png" },
