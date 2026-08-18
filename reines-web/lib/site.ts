@@ -12,13 +12,20 @@ export const SITE_URL = normalizeBaseUrl(
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://reines.co.mw"
 );
 
-export const SITE_NAME = "Reines Property Development";
+/** Brand name shown in search / social (Google site name, og:site_name, page titles). */
+export const SITE_NAME = "Reines Group";
 
 export const SITE_DESCRIPTION =
   "Property development, construction, concrete products, and manufacturing in Malawi. Client portal for live project tracking, milestones, and progress galleries.";
 
 export const ORGANIZATION = {
-  name: "Reines Property Development Limited",
+  /** Public brand used for Google site-name / Knowledge Panel signals. */
+  name: "Reines Group",
+  /** Legal / trading names Google can treat as alternate labels. */
+  alternateName: [
+    "Reines Property Development",
+    "Reines Property Development Limited",
+  ] as const,
   logoPath: "/logo-icon.png",
   telephone: "+265883157209",
   email: "contact@reines.co.mw",

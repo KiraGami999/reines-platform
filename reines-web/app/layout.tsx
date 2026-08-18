@@ -11,6 +11,7 @@ const montserrat = Montserrat({ subsets: ["latin"], variable: "--font-montserrat
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: {
     default: SITE_NAME,
     template: `%s — ${SITE_NAME}`,
@@ -36,7 +37,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Reines Property Development — Official Website",
+        alt: "Reines Group — Official Website",
       },
     ],
   },

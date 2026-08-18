@@ -22,6 +22,7 @@ export function StructuredData({ includeMarketInsights }: Props) {
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
     name: ORGANIZATION.name,
+    alternateName: [...ORGANIZATION.alternateName],
     url: SITE_URL,
     logo: `${SITE_URL}${ORGANIZATION.logoPath}`,
     email: ORGANIZATION.email,
@@ -47,6 +48,7 @@ export function StructuredData({ includeMarketInsights }: Props) {
     "@id": `${SITE_URL}/#website`,
     url: SITE_URL,
     name: SITE_NAME,
+    alternateName: [...ORGANIZATION.alternateName],
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 
