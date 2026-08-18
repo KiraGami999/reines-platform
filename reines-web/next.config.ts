@@ -110,6 +110,8 @@ const nextConfig: NextConfig = {
       { pathname: "/project-mate-icon.png" },
       { pathname: "/apple-touch-icon.png" },
       { pathname: "/favicon.ico" },
+      { pathname: "/icon-192.png" },
+      { pathname: "/icon-512.png" },
       { pathname: "/homepage-ads/**" },
       { pathname: "/product-images/**" },
       { pathname: "/about/**" },
