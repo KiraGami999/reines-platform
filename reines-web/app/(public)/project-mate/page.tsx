@@ -5,48 +5,42 @@ import type { ElementType } from "react";
 import {
   Apple,
   Bell,
-  Download,
+  Check,
   GalleryHorizontal,
   Gift,
   LayoutDashboard,
+  LogIn,
   MessageCircle,
   Play,
   Wallet,
 } from "lucide-react";
 
-/**
- * Play Store URLs are deterministic from the app's package ID, so this link
- * is already correct for when the listing goes live — nothing to update here
- * once Google finishes verification, the app just needs to be published.
- */
-const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=mw.co.reines.portal";
-
 export const metadata: Metadata = {
-  title: "Reines Project Mate — Client & Project Manager App",
+  title: "Reines Project Mate — Client & Project Manager Portals",
   description:
-    "Reines Project Mate is the official mobile app for Reines Property Development clients and project managers — live project tracking, progress galleries, direct messaging, payments, and loyalty rewards, right from your phone.",
+    "Learn how to use the Reines Project Mate portals as a client or project manager — live project tracking, progress galleries, messaging, payments, and loyalty rewards. The mobile app is coming soon on Google Play and the App Store.",
 };
 
 const steps = [
   {
-    icon: Download,
-    title: "Download & Sign In",
-    body: "Install Reines Project Mate and sign in with your existing Reines account — the same login you already use on the web portal. No new sign-up needed.",
+    icon: LogIn,
+    title: "Sign In to Your Portal",
+    body: "Open the Reines portal and sign in with the account Reines created for you. Clients and project managers each land in a role-specific dashboard.",
   },
   {
     icon: LayoutDashboard,
     title: "Open Your Dashboard",
-    body: "See every active project, its current stage, and recent activity the moment you open the app.",
+    body: "See every active project, its current stage, and recent activity the moment you sign in — no chasing updates by phone or WhatsApp.",
   },
   {
     icon: GalleryHorizontal,
     title: "Track Progress",
-    body: "Browse dated photo updates as your project manager documents work on site — no need to visit or call for an update.",
+    body: "Browse dated photo updates as your project manager documents work on site. Managers upload; clients review in the same shared gallery.",
   },
   {
     icon: Bell,
     title: "Stay In The Loop",
-    body: "Message your project manager, get push notifications for milestones and updates, and manage payments — all in one place.",
+    body: "Message your counterpart inside the portal, follow milestones, and manage payments — all in one place, on any device with a browser.",
   },
 ] satisfies { icon: ElementType; title: string; body: string }[];
 
@@ -54,7 +48,7 @@ const features = [
   {
     icon: LayoutDashboard,
     title: "Live Project Dashboard",
-    body: "Every active project, its current stage, and what's happening next — updated in real time.",
+    body: "Every active project, its current stage, and what's happening next — updated as work moves forward.",
   },
   {
     icon: GalleryHorizontal,
@@ -64,12 +58,12 @@ const features = [
   {
     icon: MessageCircle,
     title: "Direct Messaging",
-    body: "Message your project manager directly inside the app — no more scattered WhatsApp threads.",
+    body: "Message your project manager or client inside the portal — no more scattered WhatsApp threads.",
   },
   {
     icon: Wallet,
     title: "Payments & History",
-    body: "Make payments and review your full payment history without visiting the office.",
+    body: "Clients can review payment history and related balances without visiting the office.",
   },
   {
     icon: Gift,
@@ -78,45 +72,73 @@ const features = [
   },
   {
     icon: Bell,
-    title: "Push Notifications",
-    body: "Get notified the moment there's a new message, milestone, or gallery upload.",
+    title: "Notifications",
+    body: "Stay aware of new messages, milestones, and gallery uploads as they happen.",
   },
 ] satisfies { icon: ElementType; title: string; body: string }[];
 
-const clientHighlights = [
-  "Track your project's progress and milestones",
-  "Browse the photo gallery as work is completed",
-  "Message your project manager anytime",
-  "Pay and view your full payment history",
-  "Earn and redeem Loyalty Rewards points",
+const clientGuide = [
+  {
+    title: "Sign in as a client",
+    body: "Use the email and password issued by Reines. After login you land on your client overview.",
+  },
+  {
+    title: "Review your projects",
+    body: "Open My Projects to see status, milestones, and overall progress for every active job.",
+  },
+  {
+    title: "Browse the Progress Gallery",
+    body: "Check dated site photos uploaded by your project manager whenever you want an update.",
+  },
+  {
+    title: "Message your manager",
+    body: "Use Messages for project questions and clarifications — conversations stay attached to the right project.",
+  },
+  {
+    title: "Payments & Rewards",
+    body: "View payment history and loyalty points from your portal account whenever you need them.",
+  },
 ];
 
-const managerHighlights = [
-  "View every assigned project in one dashboard",
-  "Update milestones as work is completed",
-  "Upload progress photos straight from your phone",
-  "Stay in touch with clients via in-app messaging",
-  "Get notified about new assignments and updates",
+const managerGuide = [
+  {
+    title: "Sign in as a project manager",
+    body: "Use your Reines manager credentials. Your dashboard shows only the projects assigned to you.",
+  },
+  {
+    title: "Work from Assigned Projects",
+    body: "Open each project for milestones, status, and the latest client activity.",
+  },
+  {
+    title: "Update milestones",
+    body: "Mark progress as stages complete so clients always see an accurate picture.",
+  },
+  {
+    title: "Upload gallery photos",
+    body: "Add dated site photos from the Progress Gallery so clients can follow work without site visits.",
+  },
+  {
+    title: "Message clients",
+    body: "Keep project communication inside Messages so updates stay organised and easy to find later.",
+  },
 ];
 
-function StoreBadges() {
+function ComingSoonStores() {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <a
-        href={PLAY_STORE_URL}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-3 rounded-xl bg-white px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+      <div
+        className="inline-flex cursor-default items-center gap-3 rounded-xl border border-white/15 px-4 py-2.5 opacity-80"
+        aria-label="Coming soon on Google Play"
       >
-        <Play size={20} className="fill-[#2d4a6b] text-[#2d4a6b]" />
+        <Play size={20} className="text-zinc-300" />
         <span className="flex flex-col leading-tight">
-          <span className="text-[10px] font-medium uppercase tracking-wide text-zinc-500">Get it on</span>
-          <span className="text-sm font-bold text-[#2d4a6b]">Google Play</span>
+          <span className="text-[10px] font-medium uppercase tracking-wide text-zinc-400">Coming soon on</span>
+          <span className="text-sm font-bold text-zinc-200">Google Play</span>
         </span>
-      </a>
+      </div>
 
       <div
-        className="inline-flex cursor-default items-center gap-3 rounded-xl border border-white/15 px-4 py-2.5 opacity-70"
+        className="inline-flex cursor-default items-center gap-3 rounded-xl border border-white/15 px-4 py-2.5 opacity-80"
         aria-label="Coming soon to the Apple App Store"
       >
         <Apple size={20} className="text-zinc-300" />
@@ -129,7 +151,7 @@ function StoreBadges() {
   );
 }
 
-function PhoneMock() {
+function PortalMock() {
   const rows = [
     { icon: LayoutDashboard, label: "Dashboard" },
     { icon: GalleryHorizontal, label: "Progress Gallery" },
@@ -138,20 +160,23 @@ function PhoneMock() {
   ];
 
   return (
-    <div className="relative mx-auto w-full max-w-[260px]">
-      <div className="rounded-[2.5rem] border border-white/10 bg-[#1f3350] p-3 shadow-2xl shadow-black/40">
-        <div className="overflow-hidden rounded-[2rem] bg-[#141f30]">
-          <div className="flex flex-col items-center gap-3 px-6 pt-9 pb-6">
+    <div className="relative mx-auto w-full max-w-[280px]">
+      <div className="rounded-[1.75rem] border border-white/10 bg-[#1f3350] p-3 shadow-2xl shadow-black/40">
+        <div className="overflow-hidden rounded-[1.35rem] bg-[#141f30]">
+          <div className="flex items-center gap-3 border-b border-white/5 px-4 py-3">
             <Image
               src="/project-mate-icon.png"
-              alt="Reines Project Mate app icon"
-              width={64}
-              height={64}
-              className="rounded-2xl shadow-lg shadow-black/30"
+              alt="Reines Project Mate"
+              width={36}
+              height={36}
+              className="rounded-lg shadow-md shadow-black/30"
             />
-            <p className="text-sm font-semibold text-white">Reines Project Mate</p>
+            <div>
+              <p className="text-xs font-semibold text-white">Project Mate</p>
+              <p className="text-[10px] text-zinc-400">Client & manager portals</p>
+            </div>
           </div>
-          <div className="space-y-2 px-4 pb-7">
+          <div className="space-y-2 px-4 py-5">
             {rows.map((row) => (
               <div key={row.label} className="flex items-center gap-3 rounded-xl bg-white/5 px-3 py-2.5">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#8fb9e8]/15 text-[#8fb9e8]">
@@ -164,11 +189,32 @@ function PhoneMock() {
         </div>
       </div>
 
-      <div className="absolute -right-3 top-8 hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-lg sm:-right-10 sm:flex">
+      <div className="absolute -right-3 top-10 hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-lg sm:-right-10 sm:flex">
         <Bell size={13} className="text-[#2d4a6b]" />
         <span className="text-[11px] font-semibold text-[#2d4a6b]">New milestone update</span>
       </div>
     </div>
+  );
+}
+
+function GuideList({ items }: { items: { title: string; body: string }[] }) {
+  return (
+    <ol className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5">
+      {items.map((item, index) => (
+        <li
+          key={item.title}
+          className="flex gap-3 border-b border-zinc-100 pb-4 last:border-b-0 last:pb-0"
+        >
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
+            {index + 1}
+          </span>
+          <div>
+            <p className="text-sm font-semibold text-[#2d4a6b]">{item.title}</p>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
   );
 }
 
@@ -183,28 +229,42 @@ export default function ProjectMatePage() {
         <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:px-8">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
-              Your Projects. In Your Pocket.
+              Client & Project Manager Portals
             </span>
             <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               Reines Project Mate
             </h1>
             <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">
-              The official mobile app for Reines clients and project managers. Track progress, browse photo
-              updates, message your project manager, and manage payments — all from your phone, using the same
-              account you already use on the web portal.
+              Your online home for live project tracking, progress photos, messaging, payments, and loyalty
+              rewards. Sign in to the portal today — the dedicated mobile app for Android and iOS is coming
+              soon.
             </p>
 
-            <div className="mt-7">
-              <StoreBadges />
-              <p className="mt-3 text-xs text-zinc-400">
-                We&apos;re currently finishing Google Play&apos;s verification review. If the listing isn&apos;t
-                live yet when you tap the button, check back shortly — the link above is already the app&apos;s
-                permanent Play Store address.
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+              >
+                <LogIn size={16} strokeWidth={2.2} />
+                Sign in to your portal
+              </Link>
+              <a
+                href="#how-to-use"
+                className="inline-flex items-center rounded-xl border border-white/20 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/5"
+              >
+                How to use the portals
+              </a>
+            </div>
+
+            <div className="mt-8">
+              <p className="mb-3 text-xs font-medium uppercase tracking-wide text-zinc-400">
+                Mobile app
               </p>
+              <ComingSoonStores />
             </div>
           </div>
 
-          <PhoneMock />
+          <PortalMock />
         </div>
       </section>
 
@@ -215,7 +275,7 @@ export default function ProjectMatePage() {
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Getting Started</span>
             <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">How It Works</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
-              From download to your first update, Reines Project Mate takes minutes to set up.
+              From first sign-in to your latest site update, Project Mate keeps clients and managers aligned.
             </p>
           </div>
 
@@ -236,17 +296,75 @@ export default function ProjectMatePage() {
         </div>
       </section>
 
+      {/* How to use — client / manager */}
+      <section id="how-to-use" className="scroll-mt-24 bg-zinc-50 py-14 sm:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
+              Portal Guides
+            </span>
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">How to Use Your Portal</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
+              Follow the path that matches your role. Both portals share the same Reines account system — what
+              you see depends on whether you are a client or a project manager.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 lg:grid-cols-2">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                  <Wallet size={20} strokeWidth={1.8} />
+                </span>
+                <div>
+                  <h3 className="text-lg font-bold text-[#2d4a6b]">As a Client</h3>
+                  <p className="text-xs text-zinc-500">Track your build without chasing updates</p>
+                </div>
+              </div>
+              <GuideList items={clientGuide} />
+            </div>
+
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
+                  <LayoutDashboard size={20} strokeWidth={1.8} />
+                </span>
+                <div>
+                  <h3 className="text-lg font-bold text-[#2d4a6b]">As a Project Manager</h3>
+                  <p className="text-xs text-zinc-500">Keep assigned projects moving and visible</p>
+                </div>
+              </div>
+              <GuideList items={managerGuide} />
+            </div>
+          </div>
+
+          <div className="mt-8 flex justify-center">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#243c58]"
+            >
+              <LogIn size={16} strokeWidth={2.2} />
+              Go to portal sign-in
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Features */}
-      <section className="bg-zinc-50 py-14 sm:py-20">
+      <section className="bg-white py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Features</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">Everything You Need, On the Go</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">Everything in One Portal</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
+              The same capabilities you&apos;ll get in the mobile app later are already available through the
+              web portals today.
+            </p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-zinc-200 bg-white p-6">
+              <div key={feature.title} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <feature.icon size={20} strokeWidth={1.8} />
                 </div>
@@ -258,59 +376,7 @@ export default function ProjectMatePage() {
         </div>
       </section>
 
-      {/* Built for Clients / Project Managers */}
-      <section className="bg-white py-14 sm:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Built for Both Sides</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">Made for Clients and Project Managers</h2>
-          </div>
-
-          <div className="mt-12 grid gap-8 lg:grid-cols-2">
-            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-              <div className="mb-5 flex items-center gap-3">
-                <Wallet className="text-[#8fb9e8]" size={22} />
-                <h3 className="text-lg font-bold text-[#2d4a6b]">For Clients</h3>
-              </div>
-              <ul className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5">
-                {clientHighlights.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-3 border-b border-zinc-100 pb-3 text-sm font-semibold text-[#2d4a6b] last:border-b-0 last:pb-0"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#8fb9e8]/15 text-[#2d4a6b]">
-                      <Bell size={12} strokeWidth={2.2} />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-              <div className="mb-5 flex items-center gap-3">
-                <LayoutDashboard className="text-[#8fb9e8]" size={22} />
-                <h3 className="text-lg font-bold text-[#2d4a6b]">For Project Managers</h3>
-              </div>
-              <ul className="space-y-3 rounded-xl border border-zinc-200 bg-white p-5">
-                {managerHighlights.map((item) => (
-                  <li
-                    key={item}
-                    className="flex items-center gap-3 border-b border-zinc-100 pb-3 text-sm font-semibold text-[#2d4a6b] last:border-b-0 last:pb-0"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#8fb9e8]/15 text-[#2d4a6b]">
-                      <Bell size={12} strokeWidth={2.2} />
-                    </span>
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Availability / CTA */}
+      {/* Mobile app coming soon + CTA */}
       <section className="bg-[#2d4a6b] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <Image
@@ -320,19 +386,32 @@ export default function ProjectMatePage() {
             height={163}
             className="mx-auto h-10 w-auto object-contain"
           />
-          <h2 className="mt-6 text-3xl font-bold text-white">Available now on Android. iOS is coming soon.</h2>
+          <h2 className="mt-6 text-3xl font-bold text-white">Use the portals now. Mobile app coming soon.</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-zinc-300">
-            We&apos;re finishing up Google&apos;s app verification process. Download on Google Play below, and
-            keep an eye on this page — an App Store link will appear here as soon as the iOS version is ready.
+            Sign in on any browser to manage projects today. Native apps for Google Play and the App Store are
+            on the way — we&apos;ll update this page when they launch.
           </p>
-          <div className="mt-7 flex justify-center">
-            <StoreBadges />
+          <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+            >
+              <LogIn size={16} strokeWidth={2.2} />
+              Sign in to your portal
+            </Link>
           </div>
+          <div className="mt-8 flex justify-center">
+            <ComingSoonStores />
+          </div>
+          <p className="mt-6 inline-flex items-center gap-2 text-xs text-zinc-400">
+            <Check size={14} className="text-[#8fb9e8]" strokeWidth={2.4} />
+            Same login for web today and the app when it ships
+          </p>
           <Link
             href="/contact"
-            className="mt-8 inline-block text-sm font-semibold text-[#8fb9e8] underline-offset-4 hover:underline"
+            className="mt-6 inline-block text-sm font-semibold text-[#8fb9e8] underline-offset-4 hover:underline"
           >
-            Have questions about the app? Contact us →
+            Need portal access or have questions? Contact us →
           </Link>
         </div>
       </section>
