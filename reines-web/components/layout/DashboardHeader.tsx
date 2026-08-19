@@ -335,8 +335,13 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const pathname = usePathname();
   const crumbs   = buildBreadcrumbs(pathname);
   const { resolved } = useTheme();
-  const logoVariant = resolved === "dark" ? "on-dark" : "on-light";
   const logoMark = getPortalLogoMark(user.role);
+  const logoVariant =
+    resolved === "dark"
+      ? logoMark === "project-mate"
+        ? "on-dark-accent"
+        : "on-dark"
+      : "on-light";
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:h-16 sm:px-6 print:hidden">

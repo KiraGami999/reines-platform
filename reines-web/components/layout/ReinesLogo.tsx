@@ -10,7 +10,7 @@ export const REINES_LOGO_SRC = "/logo-nav-rebrand.png";
 export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
 /** Pre-rendered navy foreground — Project Mate on light/pale backgrounds. */
 export const PROJECT_MATE_LOGO_NAVY_SRC = "/logo-project-mate-navy.png";
-/** Optional accent (#8fb9e8) asset — kept for future use; dark chrome uses white. */
+/** Optional accent (#8fb9e8) — Project Mate on dark portal header. */
 export const PROJECT_MATE_LOGO_ACCENT_SRC = "/logo-project-mate-accent.png";
 
 /** Corporate rebrand aspect ratio from trimmed asset (795×163). */
@@ -73,8 +73,12 @@ const PROJECT_MATE_SIZE_CLASS = {
 } as const;
 
 type ReinesLogoProps = {
-  /** `on-dark` = white logo on navy backgrounds. `on-light` = dark logo on pale backgrounds. */
-  variant?: "on-dark" | "on-light";
+  /**
+   * `on-dark` = white logo on navy/dark chrome (e.g. sidebar).
+   * `on-dark-accent` = brand light-blue logo on dark chrome (e.g. portal header).
+   * `on-light` = navy logo on pale backgrounds.
+   */
+  variant?: "on-dark" | "on-dark-accent" | "on-light";
   size?: keyof typeof CORPORATE_SIZE_CLASS;
   linked?: boolean;
   className?: string;
@@ -89,18 +93,20 @@ type ReinesLogoProps = {
 const MARK_CONFIG = {
   corporate: {
     src: REINES_LOGO_SRC,
-    /** No pre-rendered navy asset for this mark — "on-light" falls back to the brightness(0) filter. */
     lightSrc: null as string | null,
+    accentSrc: null as string | null,
     width: LOGO_WIDTH,
     height: LOGO_HEIGHT,
     alt: "Reines Property Development Limited",
     sizeClass: CORPORATE_SIZE_CLASS,
   },
   "project-mate": {
-    /** White mark on dark chrome (sidebar / dark header). */
+    /** White mark on dark navy chrome (sidebar). */
     src: PROJECT_MATE_LOGO_SRC,
     /** Navy on pale backgrounds (login, light header). */
     lightSrc: PROJECT_MATE_LOGO_NAVY_SRC as string | null,
+    /** Light blue (#8fb9e8) on dark portal header. */
+    accentSrc: PROJECT_MATE_LOGO_ACCENT_SRC as string | null,
     width: PROJECT_MATE_WIDTH,
     height: PROJECT_MATE_HEIGHT,
     alt: "Reines Project Mate",
@@ -118,10 +124,16 @@ export function ReinesLogo({
 }: ReinesLogoProps) {
   const config = MARK_CONFIG[mark];
   const useNavyAsset = variant === "on-light" && config.lightSrc;
+  const useAccentAsset = variant === "on-dark-accent" && config.accentSrc;
+  const src = useAccentAsset
+    ? config.accentSrc!
+    : useNavyAsset
+      ? config.lightSrc!
+      : config.src;
 
   const image = (
     <Image
-      src={useNavyAsset ? config.lightSrc! : config.src}
+      src={src}
       alt={config.alt}
       width={config.width}
       height={config.height}

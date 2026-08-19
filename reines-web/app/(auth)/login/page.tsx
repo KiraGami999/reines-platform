@@ -41,8 +41,14 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
       </div>
 
       {/* Right panel — form */}
-      <div className="flex flex-1 flex-col justify-center px-6 pb-12 pt-20 bg-zinc-50 sm:pt-24 lg:py-12">
-        <div className="mx-auto w-full max-w-sm">
+      <div className="relative flex flex-1 flex-col justify-center overflow-hidden bg-zinc-50 px-6 pb-12 pt-20 sm:pt-24 lg:py-12">
+        {/* Dark-mode ambient accent — soft brand blue glow behind the form */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute right-[-3rem] top-36 hidden h-44 w-44 rounded-full bg-[#8fb9e8]/30 blur-3xl dark:block sm:right-[-2rem] sm:top-40 sm:h-52 sm:w-52"
+        />
+
+        <div className="relative z-10 mx-auto w-full max-w-sm">
           <AuthMobileBrandLogo />
 
           <p className="mb-8 text-sm text-zinc-500">Sign in to access your Reines dashboard.</p>
