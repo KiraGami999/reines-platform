@@ -11,17 +11,16 @@ export function AuthDesktopBrandLogo() {
 /**
  * Mobile brand mark sits on the form panel, which follows light/dark mode
  * (zinc-50 in light, near-black in dark) rather than the fixed navy panel.
- * The logo must flip with it — "on-light" (forced black) was invisible
- * against the dark panel, so pick the variant from the resolved theme.
+ * Dark mode uses the brand light-blue accent mark; light mode keeps navy.
  */
 export function AuthMobileBrandLogo() {
   const { resolved } = useTheme();
 
   return (
-    <div className="mb-10 mt-2 lg:hidden">
+    <div className="mb-8 mt-6 lg:hidden">
       <ReinesLogo
-        size="lg"
-        variant={resolved === "dark" ? "on-dark" : "on-light"}
+        size="md"
+        variant={resolved === "dark" ? "on-dark-accent" : "on-light"}
         mark="project-mate"
         linked
       />
