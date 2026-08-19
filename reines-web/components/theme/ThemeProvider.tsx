@@ -10,8 +10,10 @@ import {
   type ReactNode,
 } from "react";
 import {
+  BRAND_THEME_COLOR,
   THEME_COOKIE_KEY,
   THEME_STORAGE_KEY,
+  applyThemeColor,
   isThemePreference,
   resolveTheme,
   type ResolvedTheme,
@@ -51,6 +53,7 @@ function applyResolved(resolved: ResolvedTheme) {
   const root = document.documentElement;
   root.classList.toggle("dark", resolved === "dark");
   root.style.colorScheme = resolved;
+  applyThemeColor(BRAND_THEME_COLOR);
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {

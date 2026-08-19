@@ -1,9 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import { SessionProvider } from "@/components/auth/SessionProvider";
 import { ReinesLoaderProvider } from "@/components/layout/ReinesLoaderProvider";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
-import { THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
+import { BRAND_THEME_COLOR, THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
 import "./globals.css";
 
@@ -25,6 +25,11 @@ export const metadata: Metadata = {
     ],
     shortcut: "/favicon.ico",
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: SITE_NAME,
+    statusBarStyle: "black-translucent",
   },
   openGraph: {
     type: "website",
@@ -49,10 +54,15 @@ export const metadata: Metadata = {
   },
 };
 
-export const viewport = {
+/** Tints mobile browser chrome (address / status bar) to brand navy. */
+export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  viewportFit: "cover" as const,
+  viewportFit: "cover",
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: BRAND_THEME_COLOR },
+    { media: "(prefers-color-scheme: dark)", color: BRAND_THEME_COLOR },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
