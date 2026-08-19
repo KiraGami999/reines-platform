@@ -10,21 +10,52 @@ const AUTO_SCROLL_MS = 5500;
 /** Minimum horizontal drag distance (px) before a release counts as a swipe. */
 const SWIPE_THRESHOLD = 50;
 
+/** Display slot is ~md (448px); 560 covers 2× DPR without over-fetching. */
+const AD_IMAGE_SIZES = "(max-width: 640px) 92vw, (max-width: 1024px) 448px, 560px";
+
 type FeaturedAdCarouselProps = {
   ads: HomepageAd[];
   variant?: "panel";
 };
+
+function circularDistance(a: number, b: number, length: number) {
+  const raw = Math.abs(a - b);
+  return Math.min(raw, length - raw);
+}
 
 export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouselProps) {
   const visibleAds = useMemo(() => ads.filter((ad) => ad.active), [ads]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [dragging, setDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
+  /** Once a slide enters the nearby window, keep it mounted so revisits are instant. */
+  const [loadedIds, setLoadedIds] = useState<Set<string>>(() => new Set());
   const dragStartX = useRef<number | null>(null);
   const pointerId = useRef<number | null>(null);
 
   const safeActiveIndex = visibleAds.length > 0 ? activeIndex % visibleAds.length : 0;
   const activeAd = visibleAds[safeActiveIndex];
+
+  // Mount current + neighbors only (and remember them) so off-slide multi‑MB
+  // images do not compete with the first paint.
+  useEffect(() => {
+    if (visibleAds.length === 0) return;
+    setLoadedIds((prev) => {
+      const next = new Set(prev);
+      let changed = false;
+      for (let i = 0; i < visibleAds.length; i++) {
+        const dist = circularDistance(i, safeActiveIndex, visibleAds.length);
+        if (dist <= 1) {
+          const id = visibleAds[i].id;
+          if (!next.has(id)) {
+            next.add(id);
+            changed = true;
+          }
+        }
+      }
+      return changed ? next : prev;
+    });
+  }, [safeActiveIndex, visibleAds]);
 
   // Auto-advance, but every manual drag resets the countdown so an ad someone
   // just swiped to is never yanked away mid-read. Pauses entirely while dragging.
@@ -108,23 +139,37 @@ export function FeaturedAdCarousel({ ads, variant = "panel" }: FeaturedAdCarouse
           if (dragging) endDrag(event);
         }}
       >
-        {visibleAds.map((ad, index) => (
-          <Image
-            key={ad.id}
-            src={ad.imageUrl}
-            alt={ad.title}
-            fill
-            draggable={false}
-            unoptimized={ad.imageUrl.startsWith("/api/media")}
-            priority={index === 0}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 90vw, 560px"
-            className="pointer-events-none object-cover object-center"
-            style={{
-              transform: `translateX(calc(${(index - safeActiveIndex) * 100}% + ${dragging ? dragOffset : 0}px))`,
-              transition: dragging ? "none" : "transform 450ms ease",
-            }}
-          />
-        ))}
+        {visibleAds.map((ad, index) => {
+          const dist = circularDistance(index, safeActiveIndex, visibleAds.length);
+          const nearby = dist <= 1;
+          if (!nearby && !loadedIds.has(ad.id)) return null;
+
+          const isActive = index === safeActiveIndex;
+          const isProxy = ad.imageUrl.startsWith("/api/media");
+
+          return (
+            <Image
+              key={ad.id}
+              src={ad.imageUrl}
+              alt={ad.title}
+              fill
+              draggable={false}
+              // Blob proxy responses skip the optimizer today; local /homepage-ads
+              // paths still get WebP/AVIF resizing from Next.
+              unoptimized={isProxy}
+              priority={index === 0}
+              quality={isProxy ? undefined : 75}
+              sizes={AD_IMAGE_SIZES}
+              className="pointer-events-none object-cover object-center"
+              style={{
+                transform: `translateX(calc(${(index - safeActiveIndex) * 100}% + ${dragging ? dragOffset : 0}px))`,
+                transition: dragging ? "none" : "transform 450ms ease",
+                // Keep non-active slides out of the paint path until needed.
+                visibility: nearby || isActive ? "visible" : "hidden",
+              }}
+            />
+          );
+        })}
       </div>
 
       <div className="flex min-h-[44px] items-center gap-3 rounded-full bg-[#344055] px-5 py-3 sm:gap-4 sm:px-7">

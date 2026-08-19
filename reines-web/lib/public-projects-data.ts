@@ -38,17 +38,17 @@ export const PUBLIC_PROJECT_STATUS_OPTIONS: { value: PublicProjectStatus; label:
 
 export const AVAILABLE_PUBLIC_PROJECT_IMAGES: AvailablePublicProjectImage[] = [
   {
-    imageUrl: "/homepage-ads/procrete-chileka-front.png",
+    imageUrl: "/homepage-ads/procrete-chileka-front.webp",
     alt: "Reines ProCrete front exterior",
     defaultTitle: "ProCrete site exterior",
   },
   {
-    imageUrl: "/homepage-ads/procrete-chileka-yard.png",
+    imageUrl: "/homepage-ads/procrete-chileka-yard.webp",
     alt: "Reines ProCrete product yard",
     defaultTitle: "ProCrete product yard",
   },
   {
-    imageUrl: "/homepage-ads/procrete-chileka-showcase.png",
+    imageUrl: "/homepage-ads/procrete-chileka-showcase.webp",
     alt: "Reines ProCrete showcase",
     defaultTitle: "ProCrete showcase",
   },
@@ -82,8 +82,8 @@ export const FALLBACK_PUBLIC_PROJECTS: PublicProjectItem[] = [
     description:
       "A residential development example showing how completed projects can appear once admins publish real client-approved data.",
     year: "2024",
-    imageUrl: "/homepage-ads/procrete-chileka-front.png",
-    imageUrls: ["/homepage-ads/procrete-chileka-front.png"],
+    imageUrl: "/homepage-ads/procrete-chileka-front.webp",
+    imageUrls: ["/homepage-ads/procrete-chileka-front.webp"],
     active: true,
     featured: true,
     sortOrder: 0,
@@ -97,8 +97,8 @@ export const FALLBACK_PUBLIC_PROJECTS: PublicProjectItem[] = [
     description:
       "A public showcase entry for concrete product manufacturing, blocks, pavers, and related construction supply activity.",
     year: "2025",
-    imageUrl: "/homepage-ads/procrete-chileka-yard.png",
-    imageUrls: ["/homepage-ads/procrete-chileka-yard.png"],
+    imageUrl: "/homepage-ads/procrete-chileka-yard.webp",
+    imageUrls: ["/homepage-ads/procrete-chileka-yard.webp"],
     active: true,
     featured: true,
     sortOrder: 1,

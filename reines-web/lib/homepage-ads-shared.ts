@@ -21,21 +21,21 @@ export type AvailableHomepageImage = {
 
 export const AVAILABLE_HOMEPAGE_IMAGES: AvailableHomepageImage[] = [
   {
-    imageUrl: "/homepage-ads/procrete-chileka-front.png",
+    imageUrl: "/homepage-ads/procrete-chileka-front.webp",
     alt: "Completed Reines ProCrete Chileka project exterior",
     defaultTitle: "Reines ProCrete Chileka",
     defaultSubtitle:
       "A completed project showcasing our concrete product capability, careful site finishing, and commitment to strong foundations.",
   },
   {
-    imageUrl: "/homepage-ads/procrete-chileka-yard.png",
+    imageUrl: "/homepage-ads/procrete-chileka-yard.webp",
     alt: "Completed Reines ProCrete Chileka yard",
     defaultTitle: "Project Complete: ProCrete Chileka",
     defaultSubtitle:
       "Purpose-built spaces, clean site work, and practical infrastructure delivered for the concrete products division.",
   },
   {
-    imageUrl: "/homepage-ads/procrete-chileka-showcase.png",
+    imageUrl: "/homepage-ads/procrete-chileka-showcase.webp",
     alt: "Reines ProCrete Chileka completed project showcase",
     defaultTitle: "Concrete Products Division",
     defaultSubtitle:

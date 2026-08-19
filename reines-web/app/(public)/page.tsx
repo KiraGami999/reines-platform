@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ElementType } from "react";
+import { preload } from "react-dom";
 import { Blocks, Building2, Factory, House, Road } from "lucide-react";
 import { FeaturedAdCarousel } from "@/components/public/FeaturedAdCarousel";
 import { FeaturedProjectsSlideshow } from "@/components/public/FeaturedProjectsSlideshow";
@@ -294,6 +295,11 @@ export default async function HomePage() {
     getFeaturedPublicProjects(),
     getClientLogosPageData(),
   ]);
+
+  const firstAdImage = homepageAds.find((ad) => ad.active)?.imageUrl;
+  if (firstAdImage && !firstAdImage.startsWith("/api/media")) {
+    preload(firstAdImage, { as: "image" });
+  }
 
   return (
     <>
