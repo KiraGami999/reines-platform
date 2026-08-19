@@ -237,3 +237,157 @@ export async function sendVerifyEmail(to: string, code: string, name?: string): 
       `It expires in 24 hours.`,
   });
 }
+
+// ─── Quotation request notification (admin) ──────────────────────────────────
+
+export type QuotationNotifyPayload = {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  company?: string | null;
+  requestType: string;
+  projectType: string;
+  productCategory?: string | null;
+  products?: unknown;
+  description: string;
+  location: string;
+  budgetRange?: string | null;
+  timeline?: string | null;
+  projectSize?: string | null;
+  specialRequirements?: string | null;
+  howHeardAboutUs?: string | null;
+};
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function row(label: string, value?: string | null): string {
+  if (!value?.trim()) return "";
+  return `<tr>
+    <td style="padding:6px 0;color:#71717a;font-size:13px;width:140px;vertical-align:top;">${escapeHtml(label)}</td>
+    <td style="padding:6px 0;color:#18181b;font-size:13px;">${escapeHtml(value)}</td>
+  </tr>`;
+}
+
+function formatProducts(products: unknown): string {
+  if (!Array.isArray(products) || products.length === 0) return "";
+  const lines = products
+    .map((item) => {
+      if (!item || typeof item !== "object") return null;
+      const p = item as { name?: string; quantity?: string; unit?: string };
+      if (!p.name) return null;
+      const qty = [p.quantity, p.unit].filter(Boolean).join(" ");
+      return `• ${p.name}${qty ? ` — ${qty}` : ""}`;
+    })
+    .filter(Boolean) as string[];
+  return lines.join("\n");
+}
+
+/** Inbox that receives new public quote requests. Override with QUOTATION_NOTIFY_EMAIL. */
+export function getQuotationNotifyEmail(): string {
+  return (
+    process.env.QUOTATION_NOTIFY_EMAIL?.trim() ||
+    "reinesrealestate@gmail.com"
+  );
+}
+
+export async function sendQuotationNotificationEmail(
+  quotation: QuotationNotifyPayload
+): Promise<void> {
+  const to = getQuotationNotifyEmail();
+  const isProducts = quotation.requestType === "PRODUCTS";
+  const typeLabel = isProducts ? "Product order" : "Project / service";
+  const productsText = formatProducts(quotation.products);
+
+  const html = `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">New Quotation Request</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 32px;">
+              <p style="margin:0 0 16px;color:#52525b;font-size:14px;line-height:1.6;">
+                A new <strong>${escapeHtml(typeLabel)}</strong> quotation request was submitted on the website.
+              </p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+                ${row("Name", quotation.name)}
+                ${row("Email", quotation.email)}
+                ${row("Phone", quotation.phone)}
+                ${row("Company", quotation.company)}
+                ${row("Type", typeLabel)}
+                ${row("Project type", isProducts ? null : quotation.projectType)}
+                ${row("Product category", quotation.productCategory)}
+                ${row("Products", productsText || null)}
+                ${row("Location", quotation.location)}
+                ${row("Budget", quotation.budgetRange)}
+                ${row("Timeline", quotation.timeline)}
+                ${row("Size", quotation.projectSize)}
+                ${row("How they heard", quotation.howHeardAboutUs)}
+              </table>
+              ${
+                quotation.description?.trim()
+                  ? `<div style="margin:0 0 16px;padding:14px 16px;background:#f8fafc;border-radius:12px;border:1px solid #e4e4e7;">
+                      <p style="margin:0 0 6px;color:#71717a;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Description</p>
+                      <p style="margin:0;color:#18181b;font-size:13px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(quotation.description)}</p>
+                    </div>`
+                  : ""
+              }
+              ${
+                quotation.specialRequirements?.trim()
+                  ? `<div style="margin:0 0 8px;padding:14px 16px;background:#f8fafc;border-radius:12px;border:1px solid #e4e4e7;">
+                      <p style="margin:0 0 6px;color:#71717a;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.04em;">Special requirements</p>
+                      <p style="margin:0;color:#18181b;font-size:13px;line-height:1.6;white-space:pre-wrap;">${escapeHtml(quotation.specialRequirements)}</p>
+                    </div>`
+                  : ""
+              }
+              <p style="margin:20px 0 0;color:#a1a1aa;font-size:12px;">
+                Review this request in the admin portal under Quotations.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+
+  const text = [
+    `New quotation request (${typeLabel})`,
+    ``,
+    `Name: ${quotation.name}`,
+    `Email: ${quotation.email}`,
+    quotation.phone ? `Phone: ${quotation.phone}` : null,
+    quotation.company ? `Company: ${quotation.company}` : null,
+    `Location: ${quotation.location}`,
+    quotation.budgetRange ? `Budget: ${quotation.budgetRange}` : null,
+    productsText ? `Products:\n${productsText}` : null,
+    quotation.description ? `\nDescription:\n${quotation.description}` : null,
+    quotation.specialRequirements
+      ? `\nSpecial requirements:\n${quotation.specialRequirements}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join("\n");
+
+  await sendMail({
+    to,
+    subject: `New quotation request from ${quotation.name}`,
+    html,
+    text,
+  });
+}

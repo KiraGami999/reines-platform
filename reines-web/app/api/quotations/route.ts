@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
+import { after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { z } from "zod";
+import {
+  isEmailConfigured,
+  sendQuotationNotificationEmail,
+} from "@/lib/email";
 
 const productItemSchema = z.object({
   name:     z.string().trim().min(1),
@@ -72,6 +77,39 @@ export async function POST(req: NextRequest) {
         products: products.filter((p) => p.name && p.quantity),
       },
     });
+
+    // Notify the office inbox without blocking the visitor's success response.
+    if (isEmailConfigured()) {
+      after(async () => {
+        try {
+          await sendQuotationNotificationEmail({
+            id: record.id,
+            name: record.name,
+            email: record.email,
+            phone: record.phone,
+            company: record.company,
+            requestType: record.requestType,
+            projectType: record.projectType,
+            productCategory: record.productCategory,
+            products: record.products,
+            description: record.description,
+            location: record.location,
+            budgetRange: record.budgetRange,
+            timeline: record.timeline,
+            projectSize: record.projectSize,
+            specialRequirements: record.specialRequirements,
+            howHeardAboutUs: record.howHeardAboutUs,
+          });
+        } catch (err) {
+          console.error("[POST /api/quotations] notify email failed:", err);
+        }
+      });
+    } else {
+      console.warn(
+        "[POST /api/quotations] SMTP not configured — quotation saved but no email was sent."
+      );
+    }
+
     return NextResponse.json({ id: record.id }, { status: 201 });
   } catch (err) {
     console.error("[POST /api/quotations]", err);
