@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { ElementType } from "react";
 import { Binoculars, Building2, CheckCircle2, Factory, Leaf, ShieldCheck, Target } from "lucide-react";
 import { AboutStoryHero } from "@/components/public/AboutStoryHero";
+import { REGISTERED_OFFICE_FULL } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "About Us — Reines Property Development",
@@ -18,7 +19,7 @@ const values = [
 ] satisfies { icon: ElementType; title: string; body: string }[];
 
 const companyInfo = [
-  { label: "Registered Office", value: "Joe & Max Chambers Office Complex, P.O. Box 3494, Blantyre, Malawi" },
+  { label: "Registered Office", value: REGISTERED_OFFICE_FULL },
   { label: "Telephone", value: "+(265) 883 15 72 09" },
   { label: "Email", value: "contact@reines.co.mw" },
 ];

@@ -18,6 +18,17 @@ export const SITE_NAME = "Reines Group";
 export const SITE_DESCRIPTION =
   "Property development, construction, concrete products, and manufacturing in Malawi. Client portal for live project tracking, milestones, and progress galleries.";
 
+/** Display lines for footer, contact page, etc. */
+export const REGISTERED_OFFICE_LINES = [
+  "Kamuzu Highway",
+  "The Boulevard, Kristwick Mandala",
+  "P.O Box 3494, Blantyre",
+] as const;
+
+/** Single-line registered office (about page, chatbot, SEO files). */
+export const REGISTERED_OFFICE_FULL =
+  "Kamuzu Highway, The Boulevard, Kristwick Mandala, P.O. Box 3494, Blantyre, Malawi";
+
 export const ORGANIZATION = {
   /** Public brand used for Google site-name / Knowledge Panel signals. */
   name: "Reines Group",
@@ -29,8 +40,8 @@ export const ORGANIZATION = {
   logoPath: "/logo-icon.png",
   telephone: "+265883157209",
   email: "contact@reines.co.mw",
-  streetAddress: "Kamuzu Highway, Mandala",
-  postOfficeBox: "P.O Box 3494",
+  streetAddress: "Kamuzu Highway, The Boulevard, Kristwick Mandala",
+  postOfficeBox: "P.O. Box 3494",
   addressLocality: "Blantyre",
   addressCountry: "MW",
 };

@@ -3,6 +3,7 @@ import type { ElementType } from "react";
 import Link from "next/link";
 import { Clock, Mail, Map, MapPin, Phone, ArrowRight } from "lucide-react";
 import { ContactForm } from "@/components/public/ContactForm";
+import { REGISTERED_OFFICE_LINES } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Contact Us — Reines Property Development",
@@ -13,7 +14,7 @@ const contactDetails = [
   {
     icon: MapPin,
     title: "Visit Us",
-    lines: ["Kamuzu Highway, Mandala", "P.O Box 3494, Blantyre"],
+    lines: [...REGISTERED_OFFICE_LINES],
   },
   {
     icon: Phone,
@@ -105,7 +106,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs font-semibold text-[#2d4a6b]">Blantyre, Malawi</p>
                     <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">
-                      Map is currently centered on Blantyre. The exact Kamuzu Highway, Mandala business pin can be added once confirmed by the client.
+                      Map is currently centered on Blantyre. The exact Kristwick Mandala pin can be added once confirmed.
                     </p>
                   </div>
                 </div>

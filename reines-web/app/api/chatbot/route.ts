@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { REGISTERED_OFFICE_FULL } from "@/lib/site";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_MODEL = "llama-3.1-8b-instant";
@@ -33,7 +34,7 @@ Website/portal guidance:
 Contact details:
 - Phone: +(265) 883 15 72 09.
 - Email: contact@reines.co.mw.
-- Registered office: Joe & Max Chambers Office Complex, P.O. Box 3494, Blantyre, Malawi.
+- Registered office: ${REGISTERED_OFFICE_FULL}.
 
 Important safety rules:
 - Do not provide exact quotes, discounts, legal commitments, contract terms, or guaranteed timelines.

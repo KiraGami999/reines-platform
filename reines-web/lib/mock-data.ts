@@ -140,7 +140,7 @@ export const MILESTONE_STATUS_CONFIG: Record<
   "PENDING" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED",
   { label: string; ring: string; text: string; card: string }
 > = {
-  COMPLETED:   { label: "Complete",  ring: "border-blue-500 bg-blue-500",       text: "text-blue-700",  card: "border-blue-100 bg-blue-50/50"       },
+  COMPLETED:   { label: "Complete",  ring: "border-[#2d4a6b] bg-[#2d4a6b]",       text: "text-[#2d4a6b]",  card: "border-[#2d4a6b]/20 bg-[#2d4a6b]/5"       },
   IN_PROGRESS: { label: "Active",    ring: "border-[#8fb9e8] bg-[#8fb9e8]",     text: "text-[#8fb9e8]", card: "border-[#8fb9e8]/30 bg-[#8fb9e8]/5"  },
   PENDING:     { label: "Upcoming",  ring: "border-zinc-300 bg-white",          text: "text-zinc-400",  card: "border-zinc-100 bg-zinc-50"          },
   CANCELLED:   { label: "Cancelled", ring: "border-zinc-300 bg-zinc-200",       text: "text-zinc-400",  card: "border-zinc-100 bg-zinc-50"          },

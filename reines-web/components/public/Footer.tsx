@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
+import { ORGANIZATION, REGISTERED_OFFICE_LINES } from "@/lib/site";
 
 const footerLinks = {
   Company: [
@@ -28,10 +29,15 @@ export function Footer() {
               Redefining homes, one project at a time. Property, construction, concrete, manufacturing for Malawi.
             </p>
             <div className="mt-6 space-y-1 text-sm">
-              <p>Kamuzu Highway, Mandala</p>
-              <p>P.O Box 3494, Blantyre</p>
-              <a href="tel:+265883157209" className="block hover:text-white">+(265) 883 15 72 09</a>
-              <a href="mailto:contact@reines.co.mw" className="block hover:text-white">contact@reines.co.mw</a>
+              {REGISTERED_OFFICE_LINES.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+              <a href={`tel:${ORGANIZATION.telephone}`} className="block hover:text-white">
+                +(265) 883 15 72 09
+              </a>
+              <a href={`mailto:${ORGANIZATION.email}`} className="block hover:text-white">
+                {ORGANIZATION.email}
+              </a>
             </div>
           </div>
 
