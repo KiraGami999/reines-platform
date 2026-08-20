@@ -391,3 +391,91 @@ export async function sendQuotationNotificationEmail(
     text,
   });
 }
+
+// ─── Project Chat Notification Email ─────────────────────────────────────────
+
+function projectMessageEmailHtml(opts: {
+  clientName: string;
+  senderName: string;
+  projectTitle: string;
+  messagePreview: string;
+  chatUrl: string;
+}): string {
+  const escapedClient = escapeHtml(opts.clientName);
+  const escapedSender = escapeHtml(opts.senderName);
+  const escapedProject = escapeHtml(opts.projectTitle);
+  const escapedPreview = escapeHtml(opts.messagePreview);
+
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+            <tr>
+              <td style="background:${BRAND_NAVY};padding:24px 32px;">
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;">Reines Properties Portal</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:32px;">
+                <p style="margin:0 0 12px;color:#18181b;font-size:16px;font-weight:600;">Hi ${escapedClient},</p>
+                <p style="margin:0 0 20px;color:#3f3f46;font-size:14px;line-height:1.6;">
+                  Your Project Manager, <strong>${escapedSender}</strong>, has sent you a new message regarding your project <strong>${escapedProject}</strong>.
+                </p>
+                
+                <div style="margin:0 0 24px;padding:16px;background:#f8fafc;border-left:4px solid ${BRAND_NAVY};border-radius:0 8px 8px 0;border-top:1px solid #f1f5f9;border-right:1px solid #f1f5f9;border-bottom:1px solid #f1f5f9;">
+                  <p style="margin:0 0 6px;color:#71717a;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Message Preview</p>
+                  <p style="margin:0;color:#18181b;font-size:14px;line-height:1.6;font-style:italic;">"${escapedPreview}"</p>
+                </div>
+
+                <div style="text-align:center;margin:32px 0 24px;">
+                  <a href="${opts.chatUrl}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:12px 28px;font-size:14px;font-weight:600;border-radius:8px;box-shadow:0 2px 4px rgba(0,0,0,0.1);transition:background 0.2s;">
+                    View & Reply to Message
+                  </a>
+                </div>
+
+                <p style="margin:24px 0 0;color:#71717a;font-size:12px;line-height:1.6;text-align:center;">
+                  If the button doesn't work, copy and paste this link into your browser:<br/>
+                  <a href="${opts.chatUrl}" style="color:${BRAND_BLUE};text-decoration:underline;">${opts.chatUrl}</a>
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+                <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>`;
+}
+
+export async function sendProjectMessageEmail(opts: {
+  to: string;
+  clientName: string;
+  senderName: string;
+  projectTitle: string;
+  messagePreview: string;
+  projectId: string;
+}): Promise<void> {
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw";
+  const chatUrl = `${baseUrl}/dashboard/messages/${opts.projectId}`;
+  const displayPreview = opts.messagePreview.length > 150
+    ? opts.messagePreview.slice(0, 150) + "..."
+    : opts.messagePreview;
+
+  await sendMail({
+    to: opts.to,
+    subject: `New message on ${opts.projectTitle} from ${opts.senderName}`,
+    html: projectMessageEmailHtml({ ...opts, messagePreview: displayPreview, chatUrl }),
+    text:
+      `Hi ${opts.clientName},\n\n` +
+      `Your Project Manager, ${opts.senderName}, sent you a message on ${opts.projectTitle}:\n\n` +
+      `"${displayPreview}"\n\n` +
+      `View and reply to message: ${chatUrl}`,
+  });
+}
+

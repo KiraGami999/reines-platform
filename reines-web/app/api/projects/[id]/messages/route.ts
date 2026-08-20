@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendMessageSchema } from "@/lib/validations";
 import { getMockMessages } from "@/lib/mock-messages";
+import { sendProjectMessageEmail } from "@/lib/email";
+import { notifyNewMessage } from "@/lib/push";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -56,7 +58,13 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   }
 
   try {
-    const project = await prisma.project.findUnique({ where: { id } });
+    const project = await prisma.project.findUnique({
+      where: { id },
+      include: {
+        client: { select: { name: true, email: true } },
+        manager: { select: { name: true } },
+      },
+    });
     if (!project) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
     if (role === "CLIENT"          && project.clientId  !== userId) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -66,6 +74,28 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       data: { projectId: id, senderId: userId, message: parsed.data.message },
       include: { sender: { select: { id: true, name: true, role: true } } },
     });
+
+    // Notify the OTHER participant via push (fire-and-forget)
+    const recipientId = role === "CLIENT" ? project.managerId : project.clientId;
+    notifyNewMessage({
+      recipientId,
+      senderName:    message.sender.name,
+      projectTitle:  project.title,
+      projectId:     id,
+      messagePreview: parsed.data.message,
+    }).catch((err) => console.warn("[web-chat] Push notification error:", err));
+
+    // If PM/Admin sent it, also notify client via email
+    if (role === "PROJECT_MANAGER" || role === "ADMIN") {
+      sendProjectMessageEmail({
+        to: project.client.email,
+        clientName: project.client.name,
+        senderName: name || message.sender.name || "Your Project Manager",
+        projectTitle: project.title,
+        messagePreview: parsed.data.message,
+        projectId: project.id,
+      }).catch((err) => console.error("[web-chat] Email notification error:", err));
+    }
 
     return NextResponse.json({ message }, { status: 201 });
   } catch {

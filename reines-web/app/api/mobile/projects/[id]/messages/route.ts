@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { verifyToken, extractBearer } from "@/lib/jwt";
 import { notifyNewMessage } from "@/lib/push";
 import { z } from "zod";
+import { sendProjectMessageEmail } from "@/lib/email";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -84,7 +85,10 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
   try {
     const project = await prisma.project.findUnique({
       where:  { id: projectId },
-      select: { id: true, title: true, clientId: true, managerId: true },
+      include: {
+        client: { select: { name: true, email: true } },
+        manager: { select: { name: true } },
+      },
     });
     if (!project) return NextResponse.json({ error: "Project not found." }, { status: 404 });
 
@@ -109,6 +113,18 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       projectId,
       messagePreview: parsed.data.message,
     }).catch(console.warn);
+
+    // If PM/Admin sent it, also notify client via email
+    if (role === "PROJECT_MANAGER" || role === "ADMIN") {
+      sendProjectMessageEmail({
+        to: project.client.email,
+        clientName: project.client.name,
+        senderName: message.sender.name || "Your Project Manager",
+        projectTitle: project.title,
+        messagePreview: parsed.data.message,
+        projectId: project.id,
+      }).catch((err) => console.error("[mobile-chat] Email notification error:", err));
+    }
 
     return NextResponse.json({ message }, { status: 201 });
   } catch (err) {
