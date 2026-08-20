@@ -23,6 +23,12 @@ const ALLOWED_DOC_TYPES   = [
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
 
+/** Explicit MIME lists — avoid `image/*` so mobile does not hide the document picker. */
+const ACCEPT_IMAGES =
+  "image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif";
+const ACCEPT_DOCS =
+  "application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,.pdf,.doc,.docx";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type FileKind   = "image" | "document";
@@ -78,7 +84,8 @@ function docLabel(mimeType: string): string {
 export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormProps) {
   const router   = useRouter();
   const formId   = useId();
-  const inputRef = useRef<HTMLInputElement>(null);
+  const photoInputRef = useRef<HTMLInputElement>(null);
+  const docInputRef   = useRef<HTMLInputElement>(null);
 
   const [files,           setFiles]           = useState<FileEntry[]>([]);
   const [textNote,        setTextNote]        = useState("");    // used only for text-only updates
@@ -269,7 +276,8 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
     setGlobalError(null);
     setDoneCount(0);
     setFormState("idle");
-    if (inputRef.current) inputRef.current.value = "";
+    if (photoInputRef.current) photoInputRef.current.value = "";
+    if (docInputRef.current) docInputRef.current.value = "";
   }
 
   // ── Success screen ───────────────────────────────────────────────────────────
@@ -372,9 +380,8 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           onDrop={onDrop}
           onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
           onDragLeave={() => setDragging(false)}
-          onClick={() => inputRef.current?.click()}
           className={cn(
-            "flex cursor-pointer flex-col items-center gap-2.5  py-8 transition-colors",
+            "flex flex-col items-center gap-3 rounded-xl border-2 border-dashed px-4 py-8 transition-colors",
             dragging
               ? "border-[#8fb9e8] bg-[#8fb9e8]/5"
               : "border-zinc-300 bg-white hover:border-zinc-400 hover:bg-zinc-50"
@@ -383,19 +390,55 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           <UploadCloud size={32} className={dragging ? "text-zinc-500" : "text-zinc-300"} />
           <div className="text-center">
             <p className="text-sm font-medium text-zinc-600">
-              {dragging ? "Drop files here" : "Drag & drop, or click to browse"}
+              {dragging ? "Drop files here" : "Drag & drop on desktop, or choose below"}
             </p>
             <p className="mt-0.5 text-xs text-zinc-400">
               JPEG · PNG · WEBP · GIF · PDF · DOC · DOCX · Max 15 MB each · Multiple files OK
             </p>
           </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => photoInputRef.current?.click()}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+            >
+              <FileImage size={15} />
+              Add photos
+            </button>
+            <button
+              type="button"
+              disabled={isSubmitting}
+              onClick={() => docInputRef.current?.click()}
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+            >
+              <FileText size={15} />
+              Add documents
+            </button>
+          </div>
+
           <input
-            ref={inputRef}
+            ref={photoInputRef}
             type="file"
             multiple
-            accept="image/*,.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            accept={ACCEPT_IMAGES}
             className="hidden"
-            onChange={(e) => { if (e.target.files?.length) addFiles(e.target.files); }}
+            onChange={(e) => {
+              if (e.target.files?.length) addFiles(e.target.files);
+              e.target.value = "";
+            }}
+          />
+          <input
+            ref={docInputRef}
+            type="file"
+            multiple
+            accept={ACCEPT_DOCS}
+            className="hidden"
+            onChange={(e) => {
+              if (e.target.files?.length) addFiles(e.target.files);
+              e.target.value = "";
+            }}
           />
         </div>
 
