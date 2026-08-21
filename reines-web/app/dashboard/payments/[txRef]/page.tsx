@@ -92,7 +92,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
         <div className="hidden border-b border-zinc-200 px-8 py-6 text-center print:block">
-          <p className="text-lg font-bold text-[#2d4a6b]">Reines Properties</p>
+          <p className="text-lg font-bold text-[#2d4a6b]">Reines Group</p>
           <p className="mt-1 text-xs uppercase tracking-widest text-zinc-500">Payment Receipt</p>
         </div>
 

@@ -6,7 +6,7 @@
  *   SMTP_PORT="465"
  *   SMTP_USER="your-account@gmail.com"
  *   SMTP_PASS="<16-char Gmail App Password>"   ← NOT your normal password
- *   SMTP_FROM="Reines Properties <your-account@gmail.com>"
+ *   SMTP_FROM="Reines Group <your-account@gmail.com>"
  *
  * Create an App Password at: https://myaccount.google.com/apppasswords
  * (requires 2-Step Verification enabled on the Google account).
@@ -81,7 +81,7 @@ function otpEmailHtml(code: string, name?: string): string {
           <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
             <tr>
               <td style="background:${BRAND_NAVY};padding:24px 32px;">
-                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;">Reines Properties</span>
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;">Reines Group</span>
               </td>
             </tr>
             <tr>
@@ -137,7 +137,7 @@ function resetEmailHtml(code: string, name?: string): string {
         <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
           <tr>
             <td style="background:${BRAND_NAVY};padding:24px 32px;">
-              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Properties</span>
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
             </td>
           </tr>
           <tr>
@@ -193,7 +193,7 @@ function verifyEmailHtml(code: string, name?: string): string {
         <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
           <tr>
             <td style="background:${BRAND_NAVY};padding:24px 32px;">
-              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Properties</span>
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
             </td>
           </tr>
           <tr>
@@ -312,7 +312,7 @@ export async function sendQuotationNotificationEmail(
         <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
           <tr>
             <td style="background:${BRAND_NAVY};padding:24px 32px;">
-              <span style="color:#ffffff;font-size:18px;font-weight:700;">New Quotation Request</span>
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group | New Quotation Request</span>
             </td>
           </tr>
           <tr>
@@ -414,7 +414,7 @@ function projectMessageEmailHtml(opts: {
           <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
             <tr>
               <td style="background:${BRAND_NAVY};padding:24px 32px;">
-                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;">Reines Properties Portal</span>
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:0.3px;">Reines Group Portal</span>
               </td>
             </tr>
             <tr>
