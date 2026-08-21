@@ -5,6 +5,7 @@ import { fmtPaymentAmount } from "@/lib/paychangu";
 import { Wallet, CheckCircle2, Clock, XCircle, Banknote } from "lucide-react";
 import StatCard from "@/components/admin/StatCard";
 import { CashApprovalPanel } from "@/components/admin/CashApprovalPanel";
+import IssueReceiptPanel from "@/components/admin/IssueReceiptPanel";
 
 interface CashPendingPayment {
   id:          string;
@@ -71,12 +72,34 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
   }
 }
 
+async function getProjectsList() {
+  try {
+    const rows = await prisma.project.findMany({
+      select: {
+        id:     true,
+        title:  true,
+        client: { select: { name: true } },
+      },
+      orderBy: { title: "asc" },
+    });
+    return rows.map((p) => ({
+      id:         p.id,
+      title:      p.title,
+      clientName: p.client?.name ?? "Unknown Client",
+    }));
+  } catch (err) {
+    console.error("[getProjectsList]", err);
+    return [];
+  }
+}
+
 export const metadata = { title: "Payments – Reines Admin" };
 
 export default async function AdminPaymentsPage() {
-  const [payments, pendingCash] = await Promise.all([
+  const [payments, pendingCash, projects] = await Promise.all([
     getAllPayments(),
     getPendingCashPayments(),
+    getProjectsList(),
   ]);
 
   const totalCollected = payments
@@ -89,11 +112,14 @@ export default async function AdminPaymentsPage() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">Payment Transactions</h1>
-        <p className="mt-1 text-sm text-zinc-500">
-          Manage all payments across projects — online and cash.
-        </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-[#2d4a6b]">Payment Transactions</h1>
+          <p className="mt-1 text-sm text-zinc-500">
+            Manage all payments across projects — online and cash.
+          </p>
+        </div>
+        <IssueReceiptPanel projects={projects} />
       </div>
 
       {/* Stats */}
