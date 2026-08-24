@@ -75,8 +75,8 @@ const PROJECT_MATE_SIZE_CLASS = {
 type ReinesLogoProps = {
   /**
    * `on-dark` = white logo on navy/dark chrome (e.g. sidebar).
-   * `on-dark-accent` = brand light-blue logo on dark chrome (e.g. portal header).
-   * `on-light` = navy logo on pale backgrounds.
+   * `on-dark-accent` = brand light-blue (#8fb9e8) on dark chrome (portal header).
+   * `on-light` = darker grey/navy on pale backgrounds (light header).
    */
   variant?: "on-dark" | "on-dark-accent" | "on-light";
   size?: keyof typeof CORPORATE_SIZE_CLASS;
@@ -89,6 +89,16 @@ type ReinesLogoProps = {
    */
   mark?: PortalLogoMark;
 };
+
+/**
+ * CSS filters applied to the white corporate wordmark when dedicated colour
+ * assets are unavailable. Start from brightness(0) (black), then tint.
+ * Accent ≈ #8fb9e8; light-header grey ≈ zinc-600 (#52525b).
+ */
+const CORPORATE_ACCENT_FILTER =
+  "[filter:brightness(0)_invert(79%)_sepia(18%)_saturate(747%)_hue-rotate(176deg)_brightness(97%)_contrast(88%)]";
+const CORPORATE_GREY_FILTER =
+  "[filter:brightness(0)_invert(35%)_sepia(6%)_saturate(400%)_hue-rotate(182deg)_brightness(95%)_contrast(90%)]";
 
 const MARK_CONFIG = {
   corporate: {
@@ -141,7 +151,11 @@ export function ReinesLogo({
       className={cn(
         config.sizeClass[size],
         "w-auto object-contain object-left",
-        variant === "on-light" && !useNavyAsset && "brightness-0",
+        // Corporate white PNG: tint to brand accent / darker grey when needed.
+        mark === "corporate" && variant === "on-dark-accent" && CORPORATE_ACCENT_FILTER,
+        mark === "corporate" && variant === "on-light" && CORPORATE_GREY_FILTER,
+        // Project Mate fallback if navy asset missing.
+        mark === "project-mate" && variant === "on-light" && !useNavyAsset && "brightness-0",
         className
       )}
     />

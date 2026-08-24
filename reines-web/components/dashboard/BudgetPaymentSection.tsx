@@ -173,7 +173,7 @@ export function BudgetPaymentSection({
                 </button>
 
                 {isOpen && (
-                  <div className="border-t border-zinc-100 bg-zinc-50/80 px-3 py-3 sm:px-4">
+                  <div className="border-t border-zinc-100 bg-zinc-50 px-3 py-3 sm:px-4">
                     <CashPaymentForm
                       projectId={projectId}
                       projectTitle={projectTitle}

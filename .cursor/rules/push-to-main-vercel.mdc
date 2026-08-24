@@ -1,0 +1,13 @@
+---
+description: Always commit and push deploy-facing work to main for Vercel
+alwaysApply: true
+---
+
+# Deploy to main (Vercel)
+
+When the user asks to ship, save, deploy, or finish web/portal work — or after completing fixes meant to show on production — **commit and push to `main`** so Vercel picks up the deploy.
+
+- Do not wait for a separate “push?” confirmation when the work is clearly meant for production / Vercel.
+- Prefer `main` as the deployment branch; do not leave deploy-facing changes local-only.
+- Still follow normal git safety (no force-push to main, no secrets, clear commit messages).
+- If only exploratory/local notes were changed and nothing should go live, do not push.

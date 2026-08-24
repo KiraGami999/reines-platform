@@ -389,12 +389,8 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
   const crumbs   = buildBreadcrumbs(pathname);
   const { resolved } = useTheme();
   const logoMark = getPortalLogoMark(user.role);
-  const logoVariant =
-    resolved === "dark"
-      ? logoMark === "project-mate"
-        ? "on-dark-accent"
-        : "on-dark"
-      : "on-light";
+  // Header: light-blue accent on dark theme; darker grey/navy on light theme.
+  const logoVariant = resolved === "dark" ? "on-dark-accent" : "on-light";
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white px-3 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:h-16 sm:px-6 print:hidden">

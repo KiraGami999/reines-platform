@@ -96,7 +96,15 @@ select:disabled {
 .dark [data-portal] :is(.bg-white) {
   background-color: var(--surface);
 }
+/* Catch bg-white/70 overlays (upload spinners, etc.). */
+.dark [data-portal] [class*="bg-white/"] {
+  background-color: color-mix(in srgb, var(--surface) 70%, transparent);
+}
 .dark [data-portal] :is(.bg-zinc-50) {
+  background-color: var(--surface-muted);
+}
+/* Catch bg-zinc-50/80 etc. — opacity-suffixed muted panels (cash form nest). */
+.dark [data-portal] [class*="bg-zinc-50/"] {
   background-color: var(--surface-muted);
 }
 .dark [data-portal] :is(.bg-zinc-100) {

@@ -25,7 +25,7 @@ interface CashPaymentFormProps {
 }
 
 const FIELD =
-  "block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8] focus:border-transparent";
+  "block w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8] focus:border-transparent";
 const LABEL = "block text-sm font-medium text-zinc-700 mb-1";
 
 export function CashPaymentForm({
@@ -235,7 +235,7 @@ export function CashPaymentForm({
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading || submitting}
-            className="mt-1 flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#8fb9e8] hover:text-[#8fb9e8] disabled:opacity-50"
+            className="mt-1 flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 bg-white px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#8fb9e8] hover:text-[#8fb9e8] disabled:opacity-50"
           >
             <ImageIcon size={22} />
             <span>Click to upload receipt image</span>
