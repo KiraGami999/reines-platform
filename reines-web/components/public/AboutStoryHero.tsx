@@ -15,7 +15,7 @@ export function AboutStoryHero() {
       ([entry]) => {
         if (entry.isIntersecting) setVisible(true);
       },
-      { threshold: 0.2 }
+      { threshold: 0.15 }
     );
 
     observer.observe(node);
@@ -23,31 +23,27 @@ export function AboutStoryHero() {
   }, []);
 
   return (
-    <section
-      ref={sectionRef}
-      className="relative overflow-hidden bg-[#2d4a6b] py-12 lg:py-16"
-    >
-      <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#8fb9e8]/10 blur-3xl" />
-      <div className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-white/5 blur-3xl" />
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#2d4a6b]">
+      {/* Full-width rectangular banner — story text stacks below on all viewports */}
+      <div
+        className={`relative w-full transition-all duration-700 ease-out ${
+          visible ? "translate-y-0 opacity-100" : "translate-y-6 opacity-0"
+        }`}
+      >
+        <Image
+          src="/about/three-years-foundations.png"
+          alt="3 years of building strong foundations"
+          width={1024}
+          height={576}
+          className="h-auto w-full object-cover object-center"
+          sizes="100vw"
+          priority
+        />
+      </div>
 
-      <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:gap-10 lg:px-8">
+      <div className="relative mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         <div
-          className={`order-2 lg:order-1 transition-all duration-700 ease-out ${
-            visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
-          }`}
-        >
-          <Image
-            src="/about/three-years-foundations.png"
-            alt="Reines Property Development"
-            width={960}
-            height={720}
-            className="h-auto w-full rounded-3xl shadow-xl shadow-black/20"
-            priority
-          />
-        </div>
-
-        <div
-          className={`order-1 lg:order-2 transition-all delay-150 duration-700 ease-out ${
+          className={`transition-all delay-150 duration-700 ease-out ${
             visible ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
           }`}
         >

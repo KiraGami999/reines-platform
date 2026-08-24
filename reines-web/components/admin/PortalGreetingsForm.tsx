@@ -132,7 +132,8 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
               <h2 className="text-base font-semibold text-zinc-900">Greeting display</h2>
               <p className="mt-1 text-sm text-zinc-500">
                 When enabled, the portal picks one option for the current time of day and appends
-                the user&apos;s first name. The option changes every time they sign in.
+                the user&apos;s first name (with a space — put commas, !, or ? in the greeting
+                text yourself). The option changes every time they sign in.
               </p>
             </div>
           </div>
@@ -179,10 +180,11 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
         <div className="space-y-4">
           <div>
             <h3 className="text-sm font-semibold text-zinc-900">Greeting options</h3>
-            <p className="mt-1 text-xs text-zinc-500">
-              Add up to {MAX_GREETING_VARIANTS} greetings for this time of day (different languages
-              or phrasings). One is chosen at random each time a user signs in.
-            </p>
+              <p className="mt-1 text-xs text-zinc-500">
+                Add up to {MAX_GREETING_VARIANTS} greetings for this time of day (different languages
+                or phrasings). Include any punctuation you want (! ? .). The first name is appended
+                after a space — one option is chosen each time a user signs in.
+              </p>
           </div>
 
           {OPTION_LABELS.map((label, index) => (
@@ -214,7 +216,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
 
         <div className="rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3 text-xs text-zinc-600">
           <span className="font-semibold text-zinc-800">Preview: </span>
-          {previewPhrase ? `${previewPhrase}, Ronnie` : "Welcome, Ronnie"}
+          {previewPhrase ? `${previewPhrase} Ronnie` : "Welcome Ronnie"}
         </div>
       </div>
 

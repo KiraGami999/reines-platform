@@ -51,11 +51,12 @@ function pickVariant(variants: string[], seed: number): string | null {
 function formatGreeting(phrase: string, name: string): string {
   const person = firstName(name);
   const trimmed = phrase.trim();
-  if (!trimmed) return `Welcome, ${person}`;
+  if (!trimmed) return `Welcome ${person}`;
   if (trimmed.includes("{name}")) {
     return trimmed.replaceAll("{name}", person);
   }
-  return `${trimmed}, ${person}`;
+  // Punctuation lives in the phrase itself (e.g. "Good morning!" / "Muli bwanji?").
+  return `${trimmed} ${person}`;
 }
 
 export async function getPortalGreetingSettings(): Promise<PortalGreetingSettings> {
@@ -89,7 +90,7 @@ export async function getPortalGreeting(
   const seed = options?.greetingSeed ?? now.getTime();
   const settings = await getPortalGreetingSettings();
   if (!settings.enabled) {
-    return `Welcome, ${firstName(name)}`;
+    return `Welcome ${firstName(name)}`;
   }
 
   const period = getGreetingPeriod(now);
