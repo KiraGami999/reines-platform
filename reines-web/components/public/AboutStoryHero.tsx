@@ -69,7 +69,7 @@ export function AboutStoryHero() {
             onPointerEnter={() => setHovering(true)}
             onPointerMove={handlePointerMove}
             onPointerLeave={resetTilt}
-            className="relative aspect-square w-full max-w-md overflow-hidden rounded-3xl border border-white/10 bg-[#1a2f4a] shadow-2xl shadow-black/35 will-change-transform"
+            className="relative aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#1a2f4a] shadow-2xl shadow-black/35 will-change-transform"
             style={{
               transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${hovering ? 1.03 : 1})`,
               transition: hovering
@@ -83,7 +83,7 @@ export function AboutStoryHero() {
               alt="3 years of building strong foundations"
               fill
               className="object-cover object-center"
-              sizes="(max-width: 448px) 100vw, 448px"
+              sizes="(max-width: 768px) 100vw, 768px"
               priority
             />
             <div
