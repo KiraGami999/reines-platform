@@ -1,7 +1,7 @@
 "use client";
 
 import { signOut } from "next-auth/react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import {
   Menu,
@@ -13,7 +13,6 @@ import {
   ExternalLink,
   Search,
   X,
-  ClipboardList,
 } from "lucide-react";
 import Link from "next/link";
 import { ReinesLogo } from "@/components/layout/ReinesLogo";
@@ -56,18 +55,65 @@ function buildBreadcrumbs(pathname: string) {
   return crumbs;
 }
 
-// ─── Search bar ────────────────────────────────────────────────────────────────
+// ─── Search bar (quick navigation) ─────────────────────────────────────────────
 
-function SearchBar() {
+type QuickLink = { label: string; href: string; keywords: string };
+
+function quickLinksForRole(role: string): QuickLink[] {
+  const shared: QuickLink[] = [
+    { label: "Settings", href: "/dashboard/settings", keywords: "settings preferences theme password" },
+    { label: "My Profile", href: "/dashboard/profile", keywords: "profile account name" },
+    { label: "Messages", href: "/dashboard/messages", keywords: "messages chat inbox" },
+  ];
+
+  if (role === "ADMIN") {
+    return [
+      { label: "Projects", href: "/dashboard/admin/projects", keywords: "projects portfolio" },
+      { label: "Users", href: "/dashboard/admin/users", keywords: "users accounts staff" },
+      { label: "Payments", href: "/dashboard/admin/payments", keywords: "payments receipts cash" },
+      { label: "Enquiries", href: "/dashboard/admin/enquiries", keywords: "enquiries contact leads" },
+      ...shared,
+    ];
+  }
+
+  if (role === "PROJECT_MANAGER") {
+    return [
+      { label: "Assigned projects", href: "/dashboard/manage/projects", keywords: "projects manage assigned" },
+      { label: "Milestones", href: "/dashboard/milestones", keywords: "milestones progress" },
+      { label: "Gallery", href: "/dashboard/gallery", keywords: "gallery photos progress" },
+      ...shared,
+    ];
+  }
+
+  return [
+    { label: "My projects", href: "/dashboard/projects", keywords: "projects jobs sites" },
+    { label: "Payments", href: "/dashboard/payments", keywords: "payments receipts" },
+    { label: "Loyalty", href: "/dashboard/loyalty", keywords: "loyalty rewards points" },
+    ...shared,
+  ];
+}
+
+function SearchBar({ role }: { role: string }) {
+  const router = useRouter();
   const [open,  setOpen]  = useState(false);
   const [query, setQuery] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const links = quickLinksForRole(role);
+
+  const filtered = (() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return links.slice(0, 6);
+    return links.filter(
+      (l) =>
+        l.label.toLowerCase().includes(q) ||
+        l.keywords.toLowerCase().includes(q)
+    );
+  })();
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  // Keyboard shortcut: Ctrl/Cmd + K
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
@@ -80,28 +126,61 @@ function SearchBar() {
     return () => window.removeEventListener("keydown", handleKey);
   }, []);
 
+  function go(href: string) {
+    setOpen(false);
+    setQuery("");
+    router.push(href);
+  }
+
   return (
     <div className="relative hidden sm:block">
       {open ? (
-        <div className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 shadow-sm ring-1 ring-[#8fb9e8]/30 dark:border-[var(--border)] dark:bg-[var(--surface)]">
-          <Search size={14} className="shrink-0 text-zinc-400" />
-          <input
-            ref={inputRef}
-            type="text"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search projects, messages…"
-            className="w-52 bg-transparent text-sm text-zinc-700 outline-none placeholder:text-zinc-400 dark:text-[var(--foreground)]"
-          />
-          <button
-            onClick={() => { setOpen(false); setQuery(""); }}
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-[var(--foreground)]"
-          >
-            <X size={13} />
-          </button>
+        <div className="absolute right-0 top-0 z-50 w-72 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-[var(--border)] dark:bg-[var(--surface)]">
+          <div className="flex items-center gap-2 border-b border-zinc-100 px-3 py-2 dark:border-[var(--border)]">
+            <Search size={14} className="shrink-0 text-zinc-400" />
+            <input
+              ref={inputRef}
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && filtered[0]) {
+                  e.preventDefault();
+                  go(filtered[0].href);
+                }
+              }}
+              placeholder="Jump to…"
+              className="w-full bg-transparent text-sm text-zinc-700 outline-none placeholder:text-zinc-400 dark:text-[var(--foreground)]"
+            />
+            <button
+              type="button"
+              onClick={() => { setOpen(false); setQuery(""); }}
+              className="text-zinc-400 hover:text-zinc-600 dark:hover:text-[var(--foreground)]"
+            >
+              <X size={13} />
+            </button>
+          </div>
+          <ul className="max-h-64 overflow-y-auto py-1">
+            {filtered.length === 0 ? (
+              <li className="px-3 py-3 text-xs text-zinc-400">No matching pages</li>
+            ) : (
+              filtered.map((item) => (
+                <li key={item.href}>
+                  <button
+                    type="button"
+                    onClick={() => go(item.href)}
+                    className="flex w-full items-center px-3 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-50 dark:text-[var(--text-secondary)] dark:hover:bg-[var(--surface-hover)]"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))
+            )}
+          </ul>
         </div>
       ) : (
         <button
+          type="button"
           onClick={() => setOpen(true)}
           className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-400 transition-colors hover:border-zinc-300 hover:text-zinc-600 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:border-[#3d4a5e] dark:hover:text-[var(--foreground)]"
         >
@@ -130,67 +209,41 @@ function NotificationBell() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  const notifications = [
-    {
-      icon:  ClipboardList,
-      title: "Portal is ready",
-      body:  "Your Reines portal has been set up successfully.",
-      time:  "Just now",
-      unread: true,
-    },
-  ];
-
-  const unreadCount = notifications.filter((n) => n.unread).length;
-
   return (
     <div ref={ref} className="relative">
       <button
+        type="button"
         onClick={() => setOpen(!open)}
         className="relative flex h-8 w-8 items-center justify-center rounded-xl text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
         aria-label="Notifications"
       >
         <Bell size={17} />
-        {unreadCount > 0 && (
-          <span className="absolute right-1.5 top-1.5 flex h-2 w-2 items-center justify-center rounded-full bg-blue-500 ring-2 ring-white dark:ring-[var(--surface)]" />
-        )}
       </button>
 
       {open && (
         <div className="fixed inset-x-3 top-14 z-50 overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-lg dark:border-[var(--border)] dark:bg-[var(--surface)] sm:absolute sm:inset-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80">
           <div className="flex items-center justify-between border-b border-zinc-100 px-4 py-3 dark:border-[var(--border)]">
             <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Notifications</h3>
-            {unreadCount > 0 && (
-              <span className="rounded-full bg-blue-100 px-2 py-0.5 text-xs font-bold text-blue-600 dark:bg-zinc-800 dark:text-zinc-400">
-                {unreadCount} new
-              </span>
-            )}
           </div>
 
-          <div className="divide-y divide-zinc-50 dark:divide-[var(--border-subtle)]">
-            {notifications.map((n, i) => {
-              const Icon = n.icon;
-              return (
-                <div key={i} className="flex cursor-pointer gap-3 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-[var(--surface-hover)]">
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-sm dark:bg-[var(--surface-muted)]">
-                  <Icon size={16} strokeWidth={1.8} className="text-zinc-500 dark:text-[var(--text-muted)]" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-800 dark:text-[var(--foreground)]">{n.title}</p>
-                  <p className="mt-0.5 text-xs leading-snug text-zinc-400">{n.body}</p>
-                  <p className="mt-1 text-xs text-zinc-300 dark:text-[#7d8b9c]">{n.time}</p>
-                </div>
-                {n.unread && (
-                  <div className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-blue-500" />
-                )}
-                </div>
-              );
-            })}
+          <div className="px-4 py-6 text-center">
+            <Bell size={22} className="mx-auto text-zinc-300" />
+            <p className="mt-2 text-sm font-medium text-zinc-700 dark:text-[var(--foreground)]">
+              No new alerts
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-zinc-400">
+              Project chats and updates live in Messages. Push alerts are managed in the Project Mate app.
+            </p>
           </div>
 
           <div className="border-t border-zinc-100 px-4 py-2.5 text-center dark:border-[var(--border)]">
-            <button className="text-xs font-medium text-[#8fb9e8] hover:underline">
-              View all notifications
-            </button>
+            <Link
+              href="/dashboard/messages"
+              onClick={() => setOpen(false)}
+              className="text-xs font-medium text-[#8fb9e8] hover:underline"
+            >
+              Open Messages
+            </Link>
           </div>
         </div>
       )}
@@ -389,7 +442,7 @@ export function DashboardHeader({ user, onMenuClick }: DashboardHeaderProps) {
 
       {/* Right — search + notifications + user */}
       <div className="flex shrink-0 items-center gap-1 sm:gap-2">
-        <SearchBar />
+        <SearchBar role={user.role} />
         <NotificationBell />
         <UserMenu user={user} />
       </div>

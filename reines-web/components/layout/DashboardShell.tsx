@@ -28,7 +28,10 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
 
   const isClient = user.role === "CLIENT";
   const isUnverified = isClient && user.verificationStatus !== "APPROVED";
-  const isAllowedPath = pathname === "/dashboard/verification" || pathname.startsWith("/dashboard/settings");
+  const isAllowedPath =
+    pathname === "/dashboard/verification" ||
+    pathname.startsWith("/dashboard/settings") ||
+    pathname.startsWith("/dashboard/profile");
   const shouldBlock = isUnverified && !isAllowedPath;
 
   useEffect(() => {

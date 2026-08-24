@@ -180,7 +180,7 @@ const fullAuthConfig = {
       return true;
     },
 
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.id                 = user.id;
         token.role               = user.role ?? "CLIENT";
@@ -193,6 +193,14 @@ const fullAuthConfig = {
       }
 
       if (!token.id) return token;
+
+      // Client-side session.update({ name }) after profile edit.
+      if (trigger === "update" && session && typeof session === "object") {
+        const patch = session as { name?: string };
+        if (typeof patch.name === "string" && patch.name.trim()) {
+          token.name = patch.name.trim();
+        }
+      }
 
       // Backfill for sessions created before greetingSeed existed.
       if (typeof token.greetingSeed !== "number") {

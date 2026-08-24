@@ -4,15 +4,15 @@ import Link from "next/link";
 import {
   Bell,
   FolderKanban,
-  LockKeyhole,
   Mail,
   MessageSquare,
   Moon,
   Settings,
   ShieldCheck,
-  UserCircle,
+  Smartphone,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import { SettingsAccountPanel } from "@/components/dashboard/SettingsAccountPanel";
 
 export const metadata = { title: "Settings - Reines Portal" };
 
@@ -40,11 +40,10 @@ export default async function SettingsPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Settings</h1>
         <p className="mt-0.5 text-sm text-zinc-500">
-          Review account access and portal preferences for your Reines dashboard.
+          Manage your account, appearance, and portal preferences.
         </p>
       </div>
 
-      {/* Appearance — Light / Dark (navy) / System */}
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
@@ -54,9 +53,8 @@ export default async function SettingsPage() {
             <div>
               <h2 className="text-sm font-semibold text-zinc-900">Appearance</h2>
               <p className="mt-1 max-w-md text-xs leading-relaxed text-zinc-500">
-                Choose light, dark, or match your device. Dark mode uses a black
-                base with Reines navy and light-blue accents so the brand stays
-                clear on both the website and the mobile app.
+                Choose light, dark, or match your device. Dark mode uses Reines navy and
+                light-blue accents on both the website and the mobile app WebViews.
               </p>
             </div>
           </div>
@@ -84,21 +82,12 @@ export default async function SettingsPage() {
             </div>
           </div>
 
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
-              <ShieldCheck className="h-5 w-5 text-zinc-500" />
-              <p className="mt-3 text-sm font-semibold text-zinc-800">Role-based access</p>
-              <p className="mt-1 text-xs leading-relaxed text-zinc-500">
-                Your dashboard tools are controlled by the role assigned by an admin.
-              </p>
-            </div>
-            <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
-              <LockKeyhole className="h-5 w-5 text-zinc-500" />
-              <p className="mt-3 text-sm font-semibold text-zinc-800">Password changes</p>
-              <p className="mt-1 text-xs leading-relaxed text-zinc-500">
-                For now, password resets are handled by an admin through user management.
-              </p>
-            </div>
+          <div className="mt-6 rounded-xl border border-zinc-100 bg-zinc-50 p-4">
+            <ShieldCheck className="h-5 w-5 text-zinc-500" />
+            <p className="mt-3 text-sm font-semibold text-zinc-800">Role-based access</p>
+            <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+              Your dashboard tools are controlled by the role assigned by an admin.
+            </p>
           </div>
         </section>
 
@@ -114,11 +103,27 @@ export default async function SettingsPage() {
             <Bell className="h-5 w-5 text-zinc-500" />
             <h2 className="mt-3 text-sm font-semibold text-zinc-900">Notifications</h2>
             <p className="mt-1 text-xs leading-relaxed text-zinc-500">
-              Email and in-app notification preferences can be added once delivery rules are confirmed.
+              Project messages and updates appear in your Messages inbox. Push alerts for
+              Project Mate are controlled in the mobile app Settings tab.
             </p>
+            <div className="mt-3 flex flex-col gap-2">
+              <Link
+                href="/dashboard/messages"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2d4a6b] hover:underline"
+              >
+                <MessageSquare size={13} />
+                Open Messages
+              </Link>
+              <p className="flex items-start gap-1.5 text-[11px] leading-relaxed text-zinc-400">
+                <Smartphone size={12} className="mt-0.5 shrink-0" />
+                On Project Mate, use the Push Notifications switch under Settings.
+              </p>
+            </div>
           </div>
         </aside>
       </div>
+
+      <SettingsAccountPanel initialName={user.name ?? ""} email={user.email ?? ""} />
 
       {user.role === "PROJECT_MANAGER" && (
         <section className="rounded-2xl border border-zinc-200 bg-white p-5">
@@ -131,7 +136,11 @@ export default async function SettingsPage() {
             ].map((item) => {
               const Icon = item.icon;
               return (
-                <Link key={item.href} href={item.href} className="flex items-center gap-3 rounded-xl border border-zinc-200 px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50">
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="flex items-center gap-3 rounded-xl border border-zinc-200 px-4 py-3 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+                >
                   <Icon size={16} className="text-zinc-400" />
                   {item.label}
                 </Link>
@@ -140,18 +149,6 @@ export default async function SettingsPage() {
           </div>
         </section>
       )}
-
-      <section className="rounded-2xl border border-zinc-200 bg-white p-5">
-        <div className="flex items-start gap-3">
-          <UserCircle className="mt-0.5 h-5 w-5 text-zinc-500" />
-          <div>
-            <h2 className="text-sm font-semibold text-zinc-900">Profile Editing</h2>
-            <p className="mt-1 text-sm leading-relaxed text-zinc-500">
-              This screen currently shows verified account details. Editable profile fields can be added once the client confirms which user details should be self-managed.
-            </p>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

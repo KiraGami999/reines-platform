@@ -1,19 +1,17 @@
 import { View, StyleSheet } from "react-native";
 import { PortalWebView } from "@/components/web/PortalWebView";
+import { PushNotificationsBar } from "@/components/layout/PushNotificationsBar";
 import { SignOutBar } from "@/components/layout/SignOutBar";
 import { WEB_ROUTES } from "@/lib/webPortal";
 
-/**
- * PROJECT_MANAGER · Settings tab.
- *
- * Web Appearance settings + a native Sign out bar.
- */
+/** PROJECT_MANAGER · Settings — web prefs + native push toggle + sign out. */
 export default function ManagerSettings() {
   return (
     <View style={styles.root}>
       <View style={styles.web}>
         <PortalWebView route={WEB_ROUTES.manager.settings} padTop={false} />
       </View>
+      <PushNotificationsBar />
       <SignOutBar />
     </View>
   );
