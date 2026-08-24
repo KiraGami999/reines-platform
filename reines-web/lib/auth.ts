@@ -51,25 +51,43 @@ const fullAuthConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const parsed = loginSchema.safeParse(credentials);
-        if (!parsed.success) return null;
+        try {
+          const parsed = loginSchema.safeParse(credentials);
+          if (!parsed.success) return null;
 
-        const { email, password } = parsed.data;
+          const email = parsed.data.email.trim().toLowerCase();
+          const { password } = parsed.data;
 
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user || !user.password) return null;
+          // Select only auth fields so schema drift can't break login.
+          const user = await prisma.user.findUnique({
+            where: { email },
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              password: true,
+              role: true,
+              image: true,
+              verificationStatus: true,
+            },
+          });
+          if (!user || !user.password) return null;
 
-        const passwordValid = await verifyPassword(password, user.password);
-        if (!passwordValid) return null;
+          const passwordValid = await verifyPassword(password, user.password);
+          if (!passwordValid) return null;
 
-        return {
-          id:    user.id,
-          name:  user.name,
-          email: user.email!,
-          role:  user.role,
-          image: user.image,
-          verificationStatus: user.verificationStatus,
-        };
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email!,
+            role: user.role,
+            image: user.image,
+            verificationStatus: user.verificationStatus,
+          };
+        } catch (err) {
+          console.error("[auth/credentials] authorize failed:", err);
+          return null;
+        }
       },
     }),
 
@@ -124,17 +142,21 @@ const fullAuthConfig = {
       }
 
       if (token.id) {
-        const dbUser = await prisma.user.findUnique({
-          where: { id: token.id as string },
-          select: { role: true, name: true, email: true, image: true, verificationStatus: true },
-        });
+        try {
+          const dbUser = await prisma.user.findUnique({
+            where: { id: token.id as string },
+            select: { role: true, name: true, email: true, image: true, verificationStatus: true },
+          });
 
-        if (dbUser) {
-          token.role = dbUser.role;
-          token.name = dbUser.name;
-          token.email = dbUser.email;
-          token.picture = dbUser.image;
-          token.verificationStatus = dbUser.verificationStatus;
+          if (dbUser) {
+            token.role = dbUser.role;
+            token.name = dbUser.name;
+            token.email = dbUser.email;
+            token.picture = dbUser.image;
+            token.verificationStatus = dbUser.verificationStatus;
+          }
+        } catch (err) {
+          console.error("[auth/jwt] failed to refresh user from DB:", err);
         }
       }
       return token;
