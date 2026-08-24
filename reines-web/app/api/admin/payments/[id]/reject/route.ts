@@ -45,7 +45,7 @@ export async function PATCH(
       },
     });
 
-    if (updated.projectId && updated.project) {
+    if (updated.userId && updated.projectId && updated.project) {
       notifyPaymentRejected({
         clientId:     updated.userId,
         projectTitle: updated.project.title,

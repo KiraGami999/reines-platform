@@ -48,9 +48,9 @@ export async function PATCH(
       },
     });
 
-    // Loyalty + push only apply to project-linked cash (product sales have no project).
+    // Loyalty + push only for account clients with a project (skip walk-ins / product sales).
     let pointsAwarded = 0;
-    if (updated.projectId && updated.project) {
+    if (updated.userId && updated.projectId && updated.project) {
       pointsAwarded = await autoAwardPointsForPayment(
         updated.userId,
         updated.projectId,
