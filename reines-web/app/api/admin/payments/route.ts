@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { generateTxRef } from "@/lib/paychangu";
-import { created, forbidden, validationError, serverError, notFound } from "@/lib/api-response";
+import { created, forbidden, validationError, serverError, notFound, badRequest } from "@/lib/api-response";
 import { autoAwardPointsForPayment } from "@/lib/loyalty";
 import { notifyPaymentApproved } from "@/lib/push";
 import { z } from "zod";
@@ -56,12 +56,17 @@ export async function POST(req: NextRequest) {
     if (clientId && !client) return notFound("Client");
 
     const billedClientId = project?.clientId ?? client?.id;
-    if (!billedClientId) return validationError(schema.safeParse({}).error!);
+    if (!billedClientId) {
+      return badRequest("Could not determine the client for this receipt. Select a project or client.");
+    }
 
     const txRef = generateTxRef("CASH");
     const parsedPaidAt = paidAt ? new Date(paidAt) : new Date();
+    if (Number.isNaN(parsedPaidAt.getTime())) {
+      return badRequest("Invalid payment date. Please pick a valid date and time.");
+    }
 
-    // Create the successful payment record
+    // Admin-issued office receipt: already verified by the admin recording it.
     const payment = await prisma.payment.create({
       data: {
         txRef,
@@ -75,7 +80,7 @@ export async function POST(req: NextRequest) {
         adminApprovedBy: session.user.id,
         adminApprovedAt: new Date(),
         adminNotes:      notes || "Manually recorded cash payment at office",
-        projectId:       project?.id,
+        projectId:       project?.id ?? null,
         userId:          billedClientId,
       },
     });

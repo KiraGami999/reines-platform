@@ -32,7 +32,6 @@ export async function PATCH(
     if (!payment) return notFound("Payment");
     if (payment.method !== "CASH") return badRequest("Only cash payments can be manually approved.");
     if (payment.status !== "PENDING") return badRequest("Only pending payments can be approved.");
-    if (!payment.projectId) return badRequest("Product sale payments do not require approval.");
 
     const updated = await prisma.payment.update({
       where: { id },
@@ -49,26 +48,26 @@ export async function PATCH(
       },
     });
 
-    // Auto-award loyalty points (fire-and-forget — don't fail the request if this fails)
-    const projectId = updated.projectId;
-    if (!projectId || !updated.project) return badRequest("Payment project not found.");
-    const pointsAwarded = await autoAwardPointsForPayment(
-      updated.userId,
-      projectId,
-      updated.id,
-      Number(updated.amount),
-      updated.description,
-      session.user.id,
-    );
+    // Loyalty + push only apply to project-linked cash (product sales have no project).
+    let pointsAwarded = 0;
+    if (updated.projectId && updated.project) {
+      pointsAwarded = await autoAwardPointsForPayment(
+        updated.userId,
+        updated.projectId,
+        updated.id,
+        Number(updated.amount),
+        updated.description,
+        session.user.id,
+      );
 
-    // Notify the client (fire-and-forget)
-    notifyPaymentApproved({
-      clientId:     updated.userId,
-      projectTitle: updated.project.title,
-      projectId,
-      paymentId:    updated.id,
-      amount:       Number(updated.amount).toLocaleString(),
-    }).catch(console.warn);
+      notifyPaymentApproved({
+        clientId:     updated.userId,
+        projectTitle: updated.project.title,
+        projectId:    updated.projectId,
+        paymentId:    updated.id,
+        amount:       Number(updated.amount).toLocaleString(),
+      }).catch(console.warn);
+    }
 
     return ok({
       id:            updated.id,

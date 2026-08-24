@@ -27,7 +27,7 @@ interface CashPayment {
   description: string | null;
   receiptUrl:  string | null;
   createdAt:   string;
-  project:     { id: string; title: string };
+  project:     { id: string; title: string } | null;
   user:        { id: string; name: string; email: string };
 }
 
@@ -135,7 +135,9 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
         }
         <p className="text-sm font-medium text-zinc-700">
           Payment <span className="font-semibold">{payment.txRef}</span> {done}.
-          {done === "approved" && " The project balance has been updated."}
+          {done === "approved" && (payment.project
+            ? " The project balance has been updated."
+            : " The payment is now recorded as paid.")}
         </p>
       </div>
     );
@@ -173,12 +175,16 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
         <div className="flex items-start gap-2">
           <FolderKanban size={13} className="mt-0.5 shrink-0 text-zinc-400" />
           <div>
-            <Link
-              href={`/dashboard/projects/${payment.project.id}`}
-              className="font-medium text-zinc-800 hover:text-[#8fb9e8] transition-colors"
-            >
-              {payment.project.title}
-            </Link>
+            {payment.project ? (
+              <Link
+                href={`/dashboard/projects/${payment.project.id}`}
+                className="font-medium text-zinc-800 hover:text-[#8fb9e8] transition-colors"
+              >
+                {payment.project.title}
+              </Link>
+            ) : (
+              <p className="font-medium text-zinc-800">Product Sale</p>
+            )}
           </div>
         </div>
         {payment.description && (

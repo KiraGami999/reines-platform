@@ -30,7 +30,6 @@ export async function PATCH(
     if (!payment) return notFound("Payment");
     if (payment.method !== "CASH") return badRequest("Only cash payments can be manually rejected.");
     if (payment.status !== "PENDING") return badRequest("Only pending payments can be rejected.");
-    if (!payment.projectId) return badRequest("Product sale payments do not require approval.");
 
     const updated = await prisma.payment.update({
       where: { id },
@@ -46,16 +45,15 @@ export async function PATCH(
       },
     });
 
-    // Notify the client (fire-and-forget)
-    const projectId = updated.projectId;
-    if (!projectId || !updated.project) return badRequest("Payment project not found.");
-    notifyPaymentRejected({
-      clientId:     updated.userId,
-      projectTitle: updated.project.title,
-      projectId,
-      paymentId:    updated.id,
-      reason:       parsed.data.notes,
-    }).catch(console.warn);
+    if (updated.projectId && updated.project) {
+      notifyPaymentRejected({
+        clientId:     updated.userId,
+        projectTitle: updated.project.title,
+        projectId:    updated.projectId,
+        paymentId:    updated.id,
+        reason:       parsed.data.notes,
+      }).catch(console.warn);
+    }
 
     return ok({
       id:      updated.id,

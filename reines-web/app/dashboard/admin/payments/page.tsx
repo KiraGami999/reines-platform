@@ -15,7 +15,7 @@ interface CashPendingPayment {
   description: string | null;
   receiptUrl:  string | null;
   createdAt:   string;
-  project:     { id: string; title: string };
+  project:     { id: string; title: string } | null;
   user:        { id: string; name: string; email: string };
 }
 
@@ -56,7 +56,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       },
       orderBy: { createdAt: "asc" },
     });
-    return rows.filter((p) => p.project && p.user).map((p) => ({
+    return rows.filter((p) => p.user).map((p) => ({
       id:          p.id,
       txRef:       p.txRef,
       amount:      Number(p.amount),
@@ -64,7 +64,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       description: p.description,
       receiptUrl:  resolveStorageUrl(p.receiptUrl),
       createdAt:   p.createdAt.toISOString(),
-      project:     p.project!,
+      project:     p.project,
       user:        p.user!,
     }));
   } catch {
@@ -190,8 +190,10 @@ export default async function AdminPaymentsPage() {
           to: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-xs break-all">{`{YOUR_DOMAIN}/api/payments/webhook`}</code>
         </p>
         <p>
-          <span className="font-semibold text-zinc-800">Cash payments</span> require manual admin approval above before
-          they are counted towards a project&apos;s paid balance.
+          <span className="font-semibold text-zinc-800">Cash payments</span> submitted by clients
+          stay pending until an admin approves them above — only then do they count toward a
+          project&apos;s paid balance. Office receipts issued here are recorded as paid immediately
+          because an admin has already verified the cash.
         </p>
       </div>
 

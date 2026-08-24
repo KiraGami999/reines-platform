@@ -142,7 +142,14 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
           currency:    form.currency,
           description: form.description.trim(),
           receiptUrl,
-          paidAt:      form.paidAt ? new Date(form.paidAt).toISOString() : undefined,
+          paidAt:      form.paidAt
+            ? (() => {
+                // datetime-local is YYYY-MM-DDTHH:mm — append seconds so all browsers parse reliably
+                const raw = form.paidAt.length === 16 ? `${form.paidAt}:00` : form.paidAt;
+                const d = new Date(raw);
+                return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+              })()
+            : undefined,
           notes:       form.notes.trim() || undefined,
         }),
       });
