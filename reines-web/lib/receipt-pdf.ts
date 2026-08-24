@@ -19,7 +19,7 @@ const VALUE_X = 200;
 const VALUE_MAX_WIDTH = PAGE_WIDTH - MARGIN - VALUE_X;
 
 const logoBytesPromise = readFile(
-  path.join(process.cwd(), "public/logo-nav-rebrand.png")
+  path.join(process.cwd(), "public/logo-receipt-reines-group.png")
 );
 
 export type ReceiptPdfData = {
@@ -147,7 +147,7 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     isPng ? pdf.embedPng(logoBytes) : pdf.embedJpg(logoBytes),
   ]);
 
-  const headerH = 110;
+  const headerH = 200;
   page.drawRectangle({
     x: 0,
     y: PAGE_HEIGHT - headerH,
@@ -156,12 +156,16 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     color: NAVY,
   });
 
-  // White transparent wordmark centered on navy header.
-  const logoH = 40;
-  const logoW = Math.min((logo.width / logo.height) * logoH, PAGE_WIDTH - MARGIN * 2);
+  // Official Reines Group lockup — large and clear on the navy header.
+  // Asset is a square plate; size by width so the wordmark inside stays readable.
+  const maxLogoW = Math.min(320, PAGE_WIDTH - MARGIN * 2);
+  const maxLogoH = 140;
+  const scale = Math.min(maxLogoW / logo.width, maxLogoH / logo.height);
+  const logoW = logo.width * scale;
+  const logoH = logo.height * scale;
   page.drawImage(logo, {
     x: (PAGE_WIDTH - logoW) / 2,
-    y: PAGE_HEIGHT - 58,
+    y: PAGE_HEIGHT - 22 - logoH,
     width: logoW,
     height: logoH,
   });

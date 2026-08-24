@@ -91,16 +91,16 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         id="payment-receipt"
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
-        <div className="bg-[#1B334F] px-8 py-6 text-center print:block">
-          {/* White Reines Group wordmark on navy — same asset as the public navbar (transparent, no boxed plate). */}
+        <div className="bg-[#1B334F] px-4 py-6 text-center print:block sm:px-8 sm:py-8">
+          {/* Official Reines Group lockup — large plate so the mark stays clear in print/PDF */}
           <img
-            src="/logo-nav-rebrand.png"
+            src="/logo-receipt-reines-group.png"
             alt="Reines Group"
-            width={795}
-            height={163}
-            className="mx-auto h-10 w-auto max-w-[min(100%,280px)] object-contain object-center sm:h-11"
+            width={1024}
+            height={1024}
+            className="mx-auto h-28 w-auto max-w-[min(100%,320px)] object-contain object-center sm:h-36 sm:max-w-[400px]"
           />
-          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80 sm:mt-4 sm:text-xs">
             Payment Receipt
           </p>
         </div>
