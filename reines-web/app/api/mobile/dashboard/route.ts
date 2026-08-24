@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, extractBearer } from "@/lib/jwt";
 import { resolveStorageUrl } from "@/lib/storage";
+import { checkMobileVerification } from "@/lib/api-guards";
 
 /**
  * GET /api/mobile/dashboard
@@ -19,17 +19,14 @@ import { resolveStorageUrl } from "@/lib/storage";
  * Auth: Bearer token (mobile JWT — NOT NextAuth cookie session).
  */
 export async function GET(req: NextRequest) {
-  const token   = extractBearer(req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  if (payload.role !== "CLIENT") {
+  if (payload!.role !== "CLIENT") {
     return NextResponse.json({ error: "This endpoint is for CLIENT accounts only." }, { status: 403 });
   }
 
-  const userId = payload.id;
+  const userId = payload!.id;
 
   try {
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

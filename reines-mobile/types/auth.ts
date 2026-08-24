@@ -6,6 +6,7 @@ export interface AuthUser {
   email: string;
   role:  UserRole;
   image: string | null;
+  verificationStatus?: "UNVERIFIED" | "PENDING" | "APPROVED" | "REJECTED";
 }
 
 export interface AuthState {

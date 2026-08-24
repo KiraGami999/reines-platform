@@ -3,12 +3,7 @@ import { ArrowRight, FolderKanban, Mail, UserCheck, Users } from "lucide-react";
 import { MOCK_ADMIN_PROJECTS, MOCK_USERS, type AdminUser } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import { getClientPointTotals } from "@/lib/client-points";
-import RoleBadge from "@/components/admin/RoleBadge";
-
-type ClientRow = AdminUser & {
-  projectCount: number;
-  totalPoints: number;
-};
+import AdminClientsTable, { ClientRow } from "@/components/admin/AdminClientsTable";
 
 async function getClients(): Promise<ClientRow[]> {
   try {
@@ -20,6 +15,15 @@ async function getClients(): Promise<ClientRow[]> {
         email: true,
         role: true,
         createdAt: true,
+        verificationStatus: true,
+        verificationFullName: true,
+        verificationPhone: true,
+        verificationAddress: true,
+        verificationIdType: true,
+        verificationIdNumber: true,
+        verificationDocumentUrl: true,
+        verificationAdminNotes: true,
+        verificationSubmittedAt: true,
         _count: { select: { projectsAsClient: true } },
       },
       orderBy: { createdAt: "desc" },
@@ -29,9 +33,19 @@ async function getClients(): Promise<ClientRow[]> {
       id: client.id,
       name: client.name ?? "Unknown",
       email: client.email ?? "-",
-      role: client.role as AdminUser["role"],
+      role: client.role as string,
       createdAt: client.createdAt instanceof Date ? client.createdAt.toISOString() : String(client.createdAt),
+      verificationStatus: client.verificationStatus as any,
+      verificationFullName: client.verificationFullName,
+      verificationPhone: client.verificationPhone,
+      verificationAddress: client.verificationAddress,
+      verificationIdType: client.verificationIdType,
+      verificationIdNumber: client.verificationIdNumber,
+      verificationDocumentUrl: client.verificationDocumentUrl,
+      verificationAdminNotes: client.verificationAdminNotes,
+      verificationSubmittedAt: client.verificationSubmittedAt instanceof Date ? client.verificationSubmittedAt.toISOString() : null,
       projectCount: client._count.projectsAsClient,
+      totalPoints: 0,
     }));
     const totals = await getClientPointTotals(rows.map((client) => client.id));
     const totalsByClient = new Map(totals.map((total) => [total.clientId, total.totalPoints]));
@@ -41,10 +55,20 @@ async function getClients(): Promise<ClientRow[]> {
       totalPoints: totalsByClient.get(client.id) ?? 0,
     }));
   } catch {
+    // Fallback if Prisma is not connected
     return MOCK_USERS
       .filter((user) => user.role === "CLIENT")
       .map((client) => ({
         ...client,
+        verificationStatus: "UNVERIFIED" as any,
+        verificationFullName: null,
+        verificationPhone: null,
+        verificationAddress: null,
+        verificationIdType: null,
+        verificationIdNumber: null,
+        verificationDocumentUrl: null,
+        verificationAdminNotes: null,
+        verificationSubmittedAt: null,
         projectCount: MOCK_ADMIN_PROJECTS.filter((project) => project.clientId === client.id).length,
         totalPoints: 0,
       }));
@@ -104,64 +128,7 @@ export default async function AdminClientsPage() {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                <th className="px-4 py-3">Client</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Role</th>
-                <th className="px-4 py-3">Projects</th>
-                <th className="px-4 py-3">Points</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-100">
-              {clients.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-4 py-12 text-center text-sm text-zinc-400">
-                    No client accounts yet. New public registrations will appear here automatically.
-                  </td>
-                </tr>
-              ) : (
-                clients.map((client) => (
-                  <tr key={client.id} className="transition-colors hover:bg-zinc-50">
-                    <td className="px-4 py-3">
-                      <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold uppercase text-blue-700">
-                          {client.name.split(" ").map((name) => name[0]).slice(0, 2).join("")}
-                        </div>
-                        <span className="font-medium text-zinc-900">{client.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-4 py-3">
-                      <a href={`mailto:${client.email}`} className="inline-flex items-center gap-2 text-zinc-500 hover:text-[#2d4a6b]">
-                        <Mail size={13} />
-                        {client.email}
-                      </a>
-                    </td>
-                    <td className="px-4 py-3">
-                      <RoleBadge role={client.role} />
-                    </td>
-                    <td className="px-4 py-3 text-zinc-600">{client.projectCount}</td>
-                    <td className="px-4 py-3">
-                      <span className="rounded-full bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
-                        {client.totalPoints.toLocaleString("en-MW")} pts
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-right">
-                      <Link href="/dashboard/admin/projects" className="text-sm font-medium text-[#8fb9e8] hover:underline">
-                        View projects
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <AdminClientsTable initialClients={clients} />
     </div>
   );
 }

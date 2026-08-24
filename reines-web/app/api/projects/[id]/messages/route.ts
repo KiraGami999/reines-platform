@@ -1,21 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendMessageSchema } from "@/lib/validations";
 import { getMockMessages } from "@/lib/mock-messages";
 import { sendProjectMessageEmail } from "@/lib/email";
 import { notifyNewMessage } from "@/lib/push";
+import { checkVerification } from "@/lib/api-guards";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
 // ─── GET /api/projects/:id/messages ──────────────────────────────────────────
 
 export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
   const { id } = await params;
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
 
   try {
     const project = await prisma.project.findUnique({ where: { id } });
@@ -42,10 +42,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
 // ─── POST /api/projects/:id/messages ─────────────────────────────────────────
 
 export async function POST(req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role, name } = session.user;
+  const { id: userId, role, name } = session!.user;
   const { id } = await params;
 
   const body   = await req.json().catch(() => null);

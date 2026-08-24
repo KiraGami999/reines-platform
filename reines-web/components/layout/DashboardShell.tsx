@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { DashboardHeader } from "@/components/layout/DashboardHeader";
+import { usePathname, useRouter } from "next/navigation";
 
 interface DashboardShellProps {
-  user: { name: string; email: string; role: string; image?: string | null };
+  user: { name: string; email: string; role: string; image?: string | null; verificationStatus?: string };
   children: React.ReactNode;
 }
 
@@ -22,6 +23,20 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
     return localStorage.getItem(COLLAPSE_KEY) === "true";
   });
 
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const isClient = user.role === "CLIENT";
+  const isUnverified = isClient && user.verificationStatus !== "APPROVED";
+  const isAllowedPath = pathname === "/dashboard/verification" || pathname.startsWith("/dashboard/settings");
+  const shouldBlock = isUnverified && !isAllowedPath;
+
+  useEffect(() => {
+    if (shouldBlock) {
+      router.replace("/dashboard/verification");
+    }
+  }, [shouldBlock, router]);
+
   function handleToggleCollapse() {
     setSidebarCollapsed((prev) => {
       const next = !prev;
@@ -37,6 +52,7 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
     >
       <Sidebar
         role={user.role}
+        verificationStatus={user.verificationStatus}
         open={sidebarOpen}
         collapsed={sidebarCollapsed}
         onClose={() => setSidebarOpen(false)}
@@ -53,7 +69,15 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           sidebarCollapsed={sidebarCollapsed}
         />
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 print:overflow-visible print:p-0">
-          {children}
+          {shouldBlock ? (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-center py-12">
+                <p className="text-sm text-zinc-500">Redirecting to verification page...</p>
+              </div>
+            </div>
+          ) : (
+            children
+          )}
         </main>
       </div>
     </div>

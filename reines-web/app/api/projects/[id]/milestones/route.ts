@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createMilestoneSchema } from "@/lib/validations";
 import { notifyMilestone } from "@/lib/push";
 import { revalidatePath } from "next/cache";
+import { checkVerification } from "@/lib/api-guards";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -15,10 +15,10 @@ type RouteContext = { params: Promise<{ id: string }> };
  * project membership).
  */
 export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
   const { id: projectId } = await params;
 
   try {
@@ -50,10 +50,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
  * ADMIN may add checkpoints — clients only ever view the timeline.
  */
 export async function POST(req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
   if (role === "CLIENT") {
     return NextResponse.json({ error: "Only project managers may add timeline checkpoints." }, { status: 403 });
   }

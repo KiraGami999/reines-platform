@@ -16,10 +16,12 @@ declare module "next-auth" {
       email: string;
       role: string;
       image?: string | null;
+      verificationStatus: string;
     };
   }
   interface User {
     role?: string;
+    verificationStatus?: string;
   }
 }
 
@@ -27,6 +29,7 @@ declare module "@auth/core/jwt" {
   interface JWT {
     id?: string;
     role?: string;
+    verificationStatus?: string;
   }
 }
 
@@ -65,6 +68,7 @@ const fullAuthConfig = {
           email: user.email!,
           role:  user.role,
           image: user.image,
+          verificationStatus: user.verificationStatus,
         };
       },
     }),
@@ -94,7 +98,7 @@ const fullAuthConfig = {
 
         const user = await prisma.user.findUnique({
           where:  { id: payload.id as string },
-          select: { id: true, name: true, email: true, role: true, image: true },
+          select: { id: true, name: true, email: true, role: true, image: true, verificationStatus: true },
         });
         if (!user || !user.email) return null;
 
@@ -104,6 +108,7 @@ const fullAuthConfig = {
           email: user.email,
           role:  user.role,
           image: user.image,
+          verificationStatus: user.verificationStatus,
         };
       },
     }),
@@ -114,13 +119,14 @@ const fullAuthConfig = {
       if (user) {
         token.id   = user.id;
         token.role = user.role ?? "CLIENT";
+        token.verificationStatus = (user as any).verificationStatus ?? "UNVERIFIED";
         return token;
       }
 
       if (token.id) {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id as string },
-          select: { role: true, name: true, email: true, image: true },
+          select: { role: true, name: true, email: true, image: true, verificationStatus: true },
         });
 
         if (dbUser) {
@@ -128,6 +134,7 @@ const fullAuthConfig = {
           token.name = dbUser.name;
           token.email = dbUser.email;
           token.picture = dbUser.image;
+          token.verificationStatus = dbUser.verificationStatus;
         }
       }
       return token;
@@ -137,6 +144,7 @@ const fullAuthConfig = {
       if (token && session.user) {
         session.user.id   = token.id   as string;
         session.user.role = token.role as string;
+        session.user.verificationStatus = (token.verificationStatus as string) ?? "UNVERIFIED";
       }
       return session;
     },

@@ -479,3 +479,235 @@ export async function sendProjectMessageEmail(opts: {
   });
 }
 
+// ─── Identity Verification Emails ───────────────────────────────────────────
+
+function verificationSubmittedHtml(name?: string): string {
+  const greeting = name ? `Hi ${name},` : "Hi,";
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                We have received your identity verification documents and details. Our administrator team is currently reviewing your application.
+              </p>
+              <div style="margin:0 0 24px;padding:16px;background:#f0f5fc;border-radius:12px;border:1px solid ${BRAND_BLUE};">
+                <span style="font-size:14px;font-weight:600;color:${BRAND_NAVY};">Status: Pending Review</span>
+              </div>
+              <p style="margin:0;color:#a1a1aa;font-size:12px;line-height:1.6;">
+                This process usually takes 24-48 business hours. You will receive an automated email as soon as your account access is approved or if we require any adjustments.
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendClientVerificationSubmittedEmail(to: string, name?: string): Promise<void> {
+  await sendMail({
+    to,
+    subject: "Identity verification request received - Reines Group",
+    html: verificationSubmittedHtml(name),
+    text: `${name ? `Hi ${name},\n\n` : ""}We have received your identity verification documents and details. Our administrator team is reviewing your application. This process usually takes 24-48 hours.`,
+  });
+}
+
+function adminVerificationHtml(clientName: string, clientEmail: string, details: { phone: string, address: string, idType: string, idNumber: string, documentUrl: string }): string {
+  const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw";
+  const fullDocumentLink = details.documentUrl ? `${baseUrl}/api/media?url=${encodeURIComponent(details.documentUrl)}` : "#";
+  const reviewLink = `${baseUrl}/dashboard/admin/clients`;
+
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group Admin | New Verification Request</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 32px;">
+              <p style="margin:0 0 16px;color:#52525b;font-size:14px;line-height:1.6;">
+                A new client account is pending verification and requires review before accessing portal features.
+              </p>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 16px;">
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;width:140px;vertical-align:top;">Client Name</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;font-weight:600;">${clientName}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Client Email</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${clientEmail}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Phone</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.phone}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Address</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.address}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">ID Type</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;text-transform:uppercase;">${details.idType}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">ID Number</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.idNumber}</td>
+                </tr>
+              </table>
+              <div style="text-align:center;margin:32px 0 24px;">
+                <a href="${fullDocumentLink}" target="_blank" style="display:inline-block;background:#f0f5fc;border:1px solid ${BRAND_BLUE};color:${BRAND_NAVY};text-decoration:none;padding:12px 24px;font-size:14px;font-weight:600;border-radius:8px;margin-right:12px;">
+                  View ID Document
+                </a>
+                <a href="${reviewLink}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:12px 24px;font-size:14px;font-weight:600;border-radius:8px;">
+                  Open Admin Portal
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendAdminVerificationSubmittedEmail(clientName: string, clientEmail: string, details: { phone: string, address: string, idType: string, idNumber: string, documentUrl: string }): Promise<void> {
+  const to = getQuotationNotifyEmail();
+  await sendMail({
+    to,
+    subject: `[Review Required] Client Verification Request: ${clientName}`,
+    html: adminVerificationHtml(clientName, clientEmail, details),
+    text: `A new client account is pending verification and requires review.\n\nClient Name: ${clientName}\nClient Email: ${clientEmail}\nID Type: ${details.idType}\nID Number: ${details.idNumber}\n\nReview this application in the admin portal under Client Management.`,
+  });
+}
+
+function verificationApprovedHtml(name?: string): string {
+  const greeting = name ? `Hi ${name},` : "Hi,";
+  const dashboardLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard`;
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                Great news! Your identity verification has been reviewed and <strong>approved</strong> by our team.
+              </p>
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                You now have full access to all client portal features, including project management, payment history, messages, and loyalty rewards.
+              </p>
+              <div style="text-align:center;margin:32px 0 24px;">
+                <a href="${dashboardLink}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:12px 28px;font-size:14px;font-weight:600;border-radius:8px;">
+                  Access Client Portal
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendVerificationApprovedEmail(to: string, name?: string): Promise<void> {
+  const dashboardLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard`;
+  await sendMail({
+    to,
+    subject: "Identity verification APPROVED - Reines Group",
+    html: verificationApprovedHtml(name),
+    text: `${name ? `Hi ${name},\n\n` : ""}Your identity verification request has been approved. You now have full access to the client portal: ${dashboardLink}`,
+  });
+}
+
+function verificationRejectedHtml(name?: string, notes?: string): string {
+  const greeting = name ? `Hi ${name},` : "Hi,";
+  const resubmitLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard/verification`;
+  return `
+  <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
+      <tr><td align="center">
+        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+          <tr>
+            <td style="background:${BRAND_NAVY};padding:24px 32px;">
+              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:32px;">
+              <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                Your identity verification has been reviewed and unfortunately could not be approved at this time.
+              </p>
+              ${notes ? `
+              <div style="margin:0 0 24px;padding:16px;background:#fef2f2;border-left:4px solid #ef4444;border-radius:0 8px 8px 0;">
+                <p style="margin:0 0 4px;color:#991b1b;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Feedback from Admins</p>
+                <p style="margin:0;color:#7f1d1d;font-size:14px;line-height:1.6;font-style:italic;">"${notes}"</p>
+              </div>
+              ` : ""}
+              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
+                Please log in to your account, update the required details or resubmit a clearer copy of your identity document.
+              </p>
+              <div style="text-align:center;margin:32px 0 24px;">
+                <a href="${resubmitLink}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:12px 28px;font-size:14px;font-weight:600;border-radius:8px;">
+                  Update & Resubmit
+                </a>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#fafafa;border-top:1px solid #eeeeee;padding:16px 32px;">
+              <span style="color:#a1a1aa;font-size:11px;">© ${new Date().getFullYear()} Reines Property Development Limited</span>
+            </td>
+          </tr>
+        </table>
+      </td></tr>
+    </table>
+  </div>`;
+}
+
+export async function sendVerificationRejectedEmail(to: string, name?: string, notes?: string): Promise<void> {
+  const resubmitLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard/verification`;
+  await sendMail({
+    to,
+    subject: "Identity verification update required - Reines Group",
+    html: verificationRejectedHtml(name, notes),
+    text: `${name ? `Hi ${name},\n\n` : ""}Your identity verification request requires updating. Feedback: ${notes || "None"}. Please resubmit at: ${resubmitLink}`,
+  });
+}
+
+

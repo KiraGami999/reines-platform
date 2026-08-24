@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { isSafeUploadUrl } from "@/lib/storage";
 import { createGalleryUpdateSchema } from "@/lib/validations";
 import { notifyGalleryUpload } from "@/lib/push";
 import { revalidatePath } from "next/cache";
+import { checkVerification } from "@/lib/api-guards";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -14,11 +14,11 @@ type RouteContext = { params: Promise<{ id: string }> };
  * Clients may only access their own projects.
  */
 export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
   const { id } = await params;
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
 
   try {
     const project = await prisma.project.findUnique({ where: { id } });
@@ -45,10 +45,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
  * Only PROJECT_MANAGER and ADMIN may post.
  */
 export async function POST(req: NextRequest, { params }: RouteContext) {
-  const session = await auth();
-  if (!session?.user) return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
   if (role === "CLIENT") return NextResponse.json({ error: "Clients may not post updates" }, { status: 403 });
 
   const { id } = await params;

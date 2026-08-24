@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, extractBearer } from "@/lib/jwt";
 import { notifyNewMessage } from "@/lib/push";
 import { z } from "zod";
 import { sendProjectMessageEmail } from "@/lib/email";
+import { checkMobileVerification } from "@/lib/api-guards";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
@@ -22,13 +22,10 @@ const sendSchema = z.object({
  * Auth: Bearer token (mobile JWT).
  */
 export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const token   = extractBearer(_req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(_req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  const { id: userId, role } = payload;
+  const { id: userId, role } = payload!;
   const { id: projectId }    = await params;
 
   try {
@@ -64,13 +61,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
  * Auth: Bearer token (mobile JWT).
  */
 export async function POST(req: NextRequest, { params }: RouteContext) {
-  const token   = extractBearer(req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  const { id: userId, role } = payload;
+  const { id: userId, role } = payload!;
   const { id: projectId }    = await params;
 
   const body   = await req.json().catch(() => null);

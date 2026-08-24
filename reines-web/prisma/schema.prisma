@@ -20,6 +20,13 @@ enum Role {
   CLIENT
 }
 
+enum VerificationStatus {
+  UNVERIFIED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum ProjectStatus {
   PLANNING
   IN_PROGRESS
@@ -113,9 +120,19 @@ model User {
   password      String? // hashed with bcrypt; null for OAuth-only users
   emailVerified DateTime?
   image         String?
-  role          Role      @default(CLIENT)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role                    Role               @default(CLIENT)
+  verificationStatus      VerificationStatus @default(UNVERIFIED)
+  verificationFullName    String?
+  verificationPhone       String?
+  verificationAddress     String?
+  verificationIdType      String? // "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE"
+  verificationIdNumber    String?
+  verificationDocumentUrl String?
+  verificationSubmittedAt DateTime?
+  verificationReviewedAt  DateTime?
+  verificationAdminNotes  String?
+  createdAt               DateTime           @default(now())
+  updatedAt               DateTime           @updatedAt
 
   // NextAuth adapter relations
   accounts Account[]

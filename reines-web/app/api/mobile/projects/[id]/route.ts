@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, extractBearer } from "@/lib/jwt";
 import { resolveStorageUrl } from "@/lib/storage";
+import { checkMobileVerification } from "@/lib/api-guards";
 
 /**
  * GET /api/mobile/projects/:id
@@ -22,13 +22,10 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const token   = extractBearer(req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  const { id: userId, role } = payload;
+  const { id: userId, role } = payload!;
   const { id } = await params;
 
   try {

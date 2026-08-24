@@ -1,9 +1,9 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { initiatePayment, generateTxRef } from "@/lib/paychangu";
 import { created, forbidden, badRequest, serverError, validationError } from "@/lib/api-response";
 import { z } from "zod";
+import { checkVerification } from "@/lib/api-guards";
 
 const schema = z.object({
   projectId:   z.string().min(1, "Project ID is required"),
@@ -13,15 +13,15 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user) return forbidden("Authentication required.");
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return validationError(parsed.error);
 
   const { projectId, amount, currency, description } = parsed.data;
-  const user = session.user;
+  const user = session!.user;
 
   // Verify the user has access to this project
   try {

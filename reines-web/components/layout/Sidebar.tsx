@@ -142,6 +142,20 @@ const clientNav: NavSection[] = [
   },
 ];
 
+const unverifiedClientNav: NavSection[] = [
+  {
+    items: [
+      { label: "Verification", href: "/dashboard/verification", icon: ShieldCheck },
+    ],
+  },
+  {
+    heading: "Account",
+    items: [
+      { label: "Settings", href: "/dashboard/settings", icon: Settings },
+    ],
+  },
+];
+
 const navByRole: Record<string, NavSection[]> = {
   ADMIN:           adminNav,
   PROJECT_MANAGER: managerNav,
@@ -176,22 +190,27 @@ function NavTooltip({ label, children }: { label: string; children: React.ReactN
 // ─── Component ─────────────────────────────────────────────────────────────────
 
 interface SidebarProps {
-  role?:      string;
-  open?:      boolean;
-  collapsed?: boolean;
-  onClose?:   () => void;
-  onToggleCollapse?: () => void;
+  role?:               string;
+  verificationStatus?: string;
+  open?:               boolean;
+  collapsed?:          boolean;
+  onClose?:            () => void;
+  onToggleCollapse?:   () => void;
 }
 
 export function Sidebar({
   role = "CLIENT",
+  verificationStatus = "UNVERIFIED",
   open = true,
   collapsed = false,
   onClose,
   onToggleCollapse,
 }: SidebarProps) {
   const pathname = usePathname();
-  const sections = navByRole[role] ?? navByRole.CLIENT;
+  let sections = navByRole[role] ?? navByRole.CLIENT;
+  if (role === "CLIENT" && verificationStatus !== "APPROVED") {
+    sections = unverifiedClientNav;
+  }
   const meta     = roleMeta[role] ?? roleMeta.CLIENT;
   const logoMark = getPortalLogoMark(role);
 

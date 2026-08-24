@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ok, forbidden } from "@/lib/api-response";
+import { checkVerification } from "@/lib/api-guards";
 
 /**
  * GET /api/payments
@@ -10,15 +10,17 @@ import { ok, forbidden } from "@/lib/api-response";
  * Clients see their own payments; admins/managers see all (or filtered by project).
  */
 export async function GET(req: NextRequest) {
-  const session = await auth();
-  if (!session?.user) return forbidden();
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
+
+  const { id: userId, role } = session!.user;
 
   const { searchParams } = req.nextUrl;
   const projectId = searchParams.get("projectId");
 
   try {
     const where = {
-      ...(session.user.role === "CLIENT" ? { userId: session.user.id } : {}),
+      ...(role === "CLIENT" ? { userId } : {}),
       ...(projectId ? { projectId } : {}),
     };
 

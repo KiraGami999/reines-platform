@@ -1,6 +1,7 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const ALLOWED_CONTENT_TYPES = [
   "image/jpeg",
@@ -31,7 +32,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   }
 
   if (session.user.role === "CLIENT") {
-    return NextResponse.json({ error: "Clients may not upload files" }, { status: 403 });
+    const dbUser = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { verificationStatus: true },
+    });
+    if (!dbUser || dbUser.verificationStatus === "APPROVED") {
+      return NextResponse.json({ error: "Clients may not upload files" }, { status: 403 });
+    }
   }
 
   const body = (await request.json()) as HandleUploadBody;

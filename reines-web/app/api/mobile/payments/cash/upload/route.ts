@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { put } from "@vercel/blob";
-import { verifyToken, extractBearer } from "@/lib/jwt";
+import { checkMobileVerification } from "@/lib/api-guards";
 
 const MAX_MB = 5;
 const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
@@ -11,13 +11,10 @@ const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gi
  * Uploads a cash payment receipt image for clients using Bearer JWT auth.
  */
 export async function POST(req: NextRequest) {
-  const token = extractBearer(req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  if (payload.role !== "CLIENT") {
+  if (payload!.role !== "CLIENT") {
     return NextResponse.json({ error: "Only clients may upload payment receipts." }, { status: 403 });
   }
 

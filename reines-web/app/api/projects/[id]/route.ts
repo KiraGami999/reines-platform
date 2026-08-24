@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getMockProjectById } from "@/lib/mock-data";
+import { checkVerification } from "@/lib/api-guards";
 
 /**
  * GET /api/projects/:id
@@ -12,12 +12,10 @@ export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
-  }
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
   const { id } = await params;
 
   try {

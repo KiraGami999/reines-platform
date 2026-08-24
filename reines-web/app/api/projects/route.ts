@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkVerification } from "@/lib/api-guards";
 
 /**
  * GET /api/projects
@@ -10,12 +10,10 @@ import { prisma } from "@/lib/prisma";
  *  - ADMIN           → all projects
  */
 export async function GET() {
-  const session = await auth();
-  if (!session?.user) {
-    return NextResponse.json({ error: "Unauthenticated" }, { status: 401 });
-  }
+  const { errorResponse, session } = await checkVerification();
+  if (errorResponse) return errorResponse;
 
-  const { id: userId, role } = session.user;
+  const { id: userId, role } = session!.user;
 
   try {
     if (role === "CLIENT") {

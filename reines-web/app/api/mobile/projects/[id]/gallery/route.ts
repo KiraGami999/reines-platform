@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { verifyToken, extractBearer } from "@/lib/jwt";
 import { isSafeUploadUrl, resolveStorageUrl } from "@/lib/storage";
 import { notifyGalleryUpload } from "@/lib/push";
 import { z } from "zod";
+import { checkMobileVerification } from "@/lib/api-guards";
 
 const postSchema = z.object({
   note:            z.string().min(1, "Please add a note for this update.").max(1000),
@@ -31,13 +31,10 @@ type RouteContext = { params: Promise<{ id: string }> };
  * Auth: Bearer token (mobile JWT).
  */
 export async function GET(_req: NextRequest, { params }: RouteContext) {
-  const token   = extractBearer(_req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(_req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  const { id: userId, role } = payload;
+  const { id: userId, role } = payload!;
   const { id: projectId }    = await params;
 
   try {
@@ -92,13 +89,10 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
  * Auth: Bearer token (mobile JWT).
  */
 export async function POST(req: NextRequest, { params }: RouteContext) {
-  const token   = extractBearer(req.headers.get("authorization"));
-  if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
+  const { errorResponse, payload } = await checkMobileVerification(req);
+  if (errorResponse) return errorResponse;
 
-  const payload = await verifyToken(token);
-  if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
-
-  if (payload.role !== "PROJECT_MANAGER" && payload.role !== "ADMIN") {
+  if (payload!.role !== "PROJECT_MANAGER" && payload!.role !== "ADMIN") {
     return NextResponse.json({ error: "Only project managers may post updates." }, { status: 403 });
   }
 
