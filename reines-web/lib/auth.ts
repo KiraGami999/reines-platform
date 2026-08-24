@@ -1,12 +1,16 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
 import { verifyToken } from "@/lib/jwt";
 import { loginSchema } from "@/lib/validations";
-import { authConfig } from "@/auth.config";
+import {
+  authConfig,
+  SESSION_UPDATE_AGE,
+} from "@/auth.config";
 
 declare module "next-auth" {
   interface Session {
@@ -30,8 +34,12 @@ declare module "@auth/core/jwt" {
     id?: string;
     role?: string;
     verificationStatus?: string;
+    refreshedAt?: number;
   }
 }
+
+const googleConfigured =
+  Boolean(process.env.AUTH_GOOGLE_ID) && Boolean(process.env.AUTH_GOOGLE_SECRET);
 
 const fullAuthConfig = {
   // Required when the portal is opened via LAN IP / tunnel (WebView), not only
@@ -130,43 +138,119 @@ const fullAuthConfig = {
         };
       },
     }),
+
+    ...(googleConfigured
+      ? [
+          Google({
+            clientId:     process.env.AUTH_GOOGLE_ID!,
+            clientSecret: process.env.AUTH_GOOGLE_SECRET!,
+            // Same email as an existing password account → link (clients can use either).
+            allowDangerousEmailAccountLinking: true,
+            profile(profile) {
+              const email = (profile.email ?? "").trim().toLowerCase();
+              const name =
+                profile.name?.trim() ||
+                email.split("@")[0] ||
+                "Google User";
+              return {
+                id:            profile.sub,
+                name,
+                email,
+                image:         profile.picture,
+                emailVerified: profile.email_verified ? new Date() : null,
+              };
+            },
+          }),
+        ]
+      : []),
   ],
 
   callbacks: {
+    /**
+     * Allow Google for any user (new clients get CLIENT via schema defaults;
+     * existing admin/PM accounts keep their role after email linking).
+     */
+    async signIn({ account, profile }) {
+      if (account?.provider !== "google") return true;
+      const email = profile?.email?.trim().toLowerCase();
+      if (!email) return false;
+      return true;
+    },
+
     async jwt({ token, user }) {
       if (user) {
-        token.id   = user.id;
-        token.role = user.role ?? "CLIENT";
-        token.verificationStatus = (user as any).verificationStatus ?? "UNVERIFIED";
+        token.id                 = user.id;
+        token.role               = user.role ?? "CLIENT";
+        token.verificationStatus =
+          (user as { verificationStatus?: string }).verificationStatus ?? "UNVERIFIED";
+        token.refreshedAt        = Date.now();
         return token;
       }
 
-      if (token.id) {
-        try {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: token.id as string },
-            select: { role: true, name: true, email: true, image: true, verificationStatus: true },
-          });
+      if (!token.id) return token;
 
-          if (dbUser) {
-            token.role = dbUser.role;
-            token.name = dbUser.name;
-            token.email = dbUser.email;
-            token.picture = dbUser.image;
-            token.verificationStatus = dbUser.verificationStatus;
-          }
-        } catch (err) {
-          console.error("[auth/jwt] failed to refresh user from DB:", err);
+      const refreshedAt = token.refreshedAt ?? 0;
+      const stale =
+        Date.now() - refreshedAt >= SESSION_UPDATE_AGE * 1000;
+
+      if (!stale) return token;
+
+      try {
+        const dbUser = await prisma.user.findUnique({
+          where:  { id: token.id as string },
+          select: {
+            role:               true,
+            name:               true,
+            email:              true,
+            image:              true,
+            verificationStatus: true,
+          },
+        });
+
+        if (!dbUser) {
+          // Invalidate JWT for deleted users (Auth.js treats null as signed-out).
+          return null as unknown as typeof token;
         }
+
+        token.role               = dbUser.role;
+        token.name               = dbUser.name;
+        token.email              = dbUser.email;
+        token.picture            = dbUser.image;
+        token.verificationStatus = dbUser.verificationStatus;
+        token.refreshedAt        = Date.now();
+      } catch (err) {
+        console.error("[auth/jwt] failed to refresh user from DB:", err);
       }
+
       return token;
     },
 
     async session({ session, token }) {
-      if (token && session.user) {
-        session.user.id   = token.id   as string;
-        session.user.role = token.role as string;
-        session.user.verificationStatus = (token.verificationStatus as string) ?? "UNVERIFIED";
+      if (!token?.id) {
+        // Deleted / invalidated token — treat as signed out for authorized checks.
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id:                 "",
+            name:               "",
+            email:              "",
+            role:               "",
+            verificationStatus: "UNVERIFIED",
+          },
+        };
+      }
+
+      if (session.user) {
+        session.user.id                 = token.id as string;
+        session.user.role               = (token.role as string) ?? "CLIENT";
+        session.user.verificationStatus =
+          (token.verificationStatus as string) ?? "UNVERIFIED";
+        if (token.name)  session.user.name  = token.name as string;
+        if (token.email) session.user.email = token.email as string;
+        if (token.picture !== undefined) {
+          session.user.image = token.picture as string | null;
+        }
       }
       return session;
     },

@@ -9,8 +9,35 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Eye, EyeOff, AlertCircle, CheckCircle2 } from "lucide-react";
 import { useReinesLoader } from "@/components/layout/ReinesLoaderProvider";
+import { AuthDivider, GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
-export function LoginForm() {
+const OAUTH_ERROR_MESSAGES: Record<string, string> = {
+  OAuthAccountNotLinked:
+    "This email is already registered with a different sign-in method. Use your password, or contact support if you need help linking Google.",
+  OAuthCallback:
+    "Google sign-in failed during the callback. Please try again.",
+  OAuthSignin:
+    "Could not start Google sign-in. Please try again.",
+  AccessDenied:
+    "Access was denied. Please try again or use email and password.",
+  Configuration:
+    "Google sign-in is not configured correctly. Please contact support.",
+  Callback:
+    "Sign-in callback failed. Please try again.",
+  Default:
+    "Sign-in failed. Please try again.",
+};
+
+function oauthErrorMessage(code: string | null): string {
+  if (!code) return "";
+  return OAUTH_ERROR_MESSAGES[code] ?? OAUTH_ERROR_MESSAGES.Default;
+}
+
+interface LoginFormProps {
+  googleEnabled?: boolean;
+}
+
+export function LoginForm({ googleEnabled = false }: LoginFormProps) {
   const router       = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl  = searchParams.get("callbackUrl") ?? "/dashboard";
@@ -18,6 +45,7 @@ export function LoginForm() {
 
   const verified = searchParams.get("verified") === "1";
   const wasReset = searchParams.get("reset")    === "1";
+  const oauthError = oauthErrorMessage(searchParams.get("error"));
 
   const [form, setForm]       = useState({ email: "", password: "" });
   const [errors, setErrors]   = useState<{ email?: string; password?: string }>({});
@@ -63,6 +91,8 @@ export function LoginForm() {
     router.push(callbackUrl);
     router.refresh();
   }
+
+  const displayError = serverError || oauthError;
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -126,16 +156,23 @@ export function LoginForm() {
         {errors.password && <p className="text-xs text-red-500">{errors.password}</p>}
       </div>
 
-      {serverError && (
+      {displayError && (
         <div className="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
           <AlertCircle size={15} className="mt-0.5 shrink-0" />
-          <span>{serverError}</span>
+          <span>{displayError}</span>
         </div>
       )}
 
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Signing in…" : "Sign in"}
       </Button>
+
+      {googleEnabled && (
+        <>
+          <AuthDivider />
+          <GoogleSignInButton callbackUrl={callbackUrl} label="Sign in with Google" />
+        </>
+      )}
 
       <p className="text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}

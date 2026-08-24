@@ -7,6 +7,7 @@ import { registerSchema } from "@/lib/validations";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Eye, EyeOff, AlertCircle } from "lucide-react";
+import { AuthDivider, GoogleSignInButton } from "@/components/auth/GoogleSignInButton";
 
 interface FieldErrors {
   name?: string;
@@ -53,7 +54,7 @@ function PasswordStrengthBar({ password }: { password: string }) {
   );
 }
 
-export function RegisterForm() {
+export function RegisterForm({ googleEnabled = false }: { googleEnabled?: boolean }) {
   const router = useRouter();
   const [form, setForm] = useState({
     name: "",
@@ -234,6 +235,13 @@ export function RegisterForm() {
       <Button type="submit" className="w-full" disabled={loading}>
         {loading ? "Creating account…" : "Create account"}
       </Button>
+
+      {googleEnabled && (
+        <>
+          <AuthDivider />
+          <GoogleSignInButton label="Sign up with Google" />
+        </>
+      )}
 
       <p className="text-center text-sm text-zinc-500">
         Already have an account?{" "}

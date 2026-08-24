@@ -2,6 +2,11 @@ import { Suspense } from "react";
 import { LoginForm } from "@/components/auth/LoginForm";
 import { AuthDesktopBrandLogo, AuthMobileBrandLogo } from "@/components/auth/AuthBrandLogo";
 
+/** Server-only flag — avoid importing full auth for a simple env check. */
+function isGoogleAuthEnabled() {
+  return Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+}
+
 interface LoginPageProps {
   searchParams: Promise<{ registered?: string; error?: string; callbackUrl?: string }>;
 }
@@ -10,6 +15,7 @@ export const metadata = { title: "Sign In – Reines Portal" };
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
+  const googleEnabled = isGoogleAuthEnabled();
 
   return (
     <div className="flex min-h-screen">
@@ -55,12 +61,13 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
           {params.registered && (
             <div className="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700">
-              Account created successfully. Sign in with your email and password.
+              Account created successfully. Sign in with your email and password
+              {googleEnabled ? ", or continue with Google." : "."}
             </div>
           )}
 
           <Suspense>
-            <LoginForm />
+            <LoginForm googleEnabled={googleEnabled} />
           </Suspense>
 
           <p className="mt-8 text-center text-xs text-zinc-400">

@@ -18,7 +18,8 @@ export default NextAuth(authConfig).auth(
   (req: NextRequest & { auth: { user?: { role?: string } } | null }) => {
     const { nextUrl } = req;
     const session   = req.auth;
-    const isLoggedIn = !!session?.user;
+    const user = session?.user as { id?: string; email?: string | null } | undefined;
+    const isLoggedIn = !!(user?.id || user?.email);
 
     const isDashboard = nextUrl.pathname.startsWith("/dashboard");
     const isAuthPage  = ["/login", "/register", "/forgot-password", "/verify-email"].includes(

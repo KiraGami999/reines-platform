@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Reines Web Portal
+
+Next.js client/admin portal for Reines Property Development.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Authentication
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Auth uses [Auth.js](https://authjs.dev) (NextAuth v5) with JWT sessions.
 
-## Learn More
+### Required env
 
-To learn more about Next.js, take a look at the following resources:
+| Variable | Purpose |
+|----------|---------|
+| `AUTH_SECRET` | Signs session cookies (and related tokens). Generate with `openssl rand -base64 32`. |
+| `NEXTAUTH_URL` | Public site URL, e.g. `https://reines.co.mw` or `http://localhost:3000`. |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Google Sign-In (optional)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Clients can sign in or register with Google when these are set:
 
-## Deploy on Vercel
+| Variable | Purpose |
+|----------|---------|
+| `AUTH_GOOGLE_ID` | Google OAuth 2.0 Client ID |
+| `AUTH_GOOGLE_SECRET` | Google OAuth 2.0 Client Secret |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Google Cloud Console setup**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Create an OAuth 2.0 Client ID (application type: **Web application**).
+2. Add authorized redirect URIs:
+   - Production: `https://reines.co.mw/api/auth/callback/google`
+   - Local: `http://localhost:3000/api/auth/callback/google`
+3. Set `AUTH_GOOGLE_ID` and `AUTH_GOOGLE_SECRET` on the host (e.g. Vercel).
+4. Redeploy. The “Sign in with Google” / “Sign up with Google” buttons appear on `/login` and `/register` only when both vars are present.
+
+Same-email Google and password accounts are linked so existing clients can use either method. New Google users are created as `CLIENT` (unverified until KYC).
+
+### Session policy
+
+- JWT session lifetime: **7 days**
+- Role / verification refresh from the database: at most **once per 24 hours**
+- Deleted users lose a valid session on the next refresh window

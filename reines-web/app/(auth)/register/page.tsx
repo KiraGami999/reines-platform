@@ -3,9 +3,15 @@ import { RegisterForm } from "@/components/auth/RegisterForm";
 import { AuthDesktopBrandLogo, AuthMobileBrandLogo } from "@/components/auth/AuthBrandLogo";
 import { ShieldCheck, Eye, MessageSquare } from "lucide-react";
 
+/** Server-only flag — avoid importing full auth for a simple env check. */
+function isGoogleAuthEnabled() {
+  return Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
+}
+
 export const metadata = { title: "Create Account – Reines Portal" };
 
 export default function RegisterPage() {
+  const googleEnabled = isGoogleAuthEnabled();
   const benefits = [
     { icon: <Eye size={16} />,          text: "Real-time project progress visibility" },
     { icon: <MessageSquare size={16} />, text: "Direct messaging with your project manager" },
@@ -54,7 +60,7 @@ export default function RegisterPage() {
             <p className="mt-1 text-sm text-zinc-500">Create your Reines account to access your project portal.</p>
           </div>
 
-          <RegisterForm />
+          <RegisterForm googleEnabled={googleEnabled} />
 
           <p className="mt-8 text-center text-xs text-zinc-400">
             © {new Date().getFullYear()} Reines Property Development Limited
