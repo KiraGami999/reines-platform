@@ -395,6 +395,25 @@ model ClientLogoSetting {
   updatedAt DateTime @updatedAt
 }
 
+// ---------------------------------------------------------------------------
+// Portal Greetings
+// Admin-managed welcome phrases shown on the portal dashboard landing screen.
+// Each time-of-day slot (morning / afternoon / evening) holds up to three
+// language variants; the portal picks one for the current period.
+// ---------------------------------------------------------------------------
+
+model PortalGreetingSetting {
+  id        String   @id @default("global")
+  /**
+   * When false, the portal falls back to a simple "Welcome, {name}" greeting.
+   */
+  enabled   Boolean  @default(true)
+  morning   String[] @default([])
+  afternoon String[] @default([])
+  evening   String[] @default([])
+  updatedAt DateTime @updatedAt
+}
+
 model ClientLogo {
   id           String   @id @default(cuid())
   name         String

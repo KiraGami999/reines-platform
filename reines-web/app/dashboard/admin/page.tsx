@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Building } from "lucide-react";
+import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Building, MessageSquareText } from "lucide-react";
 import { MOCK_USERS, MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import { isMarketInsightsVisible } from "@/lib/market-insights";
@@ -138,6 +138,15 @@ export default async function AdminOverviewPage() {
         ? "from-blue-500/10 to-blue-500/5 border-blue-200"
         : "from-amber-500/10 to-amber-500/5 border-amber-200",
       iconBg:  clientLogosVisible ? "bg-zinc-100 text-zinc-500" : "bg-amber-100 text-amber-700",
+    },
+    {
+      href:    "/dashboard/admin/greetings",
+      icon:    <MessageSquareText className="w-7 h-7" />,
+      title:   "Portal Greetings",
+      desc:    "Set morning, afternoon, and evening welcome text for the portal landing screen, with up to three language variants each.",
+      stat:    "Dashboard welcome",
+      accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
+      iconBg:  "bg-zinc-100 text-zinc-500",
     },
   ];
 

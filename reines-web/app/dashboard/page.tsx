@@ -322,13 +322,13 @@ async function getAdminOverviewData(): Promise<AdminOverviewData> {
   }
 }
 
-function AdminDashboard({ name, data }: { name: string; data: AdminOverviewData }) {
+function AdminDashboard({ greeting, data }: { greeting: string; data: AdminOverviewData }) {
   const { stats, activity } = data;
 
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={getPortalGreeting(name)}
+        title={greeting}
         description="Here is a live system overview connected to users, clients, managers, projects, messages, payments, and public content."
       />
 
@@ -455,11 +455,11 @@ function ManagerProjectCard({ project }: { project: ManagerProject }) {
 }
 
 function ManagerDashboard({
-  name,
+  greeting,
   projects,
   conversations,
 }: {
-  name: string;
+  greeting: string;
   projects: ManagerProject[];
   conversations: Conversation[];
 }) {
@@ -478,7 +478,7 @@ function ManagerDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={getPortalGreeting(name)}
+        title={greeting}
         description="Manage your assigned projects and keep your clients updated."
       />
 
@@ -669,11 +669,11 @@ function ClientProjectCard({ project }: { project: Project }) {
 }
 
 function ClientDashboard({
-  name,
+  greeting,
   projects,
   conversations,
 }: {
-  name: string;
+  greeting: string;
   projects: Project[];
   conversations: Conversation[];
 }) {
@@ -696,7 +696,7 @@ function ClientDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={getPortalGreeting(name)}
+        title={greeting}
         description="Track assigned projects, review progress history, and communicate with your project managers."
       />
 
@@ -870,6 +870,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const { name, role } = session.user;
   const params = await searchParams;
   const showUnauthorized = params.error === "unauthorized" && role !== "ADMIN";
+  const greetingPromise = getPortalGreeting(name);
   const [clientProjects, clientConversations] = role === "CLIENT"
     ? await Promise.all([
         getClientProjects(session.user.id!),
@@ -885,13 +886,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const adminOverviewData = role === "ADMIN"
     ? await getAdminOverviewData()
     : null;
+  const greeting = await greetingPromise;
 
   return (
     <div className="max-w-7xl mx-auto">
       {showUnauthorized && <UnauthorizedBanner />}
-      {role === "ADMIN" && adminOverviewData && <AdminDashboard name={name} data={adminOverviewData} />}
-      {role === "PROJECT_MANAGER" && <ManagerDashboard name={name} projects={managerProjects} conversations={managerConversations} />}
-      {role === "CLIENT"          && <ClientDashboard  name={name} projects={clientProjects} conversations={clientConversations} />}
+      {role === "ADMIN" && adminOverviewData && <AdminDashboard greeting={greeting} data={adminOverviewData} />}
+      {role === "PROJECT_MANAGER" && <ManagerDashboard greeting={greeting} projects={managerProjects} conversations={managerConversations} />}
+      {role === "CLIENT"          && <ClientDashboard  greeting={greeting} projects={clientProjects} conversations={clientConversations} />}
     </div>
   );
 }
