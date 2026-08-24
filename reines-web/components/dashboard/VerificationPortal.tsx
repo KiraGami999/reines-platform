@@ -168,33 +168,33 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
         </div>
 
         <div className="mt-8 border-t border-zinc-100 pt-6">
-          <h3 className="text-sm font-semibold text-zinc-950">Submitted Information</h3>
+          <h3 className="text-sm font-semibold text-zinc-900">Submitted Information</h3>
           <dl className="mt-4 grid grid-cols-1 gap-x-4 gap-y-3 sm:grid-cols-2 text-xs">
             <div>
               <dt className="font-medium text-zinc-500">Full Name</dt>
-              <dd className="mt-1 font-semibold text-zinc-950">{form.fullName}</dd>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.fullName}</dd>
             </div>
             <div>
               <dt className="font-medium text-zinc-500">Phone</dt>
-              <dd className="mt-1 font-semibold text-zinc-950">{form.phone}</dd>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.phone}</dd>
             </div>
             <div className="sm:col-span-2">
               <dt className="font-medium text-zinc-500">Physical Address</dt>
-              <dd className="mt-1 font-semibold text-zinc-950">{form.address}</dd>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.address}</dd>
             </div>
             <div className="sm:col-span-2">
               <dt className="font-medium text-zinc-500">Occupation</dt>
-              <dd className="mt-1 font-semibold text-zinc-950">{form.occupation}</dd>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.occupation}</dd>
             </div>
             <div>
               <dt className="font-medium text-zinc-500">ID Type</dt>
-              <dd className="mt-1 font-semibold text-zinc-950 uppercase">
+              <dd className="mt-1 font-semibold text-zinc-900 uppercase">
                 {form.idType.replace("_", " ")}
               </dd>
             </div>
             <div>
               <dt className="font-medium text-zinc-500">ID Number</dt>
-              <dd className="mt-1 font-semibold text-zinc-950">{form.idNumber}</dd>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.idNumber}</dd>
             </div>
           </dl>
         </div>
@@ -316,7 +316,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
             <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
               <div className="flex items-center gap-3 min-w-0">
                 <FileText className="h-6 w-6 shrink-0 text-[#2d4a6b]" />
-                <span className="truncate text-xs font-semibold text-zinc-950">
+                <span className="truncate text-xs font-semibold text-zinc-900">
                   {fileName ?? "Identity_Document_Uploaded.jpg"}
                 </span>
               </div>

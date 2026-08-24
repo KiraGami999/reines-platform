@@ -5,19 +5,25 @@ import { z } from "zod";
  * Role is intentionally omitted — the API always assigns CLIENT.
  * Use createUserSchema (admin-only) for assigning other roles.
  */
-export const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z
-    .string()
-    .trim()
-    .email("Invalid email address")
-    .transform((value) => value.toLowerCase()),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-    .regex(/[0-9]/, "Must contain at least one number"),
-});
+export const registerSchema = z
+  .object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z
+      .string()
+      .trim()
+      .email("Invalid email address")
+      .transform((value) => value.toLowerCase()),
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Must contain at least one number"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 export const loginSchema = z.object({
   email: z
@@ -36,12 +42,20 @@ const passwordField = z
   .regex(/[0-9]/, "Must contain at least one number");
 
 export const resetPasswordRequestSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z
+    .string()
+    .trim()
+    .email("Invalid email address")
+    .transform((value) => value.toLowerCase()),
 });
 
 export const resetPasswordConfirmSchema = z.object({
-  email:    z.string().email("Invalid email address"),
-  code:     z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
+  email: z
+    .string()
+    .trim()
+    .email("Invalid email address")
+    .transform((value) => value.toLowerCase()),
+  code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
   password: passwordField,
 });
 

@@ -37,6 +37,7 @@ function parseFieldErrors(error: unknown): FieldErrors | null {
     name:     issues.name?.[0],
     email:    issues.email?.[0],
     password: issues.password?.[0],
+    confirmPassword: issues.confirmPassword?.[0],
   };
 }
 
@@ -44,6 +45,7 @@ export default function RegisterScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
   const {
@@ -53,7 +55,7 @@ export default function RegisterScreen() {
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
   const passwordValue = watch("password");
@@ -158,8 +160,7 @@ export default function RegisterScreen() {
                     label="Password"
                     placeholder="Min. 8 chars, 1 uppercase, 1 number"
                     secureTextEntry={!showPassword}
-                    returnKeyType="done"
-                    onSubmitEditing={handleSubmit(submit)}
+                    returnKeyType="next"
                     value={value}
                     onChangeText={(v) => {
                       onChange(v);
@@ -182,6 +183,41 @@ export default function RegisterScreen() {
                   </TouchableOpacity>
                 </View>
                 <PasswordStrengthBar password={passwordValue} />
+              </View>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="confirmPassword"
+            render={({ field: { onChange, value, onBlur } }) => (
+              <View style={styles.inputRow}>
+                <AuthInput
+                  label="Confirm password"
+                  placeholder="Re-enter your password"
+                  secureTextEntry={!showConfirmPassword}
+                  returnKeyType="done"
+                  onSubmitEditing={handleSubmit(submit)}
+                  value={value}
+                  onChangeText={(v) => {
+                    onChange(v);
+                    setFieldErrors((p) => ({ ...p, confirmPassword: undefined }));
+                  }}
+                  onBlur={onBlur}
+                  error={fieldError("confirmPassword")}
+                  style={{ paddingRight: 44 }}
+                />
+                <TouchableOpacity
+                  style={styles.eyeBtn}
+                  onPress={() => setShowConfirmPassword((v) => !v)}
+                  hitSlop={10}
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} color={PORTAL_DARK.textMuted} />
+                  ) : (
+                    <Eye size={18} color={PORTAL_DARK.textMuted} />
+                  )}
+                </TouchableOpacity>
               </View>
             )}
           />
