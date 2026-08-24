@@ -53,7 +53,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Auto-award loyalty points for successful online payments
-    if (newStatus === "SUCCESS") {
+    if (newStatus === "SUCCESS" && updated.projectId) {
       await autoAwardPointsForPayment(
         updated.userId,
         updated.projectId,

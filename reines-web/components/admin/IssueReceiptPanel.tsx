@@ -11,11 +11,17 @@ interface ProjectOption {
   clientName: string;
 }
 
-interface IssueReceiptPanelProps {
-  projects: ProjectOption[];
+interface ClientOption {
+  id:   string;
+  name: string;
 }
 
-export default function IssueReceiptPanel({ projects }: IssueReceiptPanelProps) {
+interface IssueReceiptPanelProps {
+  projects: ProjectOption[];
+  clients:  ClientOption[];
+}
+
+export default function IssueReceiptPanel({ projects, clients }: IssueReceiptPanelProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -35,6 +41,7 @@ export default function IssueReceiptPanel({ projects }: IssueReceiptPanelProps) 
       >
         <RecordPaymentForm
           projects={projects}
+          clients={clients}
           onCancel={() => setOpen(false)}
         />
       </SlidePanel>

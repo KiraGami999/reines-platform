@@ -127,13 +127,13 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
               label: "Project",
               value: (
                 <>
-                  <Link
+                  {payment.project ? <Link
                     href={`/dashboard/projects/${payment.project.id}`}
                     className="flex items-center gap-1 text-[#8fb9e8] hover:underline print:hidden"
                   >
                     {payment.project.title} <ExternalLink size={11} />
-                  </Link>
-                  <span className="hidden print:inline">{payment.project.title}</span>
+                  </Link> : <span>Product Sale</span>}
+                  {payment.project && <span className="hidden print:inline">{payment.project.title}</span>}
                 </>
               ),
             },
@@ -177,7 +177,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         <div className="flex flex-wrap gap-3 border-t border-zinc-100 bg-zinc-50 px-8 py-5 print:hidden">
           {!isSuccess && !isCancelled && (
             <Link
-              href={`/dashboard/projects/${payment.project.id}`}
+              href={payment.project ? `/dashboard/projects/${payment.project.id}` : "/dashboard/payments"}
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
             >
               Try Payment Again

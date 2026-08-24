@@ -38,7 +38,7 @@ async function getAllPayments(): Promise<PaymentRow[]> {
       description: p.description,
       paidAt:      p.paidAt?.toISOString() ?? null,
       createdAt:   p.createdAt.toISOString(),
-      project:     p.project,
+      project:     p.project ?? { id: "product-sale", title: "Product Sale" },
       user:        p.user ?? undefined,
     }));
   } catch {
@@ -56,7 +56,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       },
       orderBy: { createdAt: "asc" },
     });
-    return rows.map((p) => ({
+    return rows.filter((p) => p.project && p.user).map((p) => ({
       id:          p.id,
       txRef:       p.txRef,
       amount:      Number(p.amount),
@@ -64,7 +64,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       description: p.description,
       receiptUrl:  resolveStorageUrl(p.receiptUrl),
       createdAt:   p.createdAt.toISOString(),
-      project:     p.project,
+      project:     p.project!,
       user:        p.user!,
     }));
   } catch {
@@ -96,10 +96,15 @@ async function getProjectsList() {
 export const metadata = { title: "Payments – Reines Admin" };
 
 export default async function AdminPaymentsPage() {
-  const [payments, pendingCash, projects] = await Promise.all([
+  const [payments, pendingCash, projects, clients] = await Promise.all([
     getAllPayments(),
     getPendingCashPayments(),
     getProjectsList(),
+    prisma.user.findMany({
+      where: { role: "CLIENT" },
+      select: { id: true, name: true },
+      orderBy: { name: "asc" },
+    }),
   ]);
 
   const totalCollected = payments
@@ -119,7 +124,7 @@ export default async function AdminPaymentsPage() {
             Manage all payments across projects — online and cash.
           </p>
         </div>
-        <IssueReceiptPanel projects={projects} />
+        <IssueReceiptPanel projects={projects} clients={clients} />
       </div>
 
       {/* Stats */}

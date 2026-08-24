@@ -21,15 +21,21 @@ interface ProjectOption {
   clientName: string;
 }
 
+interface ClientOption {
+  id:   string;
+  name: string;
+}
+
 interface RecordPaymentFormProps {
   projects:  ProjectOption[];
+  clients:   ClientOption[];
   onCancel:  () => void;
 }
 
 const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
 const LABEL = "mb-1.5 block text-sm font-medium text-zinc-700";
 
-export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentFormProps) {
+export default function RecordPaymentForm({ projects, clients, onCancel }: RecordPaymentFormProps) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -41,7 +47,9 @@ export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentF
   };
 
   const [form, setForm] = useState({
+    receiptType: "PROJECT" as "PROJECT" | "PRODUCT",
     projectId:   "",
+    clientId:    "",
     amount:      "",
     currency:    "MWK" as "MWK" | "USD",
     description: "",
@@ -99,8 +107,13 @@ export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentF
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    if (!form.projectId) {
+    if (form.receiptType === "PROJECT" && !form.projectId) {
       setError("Please select a project.");
+      return;
+    }
+
+    if (form.receiptType === "PRODUCT" && !form.clientId) {
+      setError("Please select the client.");
       return;
     }
 
@@ -123,7 +136,8 @@ export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentF
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          projectId:   form.projectId,
+          projectId:   form.receiptType === "PROJECT" ? form.projectId : undefined,
+          clientId:    form.receiptType === "PRODUCT" ? form.clientId : undefined,
           amount:      numAmount,
           currency:    form.currency,
           description: form.description.trim(),
@@ -162,21 +176,39 @@ export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentF
         </div>
       )}
 
-      {/* Select Project */}
+      {/* Receipt type and customer */}
       <div>
-        <label className={LABEL}>Select Project</label>
+        <label className={LABEL}>Receipt For</label>
+        <div className="grid grid-cols-2 gap-2">
+          {([["PROJECT", "Service / Project"], ["PRODUCT", "Product Sale"]] as const).map(([value, label]) => (
+            <button
+              key={value}
+              type="button"
+              onClick={() => {
+                set("receiptType", value);
+                setForm((current) => ({ ...current, projectId: "", clientId: "" }));
+              }}
+              disabled={submitting}
+              className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.receiptType === value ? "border-[#2d4a6b] bg-[#2d4a6b] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className={LABEL}>{form.receiptType === "PROJECT" ? "Select Project" : "Select Client"}</label>
         <select
           className={FIELD}
-          value={form.projectId}
-          onChange={(e) => set("projectId", e.target.value)}
+          value={form.receiptType === "PROJECT" ? form.projectId : form.clientId}
+          onChange={(e) => set(form.receiptType === "PROJECT" ? "projectId" : "clientId", e.target.value)}
           disabled={submitting}
         >
-          <option value="">-- Choose Project --</option>
-          {projects.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.title} (Client: {p.clientName})
-            </option>
-          ))}
+          <option value="">-- Choose {form.receiptType === "PROJECT" ? "Project" : "Client"} --</option>
+          {form.receiptType === "PROJECT"
+            ? projects.map((p) => <option key={p.id} value={p.id}>{p.title} (Client: {p.clientName})</option>)
+            : clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
         </select>
       </div>
 
@@ -227,11 +259,11 @@ export default function RecordPaymentForm({ projects, onCancel }: RecordPaymentF
 
       {/* Description */}
       <div>
-        <label className={LABEL}>Description / Purpose</label>
+        <label className={LABEL}>{form.receiptType === "PROJECT" ? "Description / Purpose" : "Product Details"}</label>
         <textarea
           rows={2}
           className={FIELD}
-          placeholder="e.g. Office cash deposit for Milestone 2"
+          placeholder={form.receiptType === "PROJECT" ? "e.g. Office cash deposit for Milestone 2" : "e.g. 50 concrete blocks, 2 bags of cement"}
           value={form.description}
           onChange={(e) => set("description", e.target.value)}
           disabled={submitting}

@@ -14,7 +14,7 @@ export interface PaymentRow {
   description: string | null;
   paidAt:      string | null;
   createdAt:   string;
-  project:     { id: string; title: string };
+  project:     { id: string; title: string } | null;
   user?:       { id: string; name: string; email: string };
 }
 
@@ -89,12 +89,13 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                   <span className="block max-w-[100px] truncate font-mono text-xs text-zinc-500 sm:max-w-none">{p.txRef}</span>
                 </td>
                 <td className="px-2.5 py-2 sm:px-4 sm:py-3">
-                  <Link
-                    href={`/dashboard/projects/${p.project.id}`}
-                    className="font-medium text-zinc-800 hover:text-[#8fb9e8] transition-colors text-xs"
-                  >
-                    {p.project.title}
-                  </Link>
+                  {p.project ? (
+                    <Link href={`/dashboard/projects/${p.project.id}`} className="font-medium text-zinc-800 hover:text-[#8fb9e8] transition-colors text-xs">
+                      {p.project.title}
+                    </Link>
+                  ) : (
+                    <span className="font-medium text-zinc-800 text-xs">Product Sale</span>
+                  )}
                 </td>
                 {showUser && p.user && (
                   <td className="hidden px-2.5 py-2 text-xs text-zinc-600 sm:table-cell sm:px-4 sm:py-3">{p.user.name}</td>

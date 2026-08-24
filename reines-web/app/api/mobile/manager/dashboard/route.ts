@@ -163,7 +163,7 @@ export async function GET(req: NextRequest) {
         progressPercent: u.progressPercent,
         createdAt:       u.createdAt.toISOString(),
         projectId:       u.projectId,
-        projectTitle:    u.project.title,
+        projectTitle:    u.project?.title ?? "Unknown project",
       })),
     });
   } catch (err) {

@@ -41,10 +41,12 @@ export default function ClientVerificationPanel({ open, onClose, client, onSucce
   if (!client) return null;
 
   async function handleAction(status: "APPROVED" | "REJECTED") {
+    if (!client) return;
+    const clientId = client.id;
     setIsSubmitting(true);
     setError("");
     try {
-      const res = await fetch(`/api/admin/clients/${client.id}/verification`, {
+      const res = await fetch(`/api/admin/clients/${clientId}/verification`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status, adminNotes }),
