@@ -233,10 +233,10 @@ export function Sidebar({
         />
       )}
 
-      {/* Sidebar panel */}
+      {/* Sidebar panel — brand navy chrome; same look in light and dark themes */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-[#2d4a6b] print:hidden",
+          "portal-sidebar fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-[#2d4a6b] print:hidden",
           "transition-all duration-200 ease-in-out",
           /* Mobile: slides in/out as a full 256px panel. The vw-based cap only
              matters for very narrow viewports, so it's dropped again at lg —
@@ -254,6 +254,7 @@ export function Sidebar({
         <div className="flex h-16 shrink-0 items-center justify-between overflow-hidden border-b border-white/10 px-3 sm:px-4">
           <Link href="/" className="flex min-w-0 items-center overflow-hidden" onClick={handleLinkClick}>
             <BrandLogoAnchor>
+              {/* Always white wordmark on navy — not theme-swapped */}
               <ReinesLogo size={collapsed ? "xs" : "sidebar"} variant="on-dark" mark={logoMark} />
             </BrandLogoAnchor>
           </Link>
@@ -262,7 +263,7 @@ export function Sidebar({
           {onClose && (
             <button
               onClick={onClose}
-              className="rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
+              className="rounded-md p-1.5 text-white/50 transition-colors hover:bg-white/10 hover:text-white lg:hidden"
               aria-label="Close sidebar"
             >
               <X size={18} />
@@ -274,7 +275,7 @@ export function Sidebar({
             <button
               onClick={onToggleCollapse}
               className={cn(
-                "hidden lg:flex items-center justify-center rounded-md p-1.5 text-zinc-400",
+                "hidden lg:flex items-center justify-center rounded-md p-1.5 text-white/50",
                 "transition-colors hover:bg-white/10 hover:text-white"
               )}
               aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -300,7 +301,7 @@ export function Sidebar({
             <div key={si} className={cn(si > 0 && "mt-5")}>
               {/* Section heading — hidden when collapsed */}
               {section.heading && !collapsed && (
-                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-white/40">
                   {section.heading}
                 </p>
               )}
@@ -322,15 +323,15 @@ export function Sidebar({
                         "group flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-sm font-medium transition-colors",
                         collapsed && "justify-center px-0",
                         isActive
-                          ? "bg-white/10 text-zinc-100"
-                          : "text-zinc-400 hover:bg-white/5 hover:text-white"
+                          ? "bg-white/10 text-white"
+                          : "text-white/55 hover:bg-white/5 hover:text-white"
                       )}
                     >
                       <Icon
                         size={17}
                         className={cn(
                           "shrink-0 transition-colors",
-                          isActive ? "text-zinc-300" : "text-zinc-500 group-hover:text-zinc-300"
+                          isActive ? "text-white/80" : "text-white/40 group-hover:text-white/80"
                         )}
                       />
                       {!collapsed && (
@@ -368,7 +369,7 @@ export function Sidebar({
               <Link
                 href="/"
                 onClick={handleLinkClick}
-                className="flex items-center justify-center rounded-xl p-2 text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
+                className="flex items-center justify-center rounded-xl p-2 text-white/40 transition-colors hover:bg-white/5 hover:text-white/80"
                 aria-label="Back to public site"
               >
                 <ChevronLeft size={16} />
@@ -378,7 +379,7 @@ export function Sidebar({
             <Link
               href="/"
               onClick={handleLinkClick}
-              className="flex items-center gap-2 rounded-xl px-3 py-3 text-xs text-zinc-500 transition-colors hover:bg-white/5 hover:text-zinc-300"
+              className="flex items-center gap-2 rounded-xl px-3 py-3 text-xs text-white/40 transition-colors hover:bg-white/5 hover:text-white/80"
             >
               <ChevronLeft size={13} />
               Back to public site

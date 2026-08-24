@@ -96,6 +96,13 @@ select:disabled {
 .dark [data-portal] :is(.bg-white) {
   background-color: var(--surface);
 }
+/*
+ * Navy portal sidebar is brand chrome — keep the light-theme look in dark mode.
+ * Nav uses white/opacity utilities (not zinc) so the remaps below do not restyle it.
+ */
+.dark [data-portal] .portal-sidebar {
+  background-color: #2d4a6b !important;
+}
 /* Catch bg-white/70 overlays (upload spinners, etc.). */
 .dark [data-portal] [class*="bg-white/"] {
   background-color: color-mix(in srgb, var(--surface) 70%, transparent);
