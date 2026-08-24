@@ -27,6 +27,12 @@ export async function POST(req: NextRequest) {
   const payload = await verifyToken(token);
   if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
 
+  if (payload.role === "CLIENT") {
+    return NextResponse.json({
+      error: "Clients cannot initiate payments. Your project manager or admin will record them.",
+    }, { status: 403 });
+  }
+
   const userId = payload.id;
 
   const body   = await req.json().catch(() => null);

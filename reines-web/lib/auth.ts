@@ -21,6 +21,8 @@ declare module "next-auth" {
       role: string;
       image?: string | null;
       verificationStatus: string;
+      /** Stable per login — used to rotate portal greetings each sign-in. */
+      greetingSeed?: number;
     };
   }
   interface User {
@@ -35,6 +37,7 @@ declare module "@auth/core/jwt" {
     role?: string;
     verificationStatus?: string;
     refreshedAt?: number;
+    greetingSeed?: number;
   }
 }
 
@@ -184,10 +187,17 @@ const fullAuthConfig = {
         token.verificationStatus =
           (user as { verificationStatus?: string }).verificationStatus ?? "UNVERIFIED";
         token.refreshedAt        = Date.now();
+        // New seed on every sign-in so dashboard greetings rotate per login.
+        token.greetingSeed       = Date.now() ^ Math.floor(Math.random() * 1_000_000);
         return token;
       }
 
       if (!token.id) return token;
+
+      // Backfill for sessions created before greetingSeed existed.
+      if (typeof token.greetingSeed !== "number") {
+        token.greetingSeed = Date.now() ^ Math.floor(Math.random() * 1_000_000);
+      }
 
       const refreshedAt = token.refreshedAt ?? 0;
       const stale =
@@ -246,6 +256,8 @@ const fullAuthConfig = {
         session.user.role               = (token.role as string) ?? "CLIENT";
         session.user.verificationStatus =
           (token.verificationStatus as string) ?? "UNVERIFIED";
+        session.user.greetingSeed =
+          typeof token.greetingSeed === "number" ? token.greetingSeed : undefined;
         if (token.name)  session.user.name  = token.name as string;
         if (token.email) session.user.email = token.email as string;
         if (token.picture !== undefined) {

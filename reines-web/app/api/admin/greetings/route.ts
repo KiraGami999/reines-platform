@@ -10,7 +10,7 @@ import { forbidden, ok, serverError, validationError } from "@/lib/api-response"
 
 const phraseList = z
   .array(z.string().trim().max(80, "Keep each greeting under 80 characters"))
-  .max(3, "Up to 3 language variants per time of day");
+  .max(5, "Up to 5 greeting options per time of day");
 
 const updateSchema = z.object({
   enabled: z.boolean(),

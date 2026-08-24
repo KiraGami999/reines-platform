@@ -43,7 +43,13 @@ export async function GET(
       status: payment.status,
       method: payment.method,
       description: payment.description,
-      billedTo: payment.user?.name ?? "-",
+      billedTo:
+        payment.user?.name ??
+        (payment.guestName
+          ? payment.guestEmail
+            ? `${payment.guestName} (${payment.guestEmail})`
+            : payment.guestName
+          : "-"),
       projectTitle: payment.project?.title ?? null,
       paidAt: payment.paidAt,
       createdAt: payment.createdAt,

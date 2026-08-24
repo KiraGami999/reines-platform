@@ -18,7 +18,8 @@ export default async function AdminPortalGreetingsPage() {
           <h1 className="text-2xl font-bold text-[#2d4a6b]">Portal Greetings</h1>
           <p className="mt-1 text-sm text-zinc-500">
             Control the welcome text on the portal landing screen for morning, afternoon, and
-            evening — with up to three language variants each.
+            evening — with up to five options each. A different option is shown every time someone
+            signs in.
           </p>
         </div>
       </div>

@@ -228,6 +228,10 @@ export default function ManagerProjectDetail() {
             <Text style={styles.cardTitle}>Budget</Text>
           </View>
           <InfoRow label="Total Budget" value={formatMWK(project.budget)} />
+          <Text style={styles.budgetHint}>
+            Record cash payments on the web portal (Project → Budget & Payments).
+            An admin must approve them before they count as paid.
+          </Text>
         </View>
       ) : null}
 
@@ -404,6 +408,12 @@ const styles = StyleSheet.create({
     borderBottomColor: COLORS.zinc100,
   },
   cardTitle: { fontSize: 14, fontWeight: "700", color: COLORS.zinc700 },
+  budgetHint: {
+    marginTop: 10,
+    fontSize: 12,
+    lineHeight: 17,
+    color: COLORS.zinc500,
+  },
 
   infoRow: {
     flexDirection:   "row",

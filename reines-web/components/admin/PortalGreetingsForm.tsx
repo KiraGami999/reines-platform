@@ -11,7 +11,11 @@ import {
   Sunset,
   Moon,
 } from "lucide-react";
-import type { GreetingPeriod, PortalGreetingSettings } from "@/lib/greetings-data";
+import {
+  MAX_GREETING_VARIANTS,
+  type GreetingPeriod,
+  type PortalGreetingSettings,
+} from "@/lib/greetings-data";
 
 type Props = {
   initialSettings: PortalGreetingSettings;
@@ -32,10 +36,24 @@ const PERIODS: {
   { id: "evening", label: "Evening", hint: "After 17:00 (Malawi time)", icon: Moon },
 ];
 
-const LANGUAGE_LABELS = ["Language 1 (e.g. English)", "Language 2 (e.g. Chichewa)", "Language 3 (optional)"];
+const OPTION_LABELS = [
+  "Option 1 (e.g. English)",
+  "Option 2 (e.g. Chichewa)",
+  "Option 3 (optional)",
+  "Option 4 (optional)",
+  "Option 5 (optional)",
+];
 
-function padVariants(values: string[]): [string, string, string] {
-  return [values[0] ?? "", values[1] ?? "", values[2] ?? ""];
+type VariantTuple = [string, string, string, string, string];
+
+function padVariants(values: string[]): VariantTuple {
+  return [
+    values[0] ?? "",
+    values[1] ?? "",
+    values[2] ?? "",
+    values[3] ?? "",
+    values[4] ?? "",
+  ];
 }
 
 export default function PortalGreetingsForm({ initialSettings }: Props) {
@@ -54,7 +72,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
     return evening;
   }, [period, morning, afternoon, evening]);
 
-  function setActiveVariants(next: [string, string, string]) {
+  function setActiveVariants(next: VariantTuple) {
     setMessage("");
     setError("");
     if (period === "morning") setMorning(next);
@@ -62,8 +80,8 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
     else setEvening(next);
   }
 
-  function updateVariant(index: 0 | 1 | 2, value: string) {
-    const next = [...activeVariants] as [string, string, string];
+  function updateVariant(index: number, value: string) {
+    const next = [...activeVariants] as VariantTuple;
     next[index] = value;
     setActiveVariants(next);
   }
@@ -80,9 +98,9 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           enabled,
-          morning: morning.filter((v) => v.trim()),
-          afternoon: afternoon.filter((v) => v.trim()),
-          evening: evening.filter((v) => v.trim()),
+          morning: morning.filter((v) => v.trim()).slice(0, MAX_GREETING_VARIANTS),
+          afternoon: afternoon.filter((v) => v.trim()).slice(0, MAX_GREETING_VARIANTS),
+          evening: evening.filter((v) => v.trim()).slice(0, MAX_GREETING_VARIANTS),
         }),
       });
       const data = await res.json().catch(() => null);
@@ -90,7 +108,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
         setError(data?.error ?? "Could not save greetings.");
         return;
       }
-      setMessage("Portal greetings saved. They will appear on dashboard landing screens.");
+      setMessage("Portal greetings saved. A different option is shown each time someone signs in.");
     } catch {
       setError("A network error occurred. Please try again.");
     } finally {
@@ -100,6 +118,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
 
   const periodMeta = PERIODS.find((p) => p.id === period)!;
   const PeriodIcon = periodMeta.icon;
+  const previewPhrase = activeVariants.find((v) => v.trim());
 
   return (
     <form onSubmit={handleSave} className="space-y-6">
@@ -112,8 +131,8 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
             <div>
               <h2 className="text-base font-semibold text-zinc-900">Greeting display</h2>
               <p className="mt-1 text-sm text-zinc-500">
-                When enabled, the portal picks a phrase for the current time of day and appends the
-                user&apos;s first name.
+                When enabled, the portal picks one option for the current time of day and appends
+                the user&apos;s first name. The option changes every time they sign in.
               </p>
             </div>
           </div>
@@ -159,14 +178,14 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
 
         <div className="space-y-4">
           <div>
-            <h3 className="text-sm font-semibold text-zinc-900">Language variants</h3>
+            <h3 className="text-sm font-semibold text-zinc-900">Greeting options</h3>
             <p className="mt-1 text-xs text-zinc-500">
-              Add up to three greetings for this time of day (different languages). One variant is
-              shown per day, then rotated.
+              Add up to {MAX_GREETING_VARIANTS} greetings for this time of day (different languages
+              or phrasings). One is chosen at random each time a user signs in.
             </p>
           </div>
 
-          {LANGUAGE_LABELS.map((label, index) => (
+          {OPTION_LABELS.map((label, index) => (
             <div key={label}>
               <label className={LABEL} htmlFor={`greeting-${period}-${index}`}>
                 {label}
@@ -183,10 +202,10 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
                       : period === "afternoon"
                         ? "Good afternoon"
                         : "Good evening"
-                    : "Optional greeting in another language"
+                    : "Optional greeting"
                 }
                 value={activeVariants[index]}
-                onChange={(e) => updateVariant(index as 0 | 1 | 2, e.target.value)}
+                onChange={(e) => updateVariant(index, e.target.value)}
                 disabled={saving || !enabled}
               />
             </div>
@@ -195,9 +214,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
 
         <div className="rounded-xl border border-zinc-100 bg-zinc-50 px-4 py-3 text-xs text-zinc-600">
           <span className="font-semibold text-zinc-800">Preview: </span>
-          {activeVariants.find((v) => v.trim())
-            ? `${activeVariants.find((v) => v.trim())}, Ronnie`
-            : "Welcome, Ronnie"}
+          {previewPhrase ? `${previewPhrase}, Ronnie` : "Welcome, Ronnie"}
         </div>
       </div>
 

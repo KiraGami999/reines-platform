@@ -10,21 +10,45 @@ import { z } from "zod";
 const schema = z.object({
   projectId:   z.string().min(1).optional(),
   clientId:    z.string().min(1).optional(),
+  guestName:   z.string().min(2).max(120).optional(),
+  guestEmail:  z.string().optional(),
   amount:      z.number().positive("Amount must be greater than 0"),
   currency:    z.enum(["MWK", "USD"] as const).default("MWK"),
   description: z.string().min(3, "Please describe what this payment covers"),
   receiptUrl:  z.string().optional().nullable(),
   paidAt:      z.string().optional().nullable(),
   notes:       z.string().optional().nullable(),
-}).refine((data) => data.projectId || data.clientId, {
-  message: "Project or client is required",
-  path: ["projectId"],
+}).superRefine((data, ctx) => {
+  if (data.projectId) return;
+  if (data.clientId) return;
+  if (data.guestName?.trim()) {
+    const email = data.guestEmail?.trim() ?? "";
+    if (!email) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Email is required for walk-in customers",
+        path: ["guestEmail"],
+      });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Enter a valid email address",
+        path: ["guestEmail"],
+      });
+    }
+    return;
+  }
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    message: "Select a project, an existing client, or enter walk-in name and email",
+    path: ["projectId"],
+  });
 });
 
 /**
  * POST /api/admin/payments
- * Allows an admin to issue/record a manual payment (e.g. client paid in cash at the office).
- * This payment is created with SUCCESS status immediately and awards loyalty points.
+ * Admin issues a manual office receipt.
+ * Product sales may bill an existing CLIENT account or a walk-in guest (name + email).
  */
 export async function POST(req: NextRequest) {
   const session = await auth();
@@ -36,7 +60,18 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) return validationError(parsed.error);
 
-  const { projectId, clientId, amount, currency, description, receiptUrl, paidAt, notes } = parsed.data;
+  const {
+    projectId,
+    clientId,
+    guestName,
+    guestEmail,
+    amount,
+    currency,
+    description,
+    receiptUrl,
+    paidAt,
+    notes,
+  } = parsed.data;
 
   try {
     const project = projectId
@@ -55,9 +90,12 @@ export async function POST(req: NextRequest) {
       : null;
     if (clientId && !client) return notFound("Client");
 
-    const billedClientId = project?.clientId ?? client?.id;
-    if (!billedClientId) {
-      return badRequest("Could not determine the client for this receipt. Select a project or client.");
+    const billedClientId = project?.clientId ?? client?.id ?? null;
+    const walkInName = guestName?.trim() || null;
+    const walkInEmail = guestEmail?.trim().toLowerCase() || null;
+
+    if (!billedClientId && !walkInName) {
+      return badRequest("Select a project, an existing client, or enter a walk-in customer name and email.");
     }
 
     const txRef = generateTxRef("CASH");
@@ -66,7 +104,6 @@ export async function POST(req: NextRequest) {
       return badRequest("Invalid payment date. Please pick a valid date and time.");
     }
 
-    // Admin-issued office receipt: already verified by the admin recording it.
     const payment = await prisma.payment.create({
       data: {
         txRef,
@@ -82,24 +119,27 @@ export async function POST(req: NextRequest) {
         adminNotes:      notes || "Manually recorded cash payment at office",
         projectId:       project?.id ?? null,
         userId:          billedClientId,
+        guestName:       billedClientId ? null : walkInName,
+        guestEmail:      billedClientId ? null : walkInEmail,
       },
     });
 
-    const pointsAwarded = payment.projectId
-      ? await autoAwardPointsForPayment(
-          payment.userId,
-          payment.projectId,
-          payment.id,
-          Number(payment.amount),
-          payment.description,
-          session.user.id
-        ).catch((err) => {
-          console.error("[manualPayment:autoAwardPoints]", err);
-          return 0;
-        })
-      : 0;
+    const pointsAwarded =
+      payment.userId && payment.projectId
+        ? await autoAwardPointsForPayment(
+            payment.userId,
+            payment.projectId,
+            payment.id,
+            Number(payment.amount),
+            payment.description,
+            session.user.id
+          ).catch((err) => {
+            console.error("[manualPayment:autoAwardPoints]", err);
+            return 0;
+          })
+        : 0;
 
-    if (payment.projectId && project) {
+    if (payment.projectId && payment.userId && project) {
       notifyPaymentApproved({
         clientId:     payment.userId,
         projectTitle: project.title,

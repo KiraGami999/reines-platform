@@ -16,6 +16,7 @@ export interface PaymentRow {
   createdAt:   string;
   project:     { id: string; title: string } | null;
   user?:       { id: string; name: string; email: string };
+  guestName?:  string | null;
 }
 
 interface PaymentsTableProps {
@@ -97,8 +98,10 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                     <span className="font-medium text-zinc-800 text-xs">Product Sale</span>
                   )}
                 </td>
-                {showUser && p.user && (
-                  <td className="hidden px-2.5 py-2 text-xs text-zinc-600 sm:table-cell sm:px-4 sm:py-3">{p.user.name}</td>
+                {showUser && (
+                  <td className="hidden px-2.5 py-2 text-xs text-zinc-600 sm:table-cell sm:px-4 sm:py-3">
+                    {p.user?.name ?? p.guestName ?? "—"}
+                  </td>
                 )}
                 <td className="hidden px-2.5 py-2 text-xs text-zinc-500 md:table-cell sm:px-4 sm:py-3 max-w-[180px] truncate">
                   {p.description ?? "—"}

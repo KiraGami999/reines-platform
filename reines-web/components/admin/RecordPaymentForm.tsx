@@ -4,14 +4,12 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
 import {
-  Banknote,
   Upload,
   X,
   CheckCircle2,
   AlertCircle,
   ImageIcon,
   Loader2,
-  FileText,
   Calendar,
 } from "lucide-react";
 
@@ -39,7 +37,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // Format local date-time string: YYYY-MM-DDTHH:mm
   const getLocalDateTimeString = () => {
     const now = new Date();
     const offset = now.getTimezoneOffset() * 60000;
@@ -47,14 +44,17 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
   };
 
   const [form, setForm] = useState({
-    receiptType: "PROJECT" as "PROJECT" | "PRODUCT",
-    projectId:   "",
-    clientId:    "",
-    amount:      "",
-    currency:    "MWK" as "MWK" | "USD",
-    description: "",
-    paidAt:      getLocalDateTimeString(),
-    notes:       "",
+    receiptType:  "PROJECT" as "PROJECT" | "PRODUCT",
+    productBuyer: "WALK_IN" as "WALK_IN" | "ACCOUNT",
+    projectId:    "",
+    clientId:     "",
+    guestName:    "",
+    guestEmail:   "",
+    amount:       "",
+    currency:     "MWK" as "MWK" | "USD",
+    description:  "",
+    paidAt:       getLocalDateTimeString(),
+    notes:        "",
   });
 
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
@@ -63,7 +63,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
   const [uploading,  setUploading]  = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error,      setError]      = useState("");
-  const [success,    setSuccess]    = useState(false);
 
   function set(key: keyof typeof form, value: string) {
     setForm((f) => ({ ...f, [key]: value }));
@@ -77,7 +76,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
     setError("");
     setUploading(true);
 
-    // Show local preview
     const reader = new FileReader();
     reader.onload = (ev) => setPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
@@ -112,9 +110,25 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
       return;
     }
 
-    if (form.receiptType === "PRODUCT" && !form.clientId) {
-      setError("Please select the client.");
-      return;
+    if (form.receiptType === "PRODUCT") {
+      if (form.productBuyer === "ACCOUNT" && !form.clientId) {
+        setError("Please select an existing client account.");
+        return;
+      }
+      if (form.productBuyer === "WALK_IN") {
+        if (!form.guestName.trim()) {
+          setError("Please enter the customer’s name.");
+          return;
+        }
+        if (!form.guestEmail.trim()) {
+          setError("Please enter the customer’s email address.");
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.guestEmail.trim())) {
+          setError("Please enter a valid email address.");
+          return;
+        }
+      }
     }
 
     const numAmount = Number(form.amount);
@@ -132,25 +146,27 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
     setError("");
 
     try {
+      const isProduct = form.receiptType === "PRODUCT";
       const res = await fetch("/api/admin/payments", {
         method:  "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           projectId:   form.receiptType === "PROJECT" ? form.projectId : undefined,
-          clientId:    form.receiptType === "PRODUCT" ? form.clientId : undefined,
+          clientId:    isProduct && form.productBuyer === "ACCOUNT" ? form.clientId : undefined,
+          guestName:   isProduct && form.productBuyer === "WALK_IN" ? form.guestName.trim() : undefined,
+          guestEmail:  isProduct && form.productBuyer === "WALK_IN" ? form.guestEmail.trim() : undefined,
           amount:      numAmount,
           currency:    form.currency,
           description: form.description.trim(),
           receiptUrl,
           paidAt:      form.paidAt
             ? (() => {
-                // datetime-local is YYYY-MM-DDTHH:mm — append seconds so all browsers parse reliably
                 const raw = form.paidAt.length === 16 ? `${form.paidAt}:00` : form.paidAt;
                 const d = new Date(raw);
                 return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
               })()
             : undefined,
-          notes:       form.notes.trim() || undefined,
+          notes: form.notes.trim() || undefined,
         }),
       });
 
@@ -162,8 +178,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         return;
       }
 
-      setSuccess(true);
-      // Redirect to the generated receipt view page
       router.push(`/dashboard/payments/${data.txRef}`);
       router.refresh();
     } catch (err) {
@@ -175,7 +189,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Error alert */}
       {error && (
         <div className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800">
           <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" />
@@ -183,7 +196,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         </div>
       )}
 
-      {/* Receipt type and customer */}
       <div>
         <label className={LABEL}>Receipt For</label>
         <div className="grid grid-cols-2 gap-2">
@@ -192,8 +204,16 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
               key={value}
               type="button"
               onClick={() => {
-                set("receiptType", value);
-                setForm((current) => ({ ...current, projectId: "", clientId: "" }));
+                setForm((current) => ({
+                  ...current,
+                  receiptType: value,
+                  projectId: "",
+                  clientId: "",
+                  guestName: "",
+                  guestEmail: "",
+                  productBuyer: value === "PRODUCT" ? "WALK_IN" : current.productBuyer,
+                }));
+                setError("");
               }}
               disabled={submitting}
               className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.receiptType === value ? "border-[#2d4a6b] bg-[#2d4a6b] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
@@ -204,22 +224,99 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         </div>
       </div>
 
-      <div>
-        <label className={LABEL}>{form.receiptType === "PROJECT" ? "Select Project" : "Select Client"}</label>
-        <select
-          className={FIELD}
-          value={form.receiptType === "PROJECT" ? form.projectId : form.clientId}
-          onChange={(e) => set(form.receiptType === "PROJECT" ? "projectId" : "clientId", e.target.value)}
-          disabled={submitting}
-        >
-          <option value="">-- Choose {form.receiptType === "PROJECT" ? "Project" : "Client"} --</option>
-          {form.receiptType === "PROJECT"
-            ? projects.map((p) => <option key={p.id} value={p.id}>{p.title} (Client: {p.clientName})</option>)
-            : clients.map((client) => <option key={client.id} value={client.id}>{client.name}</option>)}
-        </select>
-      </div>
+      {form.receiptType === "PROJECT" ? (
+        <div>
+          <label className={LABEL}>Select Project</label>
+          <select
+            className={FIELD}
+            value={form.projectId}
+            onChange={(e) => set("projectId", e.target.value)}
+            disabled={submitting}
+          >
+            <option value="">-- Choose Project --</option>
+            {projects.map((p) => (
+              <option key={p.id} value={p.id}>{p.title} (Client: {p.clientName})</option>
+            ))}
+          </select>
+        </div>
+      ) : (
+        <div className="space-y-4">
+          <div>
+            <label className={LABEL}>Customer</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([["WALK_IN", "Walk-in (no account)"], ["ACCOUNT", "Existing account"]] as const).map(([value, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setForm((current) => ({
+                      ...current,
+                      productBuyer: value,
+                      clientId: "",
+                      guestName: "",
+                      guestEmail: "",
+                    }));
+                    setError("");
+                  }}
+                  disabled={submitting}
+                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.productBuyer === value ? "border-[#2d4a6b] bg-[#2d4a6b] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+            <p className="mt-1.5 text-xs text-zinc-500">
+              Most product buyers won’t have a portal account — enter their name and email.
+              Link an existing client only if they already have one.
+            </p>
+          </div>
 
-      {/* Amount and Currency */}
+          {form.productBuyer === "WALK_IN" ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div className="sm:col-span-2 sm:col-start-1">
+                <label className={LABEL}>Customer name</label>
+                <input
+                  type="text"
+                  className={FIELD}
+                  placeholder="e.g. Mahala Jimu"
+                  value={form.guestName}
+                  onChange={(e) => set("guestName", e.target.value)}
+                  disabled={submitting}
+                  autoComplete="name"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className={LABEL}>Email address</label>
+                <input
+                  type="email"
+                  className={FIELD}
+                  placeholder="customer@email.com"
+                  value={form.guestEmail}
+                  onChange={(e) => set("guestEmail", e.target.value)}
+                  disabled={submitting}
+                  autoComplete="email"
+                />
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className={LABEL}>Select Client</label>
+              <select
+                className={FIELD}
+                value={form.clientId}
+                onChange={(e) => set("clientId", e.target.value)}
+                disabled={submitting}
+              >
+                <option value="">-- Choose Client --</option>
+                {clients.map((client) => (
+                  <option key={client.id} value={client.id}>{client.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="grid grid-cols-3 gap-3">
         <div className="col-span-2">
           <label className={LABEL}>Amount Paid</label>
@@ -248,7 +345,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         </div>
       </div>
 
-      {/* Date & Time Paid */}
       <div>
         <label className={LABEL}>
           <span className="flex items-center gap-1.5">
@@ -264,7 +360,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         />
       </div>
 
-      {/* Description */}
       <div>
         <label className={LABEL}>{form.receiptType === "PROJECT" ? "Description / Purpose" : "Product Details"}</label>
         <textarea
@@ -277,7 +372,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         />
       </div>
 
-      {/* Receipt File Upload */}
       <div>
         <label className={LABEL}>Upload Cash Receipt / Proof (optional)</label>
         {preview ? (
@@ -332,7 +426,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         )}
       </div>
 
-      {/* Admin Notes */}
       <div>
         <label className={LABEL}>Admin Internal Notes (optional)</label>
         <input
@@ -345,7 +438,6 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         />
       </div>
 
-      {/* Action Buttons */}
       <div className="flex gap-3 pt-2">
         <button
           type="submit"

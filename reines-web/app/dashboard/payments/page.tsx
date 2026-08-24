@@ -31,6 +31,7 @@ async function getPayments(userId: string, role: string): Promise<PaymentRow[]> 
       createdAt:   p.createdAt.toISOString(),
       project:     p.project,
       user:        p.user ?? undefined,
+      guestName:   p.guestName,
     }));
   } catch {
     return [];
@@ -130,12 +131,17 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
       {role === "CLIENT" && (
         <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 space-y-1.5">
           <p className="text-sm text-zinc-700">
-            <span className="font-semibold text-[#2d4a6b]">How to pay:</span> Open any project, scroll to the Budget section, and click{" "}
-            <strong>Make a Payment</strong>. You can pay online via Paychangu (Mobile Money, bank transfer, card) or submit a cash payment with a receipt photo.
+            <span className="font-semibold text-[#2d4a6b]">About your payments:</span>{" "}
+            Your project manager or the Reines office records cash payments. An admin confirms
+            each one before it counts toward your project balance. This page shows your payment history and receipts.
           </p>
-          <p className="text-xs text-zinc-500">
-            Cash payments require admin approval before being counted towards your project balance. Online payments are confirmed automatically.
-          </p>
+        </div>
+      )}
+
+      {role === "PROJECT_MANAGER" && (
+        <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+          <span className="font-semibold">Recording payments:</span> Open a project → Budget &amp; Payments,
+          then tap an outstanding item to record cash. Admins approve submissions before they update the paid balance.
         </div>
       )}
 
@@ -148,7 +154,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
             href="/dashboard/projects"
             className="inline-flex items-center gap-2 text-sm font-medium text-[#2d4a6b] hover:underline"
           >
-            Go to My Projects to make a payment →
+            View your projects →
           </Link>
         </div>
       )}

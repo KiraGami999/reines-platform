@@ -5,6 +5,7 @@ import { ORGANIZATION, REGISTERED_OFFICE_FULL, SITE_NAME } from "@/lib/site";
 import { fmtPaymentAmount, PAYMENT_STATUS_META } from "@/lib/paychangu";
 
 const NAVY = rgb(27 / 255, 51 / 255, 79 / 255);
+const ZINC_400 = rgb(161 / 255, 161 / 255, 170 / 255);
 const ZINC_500 = rgb(113 / 255, 113 / 255, 122 / 255);
 const ZINC_900 = rgb(24 / 255, 24 / 255, 27 / 255);
 const LINE = rgb(228 / 255, 228 / 255, 231 / 255);
@@ -13,9 +14,12 @@ const WHITE = rgb(1, 1, 1);
 const PAGE_WIDTH = 595.28;
 const PAGE_HEIGHT = 841.89;
 const MARGIN = 48;
+/** Fixed column where values begin — keeps every row aligned. */
+const VALUE_X = 200;
+const VALUE_MAX_WIDTH = PAGE_WIDTH - MARGIN - VALUE_X;
 
 const logoBytesPromise = readFile(
-  path.join(process.cwd(), "public/logo-reines-group.png")
+  path.join(process.cwd(), "public/logo-nav-rebrand.png")
 );
 
 export type ReceiptPdfData = {
@@ -89,6 +93,10 @@ function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): 
   return lines.length > 0 ? lines : ["-"];
 }
 
+/**
+ * Two-column row: label left, value in a fixed column (left-aligned).
+ * Avoids right-edge rag that made short values look scattered.
+ */
 function drawRow(
   page: PDFPage,
   y: number,
@@ -96,32 +104,32 @@ function drawRow(
   value: string,
   fonts: { regular: PDFFont; bold: PDFFont }
 ) {
-  const valueMax = PAGE_WIDTH - MARGIN - 180;
-  const lines = wrapText(value, fonts.regular, 10, valueMax);
+  const fontSize = 10;
+  const lineH = 14;
+  const lines = wrapText(value, fonts.regular, fontSize, VALUE_MAX_WIDTH);
 
   page.drawText(label, {
     x: MARGIN,
     y,
-    size: 10,
+    size: fontSize,
     font: fonts.regular,
     color: ZINC_500,
   });
 
   lines.forEach((line, i) => {
-    const width = fonts.regular.widthOfTextAtSize(line, 10);
     page.drawText(line, {
-      x: PAGE_WIDTH - MARGIN - width,
-      y: y - i * 14,
-      size: 10,
+      x: VALUE_X,
+      y: y - i * lineH,
+      size: fontSize,
       font: fonts.regular,
       color: ZINC_900,
     });
   });
 
-  const used = Math.max(22, 10 + lines.length * 14);
+  const used = Math.max(26, 8 + lines.length * lineH);
   page.drawLine({
-    start: { x: MARGIN, y: y - used + 8 },
-    end: { x: PAGE_WIDTH - MARGIN, y: y - used + 8 },
+    start: { x: MARGIN, y: y - used + 10 },
+    end: { x: PAGE_WIDTH - MARGIN, y: y - used + 10 },
     thickness: 0.5,
     color: LINE,
   });
@@ -139,7 +147,7 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     isPng ? pdf.embedPng(logoBytes) : pdf.embedJpg(logoBytes),
   ]);
 
-  const headerH = 92;
+  const headerH = 110;
   page.drawRectangle({
     x: 0,
     y: PAGE_HEIGHT - headerH,
@@ -148,21 +156,22 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     color: NAVY,
   });
 
-  const logoH = 42;
-  const logoW = (logo.width / logo.height) * logoH;
+  // White transparent wordmark centered on navy header.
+  const logoH = 40;
+  const logoW = Math.min((logo.width / logo.height) * logoH, PAGE_WIDTH - MARGIN * 2);
   page.drawImage(logo, {
     x: (PAGE_WIDTH - logoW) / 2,
-    y: PAGE_HEIGHT - headerH + 32,
+    y: PAGE_HEIGHT - 58,
     width: logoW,
     height: logoH,
   });
 
   const subtitle = "PAYMENT RECEIPT";
-  const subSize = 8;
+  const subSize = 9;
   const subW = bold.widthOfTextAtSize(subtitle, subSize);
   page.drawText(subtitle, {
     x: (PAGE_WIDTH - subW) / 2,
-    y: PAGE_HEIGHT - headerH + 16,
+    y: PAGE_HEIGHT - headerH + 22,
     size: subSize,
     font: bold,
     color: WHITE,
@@ -170,16 +179,16 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
 
   const statusMeta = PAYMENT_STATUS_META[data.status] ?? PAYMENT_STATUS_META.PENDING;
   const amountText = fmtPaymentAmount(data.amount, data.currency);
-  let y = PAGE_HEIGHT - headerH - 36;
+  let y = PAGE_HEIGHT - headerH - 40;
 
   page.drawText(statusMeta.label, {
     x: MARGIN,
     y,
-    size: 18,
+    size: 20,
     font: bold,
     color: ZINC_900,
   });
-  y -= 18;
+  y -= 22;
   page.drawText(
     data.status === "SUCCESS"
       ? `Payment of ${amountText} received`
@@ -187,13 +196,13 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     {
       x: MARGIN,
       y,
-      size: 10,
+      size: 11,
       font: regular,
       color: ZINC_500,
     }
   );
 
-  y -= 28;
+  y -= 32;
   const fonts = { regular, bold };
   y = drawRow(page, y, "Reference", data.txRef, fonts);
   y = drawRow(page, y, "Project", data.projectTitle ?? "Product Sale", fonts);
@@ -223,7 +232,7 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
       y: fy,
       size,
       font: regular,
-      color: ZINC_500,
+      color: ZINC_400,
     });
     fy += 12;
   }

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getDashboardProject } from "@/lib/projects";
 import { getClientPointSummary } from "@/lib/client-points";
 import { STATUS_CONFIG, MILESTONE_STATUS_CONFIG, fmtMWK, fmtDate, daysRemaining } from "@/lib/mock-data";
-import type { Project, Milestone, BudgetBreakdown, ProjectUpdate } from "@/models/project";
+import type { Project, Milestone, ProjectUpdate } from "@/models/project";
 import { groupGalleryUpdates } from "@/lib/gallery-batches";
 import { cn } from "@/lib/utils";
 import { Section } from "@/components/dashboard/Section";
@@ -26,7 +26,7 @@ import {
   TrendingUp,
   FileText,
 } from "lucide-react";
-import PaymentButton from "@/components/dashboard/PaymentButton";
+import { BudgetPaymentSection } from "@/components/dashboard/BudgetPaymentSection";
 import { AcceptProjectButton } from "@/components/dashboard/AcceptProjectButton";
 import { ClientPointsCard } from "@/components/dashboard/ClientPointsCard";
 
@@ -253,96 +253,15 @@ function TimelineSection({ milestones }: { milestones: Milestone[] }) {
 // ─── Budget ───────────────────────────────────────────────────────────────────
 
 function BudgetSection({ project, role }: { project: Project; role: string }) {
-  const totalPaid  = project.budgetBreakdown.filter((b) => b.paid).reduce((s, b) => s + b.amount, 0);
-  const remaining  = project.budget - totalPaid;
-  const paidPct    = project.budget > 0 ? Math.round((totalPaid / project.budget) * 100) : 0;
-
   return (
     <Section title="Budget & Payments" subtitle="Project cost breakdown and payment history">
-      {/* Stat grid — stacks to 1 col on mobile, 3 from sm up */}
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        {[
-          { label: "Total Budget",  value: fmtMWK(project.budget), note: "Agreed contract value", colour: "text-zinc-900"     },
-          { label: "Paid to Date",  value: fmtMWK(totalPaid),       note: `${paidPct}% of total`,    colour: "text-[#2d4a6b]" },
-          { label: "Outstanding",   value: fmtMWK(remaining),        note: `${100 - paidPct}% left`,  colour: "text-zinc-700"    },
-        ].map((s) => (
-          <div key={s.label} className="min-w-0 rounded-xl bg-zinc-50 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
-              {s.label}
-            </p>
-            <p className={`mt-1.5 min-w-0 break-words text-base font-extrabold tabular-nums leading-snug sm:text-lg lg:text-xl ${s.colour}`}>
-              {s.value}
-            </p>
-            <p className="mt-0.5 text-[10px] text-zinc-400">{s.note}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Payment progress bar */}
-      <div className="mt-5">
-        <div className="mb-1.5 flex justify-between text-xs text-zinc-500">
-          <span>Payment progress</span>
-          <span className="font-semibold text-zinc-700">{paidPct}%</span>
-        </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-100">
-          <div
-            className="h-full rounded-full bg-[#2d4a6b] transition-all"
-            style={{ width: `${paidPct}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Milestone breakdown */}
-      {project.budgetBreakdown.length > 0 && (
-        <div className="mt-5 space-y-2">
-          <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-            Payment Milestones
-          </p>
-          {project.budgetBreakdown.map((b: BudgetBreakdown, i: number) => (
-            <div
-              key={i}
-              className={`flex items-center justify-between gap-3 rounded-xl border px-4 py-3 ${
-                b.paid
-                  ? "border-[#8fb9e8]/25 bg-[#8fb9e8]/5"
-                  : "border-zinc-100 bg-white"
-              }`}
-            >
-              <div className="flex min-w-0 items-center gap-3">
-                <div
-                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                    b.paid ? "bg-[#2d4a6b] text-white" : "bg-zinc-100 text-zinc-400"
-                  }`}
-                >
-                  {b.paid ? "✓" : i + 1}
-                </div>
-                <span className="min-w-0 text-sm font-medium text-zinc-700">{b.label}</span>
-              </div>
-              <div className="shrink-0 text-right">
-                <p className="text-sm font-bold tabular-nums text-zinc-900">{fmtMWK(b.amount)}</p>
-                <p className={`text-[10px] font-semibold ${b.paid ? "text-[#2d4a6b]" : "text-zinc-400"}`}>
-                  {b.paid ? "Paid" : "Outstanding"}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Pay now button for clients with outstanding balance */}
-      {role === "CLIENT" && remaining > 0 && (
-        <div className="mt-5 border-t border-zinc-100 pt-5">
-          <PaymentButton
-            projectId={project.id}
-            projectTitle={project.title}
-            amount={remaining}
-            description={`Payment for ${project.title}`}
-            className="w-full justify-center"
-          />
-          <p className="mt-2 text-center text-[11px] text-zinc-400">
-            Secured by Paychangu · Mobile Money · Bank Transfer · Card
-          </p>
-        </div>
-      )}
+      <BudgetPaymentSection
+        projectId={project.id}
+        projectTitle={project.title}
+        budget={project.budget}
+        breakdown={project.budgetBreakdown}
+        role={role}
+      />
     </Section>
   );
 }
@@ -530,7 +449,7 @@ function QuickActions({ project, role }: { project: Project; role: string }) {
       href:  `/dashboard/payments`,
       icon:  Receipt,
       label: "Payment history",
-      desc:  "View all transactions",
+      desc:  "View confirmed and pending payments",
     }] : []),
   ];
 

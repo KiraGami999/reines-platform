@@ -15,29 +15,41 @@ const schema = z.object({
 
 /**
  * POST /api/payments/cash
- * Creates a PENDING cash payment record that requires admin approval.
+ * Staff (project manager or admin) records a cash payment for a project client.
+ * Creates PENDING status — admin must approve before it counts as paid.
+ * Clients cannot record payments.
  */
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await checkVerification();
   if (errorResponse) return errorResponse;
+
+  const user = session!.user;
+  if (user.role === "CLIENT") {
+    return forbidden("Clients cannot record payments. Ask your project manager or visit the office.");
+  }
+  if (user.role !== "ADMIN" && user.role !== "PROJECT_MANAGER") {
+    return forbidden("Only project managers and admins can record cash payments.");
+  }
 
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return validationError(parsed.error);
 
   const { projectId, amount, currency, description, receiptUrl } = parsed.data;
-  const user = session!.user;
 
   try {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        ...(user.role === "CLIENT"          ? { clientId: user.id }  : {}),
         ...(user.role === "PROJECT_MANAGER" ? { managerId: user.id } : {}),
       },
+      select: { id: true, clientId: true, title: true },
     });
 
     if (!project) return forbidden("You do not have access to this project.");
+    if (!project.clientId) {
+      return forbidden("This project has no assigned client to bill.");
+    }
 
     const txRef = generateTxRef("CASH");
 
@@ -51,7 +63,11 @@ export async function POST(req: NextRequest) {
         method:     "CASH",
         receiptUrl: receiptUrl ?? null,
         projectId,
-        userId:     user.id!,
+        // Always attribute the payment to the project client (not the staff member).
+        userId:     project.clientId,
+        adminNotes: user.role === "PROJECT_MANAGER"
+          ? `Recorded by project manager (${user.email ?? user.id})`
+          : `Recorded by admin (${user.email ?? user.id}) — awaiting confirmation`,
       },
     });
 

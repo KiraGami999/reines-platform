@@ -38,15 +38,14 @@ export function getGreetingPeriod(now = new Date()): GreetingPeriod {
   return "evening";
 }
 
-function dayOfYear(date: Date): number {
-  const start = Date.UTC(date.getUTCFullYear(), 0, 0);
-  const now = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-  return Math.floor((now - start) / 86_400_000);
-}
-
-function pickVariant(variants: string[], now = new Date()): string | null {
+/**
+ * Pick a greeting variant using a per-login seed so the phrase changes each
+ * time the user signs in, but stays stable for the rest of that session.
+ */
+function pickVariant(variants: string[], seed: number): string | null {
   if (variants.length === 0) return null;
-  return variants[dayOfYear(now) % variants.length] ?? variants[0] ?? null;
+  const index = Math.abs(Math.trunc(seed)) % variants.length;
+  return variants[index] ?? variants[0] ?? null;
 }
 
 function formatGreeting(phrase: string, name: string): string {
@@ -78,9 +77,16 @@ export async function getPortalGreetingSettings(): Promise<PortalGreetingSetting
 
 /**
  * Builds the portal welcome greeting for the given name using admin-managed
- * morning / afternoon / evening phrases (up to 3 language variants each).
+ * morning / afternoon / evening phrases (up to 5 variants each).
+ * Pass `greetingSeed` from the session (set on login) so the phrase rotates
+ * per sign-in.
  */
-export async function getPortalGreeting(name: string, now = new Date()): Promise<string> {
+export async function getPortalGreeting(
+  name: string,
+  options?: { now?: Date; greetingSeed?: number | null }
+): Promise<string> {
+  const now = options?.now ?? new Date();
+  const seed = options?.greetingSeed ?? now.getTime();
   const settings = await getPortalGreetingSettings();
   if (!settings.enabled) {
     return `Welcome, ${firstName(name)}`;
@@ -88,9 +94,9 @@ export async function getPortalGreeting(name: string, now = new Date()): Promise
 
   const period = getGreetingPeriod(now);
   const variants = settings[period];
-  const phrase = pickVariant(variants, now);
+  const phrase = pickVariant(variants, seed);
   if (!phrase) {
-    const fallback = pickVariant(DEFAULT_PORTAL_GREETINGS[period], now) ?? "Welcome";
+    const fallback = pickVariant(DEFAULT_PORTAL_GREETINGS[period], seed) ?? "Welcome";
     return formatGreeting(fallback, name);
   }
   return formatGreeting(phrase, name);

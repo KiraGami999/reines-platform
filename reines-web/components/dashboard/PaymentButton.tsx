@@ -12,6 +12,10 @@ interface PaymentButtonProps {
   description:  string;
   disabled?:    boolean;
   className?:   string;
+  /** Start on a given step (e.g. "choose" when opened from a milestone accordion). */
+  initialStep?: Step;
+  /** Called when the user cancels back to idle (or closes an embedded chooser). */
+  onDismiss?:   () => void;
 }
 
 const FIELD = "block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8] focus:border-transparent";
@@ -27,8 +31,10 @@ export default function PaymentButton({
   description,
   disabled = false,
   className = "",
+  initialStep = "idle",
+  onDismiss,
 }: PaymentButtonProps) {
-  const [step,       setStep]       = useState<Step>("idle");
+  const [step,       setStep]       = useState<Step>(initialStep);
   const [errorMsg,   setErrorMsg]   = useState("");
   const [editAmount, setEditAmount] = useState(String(amount));
   const [editDesc,   setEditDesc]   = useState(description);
@@ -37,10 +43,14 @@ export default function PaymentButton({
     currency === "MWK" ? `MK ${n.toLocaleString("en-MW")}` : `$${n.toFixed(2)}`;
 
   function reset() {
-    setStep("idle");
     setErrorMsg("");
     setEditAmount(String(amount));
     setEditDesc(description);
+    if (onDismiss && initialStep === "choose") {
+      onDismiss();
+      return;
+    }
+    setStep("idle");
   }
 
   async function handleOnlinePay() {
@@ -87,9 +97,10 @@ export default function PaymentButton({
   if (step === "idle") {
     return (
       <button
+        type="button"
         onClick={() => setStep("choose")}
         disabled={disabled}
-        className={`[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       >
         <CreditCard size={15} />
         Make a Payment
@@ -100,24 +111,26 @@ export default function PaymentButton({
   // ── Choose payment method ──────────────────────────────────────────────────
   if (step === "choose") {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
-        <div className="flex items-center gap-2">
-          <CreditCard size={16} className="text-zinc-500" />
-          <h3 className="text-sm font-semibold text-zinc-900">How would you like to pay?</h3>
-        </div>
+      <div className={`space-y-4 ${initialStep === "choose" ? "" : "rounded-xl border border-zinc-200 bg-white p-5 shadow-sm"}`}>
+        {initialStep !== "choose" && (
+          <div className="flex items-center gap-2">
+            <CreditCard size={16} className="text-zinc-500" />
+            <h3 className="text-sm font-semibold text-zinc-900">How would you like to pay?</h3>
+          </div>
+        )}
 
         <p className="text-xs text-zinc-500">
           Choose your preferred payment method for{" "}
           <span className="font-medium text-zinc-700">{projectTitle}</span>.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {/* Online */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <button
+            type="button"
             onClick={() => setStep("online-confirm")}
-            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
+            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b] text-white group-hover:bg-[#1a2f4a] transition-colors">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b] text-white transition-colors group-hover:bg-[#1a2f4a]">
               <CreditCard size={18} />
             </div>
             <div className="min-w-0">
@@ -127,12 +140,12 @@ export default function PaymentButton({
             <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
           </button>
 
-          {/* Cash */}
           <button
+            type="button"
             onClick={() => setStep("cash")}
-            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
+            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b] transition-colors">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
               <Banknote size={18} />
             </div>
             <div className="min-w-0">
@@ -144,8 +157,9 @@ export default function PaymentButton({
         </div>
 
         <button
+          type="button"
           onClick={reset}
-          className="text-xs text-zinc-400 hover:text-zinc-600 transition-colors"
+          className="text-xs text-zinc-400 transition-colors hover:text-zinc-600"
         >
           ← Cancel
         </button>
@@ -156,7 +170,7 @@ export default function PaymentButton({
   // ── Online payment confirm ─────────────────────────────────────────────────
   if (step === "online-confirm" || step === "online-error") {
     return (
-      <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
+      <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
           <CreditCard size={16} className="text-zinc-500" />
           <h3 className="text-sm font-semibold text-zinc-900">Pay Online via Paychangu</h3>
@@ -194,7 +208,7 @@ export default function PaymentButton({
         </div>
 
         {errorMsg && (
-          <div className="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
+          <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
             <AlertCircle size={13} className="mt-0.5 shrink-0" />
             {errorMsg}
           </div>
@@ -202,15 +216,17 @@ export default function PaymentButton({
 
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={handleOnlinePay}
-            className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
           >
             <ExternalLink size={13} />
             {editAmount && Number(editAmount) > 0 ? `Pay ${fmt(Number(editAmount))}` : "Pay Now"}
           </button>
           <button
+            type="button"
             onClick={() => setStep("choose")}
-            className="px-4 py-2.5 text-sm font-medium text-zinc-600 border border-zinc-300 rounded-lg hover:bg-zinc-50 transition-colors"
+            className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
           >
             Back
           </button>
@@ -240,7 +256,7 @@ export default function PaymentButton({
 
   // ── Online loading redirect ─────────────────────────────────────────────────
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
+    <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-[#8fb9e8]" />
       Redirecting to Paychangu checkout…
     </div>

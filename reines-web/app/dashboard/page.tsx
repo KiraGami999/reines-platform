@@ -867,10 +867,10 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const { name, role } = session.user;
+  const { name, role, greetingSeed } = session.user;
   const params = await searchParams;
   const showUnauthorized = params.error === "unauthorized" && role !== "ADMIN";
-  const greetingPromise = getPortalGreeting(name);
+  const greetingPromise = getPortalGreeting(name, { greetingSeed });
   const [clientProjects, clientConversations] = role === "CLIENT"
     ? await Promise.all([
         getClientProjects(session.user.id!),

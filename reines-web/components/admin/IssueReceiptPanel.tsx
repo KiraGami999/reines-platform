@@ -37,7 +37,7 @@ export default function IssueReceiptPanel({ projects, clients }: IssueReceiptPan
         open={open}
         onClose={() => setOpen(false)}
         title="Issue Manual Receipt"
-        subtitle="Record cash payments received at the office and issue a client receipt."
+        subtitle="Record cash payments received at the office and issue a client receipt. Product sales can use a walk-in name and email if the buyer has no account."
       >
         <RecordPaymentForm
           projects={projects}

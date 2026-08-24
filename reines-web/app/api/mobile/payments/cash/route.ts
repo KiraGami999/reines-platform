@@ -14,20 +14,24 @@ const schema = z.object({
 
 /**
  * POST /api/mobile/payments/cash
- *
- * Creates a PENDING cash payment record that requires admin approval.
- * The optional receiptUrl is a URL to an uploaded image of the payment slip.
- *
- * Auth: Bearer token (mobile JWT).
+ * Staff (PM / admin) records cash for a project client → PENDING until admin approves.
+ * Clients cannot record payments.
  */
 export async function POST(req: NextRequest) {
-  const token   = extractBearer(req.headers.get("authorization"));
+  const token = extractBearer(req.headers.get("authorization"));
   if (!token) return NextResponse.json({ error: "Unauthenticated." }, { status: 401 });
 
   const payload = await verifyToken(token);
   if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
 
-  const userId = payload.id;
+  if (payload.role === "CLIENT") {
+    return NextResponse.json({
+      error: "Clients cannot record payments. Your project manager or admin will record them.",
+    }, { status: 403 });
+  }
+  if (payload.role !== "ADMIN" && payload.role !== "PROJECT_MANAGER") {
+    return NextResponse.json({ error: "Forbidden." }, { status: 403 });
+  }
 
   const body   = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
@@ -42,9 +46,13 @@ export async function POST(req: NextRequest) {
 
   try {
     const project = await prisma.project.findFirst({
-      where: { id: projectId, clientId: userId },
+      where: {
+        id: projectId,
+        ...(payload.role === "PROJECT_MANAGER" ? { managerId: payload.id } : {}),
+      },
+      select: { id: true, clientId: true },
     });
-    if (!project) {
+    if (!project?.clientId) {
       return NextResponse.json({ error: "Project not found or access denied." }, { status: 404 });
     }
 
@@ -55,7 +63,9 @@ export async function POST(req: NextRequest) {
         txRef, amount, currency, description,
         status: "PENDING", method: "CASH",
         receiptUrl: receiptUrl ?? null,
-        projectId, userId,
+        projectId,
+        userId: project.clientId,
+        adminNotes: `Recorded via mobile by ${payload.role} (${payload.id})`,
       },
     });
 

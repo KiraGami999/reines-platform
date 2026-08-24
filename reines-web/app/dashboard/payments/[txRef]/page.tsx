@@ -91,14 +91,16 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         id="payment-receipt"
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
-        <div className="bg-[#1B334F] px-8 py-5 text-center print:block">
-          {/* Native img so the logo prints reliably (next/image can be skipped in print). */}
+        <div className="bg-[#1B334F] px-8 py-6 text-center print:block">
+          {/* White Reines Group wordmark on navy — same asset as the public navbar (transparent, no boxed plate). */}
           <img
-            src="/logo-reines-group.png"
+            src="/logo-nav-rebrand.png"
             alt="Reines Group"
-            className="mx-auto h-14 w-auto object-contain"
+            width={795}
+            height={163}
+            className="mx-auto h-10 w-auto max-w-[min(100%,280px)] object-contain object-center sm:h-11"
           />
-          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
+          <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
             Payment Receipt
           </p>
         </div>
@@ -171,7 +173,31 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
             ...(payment.paychanguId
               ? [{ label: "Paychangu ID", value: <span className="font-mono text-xs">{payment.paychanguId}</span> }]
               : []),
-            { label: "Billed to", value: payment.user?.name ?? "—" },
+            {
+              label: "Billed to",
+              value: payment.user?.name
+                ? (
+                    <span>
+                      {payment.user.name}
+                      {payment.user.email ? (
+                        <span className="mt-0.5 block text-xs text-zinc-400">{payment.user.email}</span>
+                      ) : null}
+                    </span>
+                  )
+                : payment.guestName
+                  ? (
+                    <span>
+                      {payment.guestName}
+                      {payment.guestEmail ? (
+                        <span className="mt-0.5 block text-xs text-zinc-400">{payment.guestEmail}</span>
+                      ) : null}
+                      <span className="mt-0.5 block text-[10px] font-medium uppercase tracking-wide text-zinc-400">
+                        Walk-in customer
+                      </span>
+                    </span>
+                  )
+                  : "—",
+            },
           ].map((row, i) => (
             <div key={i} className="flex items-start justify-between gap-4 py-3.5">
               <span className="w-32 shrink-0 text-sm text-zinc-500">{row.label}</span>

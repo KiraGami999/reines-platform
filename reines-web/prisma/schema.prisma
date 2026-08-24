@@ -398,8 +398,8 @@ model ClientLogoSetting {
 // ---------------------------------------------------------------------------
 // Portal Greetings
 // Admin-managed welcome phrases shown on the portal dashboard landing screen.
-// Each time-of-day slot (morning / afternoon / evening) holds up to three
-// language variants; the portal picks one for the current period.
+// Each time-of-day slot (morning / afternoon / evening) holds up to five
+// options; the portal picks one per sign-in for the current period.
 // ---------------------------------------------------------------------------
 
 model PortalGreetingSetting {
@@ -542,13 +542,17 @@ model Payment {
   adminApprovedAt DateTime? // When admin reviewed the cash payment
   adminNotes      String?   @db.Text // Admin notes on approval or rejection
 
+  // Walk-in product buyers (no portal account)
+  guestName  String?
+  guestEmail String?
+
   // Foreign keys
   projectId String?
-  userId    String
+  userId    String? // null when billed to a walk-in guest
 
   // Relations
   project Project? @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user    User    @relation(fields: [userId], references: [id])
+  user    User?   @relation(fields: [userId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

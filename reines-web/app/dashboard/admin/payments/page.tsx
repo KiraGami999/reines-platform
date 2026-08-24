@@ -40,6 +40,7 @@ async function getAllPayments(): Promise<PaymentRow[]> {
       createdAt:   p.createdAt.toISOString(),
       project:     p.project ?? { id: "product-sale", title: "Product Sale" },
       user:        p.user ?? undefined,
+      guestName:   p.guestName,
     }));
   } catch {
     return [];
@@ -190,10 +191,12 @@ export default async function AdminPaymentsPage() {
           to: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-xs break-all">{`{YOUR_DOMAIN}/api/payments/webhook`}</code>
         </p>
         <p>
-          <span className="font-semibold text-zinc-800">Cash payments</span> submitted by clients
-          stay pending until an admin approves them above — only then do they count toward a
-          project&apos;s paid balance. Office receipts issued here are recorded as paid immediately
-          because an admin has already verified the cash.
+          <span className="font-semibold text-zinc-800">Cash payments</span> are recorded by
+          project managers or admins. Client-facing recording is disabled. PM submissions stay
+          pending until an admin approves them above — only then do they count toward a
+          project&apos;s paid balance. Office receipts issued via{" "}
+          <span className="font-medium">Issue Manual Receipt</span> are recorded as paid
+          immediately because an admin has already verified the cash.
         </p>
       </div>
 

@@ -12,39 +12,49 @@ const schema = z.object({
   description: z.string().min(3, "Please describe what this payment covers"),
 });
 
+/**
+ * POST /api/payments/initiate
+ * Staff-only: create a Paychangu checkout billed to the project client.
+ * Clients cannot initiate payments — recording is handled by PM / admin.
+ */
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await checkVerification();
   if (errorResponse) return errorResponse;
+
+  const user = session!.user;
+  if (user.role === "CLIENT") {
+    return forbidden("Clients cannot initiate payments. Your project manager or admin will record payments for you.");
+  }
+  if (user.role !== "ADMIN" && user.role !== "PROJECT_MANAGER") {
+    return forbidden("Only project managers and admins can initiate payments.");
+  }
 
   const body = await req.json().catch(() => null);
   const parsed = schema.safeParse(body);
   if (!parsed.success) return validationError(parsed.error);
 
   const { projectId, amount, currency, description } = parsed.data;
-  const user = session!.user;
 
-  // Verify the user has access to this project
   try {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        ...(user.role === "CLIENT"          ? { clientId: user.id }  : {}),
         ...(user.role === "PROJECT_MANAGER" ? { managerId: user.id } : {}),
       },
-      include: { client: { select: { name: true, email: true } } },
+      include: { client: { select: { id: true, name: true, email: true } } },
     });
 
     if (!project) return forbidden("You do not have access to this project.");
+    if (!project.client?.email) {
+      return badRequest("Project client is missing an email address for checkout.");
+    }
 
     const txRef = generateTxRef("REI");
-    const billingUser = user.role === "CLIENT"
-      ? { email: user.email!, name: user.name! }
-      : { email: project.client.email!, name: project.client.name! };
+    const billingUser = { email: project.client.email, name: project.client.name };
 
     const [firstName, ...rest] = billingUser.name.split(" ");
     const lastName = rest.join(" ") || firstName;
 
-    // Create a pending payment record before calling Paychangu
     const payment = await prisma.payment.create({
       data: {
         txRef,
@@ -53,11 +63,10 @@ export async function POST(req: NextRequest) {
         description,
         status:    "PENDING",
         projectId,
-        userId:    user.id!,
+        userId:    project.client.id,
       },
     });
 
-    // Call Paychangu API
     const payRes = await initiatePayment({
       txRef,
       amount,
@@ -75,7 +84,6 @@ export async function POST(req: NextRequest) {
     });
 
     if (payRes.status !== "success") {
-      // Mark payment as failed
       await prisma.payment.update({
         where: { id: payment.id },
         data:  { status: "FAILED" },
@@ -85,18 +93,15 @@ export async function POST(req: NextRequest) {
 
     const checkoutUrl = payRes.data.checkout_url;
 
-    // Save the checkout URL on the payment record
     await prisma.payment.update({
       where: { id: payment.id },
       data:  { checkoutUrl },
     });
 
     return created({ txRef, checkoutUrl });
-
   } catch (err) {
     const msg = err instanceof Error ? err.message : "Unknown error";
 
-    // If the error is a config issue (no API key) return a friendly message
     if (msg.includes("PAYCHANGU_SECRET_KEY")) {
       return badRequest(
         "Paychangu is not yet configured. Please add your PAYCHANGU_SECRET_KEY to the .env file. " +

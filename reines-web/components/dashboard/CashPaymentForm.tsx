@@ -20,6 +20,8 @@ interface CashPaymentFormProps {
   currency?:    "MWK" | "USD";
   description:  string;
   onCancel:     () => void;
+  /** PM/admin recording on behalf of the client (copy + success messaging). */
+  staffMode?:   boolean;
 }
 
 const FIELD =
@@ -33,6 +35,7 @@ export function CashPaymentForm({
   currency = "MWK",
   description,
   onCancel,
+  staffMode = false,
 }: CashPaymentFormProps) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
@@ -137,10 +140,13 @@ export function CashPaymentForm({
             <CheckCircle2 size={28} className="text-zinc-500" />
           </div>
         </div>
-        <h3 className="text-base font-semibold text-zinc-900">Cash Payment Submitted</h3>
+        <h3 className="text-base font-semibold text-zinc-900">
+          {staffMode ? "Payment Submitted for Approval" : "Cash Payment Submitted"}
+        </h3>
         <p className="text-sm text-zinc-500 max-w-xs mx-auto">
-          Your payment has been recorded and is awaiting admin confirmation. You will be
-          notified once it is approved.
+          {staffMode
+            ? "This cash payment is pending. An admin must approve it before it counts toward the project balance."
+            : "Your payment has been recorded and is awaiting admin confirmation. You will be notified once it is approved."}
         </p>
         <button
           onClick={onCancel}
@@ -153,16 +159,19 @@ export function CashPaymentForm({
   }
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm">
+    <div className={`${staffMode ? "space-y-4" : "rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm"}`}>
       {/* Header */}
       <div className="flex items-center gap-2">
         <Banknote size={16} className="text-zinc-500" />
-        <h3 className="text-sm font-semibold text-zinc-900">Cash Payment</h3>
+        <h3 className="text-sm font-semibold text-zinc-900">
+          {staffMode ? "Record Cash Payment" : "Cash Payment"}
+        </h3>
       </div>
 
       <p className="text-xs text-zinc-500">
-        Submit your cash payment details and optionally upload a photo of your receipt. An admin
-        will review and confirm the payment.
+        {staffMode
+          ? "Record cash received for this client. An admin will review and approve before it updates the paid balance."
+          : "Submit your cash payment details and optionally upload a photo of your receipt. An admin will review and confirm the payment."}
       </p>
 
       {/* Amount */}
@@ -273,7 +282,7 @@ export function CashPaymentForm({
           {submitting ? (
             <><Loader2 size={13} className="animate-spin" /> Submitting…</>
           ) : (
-            <><Upload size={13} /> Submit Cash Payment</>
+            <><Upload size={13} /> {staffMode ? "Submit for Admin Approval" : "Submit Cash Payment"}</>
           )}
         </button>
         <button
@@ -286,7 +295,9 @@ export function CashPaymentForm({
       </div>
 
       <p className="text-[11px] text-zinc-400">
-        Cash payments require admin approval before being counted towards your project balance.
+        {staffMode
+          ? "Does not update paid balance until an admin approves this record."
+          : "Cash payments require admin approval before being counted towards your project balance."}
       </p>
     </div>
   );
