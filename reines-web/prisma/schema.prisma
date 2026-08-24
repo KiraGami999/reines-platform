@@ -125,6 +125,7 @@ model User {
   verificationFullName    String?
   verificationPhone       String?
   verificationAddress     String?
+  verificationOccupation  String?
   verificationIdType      String? // "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE"
   verificationIdNumber    String?
   verificationDocumentUrl String?

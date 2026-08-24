@@ -8,6 +8,7 @@ const schema = z.object({
   fullName:    z.string().min(3, "Please enter your full name as shown on your ID"),
   phone:       z.string().min(5, "Please enter a valid phone number"),
   address:     z.string().min(5, "Please enter your physical address"),
+  occupation:  z.string().min(2, "Please enter your occupation"),
   idType:      z.enum(["ID_CARD", "PASSPORT", "DRIVING_LICENSE"] as const),
   idNumber:    z.string().min(3, "Please enter your ID/Document number"),
   documentUrl: z.string().url("Please upload your identity document"),
@@ -35,7 +36,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { fullName, phone, address, idType, idNumber, documentUrl } = parsed.data;
+    const { fullName, phone, address, occupation, idType, idNumber, documentUrl } = parsed.data;
 
     // Save to user DB and update status to PENDING
     const user = await prisma.user.update({
@@ -45,6 +46,7 @@ export async function POST(req: NextRequest) {
         verificationFullName:    fullName,
         verificationPhone:       phone,
         verificationAddress:     address,
+        verificationOccupation:  occupation,
         verificationIdType:      idType,
         verificationIdNumber:    idNumber,
         verificationDocumentUrl: documentUrl,
@@ -61,6 +63,7 @@ export async function POST(req: NextRequest) {
     sendAdminVerificationSubmittedEmail(user.name || fullName, email, {
       phone,
       address,
+      occupation,
       idType,
       idNumber,
       documentUrl,

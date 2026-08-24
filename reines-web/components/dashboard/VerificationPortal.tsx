@@ -19,6 +19,7 @@ interface VerificationUser {
   verificationFullName:    string | null;
   verificationPhone:       string | null;
   verificationAddress:     string | null;
+  verificationOccupation:  string | null;
   verificationIdType:      string | null;
   verificationIdNumber:    string | null;
   verificationDocumentUrl: string | null;
@@ -40,8 +41,9 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
   const [form, setForm] = useState({
     fullName: initialUser.verificationFullName ?? "",
     phone:    initialUser.verificationPhone ?? "",
-    address:  initialUser.verificationAddress ?? "",
-    idType:   (initialUser.verificationIdType as "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE") ?? "ID_CARD",
+    address:     initialUser.verificationAddress ?? "",
+    occupation:  initialUser.verificationOccupation ?? "",
+    idType:      (initialUser.verificationIdType as "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE") ?? "ID_CARD",
     idNumber: initialUser.verificationIdNumber ?? "",
   });
 
@@ -107,6 +109,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
     if (!form.fullName.trim()) return setError("Please enter your full name.");
     if (!form.phone.trim()) return setError("Please enter your phone number.");
     if (!form.address.trim()) return setError("Please enter your physical address.");
+    if (!form.occupation.trim()) return setError("Please enter your occupation.");
     if (!form.idNumber.trim()) return setError("Please enter your ID document number.");
     if (!documentUrl) return setError("Please upload a copy of your identity document.");
 
@@ -121,6 +124,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
           fullName:    form.fullName.trim(),
           phone:       form.phone.trim(),
           address:     form.address.trim(),
+          occupation:  form.occupation.trim(),
           idType:      form.idType,
           idNumber:    form.idNumber.trim(),
           documentUrl,
@@ -175,8 +179,12 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
               <dd className="mt-1 font-semibold text-zinc-950">{form.phone}</dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="font-medium text-zinc-500">Address</dt>
+              <dt className="font-medium text-zinc-500">Physical Address</dt>
               <dd className="mt-1 font-semibold text-zinc-950">{form.address}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="font-medium text-zinc-500">Occupation</dt>
+              <dd className="mt-1 font-semibold text-zinc-950">{form.occupation}</dd>
             </div>
             <div>
               <dt className="font-medium text-zinc-500">ID Type</dt>
@@ -202,7 +210,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
           <ShieldCheck className="h-5 w-5 text-[#2d4a6b]" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#2d4a6b]">Identity Verification</h2>
+          <h2 className="text-xl font-bold text-[#2d4a6b]">KYC Identity Verification</h2>
           <p className="text-xs text-zinc-500">Verify your profile to unlock all client features.</p>
         </div>
       </div>
@@ -272,6 +280,18 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
               placeholder="House Number, Street Name, Area, City"
               value={form.address}
               onChange={(e) => set("address", e.target.value)}
+              disabled={submitting}
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className={LABEL}>Occupation</label>
+            <input
+              type="text"
+              className={FIELD}
+              placeholder="e.g. Civil Engineer, Business Owner"
+              value={form.occupation}
+              onChange={(e) => set("occupation", e.target.value)}
               disabled={submitting}
             />
           </div>

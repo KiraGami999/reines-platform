@@ -358,5 +358,7 @@ select:disabled {
     box-shadow: none !important;
     border: 1px solid #d4d4d8 !important;
     border-radius: 0 !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }

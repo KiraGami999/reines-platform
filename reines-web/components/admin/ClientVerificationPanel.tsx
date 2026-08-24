@@ -12,6 +12,7 @@ export type ClientVerificationData = {
   verificationFullName: string | null;
   verificationPhone: string | null;
   verificationAddress: string | null;
+  verificationOccupation: string | null;
   verificationIdType: string | null;
   verificationIdNumber: string | null;
   verificationDocumentUrl: string | null;
@@ -92,8 +93,12 @@ export default function ClientVerificationPanel({ open, onClose, client, onSucce
                 <p className="text-zinc-900">{client.verificationPhone || "Not provided"}</p>
               </div>
               <div className="col-span-2">
-                <p className="text-zinc-500 font-medium">Residential Address</p>
+                <p className="text-zinc-500 font-medium">Physical Address</p>
                 <p className="text-zinc-900">{client.verificationAddress || "Not provided"}</p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-zinc-500 font-medium">Occupation</p>
+                <p className="text-zinc-900">{client.verificationOccupation || "Not provided"}</p>
               </div>
             </div>
           </div>

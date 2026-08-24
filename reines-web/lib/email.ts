@@ -527,7 +527,7 @@ export async function sendClientVerificationSubmittedEmail(to: string, name?: st
   });
 }
 
-function adminVerificationHtml(clientName: string, clientEmail: string, details: { phone: string, address: string, idType: string, idNumber: string, documentUrl: string }): string {
+function adminVerificationHtml(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, idType: string, idNumber: string, documentUrl: string }): string {
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw";
   const fullDocumentLink = details.documentUrl ? `${baseUrl}/api/media?url=${encodeURIComponent(details.documentUrl)}` : "#";
   const reviewLink = `${baseUrl}/dashboard/admin/clients`;
@@ -565,6 +565,10 @@ function adminVerificationHtml(clientName: string, clientEmail: string, details:
                   <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.address}</td>
                 </tr>
                 <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Occupation</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.occupation}</td>
+                </tr>
+                <tr>
                   <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">ID Type</td>
                   <td style="padding:6px 0;color:#18181b;font-size:13px;text-transform:uppercase;">${details.idType}</td>
                 </tr>
@@ -594,7 +598,7 @@ function adminVerificationHtml(clientName: string, clientEmail: string, details:
   </div>`;
 }
 
-export async function sendAdminVerificationSubmittedEmail(clientName: string, clientEmail: string, details: { phone: string, address: string, idType: string, idNumber: string, documentUrl: string }): Promise<void> {
+export async function sendAdminVerificationSubmittedEmail(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, idType: string, idNumber: string, documentUrl: string }): Promise<void> {
   const to = getQuotationNotifyEmail();
   await sendMail({
     to,

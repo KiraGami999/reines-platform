@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 import VerificationPortal from "@/components/dashboard/VerificationPortal";
 
 export const metadata = {
-  title: "Identity Verification - Reines Portal",
-  description: "Verify your identity to unlock all platform features.",
+  title: "KYC Identity Verification - Reines Portal",
+  description: "Complete KYC identity verification to unlock all platform features.",
 };
 
 export default async function VerificationPage() {
@@ -23,6 +23,7 @@ export default async function VerificationPage() {
       verificationFullName:    true,
       verificationPhone:       true,
       verificationAddress:     true,
+      verificationOccupation:  true,
       verificationIdType:      true,
       verificationIdNumber:    true,
       verificationDocumentUrl: true,

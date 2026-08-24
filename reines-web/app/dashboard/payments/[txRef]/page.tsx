@@ -91,9 +91,16 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         id="payment-receipt"
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
-        <div className="hidden border-b border-zinc-200 px-8 py-6 text-center print:block">
-          <p className="text-lg font-bold text-[#2d4a6b]">Reines Group</p>
-          <p className="mt-1 text-xs uppercase tracking-widest text-zinc-500">Payment Receipt</p>
+        <div className="bg-[#1B334F] px-8 py-5 text-center print:block">
+          {/* Native img so the logo prints reliably (next/image can be skipped in print). */}
+          <img
+            src="/logo-reines-group.png"
+            alt="Reines Group"
+            className="mx-auto h-14 w-auto object-contain"
+          />
+          <p className="mt-2 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">
+            Payment Receipt
+          </p>
         </div>
 
         {/* Status header */}
@@ -191,7 +198,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
           </Link>
 
           {/* Print button must be a Client Component (uses window.print) */}
-          <PrintReceiptButton />
+          <PrintReceiptButton txRef={payment.txRef} />
         </div>
       </div>
 
