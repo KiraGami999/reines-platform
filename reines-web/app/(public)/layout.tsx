@@ -7,8 +7,9 @@ import { isMarketInsightsVisible } from "@/lib/market-insights";
 /**
  * Public marketing layout.
  *
- * `data-portal` opts pages into the dark-mode surface remaps in globals.css so
- * Contact / Quote / etc. don't keep a white canvas while inputs go dark.
+ * Always renders the light marketing look — the homepage and content pages
+ * were designed for a light canvas with a dark hero band. Site-wide dark mode
+ * (used in the authenticated portal) is not applied here.
  *
  * Forced dynamic so the Market Insights nav link (and any other admin-toggled
  * content here) reflects immediately on every public page — static pages like
@@ -21,10 +22,7 @@ export default async function PublicLayout({ children }: { children: React.React
   const showMarketInsights = await isMarketInsightsVisible();
 
   return (
-    <div
-      data-portal
-      className="flex min-h-screen flex-col overflow-x-clip bg-background text-foreground"
-    >
+    <div className="flex min-h-screen flex-col overflow-x-clip bg-white text-zinc-900 [color-scheme:light]">
       <StructuredData includeMarketInsights={showMarketInsights} />
       <Navbar showMarketInsights={showMarketInsights} />
       <main className="flex-1">{children}</main>

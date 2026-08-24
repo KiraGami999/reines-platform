@@ -84,21 +84,21 @@ function Hero({ ads }: { ads: HomepageAd[] }) {
           {/* Right — hero copy; buttons pinned to bottom to align with Featured Now */}
           <div className="flex w-full min-w-0 flex-col justify-between lg:pl-2 xl:pl-6">
             <div>
-              <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] font-medium leading-snug text-zinc-300 sm:text-xs">
+              <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-white/20 bg-white/5 px-3 py-1 text-[11px] font-medium leading-snug text-white/75 sm:text-xs">
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fb9e8]" />
                 Blantyre, Malawi · Founded March 2023
               </span>
 
               <h1 className="mt-5 font-extrabold leading-[1.12] tracking-tight sm:mt-6">
-                <span className="block text-[clamp(1.75rem,4.5vw,3rem)] text-white">
+                <span className="block text-[clamp(1.75rem,4.5vw,3rem)] text-white [text-shadow:none]">
                   Precision in every detail,
                 </span>
-                <span className="mt-1 block text-[clamp(1.75rem,4.5vw,3rem)] text-[#9eb3c9]">
+                <span className="mt-1 block text-[clamp(1.75rem,4.5vw,3rem)] text-[#b8d4f2] [text-shadow:none]">
                   Passion in every project
                 </span>
               </h1>
 
-              <p className="mt-5 max-w-xl text-sm leading-relaxed text-zinc-300 sm:mt-6 sm:text-base lg:text-[1.05rem] lg:leading-7">
+              <p className="mt-5 max-w-xl text-sm leading-relaxed text-white/80 sm:mt-6 sm:text-base lg:text-[1.05rem] lg:leading-7">
                 Reines Property Development Limited is a company founded and headquartered in Blantyre, Malawi. Operating for over three years now, we have interests in property, construction, and manufacturing, with ambitions to expand into mining and steel. We offer an expansive range of products and services to support our clients&apos; infrastructure developments.
               </p>
             </div>

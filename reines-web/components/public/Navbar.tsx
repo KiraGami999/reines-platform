@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
-import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
 const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
@@ -32,10 +31,8 @@ const roleLabels: Record<string, string> = {
 };
 
 /**
- * Mobile drawer links — the drawer itself follows the site's light/dark
- * colour scheme (white surface in light mode, dark surface in dark mode),
- * unlike the fixed navy top bar. Plain zinc/navy utilities here are
- * auto-remapped for dark mode by the [data-portal] rules in globals.css.
+ * Mobile drawer links — always light marketing chrome (public site does not
+ * follow portal dark mode).
  */
 function mobileNavItemClass(active: boolean) {
   return cn(
@@ -159,10 +156,6 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
             </>
           )}
 
-          {/* Theme toggle — sits at the far top-right, left of the hamburger so it
-              never overlaps the menu trigger on mobile. */}
-          <ThemeIconButton variant="on-dark" />
-
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
@@ -176,8 +169,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile menu — follows the site's light/dark theme rather than the
-          fixed navy top bar, so it matches whatever mode the user picked. */}
+      {/* Mobile menu — light marketing chrome */}
       {open && (
         <div className="border-t border-zinc-200 bg-white px-4 pb-5 xl:hidden">
           <nav className="flex flex-col gap-1.5 pt-3">
