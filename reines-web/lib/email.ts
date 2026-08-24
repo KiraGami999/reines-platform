@@ -609,32 +609,58 @@ export async function sendAdminVerificationSubmittedEmail(clientName: string, cl
 }
 
 function verificationApprovedHtml(name?: string): string {
-  const greeting = name ? `Hi ${name},` : "Hi,";
-  const dashboardLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard`;
+  const first = name?.trim().split(/\s+/)[0] || "";
+  const greeting = first ? `Hi ${first},` : "Hi,";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://reines.co.mw";
+  const dashboardLink = `${baseUrl.replace(/\/+$/, "")}/dashboard`;
+  const projectMateLink = `${baseUrl.replace(/\/+$/, "")}/project-mate`;
+  const supportEmail = "contact@reines.co.mw";
+  const supportPhone = "+265 883 157 209";
+
   return `
   <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f5f7;padding:32px 0;">
       <tr><td align="center">
-        <table role="presentation" width="440" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
+        <table role="presentation" width="520" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e8eb;">
           <tr>
-            <td style="background:${BRAND_NAVY};padding:24px 32px;">
-              <span style="color:#ffffff;font-size:18px;font-weight:700;">Reines Group</span>
+            <td style="background:${BRAND_NAVY};padding:28px 32px;">
+              <span style="display:block;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.02em;">Welcome to Reines Project Mate</span>
+              <span style="display:block;margin-top:6px;color:${BRAND_BLUE};font-size:13px;font-weight:500;">Your verification is complete</span>
             </td>
           </tr>
           <tr>
             <td style="padding:32px;">
               <p style="margin:0 0 12px;color:#18181b;font-size:15px;">${greeting}</p>
-              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
-                Great news! Your identity verification has been reviewed and <strong>approved</strong> by our team.
+              <p style="margin:0 0 16px;color:#52525b;font-size:14px;line-height:1.65;">
+                Great news — your KYC identity verification has been reviewed and
+                <strong style="color:#18181b;">approved</strong>. You are now welcome to start using
+                your Reines Project Mate portal.
               </p>
-              <p style="margin:0 0 24px;color:#52525b;font-size:14px;line-height:1.6;">
-                You now have full access to all client portal features, including project management, payment history, messages, and loyalty rewards.
+              <p style="margin:0 0 20px;color:#52525b;font-size:14px;line-height:1.65;">
+                Sign in with the same email and password you used to register. Once inside, you can:
               </p>
-              <div style="text-align:center;margin:32px 0 24px;">
-                <a href="${dashboardLink}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:12px 28px;font-size:14px;font-weight:600;border-radius:8px;">
-                  Access Client Portal
+              <ul style="margin:0 0 24px;padding:0 0 0 18px;color:#52525b;font-size:14px;line-height:1.7;">
+                <li style="margin-bottom:6px;">Track live project progress and milestones</li>
+                <li style="margin-bottom:6px;">View progress galleries and updates from your project manager</li>
+                <li style="margin-bottom:6px;">Message your Reines team directly</li>
+                <li style="margin-bottom:6px;">Make and review payments</li>
+                <li>Earn and redeem loyalty rewards</li>
+              </ul>
+              <div style="text-align:center;margin:8px 0 28px;">
+                <a href="${dashboardLink}" style="display:inline-block;background:${BRAND_NAVY};color:#ffffff;text-decoration:none;padding:14px 28px;font-size:14px;font-weight:600;border-radius:8px;">
+                  Open your portal
                 </a>
               </div>
+              <p style="margin:0 0 12px;color:#52525b;font-size:13px;line-height:1.6;">
+                Prefer the mobile experience? Learn more about Project Mate at
+                <a href="${projectMateLink}" style="color:${BRAND_NAVY};font-weight:600;text-decoration:underline;">reines.co.mw/project-mate</a>.
+                Native apps for Google Play and the App Store are coming soon.
+              </p>
+              <p style="margin:0;color:#71717a;font-size:13px;line-height:1.6;">
+                Need help? Contact us at
+                <a href="mailto:${supportEmail}" style="color:${BRAND_NAVY};text-decoration:underline;">${supportEmail}</a>
+                or call <a href="tel:+265883157209" style="color:${BRAND_NAVY};text-decoration:underline;">${supportPhone}</a>.
+              </p>
             </td>
           </tr>
           <tr>
@@ -649,12 +675,23 @@ function verificationApprovedHtml(name?: string): string {
 }
 
 export async function sendVerificationApprovedEmail(to: string, name?: string): Promise<void> {
-  const dashboardLink = `${process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw"}/dashboard`;
+  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXTAUTH_URL || "https://reines.co.mw").replace(/\/+$/, "");
+  const dashboardLink = `${baseUrl}/dashboard`;
+  const projectMateLink = `${baseUrl}/project-mate`;
+  const first = name?.trim().split(/\s+/)[0] || "";
+
   await sendMail({
     to,
-    subject: "Identity verification APPROVED - Reines Group",
+    subject: "Welcome to Reines Project Mate — verification complete",
     html: verificationApprovedHtml(name),
-    text: `${name ? `Hi ${name},\n\n` : ""}Your identity verification request has been approved. You now have full access to the client portal: ${dashboardLink}`,
+    text:
+      `${first ? `Hi ${first},\n\n` : "Hi,\n\n"}` +
+      `Welcome to Reines Project Mate.\n\n` +
+      `Your KYC identity verification has been approved. You may now start using your client portal.\n\n` +
+      `Sign in and open your dashboard: ${dashboardLink}\n\n` +
+      `In the portal you can track projects, view progress galleries, message your team, make payments, and use loyalty rewards.\n\n` +
+      `Learn more about Project Mate: ${projectMateLink}\n\n` +
+      `Need help? Email contact@reines.co.mw or call +265 883 157 209.\n`,
   });
 }
 
