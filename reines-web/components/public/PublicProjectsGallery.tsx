@@ -8,9 +8,18 @@ import { ArrowRight, CalendarDays, ChevronLeft, ChevronRight, MapPin, Maximize2,
 import type { PublicProjectItem, PublicProjectStatus } from "@/lib/public-projects-data";
 
 const statusConfig: Record<PublicProjectStatus, { label: string; classes: string }> = {
-  COMPLETED:   { label: "Completed",   classes: "bg-blue-50 text-blue-700" },
-  IN_PROGRESS: { label: "In Progress", classes: "bg-blue-50 text-blue-700" },
-  PLANNING:    { label: "Planning",    classes: "bg-blue-50 text-blue-700" },
+  COMPLETED:   {
+    label: "Completed",
+    classes: "bg-blue-50 text-blue-700 dark:bg-[#8fb9e8]/20 dark:text-[#8fb9e8]",
+  },
+  IN_PROGRESS: {
+    label: "In Progress",
+    classes: "bg-blue-50 text-blue-700 dark:bg-[#8fb9e8]/20 dark:text-[#8fb9e8]",
+  },
+  PLANNING:    {
+    label: "Planning",
+    classes: "bg-blue-50 text-blue-700 dark:bg-[#8fb9e8]/20 dark:text-[#8fb9e8]",
+  },
 };
 
 function isProxyUrl(url: string) {
