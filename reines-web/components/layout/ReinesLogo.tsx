@@ -5,8 +5,10 @@ import type { PortalLogoMark } from "@/lib/portal-branding";
 
 /** White-on-transparent corporate wordmark (legacy). Kept for reference/fallbacks. */
 export const REINES_LOGO_LEGACY_SRC = "/logo.png";
-/** Current Reines Property Development rebrand — admin portal + public footer. */
+/** Current Reines Property Development / Reines Group rebrand — admin portal + public footer. */
 export const REINES_LOGO_SRC = "/logo-nav-rebrand.png";
+/** Pre-rendered navy (#2d4a6b) — Reines Group on light/pale backgrounds. */
+export const REINES_LOGO_NAVY_SRC = "/logo-nav-rebrand-navy.png";
 export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
 /** Pre-rendered navy foreground — Project Mate on light/pale backgrounds. */
 export const PROJECT_MATE_LOGO_NAVY_SRC = "/logo-project-mate-navy.png";
@@ -92,23 +94,21 @@ type ReinesLogoProps = {
 };
 
 /**
- * CSS filters applied to the white corporate wordmark when dedicated colour
- * assets are unavailable. Start from brightness(0) (black), then tint.
- * Accent ≈ #8fb9e8; light-header grey ≈ zinc-600 (#52525b).
+ * CSS filter for the white corporate wordmark → brand accent (#8fb9e8)
+ * when a dedicated accent asset is unavailable (dark portal header).
  */
 const CORPORATE_ACCENT_FILTER =
   "[filter:brightness(0)_invert(79%)_sepia(18%)_saturate(747%)_hue-rotate(176deg)_brightness(97%)_contrast(88%)]";
-const CORPORATE_GREY_FILTER =
-  "[filter:brightness(0)_invert(35%)_sepia(6%)_saturate(400%)_hue-rotate(182deg)_brightness(95%)_contrast(90%)]";
 
 const MARK_CONFIG = {
   corporate: {
     src: REINES_LOGO_SRC,
-    lightSrc: null as string | null,
+    /** Navy (#2d4a6b) on pale backgrounds (light admin header). */
+    lightSrc: REINES_LOGO_NAVY_SRC as string | null,
     accentSrc: null as string | null,
     width: LOGO_WIDTH,
     height: LOGO_HEIGHT,
-    alt: "Reines Property Development Limited",
+    alt: "Reines Group",
     sizeClass: CORPORATE_SIZE_CLASS,
   },
   "project-mate": {
@@ -152,11 +152,10 @@ export function ReinesLogo({
       className={cn(
         config.sizeClass[size],
         "w-auto object-contain object-left",
-        // Corporate white PNG: tint to brand accent / darker grey when needed.
+        // Corporate white PNG: tint to brand accent on dark header when no accent asset.
         mark === "corporate" && variant === "on-dark-accent" && CORPORATE_ACCENT_FILTER,
-        mark === "corporate" && variant === "on-light" && CORPORATE_GREY_FILTER,
-        // Project Mate fallback if navy asset missing.
-        mark === "project-mate" && variant === "on-light" && !useNavyAsset && "brightness-0",
+        // Fallback if navy asset missing (corporate or Project Mate).
+        variant === "on-light" && !useNavyAsset && "brightness-0",
         className
       )}
     />
