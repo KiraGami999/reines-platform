@@ -97,14 +97,20 @@ select:disabled {
   background-color: var(--surface);
 }
 /*
- * Navy portal sidebar is brand chrome — keep the light-theme look in dark mode.
- * Nav uses white/opacity utilities (not zinc) so the remaps below do not restyle it.
+ * Navy portal sidebar is brand chrome — identical in light and dark.
  */
 .dark [data-portal] .portal-sidebar {
   background-color: #2d4a6b !important;
 }
-/* Catch bg-white/70 overlays (upload spinners, etc.). */
-.dark [data-portal] [class*="bg-white/"] {
+/*
+ * Catch solid bg-white/NN opacity utilities (upload overlays, etc.).
+ * Match only real bg-white/* classes — not hover:bg-white/* or dark:bg-white/*
+ * sitting in the class attribute (those were incorrectly painting dark fills
+ * onto the navy sidebar nav items).
+ * Exclude .portal-sidebar so translucent white chrome on navy stays as-authored.
+ */
+.dark [data-portal] [class^="bg-white/"]:not(.portal-sidebar *),
+.dark [data-portal] [class*=" bg-white/"]:not(.portal-sidebar *) {
   background-color: color-mix(in srgb, var(--surface) 70%, transparent);
 }
 .dark [data-portal] :is(.bg-zinc-50) {
