@@ -108,7 +108,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
         setError(data?.error ?? "Could not save greetings.");
         return;
       }
-      setMessage("Portal greetings saved. A different option is shown each time someone signs in.");
+      setMessage("Portal greetings saved. A different option is shown each time someone opens Overview.");
     } catch {
       setError("A network error occurred. Please try again.");
     } finally {
@@ -133,7 +133,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
               <p className="mt-1 text-sm text-zinc-500">
                 When enabled, the portal picks one option for the current time of day and appends
                 the user&apos;s first name (with a space — put commas, !, or ? in the greeting
-                text yourself). The option changes every time they sign in.
+                text yourself). The option changes every time they open Overview.
               </p>
             </div>
           </div>
@@ -183,7 +183,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
               <p className="mt-1 text-xs text-zinc-500">
                 Add up to {MAX_GREETING_VARIANTS} greetings for this time of day (different languages
                 or phrasings). Include any punctuation you want (! ? .). The first name is appended
-                after a space — one option is chosen each time a user signs in.
+                after a space — one option is chosen each time they open Overview.
               </p>
           </div>
 

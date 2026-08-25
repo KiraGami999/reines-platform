@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import type { ElementType } from "react";
+import type { ElementType, ReactNode } from "react";
 import { prisma } from "@/lib/prisma";
 import { getClientProjects, getManagerProjects, type ManagerProject } from "@/lib/projects";
 import { getConversations } from "@/lib/messages";
@@ -10,6 +10,7 @@ import { getPortalGreeting } from "@/lib/greetings";
 import { MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES, MOCK_USERS } from "@/lib/mock-admin";
 import { AcceptProjectButton } from "@/components/dashboard/AcceptProjectButton";
 import { ClearRecentActivityButton } from "@/components/admin/ClearRecentActivityButton";
+import { PortalGreetingTitle } from "@/components/dashboard/PortalGreetingTitle";
 import type { Project } from "@/models/project";
 import type { Conversation } from "@/models/message";
 import {
@@ -54,7 +55,7 @@ function StatCard({
   );
 }
 
-function SectionHeader({ title, description }: { title: string; description?: string }) {
+function SectionHeader({ title, description }: { title: ReactNode; description?: string }) {
   return (
     <div className="mb-6">
       <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">{title}</h1>
@@ -328,7 +329,7 @@ function AdminDashboard({ greeting, data }: { greeting: string; data: AdminOverv
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={greeting}
+        title={<PortalGreetingTitle initial={greeting} />}
         description="Here is a live system overview connected to users, clients, managers, projects, messages, payments, and public content."
       />
 
@@ -478,7 +479,7 @@ function ManagerDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={greeting}
+        title={<PortalGreetingTitle initial={greeting} />}
         description="Manage your assigned projects and keep your clients updated."
       />
 
@@ -696,7 +697,7 @@ function ClientDashboard({
   return (
     <div className="space-y-6">
       <SectionHeader
-        title={greeting}
+        title={<PortalGreetingTitle initial={greeting} />}
         description="Track assigned projects, review progress history, and communicate with your project managers."
       />
 
@@ -867,10 +868,11 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   const session = await auth();
   if (!session?.user) redirect("/login");
 
-  const { name, role, greetingSeed } = session.user;
+  const { name, role } = session.user;
   const params = await searchParams;
   const showUnauthorized = params.error === "unauthorized" && role !== "ADMIN";
-  const greetingPromise = getPortalGreeting(name, { greetingSeed });
+  // Fresh random greeting each Overview visit (client also refreshes on remount / tab focus).
+  const greetingPromise = getPortalGreeting(name);
   const [clientProjects, clientConversations] = role === "CLIENT"
     ? await Promise.all([
         getClientProjects(session.user.id!),

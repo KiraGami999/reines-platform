@@ -33,3 +33,6 @@ Thumbs.db
 
 # Vercel
 reines-web/.vercel/
+
+.vercel
+.env*
