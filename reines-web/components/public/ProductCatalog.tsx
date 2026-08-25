@@ -139,7 +139,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                         </p>
                         <div className="mt-1 flex flex-wrap items-center gap-2">
                           <h3 className="font-semibold text-zinc-900 dark:text-[var(--foreground)]">{product.name}</h3>
-                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-700">
+                          <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-700 dark:bg-[#8fb9e8]/20 dark:text-[#8fb9e8]">
                             {product.badge}
                           </span>
                           {product.promoLabel && (
