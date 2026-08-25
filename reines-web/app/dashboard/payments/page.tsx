@@ -132,8 +132,9 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
         <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 space-y-1.5">
           <p className="text-sm text-zinc-700">
             <span className="font-semibold text-[#2d4a6b]">About your payments:</span>{" "}
-            Your project manager or the Reines office records cash payments. An admin confirms
-            each one before it counts toward your project balance. This page shows your payment history and receipts.
+            Pay online via Paychangu from any project with an outstanding balance (Mobile Money, bank transfer, or card).
+            Cash payments are recorded by your project manager or at the Reines office and confirmed by an admin.
+            This page shows your payment history and receipts.
           </p>
         </div>
       )}

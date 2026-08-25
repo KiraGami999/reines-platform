@@ -12,6 +12,8 @@ interface PaymentButtonProps {
   description:  string;
   disabled?:    boolean;
   className?:   string;
+  /** When true, skip cash and go straight to Paychangu online checkout. */
+  onlineOnly?:  boolean;
   /** Start on a given step (e.g. "choose" when opened from a milestone accordion). */
   initialStep?: Step;
   /** Called when the user cancels back to idle (or closes an embedded chooser). */
@@ -31,6 +33,7 @@ export default function PaymentButton({
   description,
   disabled = false,
   className = "",
+  onlineOnly = false,
   initialStep = "idle",
   onDismiss,
 }: PaymentButtonProps) {
@@ -98,12 +101,12 @@ export default function PaymentButton({
     return (
       <button
         type="button"
-        onClick={() => setStep("choose")}
+        onClick={() => setStep(onlineOnly ? "online-confirm" : "choose")}
         disabled={disabled}
         className={`inline-flex items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       >
         <CreditCard size={15} />
-        Make a Payment
+        {onlineOnly ? "Pay Online" : "Make a Payment"}
       </button>
     );
   }
@@ -124,7 +127,7 @@ export default function PaymentButton({
           <span className="font-medium text-zinc-700">{projectTitle}</span>.
         </p>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div className={`grid grid-cols-1 gap-3 ${onlineOnly ? "" : "sm:grid-cols-2"}`}>
           <button
             type="button"
             onClick={() => setStep("online-confirm")}
@@ -140,20 +143,22 @@ export default function PaymentButton({
             <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
           </button>
 
-          <button
-            type="button"
-            onClick={() => setStep("cash")}
-            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
-          >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
-              <Banknote size={18} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-zinc-900">Pay in Cash</p>
-              <p className="text-xs text-zinc-400">Upload receipt · Admin confirms</p>
-            </div>
-            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
-          </button>
+          {!onlineOnly && (
+            <button
+              type="button"
+              onClick={() => setStep("cash")}
+              className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
+            >
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
+                <Banknote size={18} />
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-zinc-900">Pay in Cash</p>
+                <p className="text-xs text-zinc-400">Upload receipt · Admin confirms</p>
+              </div>
+              <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
+            </button>
+          )}
         </div>
 
         <button
@@ -225,7 +230,7 @@ export default function PaymentButton({
           </button>
           <button
             type="button"
-            onClick={() => setStep("choose")}
+            onClick={() => setStep(onlineOnly ? "idle" : "choose")}
             className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
           >
             Back

@@ -5,6 +5,7 @@ import { ChevronDown, Banknote, Info } from "lucide-react";
 import type { BudgetBreakdown } from "@/models/project";
 import { fmtMWK } from "@/lib/mock-data";
 import { CashPaymentForm } from "@/components/dashboard/CashPaymentForm";
+import PaymentButton from "@/components/dashboard/PaymentButton";
 
 interface BudgetPaymentSectionProps {
   projectId:    string;
@@ -26,7 +27,9 @@ export function BudgetPaymentSection({
   const paidPct   = budget > 0 ? Math.round((totalPaid / budget) * 100) : 0;
 
   const isStaff   = role === "ADMIN" || role === "PROJECT_MANAGER";
+  const isClient  = role === "CLIENT";
   const canRecord = isStaff && remaining > 0;
+  const canPayOnline = isClient && remaining > 0;
 
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
@@ -69,14 +72,28 @@ export function BudgetPaymentSection({
         </div>
       </div>
 
-      {/* Client notice */}
-      {role === "CLIENT" && remaining > 0 && (
-        <div className="mt-5 flex items-start gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
-          <Info size={16} className="mt-0.5 shrink-0 text-[#2d4a6b]" />
-          <p>
-            Payments are recorded by your project manager or at the Reines office.
-            Once an admin confirms a payment, it will appear here as paid.
-          </p>
+      {/* Client: Paychangu online checkout */}
+      {canPayOnline && (
+        <div className="mt-5 space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-zinc-500">
+              Pay outstanding balance securely via Paychangu (Mobile Money, bank, or card).
+            </p>
+            <PaymentButton
+              projectId={projectId}
+              projectTitle={projectTitle}
+              amount={remaining}
+              description={`Payment for ${projectTitle}`}
+              onlineOnly
+            />
+          </div>
+          <div className="flex items-start gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
+            <Info size={16} className="mt-0.5 shrink-0 text-[#2d4a6b]" />
+            <p>
+              Cash payments are still recorded by your project manager or at the Reines office.
+              Online payments confirm automatically once Paychangu completes checkout.
+            </p>
+          </div>
         </div>
       )}
 

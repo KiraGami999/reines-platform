@@ -14,19 +14,20 @@ const schema = z.object({
 
 /**
  * POST /api/payments/initiate
- * Staff-only: create a Paychangu checkout billed to the project client.
- * Clients cannot initiate payments — recording is handled by PM / admin.
+ * Create a Paychangu checkout session.
+ * - CLIENT: own projects only (billed to themselves)
+ * - PROJECT_MANAGER / ADMIN: managed / any project (billed to the project client)
  */
 export async function POST(req: NextRequest) {
   const { errorResponse, session } = await checkVerification();
   if (errorResponse) return errorResponse;
 
   const user = session!.user;
-  if (user.role === "CLIENT") {
-    return forbidden("Clients cannot initiate payments. Your project manager or admin will record payments for you.");
-  }
-  if (user.role !== "ADMIN" && user.role !== "PROJECT_MANAGER") {
-    return forbidden("Only project managers and admins can initiate payments.");
+  const isClient = user.role === "CLIENT";
+  const isStaff  = user.role === "ADMIN" || user.role === "PROJECT_MANAGER";
+
+  if (!isClient && !isStaff) {
+    return forbidden("You do not have permission to initiate payments.");
   }
 
   const body = await req.json().catch(() => null);
@@ -39,19 +40,28 @@ export async function POST(req: NextRequest) {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        ...(user.role === "PROJECT_MANAGER" ? { managerId: user.id } : {}),
+        ...(isClient
+          ? { clientId: user.id }
+          : user.role === "PROJECT_MANAGER"
+            ? { managerId: user.id }
+            : {}),
       },
       include: { client: { select: { id: true, name: true, email: true } } },
     });
 
     if (!project) return forbidden("You do not have access to this project.");
-    if (!project.client?.email) {
-      return badRequest("Project client is missing an email address for checkout.");
+
+    const billingUser = isClient
+      ? { id: user.id, email: user.email, name: user.name }
+      : project.client
+        ? { id: project.client.id, email: project.client.email, name: project.client.name }
+        : null;
+
+    if (!billingUser?.email) {
+      return badRequest("A valid email address is required for checkout.");
     }
 
     const txRef = generateTxRef("REI");
-    const billingUser = { email: project.client.email, name: project.client.name };
-
     const [firstName, ...rest] = billingUser.name.split(" ");
     const lastName = rest.join(" ") || firstName;
 
@@ -61,9 +71,10 @@ export async function POST(req: NextRequest) {
         amount,
         currency,
         description,
-        status:    "PENDING",
+        status: "PENDING",
+        method: "PAYCHANGU",
         projectId,
-        userId:    project.client.id,
+        userId: billingUser.id,
       },
     });
 

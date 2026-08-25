@@ -115,14 +115,17 @@ function BudgetBar({
   budget,
   paid,
   pending,
+  onPayOnline,
 }: {
   budget: string | null;
   paid: string;
   pending: string;
+  onPayOnline?: () => void;
 }) {
   const total   = parseFloat(budget ?? "0");
   const paidNum = parseFloat(paid ?? "0");
   const pct     = total > 0 ? Math.min((paidNum / total) * 100, 100) : 0;
+  const remaining = total > 0 ? Math.max(total - paidNum, 0) : 0;
 
   return (
     <View>
@@ -152,6 +155,15 @@ function BudgetBar({
             {formatMWK(parseFloat(pending))} pending
           </Text>
         </View>
+      )}
+      {remaining > 0 && onPayOnline && (
+        <TouchableOpacity
+          style={styles.payOnlineBtn}
+          onPress={onPayOnline}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.payOnlineBtnText}>Pay Online via Paychangu</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -341,6 +353,12 @@ export default function ClientProjectDetail() {
               budget={project.budget}
               paid={ps.paidTotal}
               pending={ps.pendingTotal}
+              onPayOnline={() =>
+                router.push({
+                  pathname: "/(client)/payments/new",
+                  params: { projectId: project.id },
+                } as never)
+              }
             />
             {ps.paymentCount > 0 && (
               <TouchableOpacity
@@ -645,6 +663,18 @@ const styles = StyleSheet.create({
     fontSize:   13,
     fontWeight: "600",
     color:      COLORS.primary,
+  },
+  payOnlineBtn: {
+    marginTop: 14,
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: "center",
+  },
+  payOnlineBtnText: {
+    color: COLORS.white,
+    fontSize: 14,
+    fontWeight: "700",
   },
 
   // Timeline

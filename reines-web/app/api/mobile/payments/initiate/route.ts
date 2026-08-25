@@ -18,7 +18,7 @@ const schema = z.object({
  * to generate a checkout URL. Returns { txRef, checkoutUrl } so the
  * mobile app can open the URL in an in-app browser.
  *
- * Auth: Bearer token (mobile JWT).
+ * Clients pay for their own projects. Auth: Bearer token (mobile JWT).
  */
 export async function POST(req: NextRequest) {
   const token   = extractBearer(req.headers.get("authorization"));
@@ -27,9 +27,9 @@ export async function POST(req: NextRequest) {
   const payload = await verifyToken(token);
   if (!payload) return NextResponse.json({ error: "Token invalid or expired." }, { status: 401 });
 
-  if (payload.role === "CLIENT") {
+  if (payload.role !== "CLIENT") {
     return NextResponse.json({
-      error: "Clients cannot initiate payments. Your project manager or admin will record them.",
+      error: "Only clients can initiate online payments from the mobile app.",
     }, { status: 403 });
   }
 
