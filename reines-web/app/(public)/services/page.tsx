@@ -35,7 +35,7 @@ export default async function ServicesPage() {
       </section>
 
       {/* Services grid */}
-      <section className="bg-white py-12 sm:py-20">
+      <section className="bg-white py-12 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="space-y-12">
             {services.map((service, index) => {
@@ -43,7 +43,7 @@ export default async function ServicesPage() {
               return (
                 <div
                   key={service.id}
-                  className={`flex flex-col gap-8 rounded-2xl border border-zinc-100 p-4 sm:p-8 lg:flex-row ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
+                  className={`flex flex-col gap-8 rounded-2xl border border-zinc-100 p-4 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:p-8 lg:flex-row ${index % 2 === 1 ? "lg:flex-row-reverse" : ""}`}
                 >
                   <div className="flex-1">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
@@ -52,14 +52,14 @@ export default async function ServicesPage() {
                     <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                       {service.tagline}
                     </p>
-                    <h2 className="mt-1 text-2xl font-bold text-[#2d4a6b]">{service.title}</h2>
-                    <p className="mt-3 leading-relaxed text-zinc-500">{service.description}</p>
+                    <h2 className="mt-1 text-2xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{service.title}</h2>
+                    <p className="mt-3 leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{service.description}</p>
                   </div>
-                  <div className="w-full rounded-xl bg-zinc-50 p-6 lg:w-72">
+                  <div className="w-full rounded-xl bg-zinc-50 p-6 dark:bg-[var(--surface-muted)] lg:w-72">
                     <h4 className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">Included</h4>
                     <ul className="space-y-2">
                       {service.features.map((feature) => (
-                        <li key={feature} className="flex items-center gap-2 text-sm text-zinc-600">
+                        <li key={feature} className="flex items-center gap-2 text-sm text-zinc-600 dark:text-[var(--text-secondary)]">
                           <span className="h-1.5 w-1.5 rounded-full bg-[#8fb9e8]" />
                           {feature}
                         </li>
@@ -74,18 +74,18 @@ export default async function ServicesPage() {
       </section>
 
       {/* Our process */}
-      <section className="bg-zinc-50 py-12 sm:py-20">
+      <section className="bg-zinc-50 py-12 dark:bg-[var(--surface-muted)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">How It Works</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">Our Process</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Our Process</h2>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {process.map((step) => (
-              <div key={step.step} className="rounded-xl border border-zinc-200 bg-white p-6">
+              <div key={step.step} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                 <span className="text-3xl font-extrabold text-[#8fb9e8]/40">{step.step}</span>
-                <h3 className="mt-3 font-semibold text-[#2d4a6b]">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{step.body}</p>
+                <h3 className="mt-3 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{step.body}</p>
               </div>
             ))}
           </div>

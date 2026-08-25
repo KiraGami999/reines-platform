@@ -133,10 +133,10 @@ function ClientsAndStats({ logos, showLogos }: { logos: ClientLogoItem[]; showLo
   const hasLogos = showLogos && logos.length > 0;
 
   return (
-    <section className="relative border-y border-zinc-100 bg-white py-10 sm:py-16">
+    <section className="relative border-y border-zinc-100 bg-white py-10 dark:border-[var(--border)] dark:bg-[var(--background)] sm:py-16">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {hasLogos && (
-          <div className="border-b border-zinc-100 pb-10 sm:pb-14">
+          <div className="border-b border-zinc-100 pb-10 dark:border-[var(--border)] sm:pb-14">
             <ClientLogosSection logos={logos} />
           </div>
         )}
@@ -144,8 +144,8 @@ function ClientsAndStats({ logos, showLogos }: { logos: ClientLogoItem[]; showLo
         <div className={`grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4 ${hasLogos ? "pt-10 sm:pt-14" : ""}`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <p className="text-2xl font-extrabold text-[#2d4a6b] sm:text-3xl md:text-4xl">{s.value}</p>
-              <p className="mt-1 text-xs font-medium text-zinc-500 sm:text-sm">{s.label}</p>
+              <p className="text-2xl font-extrabold text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl md:text-4xl">{s.value}</p>
+              <p className="mt-1 text-xs font-medium text-zinc-500 dark:text-[var(--text-muted)] sm:text-sm">{s.label}</p>
             </div>
           ))}
         </div>
@@ -156,12 +156,12 @@ function ClientsAndStats({ logos, showLogos }: { logos: ClientLogoItem[]; showLo
 
 function Services() {
   return (
-    <section className="bg-zinc-50 py-16 sm:py-24">
+    <section className="bg-zinc-50 py-16 dark:bg-[var(--surface-muted)] sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">What We Do</span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] sm:text-4xl">Our Core Services</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-zinc-500">
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-4xl">Our Core Services</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-zinc-500 dark:text-[var(--text-muted)]">
             From development planning to construction manufacturing, Reines builds an integrated value chain for Malawi&apos;s growth.
           </p>
         </div>
@@ -170,12 +170,12 @@ function Services() {
           {services.map((s) => {
             const Icon = s.icon;
             return (
-              <div key={s.title} className="group rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md">
+              <div key={s.title} className="group rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition-shadow hover:shadow-md dark:border-[var(--border)] dark:bg-[var(--surface)]">
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Icon size={22} strokeWidth={1.8} />
                 </div>
-              <h3 className="mt-4 text-base font-semibold text-[#2d4a6b]">{s.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-500">{s.description}</p>
+              <h3 className="mt-4 text-base font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{s.title}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{s.description}</p>
               </div>
             );
           })}
@@ -193,29 +193,29 @@ function Services() {
 
 function WhyReines() {
   return (
-    <section className="bg-white py-16 sm:py-24">
+    <section className="bg-white py-16 dark:bg-[var(--background)] sm:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 items-center gap-10 sm:gap-16 lg:grid-cols-2">
           {/* Text */}
           <div className="min-w-0">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Why Choose Us</span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-4xl">
               Built on values.<br />Strengthened by execution.
             </h2>
-            <p className="mt-4 text-zinc-500">
+            <p className="mt-4 text-zinc-500 dark:text-[var(--text-muted)]">
               Our mission is to drive Malawi&apos;s development through property, construction and manufacturing excellence.
             </p>
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Mission</p>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-[var(--text-secondary)]">
                   To drive Malawi&apos;s development through property, construction and manufacturing excellence.
                 </p>
               </div>
-              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5">
+              <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Vision</p>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+                <p className="mt-2 text-sm leading-relaxed text-zinc-600 dark:text-[var(--text-secondary)]">
                   Become Malawi and Southern Africa&apos;s most trusted and innovative property development, construction, and sustainable building manufacturer.
                 </p>
               </div>
@@ -228,8 +228,8 @@ function WhyReines() {
                     <span className="h-2 w-2 rounded-full bg-[#8fb9e8]" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-[#2d4a6b]">{f.title}</h4>
-                    <p className="mt-1 text-sm text-zinc-500">{f.body}</p>
+                    <h4 className="font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{f.title}</h4>
+                    <p className="mt-1 text-sm text-zinc-500 dark:text-[var(--text-muted)]">{f.body}</p>
                   </div>
                 </div>
               ))}

@@ -90,7 +90,7 @@ export function ReinesChatbot() {
   return (
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
       {open && (
-        <section className="mb-3 flex h-[520px] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20">
+        <section className="mb-3 flex h-[520px] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-[var(--border)] dark:bg-[var(--surface)]">
           <header className="flex items-center justify-between bg-[#2d4a6b] px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
@@ -111,7 +111,7 @@ export function ReinesChatbot() {
             </button>
           </header>
 
-          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-zinc-50 p-4">
+          <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto bg-zinc-50 p-4 dark:bg-[var(--surface-muted)]">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -119,7 +119,7 @@ export function ReinesChatbot() {
                   "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
                   message.role === "user"
                     ? "ml-auto bg-[#2d4a6b] text-white"
-                    : "mr-auto border border-zinc-200 bg-white text-zinc-700"
+                    : "mr-auto border border-zinc-200 bg-white text-zinc-700 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--text-secondary)]"
                 )}
               >
                 {message.content}
@@ -127,7 +127,7 @@ export function ReinesChatbot() {
             ))}
 
             {loading && (
-              <div className="mr-auto inline-flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-500">
+              <div className="mr-auto inline-flex items-center gap-2 rounded-2xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-500 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--text-muted)]">
                 <Loader2 size={14} className="animate-spin" />
                 Thinking...
               </div>
@@ -135,18 +135,18 @@ export function ReinesChatbot() {
           </div>
 
           {error && (
-            <p className="border-t border-blue-100 bg-blue-50 px-4 py-2 text-xs text-blue-700">
+            <p className="border-t border-blue-100 bg-blue-50 px-4 py-2 text-xs text-blue-700 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10 dark:text-[#8fb9e8]">
               {error}
             </p>
           )}
 
-          <form onSubmit={handleSubmit} className="flex gap-2 border-t border-zinc-200 bg-white p-3">
+          <form onSubmit={handleSubmit} className="flex gap-2 border-t border-zinc-200 bg-white p-3 dark:border-[var(--border)] dark:bg-[var(--surface)]">
             <input
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder="Ask about Reines..."
               maxLength={600}
-              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 caret-[#2d4a6b] outline-none placeholder:text-zinc-400 focus:border-[#8fb9e8] focus:ring-2 focus:ring-[#8fb9e8]/20"
+              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 caret-[#2d4a6b] outline-none placeholder:text-zinc-400 focus:border-[#8fb9e8] focus:ring-2 focus:ring-[#8fb9e8]/20 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] dark:text-[var(--foreground)] dark:placeholder:text-[var(--text-muted)]"
             />
             <button
               type="submit"

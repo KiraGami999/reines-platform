@@ -91,19 +91,19 @@ interface FieldErrors {
 }
 
 const FIELD =
-  "block w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:border-[#8fb9e8] focus:outline-none focus:ring-2 focus:ring-[#8fb9e8]/30 transition-colors";
-const LABEL = "block text-sm font-medium text-zinc-700 mb-1.5";
+  "block w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 focus:border-[#8fb9e8] focus:outline-none focus:ring-2 focus:ring-[#8fb9e8]/30 transition-colors dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--foreground)] dark:placeholder:text-[var(--text-muted)]";
+const LABEL = "block text-sm font-medium text-zinc-700 mb-1.5 dark:text-[var(--text-secondary)]";
 const ERR   = "mt-1 text-xs text-red-500";
 
 function SectionHeading({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) {
   return (
-    <div className="flex items-start gap-3 border-b border-zinc-100 pb-3">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+    <div className="flex items-start gap-3 border-b border-zinc-100 pb-3 dark:border-[var(--border)]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
         {icon}
       </div>
       <div>
-        <p className="text-sm font-semibold text-zinc-900">{title}</p>
-        {subtitle && <p className="text-xs text-zinc-400">{subtitle}</p>}
+        <p className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">{title}</p>
+        {subtitle && <p className="text-xs text-zinc-400 dark:text-[var(--text-muted)]">{subtitle}</p>}
       </div>
     </div>
   );
@@ -236,32 +236,32 @@ export function QuotationForm({ products = [] }: Props) {
 
   if (state === "success") {
     return (
-      <div className="rounded-2xl border border-green-100 bg-green-50 p-10 text-center">
-        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-          <CheckCircle2 size={32} strokeWidth={1.8} className="text-green-600" />
+      <div className="rounded-2xl border border-green-100 bg-green-50 p-10 text-center dark:border-green-500/30 dark:bg-green-500/10">
+        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-500/20">
+          <CheckCircle2 size={32} strokeWidth={1.8} className="text-green-600 dark:text-green-400" />
         </div>
-        <h3 className="mt-5 text-xl font-bold text-green-800">Quotation Request Received!</h3>
-        <p className="mt-3 max-w-md mx-auto text-sm text-green-700 leading-relaxed">
+        <h3 className="mt-5 text-xl font-bold text-green-800 dark:text-green-300">Quotation Request Received!</h3>
+        <p className="mt-3 max-w-md mx-auto text-sm text-green-700 leading-relaxed dark:text-green-200/90">
           Thank you, <strong>{form.name}</strong>. We&apos;ve received your {requestType === "PRODUCTS" ? "product order" : "project brief"} and
           will prepare a detailed quotation within <strong>3–5 business days</strong>. We&apos;ll reach you at <strong>{form.email}</strong>.
         </p>
-        <div className="mt-6 rounded-xl border border-green-200 bg-white px-6 py-4 text-sm text-zinc-700 space-y-1 text-left max-w-sm mx-auto">
+        <div className="mt-6 rounded-xl border border-green-200 bg-white px-6 py-4 text-sm text-zinc-700 space-y-1 text-left max-w-sm mx-auto dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--text-secondary)]">
           {requestType === "PRODUCTS" ? (
             <>
-              <p><span className="font-medium text-zinc-500">Products:</span> {productItems.filter((p) => p.name).length} item(s)</p>
-              <p><span className="font-medium text-zinc-500">Delivery location:</span> {form.location}</p>
+              <p><span className="font-medium text-zinc-500 dark:text-[var(--text-muted)]">Products:</span> {productItems.filter((p) => p.name).length} item(s)</p>
+              <p><span className="font-medium text-zinc-500 dark:text-[var(--text-muted)]">Delivery location:</span> {form.location}</p>
             </>
           ) : (
             <>
-              <p><span className="font-medium text-zinc-500">Project type:</span> {form.projectType}</p>
-              <p><span className="font-medium text-zinc-500">Location:</span> {form.location}</p>
+              <p><span className="font-medium text-zinc-500 dark:text-[var(--text-muted)]">Project type:</span> {form.projectType}</p>
+              <p><span className="font-medium text-zinc-500 dark:text-[var(--text-muted)]">Location:</span> {form.location}</p>
             </>
           )}
-          {form.budgetRange && <p><span className="font-medium text-zinc-500">Budget:</span> {form.budgetRange}</p>}
+          {form.budgetRange && <p><span className="font-medium text-zinc-500 dark:text-[var(--text-muted)]">Budget:</span> {form.budgetRange}</p>}
         </div>
         <button
           onClick={resetAll}
-          className="mt-6 text-sm font-medium text-green-600 hover:underline"
+          className="mt-6 text-sm font-medium text-green-600 hover:underline dark:text-green-400"
         >
           Submit another request
         </button>
@@ -368,15 +368,17 @@ export function QuotationForm({ products = [] }: Props) {
             type="button"
             onClick={() => selectRequestType("PROJECT")}
             className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-colors ${
-              requestType === "PROJECT" ? "border-[#8fb9e8] bg-[#8fb9e8]/10" : "border-zinc-200 hover:bg-zinc-50"
+              requestType === "PROJECT"
+                ? "border-[#8fb9e8] bg-[#8fb9e8]/10"
+                : "border-zinc-200 hover:bg-zinc-50 dark:border-[var(--border)] dark:hover:bg-[var(--surface-hover)]"
             }`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
               <HardHat size={16} strokeWidth={1.8} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-zinc-900">A Project or Service</p>
-              <p className="mt-0.5 text-xs text-zinc-500">Development, construction, or civil work.</p>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">A Project or Service</p>
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-[var(--text-muted)]">Development, construction, or civil work.</p>
             </div>
           </button>
 
@@ -384,15 +386,17 @@ export function QuotationForm({ products = [] }: Props) {
             type="button"
             onClick={() => selectRequestType("PRODUCTS")}
             className={`flex items-start gap-3 rounded-xl border p-4 text-left transition-colors ${
-              requestType === "PRODUCTS" ? "border-[#8fb9e8] bg-[#8fb9e8]/10" : "border-zinc-200 hover:bg-zinc-50"
+              requestType === "PRODUCTS"
+                ? "border-[#8fb9e8] bg-[#8fb9e8]/10"
+                : "border-zinc-200 hover:bg-zinc-50 dark:border-[var(--border)] dark:hover:bg-[var(--surface-hover)]"
             }`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
               <Package size={16} strokeWidth={1.8} />
             </div>
             <div>
-              <p className="text-sm font-semibold text-zinc-900">Products Only</p>
-              <p className="mt-0.5 text-xs text-zinc-500">Concrete blocks, pavers, adhesives, and more — no project attached.</p>
+              <p className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Products Only</p>
+              <p className="mt-0.5 text-xs text-zinc-500 dark:text-[var(--text-muted)]">Concrete blocks, pavers, adhesives, and more — no project attached.</p>
             </div>
           </button>
         </div>
@@ -504,7 +508,7 @@ export function QuotationForm({ products = [] }: Props) {
               </label>
 
               {productItems.map((item, index) => (
-                <div key={index} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3 sm:flex-row sm:items-start">
+                <div key={index} className="flex flex-col gap-2 rounded-xl border border-zinc-200 bg-white p-3 sm:flex-row sm:items-start dark:border-[var(--border)] dark:bg-[var(--surface)]">
                   <select
                     value={item.name}
                     onChange={(e) => updateProductItem(index, { name: e.target.value })}
@@ -647,18 +651,18 @@ export function QuotationForm({ products = [] }: Props) {
       </div>
 
       {/* ── Disclaimer ── */}
-      <div className="flex items-start gap-3 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-4 py-3">
+      <div className="flex items-start gap-3 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-4 py-3 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
         <Info size={15} className="mt-0.5 shrink-0 text-[#8fb9e8]" />
-        <p className="text-xs text-zinc-500 leading-relaxed">
+        <p className="text-xs text-zinc-500 leading-relaxed dark:text-[var(--text-muted)]">
           Your information is stored securely and used solely to prepare your quotation. We will contact you within
-          <strong className="text-zinc-700"> 3–5 business days</strong>. Submitting this form does not constitute
+          <strong className="text-zinc-700 dark:text-[var(--foreground)]"> 3–5 business days</strong>. Submitting this form does not constitute
           a contract or financial commitment.
         </p>
       </div>
 
       {/* ── Error banner ── */}
       {state === "error" && serverError && (
-        <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300">
           <AlertCircle size={15} className="mt-0.5 shrink-0" />
           {serverError}
         </div>

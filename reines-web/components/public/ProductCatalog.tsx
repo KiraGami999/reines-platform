@@ -66,12 +66,12 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
 
   if (products.length === 0) {
     return (
-      <section className="bg-zinc-50 py-12 sm:py-20">
+      <section className="bg-zinc-50 py-12 dark:bg-[var(--surface-muted)] sm:py-20">
         <div className="mx-auto max-w-3xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <PackageCheck size={26} strokeWidth={1.8} />
           </div>
-          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b]">
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">
             Products are being updated
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-zinc-500">
@@ -89,10 +89,10 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
   }
 
   return (
-    <section className="bg-zinc-50 py-12 sm:py-20">
+    <section className="bg-zinc-50 py-12 dark:bg-[var(--surface-muted)] sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="grid gap-8 lg:grid-cols-[0.95fr_1.35fr]">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm dark:border-[var(--border)] dark:bg-[var(--surface)]">
             <label htmlFor="product-subsidiary" className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
               Browse subsidiary
             </label>
@@ -100,7 +100,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
               id="product-subsidiary"
               value={subsidiary}
               onChange={(event) => setSubsidiary(event.target.value as ProductSubsidiaryFilter)}
-              className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-800 outline-none transition focus:border-[#8fb9e8] focus:ring-4 focus:ring-[#8fb9e8]/15"
+              className="mt-3 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-medium text-zinc-800 outline-none transition focus:border-[#8fb9e8] focus:ring-4 focus:ring-[#8fb9e8]/15 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--foreground)]"
             >
               {PRODUCT_SUBSIDIARIES.map((item) => (
                 <option key={item.value} value={item.value}>
@@ -126,11 +126,11 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                     className={`w-full rounded-2xl border p-4 text-left transition-all ${
                       active
                         ? "border-[#8fb9e8] bg-[#8fb9e8]/10 shadow-sm"
-                        : "border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50"
+                        : "border-zinc-200 bg-white hover:border-zinc-300 hover:bg-zinc-50 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:hover:bg-[var(--surface-hover)]"
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${active ? "bg-[#2d4a6b] text-[#8fb9e8]" : "bg-zinc-100 text-zinc-500"}`}>
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${active ? "bg-[#2d4a6b] text-[#8fb9e8]" : "bg-zinc-100 text-zinc-500 dark:bg-[var(--surface-muted)]"}`}>
                         <Icon size={18} strokeWidth={1.8} />
                       </div>
                       <div className="min-w-0">
@@ -138,12 +138,12 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                           {subsidiaryMeta?.label}
                         </p>
                         <div className="mt-1 flex flex-wrap items-center gap-2">
-                          <h3 className="font-semibold text-zinc-900">{product.name}</h3>
+                          <h3 className="font-semibold text-zinc-900 dark:text-[var(--foreground)]">{product.name}</h3>
                           <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-blue-700">
                             {product.badge}
                           </span>
                           {product.promoLabel && (
-                            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-600">
+                            <span className="rounded-full bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-600 dark:bg-[var(--surface-muted)] dark:text-[var(--text-muted)]">
                               {product.promoLabel}
                             </span>
                           )}
@@ -263,7 +263,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           )}
         </div>
 
-        <div className="mt-10 grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCT_SUBSIDIARIES.filter((item) => item.value !== "all").map((item) => {
             const Icon = subsidiaryIcons[item.value as ProductSubsidiary];
             return (
@@ -272,7 +272,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-[#2d4a6b]">{item.label}</h3>
+                  <h3 className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.label}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.description}</p>
                 </div>
               </div>
@@ -280,7 +280,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           })}
         </div>
 
-        <div className="mt-4 grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 sm:grid-cols-3">
+        <div className="mt-4 grid gap-4 rounded-2xl border border-zinc-200 bg-white p-5 dark:border-[var(--border)] dark:bg-[var(--surface)] sm:grid-cols-3">
           {[
             { icon: PackageCheck, title: "Quality checked", body: "Products are produced for durability and consistent site performance." },
             { icon: Truck, title: "Delivery coordination", body: "Request site delivery support when placing bulk or project orders." },
@@ -293,7 +293,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-[#2d4a6b]">{item.title}</h3>
+                  <h3 className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>
                 </div>
               </div>

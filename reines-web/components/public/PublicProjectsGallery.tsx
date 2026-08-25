@@ -101,7 +101,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-2xl"
+            className="relative max-h-[92vh] w-full max-w-6xl overflow-hidden rounded-[2rem] bg-white shadow-2xl dark:bg-[var(--surface)]"
             onClick={(event) => event.stopPropagation()}
           >
             <button
@@ -115,7 +115,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
 
             <div className="grid max-h-[92vh] overflow-y-auto lg:grid-cols-[1.25fr_0.75fr]">
               <div
-                className="relative min-h-[360px] touch-pan-y bg-zinc-100 lg:min-h-[720px]"
+                className="relative min-h-[360px] touch-pan-y bg-zinc-100 dark:bg-[var(--surface-muted)] lg:min-h-[720px]"
                 onTouchStart={modalSwipe.onTouchStart}
                 onTouchEnd={modalSwipe.onTouchEnd}
               >
@@ -194,7 +194,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                   {statusConfig[selectedProject.status].label}
                 </span>
 
-                <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[#2d4a6b]">
+                <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">
                   {selectedProject.title}
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-zinc-500">
@@ -207,9 +207,9 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                   <DetailRow icon={CalendarDays} label="Year / Timeline" value={selectedProject.year} />
                 </div>
 
-                <div className="mt-8 rounded-2xl bg-zinc-50 p-5">
+                <div className="mt-8 rounded-2xl bg-zinc-50 p-5 dark:bg-[var(--surface-muted)]">
                   <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Project Information</p>
-                  <p className="mt-2 text-sm leading-7 text-zinc-600">
+                  <p className="mt-2 text-sm leading-7 text-zinc-600 dark:text-[var(--text-secondary)]">
                     This information is controlled from the admin portal. Admins can update the pictures, description, status, project type, location, and year/date range as client-approved project details become available.
                   </p>
                 </div>
@@ -249,9 +249,9 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
   const cardSwipe = useSwipe(goTo);
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+    <div className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white text-left shadow-sm transition-all hover:-translate-y-1 hover:shadow-md dark:border-[var(--border)] dark:bg-[var(--surface)]">
       <div
-        className="relative h-48 touch-pan-y overflow-hidden bg-zinc-100"
+        className="relative h-48 touch-pan-y overflow-hidden bg-zinc-100 dark:bg-[var(--surface-muted)]"
         onTouchStart={cardSwipe.onTouchStart}
         onTouchEnd={cardSwipe.onTouchEnd}
       >
@@ -324,7 +324,7 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="text-xs font-medium text-zinc-400">{project.type} · {project.year}</p>
-            <h3 className="mt-1 font-bold text-[#2d4a6b]">{project.title}</h3>
+            <h3 className="mt-1 font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{project.title}</h3>
           </div>
           <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${badge.classes}`}>
             {badge.label}
@@ -357,13 +357,13 @@ function DetailRow({
   value: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-zinc-100 bg-white px-4 py-3">
+    <div className="flex items-center gap-3 rounded-xl border border-zinc-100 bg-white px-4 py-3 dark:border-[var(--border)] dark:bg-[var(--surface)]">
       <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
         <Icon size={16} />
       </div>
       <div>
         <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">{label}</p>
-        <p className="mt-0.5 text-sm font-semibold text-zinc-800">{value}</p>
+        <p className="mt-0.5 text-sm font-semibold text-zinc-800 dark:text-[var(--foreground)]">{value}</p>
       </div>
     </div>
   );

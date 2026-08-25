@@ -57,15 +57,15 @@ export function ContactForm() {
 
   if (state === "success") {
     return (
-      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-8 text-center">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+      <div className="rounded-2xl border border-blue-100 bg-blue-50 p-8 text-center dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-[#8fb9e8]/20 dark:text-[#8fb9e8]">
           <CheckCircle2 size={26} strokeWidth={1.8} />
         </div>
-        <h3 className="mt-4 text-lg font-semibold text-blue-800">Enquiry received!</h3>
-        <p className="mt-2 text-sm text-blue-700">
+        <h3 className="mt-4 text-lg font-semibold text-blue-800 dark:text-[#8fb9e8]">Enquiry received!</h3>
+        <p className="mt-2 text-sm text-blue-700 dark:text-[var(--text-secondary)]">
           Thank you for reaching out. A member of our team will get back to you within 24 hours.
         </p>
-        <button onClick={() => setState("idle")} className="mt-6 text-sm font-medium text-blue-600 hover:underline">
+        <button onClick={() => setState("idle")} className="mt-6 text-sm font-medium text-blue-600 hover:underline dark:text-[#8fb9e8]">
           Send another message
         </button>
       </div>
@@ -150,7 +150,7 @@ export function ContactForm() {
       </div>
 
       {state === "error" && (
-        <p className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-600">
+        <p className="rounded-md bg-blue-50 px-3 py-2 text-sm text-blue-600 dark:bg-[#8fb9e8]/10 dark:text-[#8fb9e8]">
           Something went wrong. Please try again or email us directly at contact@reines.co.mw.
         </p>
       )}

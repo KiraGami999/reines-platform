@@ -32,15 +32,14 @@ const roleLabels: Record<string, string> = {
 };
 
 /**
- * Mobile drawer links — always light marketing chrome (public site does not
- * follow portal dark mode).
+ * Mobile drawer links — follow light/dark marketing theme.
  */
 function mobileNavItemClass(active: boolean) {
   return cn(
     "group relative overflow-hidden rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-300",
     active
-      ? "bg-[#8fb9e8]/15 text-[#2d4a6b]"
-      : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900"
+      ? "bg-[#8fb9e8]/15 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]"
+      : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
   );
 }
 
@@ -173,9 +172,9 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
         </div>
       </div>
 
-      {/* Mobile menu — light marketing chrome */}
+      {/* Mobile menu — follows site light/dark theme */}
       {open && (
-        <div className="border-t border-zinc-200 bg-white px-4 pb-5 xl:hidden">
+        <div className="border-t border-zinc-200 bg-white px-4 pb-5 dark:border-[var(--border)] dark:bg-[var(--surface)] xl:hidden">
           <nav className="flex flex-col gap-1.5 pt-3">
             {links.map((l) => (
               <Link
@@ -188,12 +187,12 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                 <span className="absolute bottom-1.5 left-3 h-0.5 w-0 rounded-full bg-[#8fb9e8] transition-all duration-300 group-hover:w-8" />
               </Link>
             ))}
-            <div className="mt-3 flex flex-col gap-2 border-t border-zinc-200 pt-3">
+            <div className="mt-3 flex flex-col gap-2 border-t border-zinc-200 pt-3 dark:border-[var(--border)]">
               {isSignedIn ? (
                 <>
-                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-500">
+                  <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-500 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] dark:text-[var(--text-muted)]">
                     <span>Signed in as </span>
-                    <span className="font-semibold text-[#2d4a6b]">{userRole}</span>
+                    <span className="font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{userRole}</span>
                   </div>
                   <Link
                     href="/dashboard"
@@ -208,7 +207,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                       setOpen(false);
                       signOut({ callbackUrl: "/" });
                     }}
-                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
+                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 dark:border-[var(--border)] dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)]"
                   >
                     Log out
                   </button>
@@ -218,14 +217,14 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                   <Link
                     href="/login"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
+                    className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 dark:border-[var(--border)] dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)]"
                   >
                     Log In
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl border border-[#8fb9e8]/40 px-4 py-2.5 text-sm font-medium text-[#2d4a6b] transition-colors hover:bg-[#8fb9e8]/10"
+                    className="inline-flex items-center justify-center rounded-xl border border-[#8fb9e8]/40 px-4 py-2.5 text-sm font-medium text-[#2d4a6b] transition-colors hover:bg-[#8fb9e8]/10 dark:text-[#8fb9e8]"
                   >
                     Sign Up
                   </Link>

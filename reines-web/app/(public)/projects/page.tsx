@@ -33,7 +33,7 @@ export default async function ProjectsPage() {
       <CurrentProjectsBanner projects={projects} />
 
       {/* Projects grid */}
-      <section className="bg-zinc-50 py-12 sm:py-20">
+      <section className="bg-zinc-50 py-12 dark:bg-[var(--surface-muted)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <PublicProjectsGallery projects={projects} />
         </div>

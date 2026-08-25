@@ -17,15 +17,15 @@ export default async function MarketInsightsPage() {
 
   if (!settings.visible) {
     return (
-      <section className="flex min-h-[70vh] items-center bg-zinc-50 py-20">
+      <section className="flex min-h-[70vh] items-center bg-zinc-50 py-20 dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <Clock size={26} strokeWidth={1.8} />
           </div>
-          <h1 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl">
+          <h1 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl">
             Market insights are being updated.
           </h1>
-          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-zinc-500">
+          <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">
             We&apos;re refreshing our rates and indicators to make sure they&apos;re accurate. Please check back
             soon, or get in touch if you&apos;d like to discuss your project in the meantime.
           </p>
@@ -55,26 +55,26 @@ export default async function MarketInsightsPage() {
         </div>
       </section>
 
-      <section className="bg-zinc-50 py-12 sm:py-20">
+      <section className="bg-zinc-50 py-12 dark:bg-[var(--surface-muted)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-10 text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
               <Lightbulb size={24} strokeWidth={1.8} />
             </div>
-            <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl lg:text-4xl">
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl lg:text-4xl">
               {settings.snapshotTitle}
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">
               {settings.snapshotDescription}
             </p>
           </div>
 
           <div className="grid gap-4 rounded-3xl bg-[#2d4a6b] p-4 shadow-xl sm:grid-cols-2 lg:grid-cols-4">
             {highlights.map((item) => (
-              <div key={item.id} className="rounded-2xl bg-white/95 p-5 shadow-sm">
+              <div key={item.id} className="rounded-2xl bg-white/95 p-5 shadow-sm dark:bg-[var(--surface)]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{item.label}</p>
-                <p className="mt-2 text-3xl font-extrabold text-[#2d4a6b]">{item.value}</p>
-                <p className="mt-1 text-xs leading-relaxed text-zinc-500">{item.note}</p>
+                <p className="mt-2 text-3xl font-extrabold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.value}</p>
+                <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{item.note}</p>
               </div>
             ))}
           </div>
@@ -83,22 +83,22 @@ export default async function MarketInsightsPage() {
             {cards.map((card) => {
               const Icon = getMarketInsightIcon(card.iconKey);
               return (
-                <div key={card.id} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <div key={card.id} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-[var(--border)] dark:bg-[var(--surface)]">
                   <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                     <Icon size={22} strokeWidth={1.8} />
                   </div>
                   <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                     {card.subtitle || "Market Indicator"}
                   </p>
-                  <h3 className="mt-1 text-lg font-bold text-[#2d4a6b]">{card.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-zinc-500">{card.body}</p>
+                  <h3 className="mt-1 text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{card.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{card.body}</p>
 
                   {card.metrics.length > 0 && (
-                    <div className="mt-5 space-y-2 rounded-xl bg-zinc-50 p-4">
+                    <div className="mt-5 space-y-2 rounded-xl bg-zinc-50 p-4 dark:bg-[var(--surface-muted)]">
                       {card.metrics.map((metric) => (
                         <div key={metric.label} className="flex items-center justify-between gap-3 text-sm">
-                          <span className="text-zinc-500">{metric.label}</span>
-                          <span className="font-bold text-[#2d4a6b]">{metric.value}</span>
+                          <span className="text-zinc-500 dark:text-[var(--text-muted)]">{metric.label}</span>
+                          <span className="font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{metric.value}</span>
                         </div>
                       ))}
                     </div>
@@ -110,14 +110,14 @@ export default async function MarketInsightsPage() {
         </div>
       </section>
 
-      <section className="bg-white py-12 sm:py-20">
+      <section className="bg-white py-12 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div>
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
               {settings.planningTag}
             </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2d4a6b]">{settings.planningTitle}</h2>
-            <p className="mt-4 text-sm leading-7 text-zinc-500">{settings.planningDescription}</p>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">{settings.planningTitle}</h2>
+            <p className="mt-4 text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">{settings.planningDescription}</p>
             <Link
               href={settings.ctaHref}
               className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
@@ -127,15 +127,15 @@ export default async function MarketInsightsPage() {
             </Link>
           </div>
 
-          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
-            <h3 className="text-sm font-semibold text-zinc-900">Recommended planning approach</h3>
+          <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
+            <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Recommended planning approach</h3>
             <div className="mt-5 space-y-4">
               {settings.planningNotes.map((note, index) => (
                 <div key={note} className="flex gap-3">
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
                     {index + 1}
                   </span>
-                  <p className="text-sm leading-6 text-zinc-600">{note}</p>
+                  <p className="text-sm leading-6 text-zinc-600 dark:text-[var(--text-secondary)]">{note}</p>
                 </div>
               ))}
             </div>

@@ -73,7 +73,7 @@ export default async function QuotationPage() {
       </section>
 
       {/* ── How it works ── */}
-      <section className="bg-zinc-50 py-14 border-b border-zinc-100">
+      <section className="bg-zinc-50 py-14 border-b border-zinc-100 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <h2 className="text-center text-base font-semibold uppercase tracking-widest text-zinc-400">
             How It Works
@@ -82,15 +82,15 @@ export default async function QuotationPage() {
             {steps.map((step, i) => {
               const Icon = step.icon;
               return (
-                <div key={step.title} className="relative flex flex-col items-start gap-3 rounded-xl border border-zinc-200 bg-white p-6">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2d4a6b]/10">
-                    <Icon size={17} strokeWidth={1.8} className="text-[#2d4a6b]" />
+                <div key={step.title} className="relative flex flex-col items-start gap-3 rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
+                    <Icon size={17} strokeWidth={1.8} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
                   </div>
-                  <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-400">
+                  <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-400 dark:bg-[var(--surface-muted)]">
                     {i + 1}
                   </div>
-                  <h3 className="text-sm font-semibold text-zinc-900">{step.title}</h3>
-                  <p className="text-xs leading-relaxed text-zinc-500">{step.body}</p>
+                  <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">{step.title}</h3>
+                  <p className="text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{step.body}</p>
                 </div>
               );
             })}
@@ -99,15 +99,15 @@ export default async function QuotationPage() {
       </section>
 
       {/* ── Main form ── */}
-      <section className="bg-white py-12 sm:py-20">
+      <section className="bg-white py-12 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid gap-12 lg:grid-cols-[1fr_2fr]">
 
             {/* ── Left sidebar info ── */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-bold text-[#2d4a6b]">Ready to get started?</h2>
-                <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Ready to get started?</h2>
+                <p className="mt-2 text-sm text-zinc-500 leading-relaxed dark:text-[var(--text-muted)]">
                   Use this form to tell us about your project. The more detail you provide, the
                   more accurate your quotation will be. Just need to order products, not a full
                   project? Select &quot;Products Only&quot; in the form.
@@ -125,34 +125,34 @@ export default async function QuotationPage() {
                   "Concrete Products",
                   "Dry-Mix Construction Materials",
                 ].map((s) => (
-                  <div key={s} className="flex items-center gap-2 text-sm text-zinc-700">
+                  <div key={s} className="flex items-center gap-2 text-sm text-zinc-700 dark:text-[var(--text-secondary)]">
                     <div className="h-1.5 w-1.5 rounded-full bg-[#8fb9e8]" />
                     {s}
                   </div>
                 ))}
               </div>
 
-              <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-5 space-y-3">
-                <h3 className="text-sm font-semibold text-zinc-900">Have a quick question?</h3>
-                <p className="text-xs text-zinc-500 leading-relaxed">
+              <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-5 space-y-3 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
+                <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Have a quick question?</h3>
+                <p className="text-xs text-zinc-500 leading-relaxed dark:text-[var(--text-muted)]">
                   For general enquiries not related to a project quotation, use our contact page.
                 </p>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
                 >
                   Go to Contact <ArrowRight size={12} />
                 </Link>
               </div>
 
-              <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-5 space-y-2">
-                <h3 className="text-sm font-semibold text-zinc-900">Already have an account?</h3>
-                <p className="text-xs text-zinc-500 leading-relaxed">
+              <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-5 space-y-2 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
+                <h3 className="text-sm font-semibold text-zinc-900 dark:text-[var(--foreground)]">Already have an account?</h3>
+                <p className="text-xs text-zinc-500 leading-relaxed dark:text-[var(--text-muted)]">
                   Log in to track existing projects and payments.
                 </p>
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
                 >
                   Log In <ArrowRight size={12} />
                 </Link>
@@ -160,9 +160,9 @@ export default async function QuotationPage() {
             </div>
 
             {/* ── Right form ── */}
-            <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-8 shadow-sm">
-              <h2 className="text-xl font-bold text-[#2d4a6b]">Request a Quotation</h2>
-              <p className="mt-1 text-sm text-zinc-500">
+            <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-8 shadow-sm dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
+              <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Request a Quotation</h2>
+              <p className="mt-1 text-sm text-zinc-500 dark:text-[var(--text-muted)]">
                 Fields marked <span className="text-red-400 font-medium">*</span> are required.
               </p>
               <div className="mt-7">
@@ -175,9 +175,9 @@ export default async function QuotationPage() {
       </section>
 
       {/* ── FAQ strip ── */}
-      <section className="bg-zinc-50 py-16 border-t border-zinc-100">
+      <section className="bg-zinc-50 py-16 border-t border-zinc-100 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-xl font-bold text-[#2d4a6b]">Quotation FAQs</h2>
+          <h2 className="text-center text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Quotation FAQs</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
             {[
               {
@@ -205,9 +205,9 @@ export default async function QuotationPage() {
                 a: "All active clients receive access to the Client Portal for real-time project tracking and payments.",
               },
             ].map((faq) => (
-              <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6">
-                <h3 className="font-semibold text-[#2d4a6b] text-sm">{faq.q}</h3>
-                <p className="mt-2 text-xs leading-relaxed text-zinc-500">{faq.a}</p>
+              <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
+                <h3 className="font-semibold text-[#2d4a6b] text-sm dark:text-[#8fb9e8]">{faq.q}</h3>
+                <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{faq.a}</p>
               </div>
             ))}
           </div>

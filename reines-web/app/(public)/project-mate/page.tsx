@@ -189,9 +189,9 @@ function PortalMock() {
         </div>
       </div>
 
-      <div className="absolute -right-3 top-10 hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-lg sm:-right-10 sm:flex">
-        <Bell size={13} className="text-[#2d4a6b]" />
-        <span className="text-[11px] font-semibold text-[#2d4a6b]">New milestone update</span>
+      <div className="absolute -right-3 top-10 hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-lg dark:bg-[var(--surface)] sm:-right-10 sm:flex">
+        <Bell size={13} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
+        <span className="text-[11px] font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">New milestone update</span>
       </div>
     </div>
   );
@@ -199,18 +199,18 @@ function PortalMock() {
 
 function GuideList({ items }: { items: { title: string; body: string }[] }) {
   return (
-    <ol className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5">
+    <ol className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 dark:border-[var(--border)] dark:bg-[var(--surface)]">
       {items.map((item, index) => (
         <li
           key={item.title}
-          className="flex gap-3 border-b border-zinc-100 pb-4 last:border-b-0 last:pb-0"
+          className="flex gap-3 border-b border-zinc-100 pb-4 last:border-b-0 last:pb-0 dark:border-[var(--border)]"
         >
           <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
             {index + 1}
           </span>
           <div>
-            <p className="text-sm font-semibold text-[#2d4a6b]">{item.title}</p>
-            <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>
+            <p className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.title}</p>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{item.body}</p>
           </div>
         </li>
       ))}
@@ -269,27 +269,27 @@ export default function ProjectMatePage() {
       </section>
 
       {/* How it works */}
-      <section className="bg-white py-14 sm:py-20">
+      <section className="bg-white py-14 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Getting Started</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">How It Works</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">How It Works</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               From first sign-in to your latest site update, Project Mate keeps clients and managers aligned.
             </p>
           </div>
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (
-              <div key={step.title} className="relative rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+              <div key={step.title} className="relative rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
                 <span className="absolute -top-3 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
                   {index + 1}
                 </span>
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <step.icon size={22} strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-4 font-semibold text-[#2d4a6b]">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{step.body}</p>
+                <h3 className="mt-4 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{step.body}</p>
               </div>
             ))}
           </div>
@@ -297,41 +297,41 @@ export default function ProjectMatePage() {
       </section>
 
       {/* How to use — client / manager */}
-      <section id="how-to-use" className="scroll-mt-24 bg-zinc-50 py-14 sm:py-20">
+      <section id="how-to-use" className="scroll-mt-24 bg-zinc-50 py-14 dark:bg-[var(--surface-muted)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
               Portal Guides
             </span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">How to Use Your Portal</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">How to Use Your Portal</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               Follow the path that matches your role. Both portals share the same Reines account system — what
               you see depends on whether you are a client or a project manager.
             </p>
           </div>
 
           <div className="mt-12 grid gap-8 lg:grid-cols-2">
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
               <div className="mb-5 flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Wallet size={20} strokeWidth={1.8} />
                 </span>
                 <div>
-                  <h3 className="text-lg font-bold text-[#2d4a6b]">As a Client</h3>
-                  <p className="text-xs text-zinc-500">Track your build without chasing updates</p>
+                  <h3 className="text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">As a Client</h3>
+                  <p className="text-xs text-zinc-500 dark:text-[var(--text-muted)]">Track your build without chasing updates</p>
                 </div>
               </div>
               <GuideList items={clientGuide} />
             </div>
 
-            <div className="rounded-2xl border border-zinc-200 bg-white p-6">
+            <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
               <div className="mb-5 flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <LayoutDashboard size={20} strokeWidth={1.8} />
                 </span>
                 <div>
-                  <h3 className="text-lg font-bold text-[#2d4a6b]">As a Project Manager</h3>
-                  <p className="text-xs text-zinc-500">Keep assigned projects moving and visible</p>
+                  <h3 className="text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">As a Project Manager</h3>
+                  <p className="text-xs text-zinc-500 dark:text-[var(--text-muted)]">Keep assigned projects moving and visible</p>
                 </div>
               </div>
               <GuideList items={managerGuide} />
@@ -351,12 +351,12 @@ export default function ProjectMatePage() {
       </section>
 
       {/* Features */}
-      <section className="bg-white py-14 sm:py-20">
+      <section className="bg-white py-14 dark:bg-[var(--background)] sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Features</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b]">Everything in One Portal</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500">
+            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Everything in One Portal</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               The same capabilities you&apos;ll get in the mobile app later are already available through the
               web portals today.
             </p>
@@ -364,12 +364,12 @@ export default function ProjectMatePage() {
 
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6">
+              <div key={feature.title} className="rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <feature.icon size={20} strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-3 font-semibold text-[#2d4a6b]">{feature.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-500">{feature.body}</p>
+                <h3 className="mt-3 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{feature.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{feature.body}</p>
               </div>
             ))}
           </div>

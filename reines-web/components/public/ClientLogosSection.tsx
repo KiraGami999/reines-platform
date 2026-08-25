@@ -85,7 +85,7 @@ export function ClientLogosSection({ logos }: Props) {
     <div>
       <div className="text-center">
         <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Trusted By</span>
-        <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#2d4a6b] sm:text-3xl">
+        <h2 className="mt-2 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl">
           Clients We&apos;ve Worked With
         </h2>
       </div>

@@ -89,26 +89,9 @@ select:disabled {
 }
 
 /*
- * Public marketing site is always light. html may still have .dark from the
- * portal theme preference, which would otherwise paint form fields with the
- * dark --surface token (quote / contact inputs looking black on a white page).
- */
-[data-public] {
-  --background: #ffffff;
-  --foreground: #171717;
-  --surface: #ffffff;
-  --surface-muted: #f4f4f5;
-  --surface-shell: #fafafa;
-  --border: #e4e4e7;
-  --border-subtle: #f4f4f5;
-  --text-muted: #71717a;
-  color-scheme: light;
-}
-
-/*
  * Portal content remap: most dashboard pages hard-code zinc / white utilities.
- * Scope under [data-portal] so public marketing pages stay clean until themed.
- * Brand navy + accent hex utilities are left alone (except body text navy → accent).
+ * Scope under [data-portal] so public marketing pages use explicit dark: classes
+ * instead (navy heroes must not be remapped).
  */
 .dark [data-portal] :is(.bg-white) {
   background-color: var(--surface);
