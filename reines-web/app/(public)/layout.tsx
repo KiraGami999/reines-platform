@@ -22,7 +22,10 @@ export default async function PublicLayout({ children }: { children: React.React
   const showMarketInsights = await isMarketInsightsVisible();
 
   return (
-    <div className="flex min-h-screen flex-col overflow-x-clip bg-white text-zinc-900 [color-scheme:light]">
+    <div
+      data-public
+      className="flex min-h-screen flex-col overflow-x-clip bg-white text-zinc-900 [color-scheme:light]"
+    >
       <StructuredData includeMarketInsights={showMarketInsights} />
       <Navbar showMarketInsights={showMarketInsights} />
       <main className="flex-1">{children}</main>
