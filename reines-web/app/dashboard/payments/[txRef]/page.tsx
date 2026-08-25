@@ -156,7 +156,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
               ),
             },
             { label: "Currency", value: payment.currency },
-            { label: "Payment Method", value: payment.method === "CASH" ? "Cash Payment" : "Online Payment" },
+            { label: "Payment Method", value: payment.method === "CASH" ? "Cash Payment" : payment.method === "BANK_TRANSFER" ? "Bank Transfer" : "Online Payment" },
             {
               label: "Status",
               value: (

@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CreditCard, Banknote, AlertCircle, ExternalLink, ChevronRight } from "lucide-react";
+import {
+  CreditCard,
+  Banknote,
+  Building2,
+  AlertCircle,
+  ExternalLink,
+  ChevronRight,
+  Info,
+} from "lucide-react";
 import { CashPaymentForm } from "@/components/dashboard/CashPaymentForm";
 
 interface PaymentButtonProps {
@@ -12,8 +20,12 @@ interface PaymentButtonProps {
   description:  string;
   disabled?:    boolean;
   className?:   string;
-  /** When true, skip cash and go straight to Paychangu online checkout. */
-  onlineOnly?:  boolean;
+  /**
+   * Client mode: show Paychangu + bank transfer + cash choices.
+   * Offline methods explain that PM/admin records them.
+   * Staff recording uses CashPaymentForm separately (not this prop).
+   */
+  clientMode?:  boolean;
   /** Start on a given step (e.g. "choose" when opened from a milestone accordion). */
   initialStep?: Step;
   /** Called when the user cancels back to idle (or closes an embedded chooser). */
@@ -23,7 +35,15 @@ interface PaymentButtonProps {
 const FIELD = "block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:outline-none focus:ring-2 focus:ring-[#8fb9e8] focus:border-transparent";
 const LABEL = "block text-sm font-medium text-zinc-700 mb-1";
 
-type Step = "idle" | "choose" | "online-confirm" | "online-loading" | "online-error" | "cash";
+type Step =
+  | "idle"
+  | "choose"
+  | "online-confirm"
+  | "online-loading"
+  | "online-error"
+  | "cash"
+  | "bank-info"
+  | "cash-info";
 
 export default function PaymentButton({
   projectId,
@@ -33,14 +53,15 @@ export default function PaymentButton({
   description,
   disabled = false,
   className = "",
-  onlineOnly = false,
+  clientMode = false,
   initialStep = "idle",
   onDismiss,
 }: PaymentButtonProps) {
-  const [step,       setStep]       = useState<Step>(initialStep);
-  const [errorMsg,   setErrorMsg]   = useState("");
-  const [editAmount, setEditAmount] = useState(String(amount));
-  const [editDesc,   setEditDesc]   = useState(description);
+  const [step,          setStep]          = useState<Step>(initialStep);
+  const [errorMsg,      setErrorMsg]      = useState("");
+  const [editAmount,    setEditAmount]    = useState(String(amount));
+  const [editDesc,      setEditDesc]      = useState(description);
+  const [offlineMethod, setOfflineMethod] = useState<"CASH" | "BANK_TRANSFER">("CASH");
 
   const fmt = (n: number) =>
     currency === "MWK" ? `MK ${n.toLocaleString("en-MW")}` : `$${n.toFixed(2)}`;
@@ -96,22 +117,20 @@ export default function PaymentButton({
     }
   }
 
-  // ── Idle ──────────────────────────────────────────────────────────────────
   if (step === "idle") {
     return (
       <button
         type="button"
-        onClick={() => setStep(onlineOnly ? "online-confirm" : "choose")}
+        onClick={() => setStep("choose")}
         disabled={disabled}
         className={`inline-flex items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       >
         <CreditCard size={15} />
-        {onlineOnly ? "Pay Online" : "Make a Payment"}
+        Make a Payment
       </button>
     );
   }
 
-  // ── Choose payment method ──────────────────────────────────────────────────
   if (step === "choose") {
     return (
       <div className={`space-y-4 ${initialStep === "choose" ? "" : "rounded-xl border border-zinc-200 bg-white p-5 shadow-sm"}`}>
@@ -127,7 +146,7 @@ export default function PaymentButton({
           <span className="font-medium text-zinc-700">{projectTitle}</span>.
         </p>
 
-        <div className={`grid grid-cols-1 gap-3 ${onlineOnly ? "" : "sm:grid-cols-2"}`}>
+        <div className="grid grid-cols-1 gap-3">
           <button
             type="button"
             onClick={() => setStep("online-confirm")}
@@ -137,28 +156,55 @@ export default function PaymentButton({
               <CreditCard size={18} />
             </div>
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-zinc-900">Pay Online</p>
-              <p className="text-xs text-zinc-400">Mobile Money, Bank Transfer, Card</p>
+              <p className="text-sm font-semibold text-zinc-900">Pay Online (Paychangu)</p>
+              <p className="text-xs text-zinc-400">Mobile Money, bank, or card — confirms automatically</p>
             </div>
             <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
           </button>
 
-          {!onlineOnly && (
-            <button
-              type="button"
-              onClick={() => setStep("cash")}
-              className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
-                <Banknote size={18} />
-              </div>
-              <div className="min-w-0">
-                <p className="text-sm font-semibold text-zinc-900">Pay in Cash</p>
-                <p className="text-xs text-zinc-400">Upload receipt · Admin confirms</p>
-              </div>
-              <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
-            </button>
-          )}
+          <button
+            type="button"
+            onClick={() => {
+              setOfflineMethod("BANK_TRANSFER");
+              setStep(clientMode ? "bank-info" : "cash");
+            }}
+            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
+              <Building2 size={18} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-zinc-900">Direct Bank Transfer</p>
+              <p className="text-xs text-zinc-400">
+                {clientMode
+                  ? "Transfer to Reines — PM / admin records it"
+                  : "Record a received bank transfer"}
+              </p>
+            </div>
+            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setOfflineMethod("CASH");
+              setStep(clientMode ? "cash-info" : "cash");
+            }}
+            className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
+          >
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
+              <Banknote size={18} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-zinc-900">Cash</p>
+              <p className="text-xs text-zinc-400">
+                {clientMode
+                  ? "Pay at the office — PM / admin records it"
+                  : "Record cash received"}
+              </p>
+            </div>
+            <ChevronRight size={14} className="ml-auto shrink-0 text-zinc-300 group-hover:text-zinc-500" />
+          </button>
         </div>
 
         <button
@@ -172,7 +218,50 @@ export default function PaymentButton({
     );
   }
 
-  // ── Online payment confirm ─────────────────────────────────────────────────
+  if (step === "bank-info" || step === "cash-info") {
+    const isBank = step === "bank-info";
+    return (
+      <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <div className="flex items-center gap-2">
+          {isBank ? (
+            <Building2 size={16} className="text-zinc-500" />
+          ) : (
+            <Banknote size={16} className="text-zinc-500" />
+          )}
+          <h3 className="text-sm font-semibold text-zinc-900">
+            {isBank ? "Direct Bank Transfer" : "Cash Payment"}
+          </h3>
+        </div>
+        <div className="flex items-start gap-2.5 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-4 py-3 text-sm text-zinc-700">
+          <Info size={16} className="mt-0.5 shrink-0 text-[#2d4a6b]" />
+          <p>
+            {isBank
+              ? "Transfer funds directly to Reines using our bank details (ask your project manager if you need them). Once the transfer is received, your project manager or an admin will record it in the portal so your project balance stays accurate."
+              : "Pay in cash at the Reines office or to your project manager. Once received, they will record it in the portal and an admin will confirm it against your project balance."}
+          </p>
+        </div>
+        <p className="text-xs text-zinc-500">
+          Prefer to pay now from your phone or card? Use{" "}
+          <button
+            type="button"
+            onClick={() => setStep("online-confirm")}
+            className="font-semibold text-[#2d4a6b] underline-offset-2 hover:underline"
+          >
+            Pay Online via Paychangu
+          </button>
+          .
+        </p>
+        <button
+          type="button"
+          onClick={() => setStep("choose")}
+          className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
+        >
+          Back
+        </button>
+      </div>
+    );
+  }
+
   if (step === "online-confirm" || step === "online-error") {
     return (
       <div className="space-y-4 rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
@@ -230,7 +319,7 @@ export default function PaymentButton({
           </button>
           <button
             type="button"
-            onClick={() => setStep(onlineOnly ? "idle" : "choose")}
+            onClick={() => setStep("choose")}
             className="rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50"
           >
             Back
@@ -245,21 +334,23 @@ export default function PaymentButton({
     );
   }
 
-  // ── Cash payment ───────────────────────────────────────────────────────────
   if (step === "cash") {
     return (
       <CashPaymentForm
+        key={offlineMethod}
         projectId={projectId}
         projectTitle={projectTitle}
         amount={Number(editAmount) || amount}
         currency={currency}
         description={editDesc}
         onCancel={reset}
+        staffMode
+        method={offlineMethod}
+        allowMethodPicker
       />
     );
   }
 
-  // ── Online loading redirect ─────────────────────────────────────────────────
   return (
     <div className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-5 text-sm text-zinc-500">
       <span className="h-4 w-4 animate-spin rounded-full border-2 border-zinc-300 border-t-[#8fb9e8]" />

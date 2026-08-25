@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { upload } from "@vercel/blob/client";
 import {
   Banknote,
+  Building2,
   Upload,
   X,
   CheckCircle2,
@@ -12,6 +13,8 @@ import {
   ImageIcon,
   Loader2,
 } from "lucide-react";
+
+export type OfflinePaymentMethod = "CASH" | "BANK_TRANSFER";
 
 interface CashPaymentFormProps {
   projectId:    string;
@@ -22,6 +25,10 @@ interface CashPaymentFormProps {
   onCancel:     () => void;
   /** PM/admin recording on behalf of the client (copy + success messaging). */
   staffMode?:   boolean;
+  /** Default offline method. Staff can change when allowMethodPicker is true. */
+  method?:      OfflinePaymentMethod;
+  /** When true (staff), show Cash vs Bank Transfer toggle. */
+  allowMethodPicker?: boolean;
 }
 
 const FIELD =
@@ -36,10 +43,13 @@ export function CashPaymentForm({
   description,
   onCancel,
   staffMode = false,
+  method: initialMethod = "CASH",
+  allowMethodPicker = false,
 }: CashPaymentFormProps) {
   const router = useRouter();
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const [method,     setMethod]     = useState<OfflinePaymentMethod>(initialMethod);
   const [editAmount, setEditAmount] = useState(String(amount));
   const [editDesc,   setEditDesc]   = useState(description);
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
@@ -49,6 +59,9 @@ export function CashPaymentForm({
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted]   = useState(false);
   const [error, setError]           = useState("");
+
+  const isBank = method === "BANK_TRANSFER";
+  const methodTitle = isBank ? "Bank Transfer" : "Cash";
 
   const fmt = (n: number) =>
     currency === "MWK" ? `MK ${n.toLocaleString("en-MW")}` : `$${n.toFixed(2)}`;
@@ -60,7 +73,6 @@ export function CashPaymentForm({
     setError("");
     setUploading(true);
 
-    // Local preview
     const reader = new FileReader();
     reader.onload = (ev) => setPreview(ev.target?.result as string);
     reader.readAsDataURL(file);
@@ -114,6 +126,7 @@ export function CashPaymentForm({
           currency,
           description: editDesc.trim(),
           receiptUrl:  receiptUrl ?? undefined,
+          method,
         }),
       });
       const data = await res.json();
@@ -141,11 +154,11 @@ export function CashPaymentForm({
           </div>
         </div>
         <h3 className="text-base font-semibold text-zinc-900">
-          {staffMode ? "Payment Submitted for Approval" : "Cash Payment Submitted"}
+          {staffMode ? `${methodTitle} Submitted for Approval` : `${methodTitle} Payment Submitted`}
         </h3>
         <p className="text-sm text-zinc-500 max-w-xs mx-auto">
           {staffMode
-            ? "This cash payment is pending. An admin must approve it before it counts toward the project balance."
+            ? `This ${methodTitle.toLowerCase()} payment is pending. An admin must approve it before it counts toward the project balance.`
             : "Your payment has been recorded and is awaiting admin confirmation. You will be notified once it is approved."}
         </p>
         <button
@@ -160,21 +173,54 @@ export function CashPaymentForm({
 
   return (
     <div className={`${staffMode ? "space-y-4" : "rounded-xl border border-zinc-200 bg-white p-5 space-y-4 shadow-sm"}`}>
-      {/* Header */}
       <div className="flex items-center gap-2">
-        <Banknote size={16} className="text-zinc-500" />
+        {isBank ? (
+          <Building2 size={16} className="text-zinc-500" />
+        ) : (
+          <Banknote size={16} className="text-zinc-500" />
+        )}
         <h3 className="text-sm font-semibold text-zinc-900">
-          {staffMode ? "Record Cash Payment" : "Cash Payment"}
+          {staffMode ? `Record ${methodTitle} Payment` : `${methodTitle} Payment`}
         </h3>
       </div>
 
+      {allowMethodPicker && staffMode && (
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => setMethod("CASH")}
+            className={`flex items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+              method === "CASH"
+                ? "border-[#2d4a6b] bg-[#2d4a6b]/5 text-[#2d4a6b]"
+                : "border-zinc-200 text-zinc-600 hover:border-zinc-300"
+            }`}
+          >
+            <Banknote size={15} />
+            Cash
+          </button>
+          <button
+            type="button"
+            onClick={() => setMethod("BANK_TRANSFER")}
+            className={`flex items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
+              method === "BANK_TRANSFER"
+                ? "border-[#2d4a6b] bg-[#2d4a6b]/5 text-[#2d4a6b]"
+                : "border-zinc-200 text-zinc-600 hover:border-zinc-300"
+            }`}
+          >
+            <Building2 size={15} />
+            Bank Transfer
+          </button>
+        </div>
+      )}
+
       <p className="text-xs text-zinc-500">
         {staffMode
-          ? "Record cash received for this client. An admin will review and approve before it updates the paid balance."
-          : "Submit your cash payment details and optionally upload a photo of your receipt. An admin will review and confirm the payment."}
+          ? isBank
+            ? "Record a direct bank transfer received for this client. An admin will review and approve before it updates the paid balance."
+            : "Record cash received for this client. An admin will review and approve before it updates the paid balance."
+          : "Submit your payment details and optionally upload proof. An admin will review and confirm the payment."}
       </p>
 
-      {/* Amount */}
       <div>
         <label className={LABEL}>Amount ({currency})</label>
         <input
@@ -188,27 +234,30 @@ export function CashPaymentForm({
         />
       </div>
 
-      {/* Description */}
       <div>
         <label className={LABEL}>Description</label>
         <input
           type="text"
           value={editDesc}
           onChange={(e) => { setEditDesc(e.target.value); setError(""); }}
-          placeholder="e.g. Foundation milestone cash payment"
+          placeholder={
+            isBank
+              ? "e.g. Foundation milestone — bank transfer"
+              : "e.g. Foundation milestone cash payment"
+          }
           className={FIELD}
           disabled={submitting}
         />
       </div>
 
-      {/* Project */}
       <div className="rounded-lg bg-zinc-50 px-3 py-2 text-xs text-zinc-500">
         Project: <span className="font-medium text-zinc-700">{projectTitle}</span>
       </div>
 
-      {/* Receipt Upload */}
       <div>
-        <label className={LABEL}>Receipt / Proof of Payment (optional)</label>
+        <label className={LABEL}>
+          {isBank ? "Transfer proof / deposit slip (optional)" : "Receipt / Proof of Payment (optional)"}
+        </label>
 
         {preview ? (
           <div className="relative mt-1 w-full overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50">
@@ -238,7 +287,7 @@ export function CashPaymentForm({
             className="mt-1 flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 bg-white px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#8fb9e8] hover:text-[#8fb9e8] disabled:opacity-50"
           >
             <ImageIcon size={22} />
-            <span>Click to upload receipt image</span>
+            <span>Click to upload {isBank ? "transfer proof" : "receipt"} image</span>
             <span className="text-xs">JPEG, PNG, WEBP · Max 5 MB</span>
           </button>
         )}
@@ -259,12 +308,11 @@ export function CashPaymentForm({
         )}
         {receiptUrl && !uploading && (
           <p className="mt-1 flex items-center gap-1 text-xs text-blue-600">
-            <CheckCircle2 size={11} /> Receipt uploaded
+            <CheckCircle2 size={11} /> Proof uploaded
           </p>
         )}
       </div>
 
-      {/* Error */}
       {error && (
         <div className="flex items-start gap-2 rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-xs text-red-700">
           <AlertCircle size={13} className="mt-0.5 shrink-0" />
@@ -272,7 +320,6 @@ export function CashPaymentForm({
         </div>
       )}
 
-      {/* Actions */}
       <div className="flex gap-2 pt-1">
         <button
           onClick={handleSubmit}
@@ -282,7 +329,7 @@ export function CashPaymentForm({
           {submitting ? (
             <><Loader2 size={13} className="animate-spin" /> Submitting…</>
           ) : (
-            <><Upload size={13} /> {staffMode ? "Submit for Admin Approval" : "Submit Cash Payment"}</>
+            <><Upload size={13} /> {staffMode ? "Submit for Admin Approval" : `Submit ${methodTitle} Payment`}</>
           )}
         </button>
         <button
@@ -297,7 +344,7 @@ export function CashPaymentForm({
       <p className="text-[11px] text-zinc-400">
         {staffMode
           ? "Does not update paid balance until an admin approves this record."
-          : "Cash payments require admin approval before being counted towards your project balance."}
+          : `${methodTitle} payments require admin approval before being counted towards your project balance.`}
       </p>
     </div>
   );

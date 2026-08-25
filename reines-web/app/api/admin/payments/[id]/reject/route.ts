@@ -28,7 +28,9 @@ export async function PATCH(
   try {
     const payment = await prisma.payment.findUnique({ where: { id } });
     if (!payment) return notFound("Payment");
-    if (payment.method !== "CASH") return badRequest("Only cash payments can be manually rejected.");
+    if (payment.method !== "CASH" && payment.method !== "BANK_TRANSFER") {
+      return badRequest("Only cash or bank transfer payments can be manually rejected.");
+    }
     if (payment.status !== "PENDING") return badRequest("Only pending payments can be rejected.");
 
     const updated = await prisma.payment.update({

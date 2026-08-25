@@ -11,6 +11,7 @@ import {
   Eye,
   ExternalLink,
   Banknote,
+  Building2,
   User,
   FolderKanban,
   Calendar,
@@ -27,6 +28,7 @@ interface CashPayment {
   description: string | null;
   receiptUrl:  string | null;
   createdAt:   string;
+  method?:     string;
   project:     { id: string; title: string } | null;
   user:        { id: string; name: string; email: string };
 }
@@ -148,8 +150,12 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-3 border-b border-zinc-100 px-4 py-3">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
-            <Banknote size={16} />
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${
+            payment.method === "BANK_TRANSFER"
+              ? "bg-sky-100 text-sky-700"
+              : "bg-amber-100 text-amber-600"
+          }`}>
+            {payment.method === "BANK_TRANSFER" ? <Building2 size={16} /> : <Banknote size={16} />}
           </div>
           <div>
             <p className="text-sm font-semibold text-zinc-900">
@@ -158,8 +164,13 @@ function CashPaymentCard({ payment }: { payment: CashPayment }) {
             <p className="text-xs text-zinc-400 font-mono">{payment.txRef}</p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-          <Banknote size={10} /> Awaiting Approval
+        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
+          payment.method === "BANK_TRANSFER"
+            ? "border-sky-200 bg-sky-50 text-sky-700"
+            : "border-amber-200 bg-amber-50 text-amber-700"
+        }`}>
+          {payment.method === "BANK_TRANSFER" ? <Building2 size={10} /> : <Banknote size={10} />}
+          {payment.method === "BANK_TRANSFER" ? "Bank Transfer" : "Cash"} · Pending
         </span>
       </div>
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { PAYMENT_STATUS_META, fmtPaymentAmount } from "@/lib/paychangu";
-import { Receipt, ArrowRight, CreditCard, Banknote } from "lucide-react";
+import { Receipt, ArrowRight, CreditCard, Banknote, Building2 } from "lucide-react";
 
 export interface PaymentRow {
   id:          string;
@@ -39,6 +39,13 @@ function MethodBadge({ method }: { method?: string }) {
     return (
       <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
         <Banknote size={10} /> Cash
+      </span>
+    );
+  }
+  if (method === "BANK_TRANSFER") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-2 py-0.5 text-[10px] font-semibold text-sky-700">
+        <Building2 size={10} /> Bank Transfer
       </span>
     );
   }

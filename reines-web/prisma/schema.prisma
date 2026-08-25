@@ -519,7 +519,8 @@ enum PaymentStatus {
 
 enum PaymentMethod {
   PAYCHANGU // Online payment via Paychangu gateway
-  CASH // Cash payment submitted offline, requires admin approval
+  CASH // Cash payment offline — requires admin approval
+  BANK_TRANSFER // Direct bank transfer offline — requires admin approval
 }
 
 model Payment {

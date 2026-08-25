@@ -1,5 +1,5 @@
 export type PaymentStatus = "PENDING" | "SUCCESS" | "FAILED" | "CANCELLED";
-export type PaymentMethod = "PAYCHANGU" | "CASH";
+export type PaymentMethod = "PAYCHANGU" | "CASH" | "BANK_TRANSFER";
 
 /** Embedded project summary on a payment record */
 export interface PaymentProject {

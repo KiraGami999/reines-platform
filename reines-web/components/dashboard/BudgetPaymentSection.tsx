@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, Banknote, Info } from "lucide-react";
+import { ChevronDown, Banknote } from "lucide-react";
 import type { BudgetBreakdown } from "@/models/project";
 import { fmtMWK } from "@/lib/mock-data";
 import { CashPaymentForm } from "@/components/dashboard/CashPaymentForm";
@@ -72,27 +72,20 @@ export function BudgetPaymentSection({
         </div>
       </div>
 
-      {/* Client: Paychangu online checkout */}
+      {/* Client: choose Paychangu, bank transfer, or cash */}
       {canPayOnline && (
         <div className="mt-5 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-zinc-500">
-              Pay outstanding balance securely via Paychangu (Mobile Money, bank, or card).
+              Pay online via Paychangu, or use a direct bank transfer / cash (recorded by your PM or the office).
             </p>
             <PaymentButton
               projectId={projectId}
               projectTitle={projectTitle}
               amount={remaining}
               description={`Payment for ${projectTitle}`}
-              onlineOnly
+              clientMode
             />
-          </div>
-          <div className="flex items-start gap-2.5 rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-600">
-            <Info size={16} className="mt-0.5 shrink-0 text-[#2d4a6b]" />
-            <p>
-              Cash payments are still recorded by your project manager or at the Reines office.
-              Online payments confirm automatically once Paychangu completes checkout.
-            </p>
           </div>
         </div>
       )}
@@ -106,7 +99,7 @@ export function BudgetPaymentSection({
             </p>
             {canRecord && (
               <p className="text-[11px] font-medium text-[#2d4a6b]">
-                Tap an outstanding item to record a cash payment
+                Tap an outstanding item to record cash or a bank transfer
               </p>
             )}
           </div>
@@ -169,8 +162,8 @@ export function BudgetPaymentSection({
                       <span className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-[#2d4a6b]">
                         <Banknote size={11} />
                         {isOpen
-                          ? "Enter cash details below — admin will approve"
-                          : "Tap to record cash payment"}
+                          ? "Enter details below — admin will approve"
+                          : "Tap to record cash or bank transfer"}
                       </span>
                     </div>
                   </div>
@@ -198,6 +191,7 @@ export function BudgetPaymentSection({
                       description={`${b.label} — ${projectTitle}`}
                       onCancel={() => setOpenIndex(null)}
                       staffMode
+                      allowMethodPicker
                     />
                   </div>
                 )}
@@ -217,13 +211,14 @@ export function BudgetPaymentSection({
             description={`Payment for ${projectTitle}`}
             onCancel={() => {}}
             staffMode
+            allowMethodPicker
           />
         </div>
       )}
 
       {canRecord && (
         <p className="mt-3 text-center text-[11px] text-zinc-400">
-          Recorded cash payments stay pending until an admin approves them.
+          Recorded cash and bank transfer payments stay pending until an admin approves them.
         </p>
       )}
     </div>

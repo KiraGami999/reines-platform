@@ -48,7 +48,9 @@ function fmtDate(d: Date | null) {
 }
 
 function methodLabel(method: string) {
-  return method === "CASH" ? "Cash Payment" : "Online Payment";
+  if (method === "CASH") return "Cash Payment";
+  if (method === "BANK_TRANSFER") return "Bank Transfer";
+  return "Online Payment";
 }
 
 function wrapText(text: string, font: PDFFont, size: number, maxWidth: number): string[] {

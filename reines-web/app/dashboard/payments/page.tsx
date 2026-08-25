@@ -133,7 +133,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
           <p className="text-sm text-zinc-700">
             <span className="font-semibold text-[#2d4a6b]">About your payments:</span>{" "}
             Pay online via Paychangu from any project with an outstanding balance (Mobile Money, bank transfer, or card).
-            Cash payments are recorded by your project manager or at the Reines office and confirmed by an admin.
+            You can also pay by direct bank transfer or cash — your project manager or the Reines office records those, and an admin confirms them against your balance.
             This page shows your payment history and receipts.
           </p>
         </div>
@@ -142,7 +142,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
       {role === "PROJECT_MANAGER" && (
         <div className="rounded-xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
           <span className="font-semibold">Recording payments:</span> Open a project → Budget &amp; Payments,
-          then tap an outstanding item to record cash. Admins approve submissions before they update the paid balance.
+          then tap an outstanding item to record cash or a direct bank transfer. Admins approve submissions before they update the paid balance.
         </div>
       )}
 

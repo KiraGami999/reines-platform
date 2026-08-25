@@ -15,6 +15,7 @@ interface CashPendingPayment {
   description: string | null;
   receiptUrl:  string | null;
   createdAt:   string;
+  method:      string;
   project:     { id: string; title: string } | null;
   user:        { id: string; name: string; email: string };
 }
@@ -50,7 +51,10 @@ async function getAllPayments(): Promise<PaymentRow[]> {
 async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
   try {
     const rows = await prisma.payment.findMany({
-      where: { method: "CASH", status: "PENDING" },
+      where: {
+        method: { in: ["CASH", "BANK_TRANSFER"] },
+        status: "PENDING",
+      },
       include: {
         project: { select: { id: true, title: true } },
         user:    { select: { id: true, name: true, email: true } },
@@ -65,6 +69,7 @@ async function getPendingCashPayments(): Promise<CashPendingPayment[]> {
       description: p.description,
       receiptUrl:  resolveStorageUrl(p.receiptUrl),
       createdAt:   p.createdAt.toISOString(),
+      method:      p.method,
       project:     p.project,
       user:        p.user!,
     }));
@@ -122,7 +127,7 @@ export default async function AdminPaymentsPage() {
         <div>
           <h1 className="text-2xl font-bold text-[#2d4a6b]">Payment Transactions</h1>
           <p className="mt-1 text-sm text-zinc-500">
-            Manage all payments across projects — online and cash.
+            Manage all payments across projects — Paychangu, bank transfer, and cash.
           </p>
         </div>
         <IssueReceiptPanel projects={projects} clients={clients} />
@@ -162,10 +167,10 @@ export default async function AdminPaymentsPage() {
             <Banknote size={18} className="text-amber-600" />
             <div>
               <p className="text-sm font-semibold text-amber-900">
-                Cash Payments Awaiting Approval ({cashApproval})
+                Cash &amp; Bank Transfers Awaiting Approval ({cashApproval})
               </p>
               <p className="text-xs text-amber-700">
-                Review and approve or reject each submission to update the project balance.
+                Review and approve or reject each offline payment to update the project balance.
               </p>
             </div>
           </div>
@@ -191,12 +196,12 @@ export default async function AdminPaymentsPage() {
           to: <code className="bg-zinc-200 px-1.5 py-0.5 rounded text-xs break-all">{`{YOUR_DOMAIN}/api/payments/webhook`}</code>
         </p>
         <p>
-          <span className="font-semibold text-zinc-800">Cash payments</span> are recorded by
-          project managers or admins. Client-facing recording is disabled. PM submissions stay
-          pending until an admin approves them above — only then do they count toward a
+          <span className="font-semibold text-zinc-800">Cash and bank transfers</span> are recorded by
+          project managers or admins. Clients pay those offline; staff enter them in Budget &amp; Payments.
+          Submissions stay pending until an admin approves them above — only then do they count toward a
           project&apos;s paid balance. Office receipts issued via{" "}
           <span className="font-medium">Issue Manual Receipt</span> are recorded as paid
-          immediately because an admin has already verified the cash.
+          immediately because an admin has already verified the payment.
         </p>
       </div>
 
