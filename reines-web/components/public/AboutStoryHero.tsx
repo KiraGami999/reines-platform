@@ -1,7 +1,10 @@
 "use client";
 
 import Image from "next/image";
+import { FileDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+
+const COMPANY_PROFILE_PDF = "/about/reines-group-company-profile.pdf";
 
 const MAX_TILT = 10;
 
@@ -118,6 +121,14 @@ export function AboutStoryHero() {
             We offer an expansive range of products and services to support our clients&apos;
             infrastructure developments — from property and construction to concrete and manufacturing.
           </p>
+          <a
+            href={COMPANY_PROFILE_PDF}
+            download="Reines-Group-Company-Profile.pdf"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#8fb9e8] underline decoration-[#8fb9e8]/40 underline-offset-4 transition-colors hover:text-white hover:decoration-white/60"
+          >
+            <FileDown size={16} className="shrink-0" aria-hidden />
+            Download Reines Group Company Profile (PDF)
+          </a>
         </div>
       </div>
     </section>
