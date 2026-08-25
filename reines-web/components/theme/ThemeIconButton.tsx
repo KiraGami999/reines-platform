@@ -12,8 +12,9 @@ interface ThemeIconButtonProps {
 }
 
 /**
- * Compact sun / moon control for the public site header.
- * Shows the current mode: white sun in light mode, darker moon in dark mode.
+ * Compact sun / moon control.
+ * On the navy header, chrome stays identical in both modes — only the icon swaps.
+ * Explicit transparent background avoids the black system button fill from color-scheme: dark.
  */
 export function ThemeIconButton({ variant = "on-dark", className }: ThemeIconButtonProps) {
   const { resolved, setPreference } = useTheme();
@@ -27,13 +28,11 @@ export function ThemeIconButton({ variant = "on-dark", className }: ThemeIconBut
       title={isDark ? "Dark mode" : "Light mode"}
       className={cn(
         BUTTON_RADIUS,
-        "flex h-10 w-10 items-center justify-center transition-colors",
+        "flex h-10 w-10 items-center justify-center bg-transparent transition-colors",
         variant === "on-dark"
-          ? isDark
-            ? "border border-white/10 text-zinc-500 hover:bg-white/10 hover:text-zinc-400"
-            : "border border-white/20 text-white hover:bg-white/10 hover:text-white"
+          ? "border border-white/20 text-white hover:bg-white/10 hover:text-white"
           : isDark
-            ? "border border-[var(--border)] text-zinc-500 hover:bg-[var(--surface-hover)] hover:text-zinc-400"
+            ? "border border-[var(--border)] text-[var(--foreground)] hover:bg-[var(--surface-hover)]"
             : "border border-zinc-200 text-zinc-800 hover:bg-zinc-50 hover:text-zinc-900",
         className
       )}

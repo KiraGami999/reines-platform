@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
+import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
 const NAV_LOGO_SRC = "/logo-nav-rebrand.png";
@@ -156,10 +157,13 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
             </>
           )}
 
+          {/* Theme: sun ↔ moon — same chrome on navy; no dark fill */}
+          <ThemeIconButton variant="on-dark" />
+
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
-            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl transition-colors hover:bg-white/10 xl:hidden"
+            className="flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-xl bg-transparent transition-colors hover:bg-white/10 xl:hidden"
             aria-label="Toggle menu"
           >
             <span className={cn("h-0.5 w-5 bg-white transition-all", open && "translate-y-2 rotate-45")} />
