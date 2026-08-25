@@ -160,7 +160,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           </div>
 
           {activeProduct && (
-            <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-[#2d4a6b] shadow-xl">
+            <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-[#2d4a6b] shadow-xl dark:border-transparent">
               <div className="grid min-h-[520px] md:grid-cols-[0.8fr_1.2fr]">
                 <div className="relative flex flex-col justify-center p-8 text-white sm:p-10">
                   <div className="pointer-events-none absolute -left-24 top-12 h-56 w-56 rounded-full bg-[#8fb9e8]/20 blur-3xl" />
