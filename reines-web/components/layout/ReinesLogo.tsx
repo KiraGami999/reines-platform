@@ -49,8 +49,9 @@ const CORPORATE_SIZE_CLASS = {
   /**
    * Compact portal header mark (mobile top-left).
    * Caps width so the wide wordmark doesn’t crowd the hamburger + title.
+   * Slight bump from h-6 / 6.5rem — still under the bar height.
    */
-  header: "h-6 max-w-[6.5rem] sm:h-7 sm:max-w-[8rem]",
+  header: "h-7 max-w-[7.5rem] sm:h-8 sm:max-w-[9rem]",
   xl: "h-24 max-w-none sm:h-28 md:h-32",
 } as const;
 
