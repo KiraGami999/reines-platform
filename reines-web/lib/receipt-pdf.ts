@@ -149,7 +149,7 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     isPng ? pdf.embedPng(logoBytes) : pdf.embedJpg(logoBytes),
   ]);
 
-  const headerH = 200;
+  const headerH = 148;
   page.drawRectangle({
     x: 0,
     y: PAGE_HEIGHT - headerH,
@@ -158,16 +158,15 @@ export async function buildReceiptPdf(data: ReceiptPdfData): Promise<Uint8Array>
     color: NAVY,
   });
 
-  // Official Reines Group lockup — large and clear on the navy header.
-  // Asset is a square plate; size by width so the wordmark inside stays readable.
-  const maxLogoW = Math.min(320, PAGE_WIDTH - MARGIN * 2);
-  const maxLogoH = 140;
+  // Official Reines Group lockup — wide rectangular plate across the navy header.
+  const maxLogoW = Math.min(460, PAGE_WIDTH - MARGIN * 2);
+  const maxLogoH = 88;
   const scale = Math.min(maxLogoW / logo.width, maxLogoH / logo.height);
   const logoW = logo.width * scale;
   const logoH = logo.height * scale;
   page.drawImage(logo, {
     x: (PAGE_WIDTH - logoW) / 2,
-    y: PAGE_HEIGHT - 22 - logoH,
+    y: PAGE_HEIGHT - 18 - logoH,
     width: logoW,
     height: logoH,
   });

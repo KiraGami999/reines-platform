@@ -92,13 +92,13 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
         <div className="bg-[#1B334F] px-4 py-6 text-center print:block sm:px-8 sm:py-8">
-          {/* Official Reines Group lockup — large plate so the mark stays clear in print/PDF */}
+          {/* Official Reines Group lockup — wide rectangular plate for header + print/PDF */}
           <img
             src="/logo-receipt-reines-group.png"
             alt="Reines Group"
-            width={1024}
-            height={1024}
-            className="mx-auto h-28 w-auto max-w-[min(100%,320px)] object-contain object-center sm:h-36 sm:max-w-[400px]"
+            width={864}
+            height={184}
+            className="mx-auto h-14 w-auto max-w-[min(100%,420px)] object-contain object-center sm:h-16 sm:max-w-[520px]"
           />
           <p className="mt-3 text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80 sm:mt-4 sm:text-xs">
             Payment Receipt
