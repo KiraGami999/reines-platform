@@ -9,6 +9,10 @@ const schema = z.object({
   phone:       z.string().min(5, "Please enter a valid phone number"),
   address:     z.string().min(5, "Please enter your physical address"),
   occupation:  z.string().min(2, "Please enter your occupation"),
+  workplace:   z.string().min(2, "Please enter your workplace"),
+  interest:    z.enum(["PROJECTS", "PRODUCTS", "BOTH"] as const, {
+    errorMap: () => ({ message: "Please tell us how we can best support you" }),
+  }),
   idType:      z.enum(["ID_CARD", "PASSPORT", "DRIVING_LICENSE"] as const),
   idNumber:    z.string().min(3, "Please enter your ID/Document number"),
   documentUrl: z.string().url("Please upload your identity document"),
@@ -36,7 +40,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { fullName, phone, address, occupation, idType, idNumber, documentUrl } = parsed.data;
+    const { fullName, phone, address, occupation, workplace, interest, idType, idNumber, documentUrl } =
+      parsed.data;
 
     // Save to user DB and update status to PENDING
     const user = await prisma.user.update({
@@ -47,6 +52,8 @@ export async function POST(req: NextRequest) {
         verificationPhone:       phone,
         verificationAddress:     address,
         verificationOccupation:  occupation,
+        verificationWorkplace:   workplace,
+        verificationInterest:    interest,
         verificationIdType:      idType,
         verificationIdNumber:    idNumber,
         verificationDocumentUrl: documentUrl,
@@ -64,6 +71,8 @@ export async function POST(req: NextRequest) {
       phone,
       address,
       occupation,
+      workplace,
+      interest,
       idType,
       idNumber,
       documentUrl,

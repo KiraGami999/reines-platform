@@ -527,10 +527,18 @@ export async function sendClientVerificationSubmittedEmail(to: string, name?: st
   });
 }
 
-function adminVerificationHtml(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, idType: string, idNumber: string, documentUrl: string }): string {
+function adminVerificationHtml(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, workplace: string, interest: string, idType: string, idNumber: string, documentUrl: string }): string {
   const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_SITE_URL || "https://reines.co.mw";
   const fullDocumentLink = details.documentUrl ? `${baseUrl}/api/media?url=${encodeURIComponent(details.documentUrl)}` : "#";
   const reviewLink = `${baseUrl}/dashboard/admin/clients`;
+  const interestLabel =
+    details.interest === "PROJECTS"
+      ? "Construction & property projects"
+      : details.interest === "PRODUCTS"
+        ? "Building materials & products"
+        : details.interest === "BOTH"
+          ? "Both projects and products"
+          : details.interest;
 
   return `
   <div style="margin:0;padding:0;background:#f4f5f7;font-family:Segoe UI,Roboto,Helvetica,Arial,sans-serif;">
@@ -569,6 +577,14 @@ function adminVerificationHtml(clientName: string, clientEmail: string, details:
                   <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.occupation}</td>
                 </tr>
                 <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Workplace</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${details.workplace}</td>
+                </tr>
+                <tr>
+                  <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">Looking for</td>
+                  <td style="padding:6px 0;color:#18181b;font-size:13px;">${interestLabel}</td>
+                </tr>
+                <tr>
                   <td style="padding:6px 0;color:#71717a;font-size:13px;vertical-align:top;">ID Type</td>
                   <td style="padding:6px 0;color:#18181b;font-size:13px;text-transform:uppercase;">${details.idType}</td>
                 </tr>
@@ -598,13 +614,13 @@ function adminVerificationHtml(clientName: string, clientEmail: string, details:
   </div>`;
 }
 
-export async function sendAdminVerificationSubmittedEmail(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, idType: string, idNumber: string, documentUrl: string }): Promise<void> {
+export async function sendAdminVerificationSubmittedEmail(clientName: string, clientEmail: string, details: { phone: string, address: string, occupation: string, workplace: string, interest: string, idType: string, idNumber: string, documentUrl: string }): Promise<void> {
   const to = getQuotationNotifyEmail();
   await sendMail({
     to,
     subject: `[Review Required] Client Verification Request: ${clientName}`,
     html: adminVerificationHtml(clientName, clientEmail, details),
-    text: `A new client account is pending verification and requires review.\n\nClient Name: ${clientName}\nClient Email: ${clientEmail}\nID Type: ${details.idType}\nID Number: ${details.idNumber}\n\nReview this application in the admin portal under Client Management.`,
+    text: `A new client account is pending verification and requires review.\n\nClient Name: ${clientName}\nClient Email: ${clientEmail}\nWorkplace: ${details.workplace}\nLooking for: ${details.interest}\nID Type: ${details.idType}\nID Number: ${details.idNumber}\n\nReview this application in the admin portal under Client Management.`,
   });
 }
 

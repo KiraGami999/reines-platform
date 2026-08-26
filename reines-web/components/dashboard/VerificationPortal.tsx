@@ -20,6 +20,8 @@ interface VerificationUser {
   verificationPhone:       string | null;
   verificationAddress:     string | null;
   verificationOccupation:  string | null;
+  verificationWorkplace:   string | null;
+  verificationInterest:    string | null;
   verificationIdType:      string | null;
   verificationIdNumber:    string | null;
   verificationDocumentUrl: string | null;
@@ -28,6 +30,28 @@ interface VerificationUser {
 
 interface VerificationPortalProps {
   initialUser: VerificationUser;
+}
+
+const INTEREST_OPTIONS = [
+  {
+    value: "PROJECTS",
+    label: "Construction & property projects",
+    hint: "Build, develop, or manage a project with us",
+  },
+  {
+    value: "PRODUCTS",
+    label: "Building materials & products",
+    hint: "Concrete, blocks, and other supply needs",
+  },
+  {
+    value: "BOTH",
+    label: "Both projects and products",
+    hint: "A full partnership across services and supplies",
+  },
+] as const;
+
+function interestLabel(value: string | null | undefined) {
+  return INTEREST_OPTIONS.find((o) => o.value === value)?.label ?? value ?? "—";
 }
 
 const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
@@ -43,6 +67,8 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
     phone:    initialUser.verificationPhone ?? "",
     address:     initialUser.verificationAddress ?? "",
     occupation:  initialUser.verificationOccupation ?? "",
+    workplace:   initialUser.verificationWorkplace ?? "",
+    interest:    (initialUser.verificationInterest as "PROJECTS" | "PRODUCTS" | "BOTH" | "") ?? "",
     idType:      (initialUser.verificationIdType as "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE") ?? "ID_CARD",
     idNumber: initialUser.verificationIdNumber ?? "",
   });
@@ -110,6 +136,8 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
     if (!form.phone.trim()) return setError("Please enter your phone number.");
     if (!form.address.trim()) return setError("Please enter your physical address.");
     if (!form.occupation.trim()) return setError("Please enter your occupation.");
+    if (!form.workplace.trim()) return setError("Please enter your workplace.");
+    if (!form.interest) return setError("Please tell us how we can best support you.");
     if (!form.idNumber.trim()) return setError("Please enter your ID document number.");
     if (!documentUrl) return setError("Please upload a copy of your identity document.");
 
@@ -125,6 +153,8 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
           phone:       form.phone.trim(),
           address:     form.address.trim(),
           occupation:  form.occupation.trim(),
+          workplace:   form.workplace.trim(),
+          interest:    form.interest,
           idType:      form.idType,
           idNumber:    form.idNumber.trim(),
           documentUrl,
@@ -185,6 +215,14 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
             <div className="sm:col-span-2">
               <dt className="font-medium text-zinc-500">Occupation</dt>
               <dd className="mt-1 font-semibold text-zinc-900">{form.occupation}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="font-medium text-zinc-500">Workplace</dt>
+              <dd className="mt-1 font-semibold text-zinc-900">{form.workplace}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="font-medium text-zinc-500">How we can support you</dt>
+              <dd className="mt-1 font-semibold text-zinc-900">{interestLabel(form.interest)}</dd>
             </div>
             <div>
               <dt className="font-medium text-zinc-500">ID Type</dt>
@@ -294,6 +332,51 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
               onChange={(e) => set("occupation", e.target.value)}
               disabled={submitting}
             />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className={LABEL}>Workplace</label>
+            <input
+              type="text"
+              className={FIELD}
+              placeholder="e.g. Company name, organisation, or self-employed"
+              value={form.workplace}
+              onChange={(e) => set("workplace", e.target.value)}
+              disabled={submitting}
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label className={LABEL}>How can we best support you?</label>
+            <p className="mb-2 text-xs text-zinc-500">
+              Tell us what you&apos;re hoping to explore with Reines — we&apos;ll tailor how we assist you.
+            </p>
+            <div className="space-y-2">
+              {INTEREST_OPTIONS.map((option) => (
+                <label
+                  key={option.value}
+                  className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 transition ${
+                    form.interest === option.value
+                      ? "border-[#35475D] bg-[#35475D]/5"
+                      : "border-zinc-200 bg-white hover:border-zinc-300"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="interest"
+                    value={option.value}
+                    checked={form.interest === option.value}
+                    onChange={() => set("interest", option.value)}
+                    disabled={submitting}
+                    className="mt-1"
+                  />
+                  <span>
+                    <span className="block text-sm font-medium text-zinc-900">{option.label}</span>
+                    <span className="mt-0.5 block text-xs text-zinc-500">{option.hint}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
 
           <div className="sm:col-span-2">

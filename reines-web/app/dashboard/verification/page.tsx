@@ -24,6 +24,8 @@ export default async function VerificationPage() {
       verificationPhone:       true,
       verificationAddress:     true,
       verificationOccupation:  true,
+      verificationWorkplace:   true,
+      verificationInterest:    true,
       verificationIdType:      true,
       verificationIdNumber:    true,
       verificationDocumentUrl: true,

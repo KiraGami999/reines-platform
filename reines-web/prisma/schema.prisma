@@ -126,6 +126,11 @@ model User {
   verificationPhone       String?
   verificationAddress     String?
   verificationOccupation  String?
+  verificationWorkplace   String?
+  /**
+   * What the client is looking for with Reines: PROJECTS | PRODUCTS | BOTH
+   */
+  verificationInterest    String?
   verificationIdType      String? // "ID_CARD" | "PASSPORT" | "DRIVING_LICENSE"
   verificationIdNumber    String?
   verificationDocumentUrl String?
