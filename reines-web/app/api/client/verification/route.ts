@@ -10,10 +10,10 @@ const schema = z.object({
   address:     z.string().min(5, "Please enter your physical address"),
   occupation:  z.string().min(2, "Please enter your occupation"),
   workplace:   z.string().min(2, "Please enter your workplace"),
-  interest:    z.enum(["PROJECTS", "PRODUCTS", "BOTH"] as const, {
-    errorMap: () => ({ message: "Please tell us how we can best support you" }),
+  interest:    z.enum(["PROJECTS", "PRODUCTS", "BOTH"], {
+    message: "Please tell us how we can best support you",
   }),
-  idType:      z.enum(["ID_CARD", "PASSPORT", "DRIVING_LICENSE"] as const),
+  idType:      z.enum(["ID_CARD", "PASSPORT", "DRIVING_LICENSE"]),
   idNumber:    z.string().min(3, "Please enter your ID/Document number"),
   documentUrl: z.string().url("Please upload your identity document"),
 });
