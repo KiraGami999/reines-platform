@@ -114,7 +114,7 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                   {p.description ?? "—"}
                 </td>
                 <td className="px-2.5 py-2 sm:px-4 sm:py-3">
-                  <span className="block min-w-0 break-words font-semibold tabular-nums text-[#2d4a6b]">
+                  <span className="block min-w-0 break-words font-semibold tabular-nums text-[#35475D]">
                     {fmtPaymentAmount(p.amount, p.currency)}
                   </span>
                 </td>
@@ -130,7 +130,7 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
                 <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                   <Link
                     href={`/dashboard/payments/${p.txRef}`}
-                    className="flex items-center gap-1 text-xs text-zinc-400 hover:text-[#2d4a6b] transition-colors"
+                    className="flex items-center gap-1 text-xs text-zinc-400 hover:text-[#35475D] transition-colors"
                   >
                     Receipt <ArrowRight size={12} />
                   </Link>
@@ -144,7 +144,7 @@ export default function PaymentsTable({ payments, showUser = false }: PaymentsTa
         <p className="break-words">
           {payments.length} payment{payments.length !== 1 ? "s" : ""} total ·{" "}
           {payments.filter((p) => p.status === "SUCCESS").length} successful ·{" "}
-          <span className="font-semibold tabular-nums text-[#2d4a6b]">
+          <span className="font-semibold tabular-nums text-[#35475D]">
             {fmtPaymentAmount(
               payments.filter((p) => p.status === "SUCCESS").reduce((s, p) => s + p.amount, 0)
             )}

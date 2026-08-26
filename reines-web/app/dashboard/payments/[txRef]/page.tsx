@@ -91,7 +91,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
         id="payment-receipt"
         className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
       >
-        <div className="bg-[#1B334F] px-4 py-6 text-center print:block sm:px-8 sm:py-8">
+        <div className="bg-[#35475D] px-4 py-6 text-center print:block sm:px-8 sm:py-8">
           {/* Official Reines Group lockup — wide rectangular plate for header + print/PDF */}
           <img
             src="/logo-receipt-reines-group.png"
@@ -150,7 +150,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
             {
               label: "Amount",
               value: (
-                <span className="break-words text-base font-bold tabular-nums text-[#2d4a6b] sm:text-lg">
+                <span className="break-words text-base font-bold tabular-nums text-[#35475D] sm:text-lg">
                   {fmtPaymentAmount(Number(payment.amount), payment.currency)}
                 </span>
               ),
@@ -211,7 +211,7 @@ export default async function PaymentReceiptPage({ params, searchParams }: PageP
           {!isSuccess && !isCancelled && (
             <Link
               href={payment.project ? `/dashboard/projects/${payment.project.id}` : "/dashboard/payments"}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white hover:bg-[#283546] transition-colors"
             >
               Try Payment Again
             </Link>

@@ -201,7 +201,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
             <button
               type="button"
               onClick={addService}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
             >
               <Plus size={14} /> Add
             </button>
@@ -222,7 +222,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                   }`}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D]">
                       <Icon size={18} strokeWidth={1.8} />
                     </div>
                     <div className="min-w-0 flex-1">
@@ -249,7 +249,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
               type="button"
               onClick={save}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Services
@@ -392,7 +392,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                     <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                       {selectedService.tagline}
                     </p>
-                    <p className="mt-1 text-lg font-bold text-[#2d4a6b]">{selectedService.title}</p>
+                    <p className="mt-1 text-lg font-bold text-[#35475D]">{selectedService.title}</p>
                     <p className="mt-2 text-sm leading-relaxed text-zinc-500">
                       {selectedService.description}
                     </p>

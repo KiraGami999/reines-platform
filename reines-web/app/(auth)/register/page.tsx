@@ -21,7 +21,7 @@ export default function RegisterPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#2d4a6b] p-12">
+      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#35475D] p-12">
         <AuthDesktopBrandLogo />
 
         <div className="space-y-6">
@@ -56,7 +56,7 @@ export default function RegisterPage() {
           <AuthMobileBrandLogo />
 
           <div className="mb-8">
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Create your account</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Create your account</h1>
             <p className="mt-1 text-sm text-zinc-500">Create your Reines account to access your project portal.</p>
           </div>
 

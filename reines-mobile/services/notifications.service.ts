@@ -44,7 +44,7 @@ export const NOTIFICATION_CHANNELS = {
     description:      "Project status changes and milestones",
     importance:       Notifications.AndroidImportance.DEFAULT,
     vibrationPattern: [0, 200] as number[],
-    lightColor:       "#2d4a6b",
+    lightColor:       "#35475D",
     sound:            "default",
   },
   gallery: {
@@ -53,7 +53,7 @@ export const NOTIFICATION_CHANNELS = {
     description:      "New progress photos and updates",
     importance:       Notifications.AndroidImportance.DEFAULT,
     vibrationPattern: [0, 200] as number[],
-    lightColor:       "#2d4a6b",
+    lightColor:       "#35475D",
     sound:            "default",
   },
   payments: {

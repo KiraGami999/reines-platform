@@ -220,7 +220,7 @@ export default function AdminQuotationsPage() {
                 <li key={row.id}>
                   <button
                     onClick={() => openDetail(row)}
-                    className={`w-full px-4 py-4 text-left hover:bg-zinc-50 transition-colors ${selected?.id === row.id ? "bg-[#8fb9e8]/5 border-l-4 border-l-[#2d4a6b]" : ""}`}
+                    className={`w-full px-4 py-4 text-left hover:bg-zinc-50 transition-colors ${selected?.id === row.id ? "bg-[#8fb9e8]/5 border-l-4 border-l-[#35475D]" : ""}`}
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
@@ -387,7 +387,7 @@ export default function AdminQuotationsPage() {
                 <button
                   onClick={saveChanges}
                   disabled={!!savingId}
-                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+                  className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#283546] transition-colors disabled:opacity-60"
                 >
                   {savingId ? <><Loader2 size={14} className="animate-spin" /> Saving…</> : "Save Changes"}
                 </button>

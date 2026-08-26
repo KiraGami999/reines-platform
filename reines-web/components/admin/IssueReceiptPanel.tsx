@@ -28,7 +28,7 @@ export default function IssueReceiptPanel({ projects, clients }: IssueReceiptPan
     <>
       <button
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors shadow-sm"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#283546] transition-colors shadow-sm"
       >
         <Plus size={16} /> Issue Manual Receipt
       </button>

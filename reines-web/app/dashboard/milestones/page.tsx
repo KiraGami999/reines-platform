@@ -73,7 +73,7 @@ function MilestoneCard({ project }: { project: ManagerProject }) {
       <div className="mt-5 grid gap-3 border-t border-zinc-100 pt-4 text-sm sm:grid-cols-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Progress</p>
-          <p className="mt-1 font-bold text-[#2d4a6b]">{project.completionPercent}%</p>
+          <p className="mt-1 font-bold text-[#35475D]">{project.completionPercent}%</p>
         </div>
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Target End</p>
@@ -98,7 +98,7 @@ function MilestoneCard({ project }: { project: ManagerProject }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+        <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-sm font-medium text-white hover:bg-[#283546]">
           <ImageIcon size={14} /> Post update
         </Link>
         <Link href={`/dashboard/messages/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
@@ -125,7 +125,7 @@ export default async function MilestonesPage() {
     <div className="mx-auto max-w-7xl space-y-6">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Milestones</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">Milestones</h1>
           <p className="mt-0.5 text-sm text-zinc-500">
             Track manager actions, progress updates, and upcoming project checkpoints.
           </p>
@@ -133,19 +133,19 @@ export default async function MilestonesPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#2d4a6b] p-4">
+        <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#35475D] p-4">
           <CalendarClock className="h-5 w-5 text-zinc-500" />
           <p className="mt-3 text-2xl font-extrabold text-white">{activeProjects.length}</p>
           <p className="text-sm font-medium text-zinc-300">Active checkpoints</p>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-4">
           <ClipboardList className="h-5 w-5 text-zinc-500" />
-          <p className="mt-3 text-2xl font-extrabold text-[#2d4a6b]">{projects.filter((project) => project.updates.length === 0).length}</p>
+          <p className="mt-3 text-2xl font-extrabold text-[#35475D]">{projects.filter((project) => project.updates.length === 0).length}</p>
           <p className="text-sm font-medium text-zinc-500">Need first update</p>
         </div>
         <div className="rounded-xl border border-zinc-200 bg-white p-4">
           <CheckCircle2 className="h-5 w-5 text-zinc-500" />
-          <p className="mt-3 text-2xl font-extrabold text-[#2d4a6b]">{completedProjects.length}</p>
+          <p className="mt-3 text-2xl font-extrabold text-[#35475D]">{completedProjects.length}</p>
           <p className="text-sm font-medium text-zinc-500">Completed projects</p>
         </div>
       </div>

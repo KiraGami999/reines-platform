@@ -1,7 +1,7 @@
 """Build the navy-on-transparent Project Mate portal mark.
 
 Same crop + luminance-to-alpha pipeline as make-project-mate-logo.py, but the
-opaque foreground colour is the brand navy (#2d4a6b) instead of white. This
+opaque foreground colour is the brand navy (#35475D) instead of white. This
 is the asset used for "on-light" contexts (e.g. the auth pages' mobile brand
 mark, which sits on a light zinc/white panel) — a brightness(0) filter on the
 white mark rendered flat black there, which the client wants as the actual
@@ -21,7 +21,7 @@ OUT = Path(__file__).resolve().parents[1] / "public" / "logo-project-mate-navy.p
 
 MAX_X = 819
 
-NAVY_RGB = (45, 74, 107)  # #2d4a6b
+NAVY_RGB = (45, 74, 107)  # #35475D
 NAVY_LUMINANCE = 0.299 * NAVY_RGB[0] + 0.587 * NAVY_RGB[1] + 0.114 * NAVY_RGB[2]
 WHITE_LUMINANCE = 255.0
 

@@ -19,7 +19,7 @@ export default async function AdminPublicProjectsPage() {
             <FolderKanban className="h-5 w-5 text-zinc-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Public Projects</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Public Projects</h1>
             <p className="mt-1 text-sm text-zinc-500">
               Manage the project pictures, descriptions, status labels, and ordering shown on the public Projects page.
             </p>

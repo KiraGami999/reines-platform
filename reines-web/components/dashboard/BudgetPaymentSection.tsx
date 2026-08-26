@@ -43,7 +43,7 @@ export function BudgetPaymentSection({
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         {[
           { label: "Total Budget", value: fmtMWK(budget),    note: "Agreed contract value", colour: "text-zinc-900"  },
-          { label: "Paid to Date", value: fmtMWK(totalPaid), note: `${paidPct}% of total`,  colour: "text-[#2d4a6b]" },
+          { label: "Paid to Date", value: fmtMWK(totalPaid), note: `${paidPct}% of total`,  colour: "text-[#35475D]" },
           { label: "Outstanding",  value: fmtMWK(remaining), note: `${100 - paidPct}% left`, colour: "text-zinc-700" },
         ].map((s) => (
           <div key={s.label} className="min-w-0 rounded-xl bg-zinc-50 p-4">
@@ -66,7 +66,7 @@ export function BudgetPaymentSection({
         </div>
         <div className="h-2.5 w-full overflow-hidden rounded-full bg-zinc-100">
           <div
-            className="h-full rounded-full bg-[#2d4a6b] transition-all"
+            className="h-full rounded-full bg-[#35475D] transition-all"
             style={{ width: `${paidPct}%` }}
           />
         </div>
@@ -98,7 +98,7 @@ export function BudgetPaymentSection({
               Payment Milestones
             </p>
             {canRecord && (
-              <p className="text-[11px] font-medium text-[#2d4a6b]">
+              <p className="text-[11px] font-medium text-[#35475D]">
                 Tap an outstanding item to record cash or a bank transfer
               </p>
             )}
@@ -121,7 +121,7 @@ export function BudgetPaymentSection({
                   <div className="flex min-w-0 items-center gap-3">
                     <div
                       className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                        b.paid ? "bg-[#2d4a6b] text-white" : "bg-zinc-100 text-zinc-400"
+                        b.paid ? "bg-[#35475D] text-white" : "bg-zinc-100 text-zinc-400"
                       }`}
                     >
                       {b.paid ? "✓" : i + 1}
@@ -130,7 +130,7 @@ export function BudgetPaymentSection({
                   </div>
                   <div className="shrink-0 text-right">
                     <p className="text-sm font-bold tabular-nums text-zinc-900">{fmtMWK(b.amount)}</p>
-                    <p className={`text-[10px] font-semibold ${b.paid ? "text-[#2d4a6b]" : "text-zinc-400"}`}>
+                    <p className={`text-[10px] font-semibold ${b.paid ? "text-[#35475D]" : "text-zinc-400"}`}>
                       {b.paid ? "Paid" : "Outstanding"}
                     </p>
                   </div>
@@ -143,8 +143,8 @@ export function BudgetPaymentSection({
                 key={i}
                 className={`overflow-hidden rounded-xl border-2 transition-colors ${
                   isOpen
-                    ? "border-[#2d4a6b] bg-white shadow-sm"
-                    : "border-[#2d4a6b]/25 bg-[#2d4a6b]/[0.03] hover:border-[#2d4a6b]/50 hover:bg-[#2d4a6b]/[0.05]"
+                    ? "border-[#35475D] bg-white shadow-sm"
+                    : "border-[#35475D]/25 bg-[#35475D]/[0.03] hover:border-[#35475D]/50 hover:bg-[#35475D]/[0.05]"
                 }`}
               >
                 <button
@@ -154,12 +154,12 @@ export function BudgetPaymentSection({
                   className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
                 >
                   <div className="flex min-w-0 items-center gap-3">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold text-white">
                       {i + 1}
                     </div>
                     <div className="min-w-0">
                       <span className="block text-sm font-semibold text-zinc-800">{b.label}</span>
-                      <span className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-[#2d4a6b]">
+                      <span className="mt-0.5 flex items-center gap-1 text-[11px] font-medium text-[#35475D]">
                         <Banknote size={11} />
                         {isOpen
                           ? "Enter details below — admin will approve"
@@ -170,13 +170,13 @@ export function BudgetPaymentSection({
                   <div className="flex shrink-0 items-center gap-2.5">
                     <div className="text-right">
                       <p className="text-sm font-bold tabular-nums text-zinc-900">{fmtMWK(b.amount)}</p>
-                      <span className="inline-flex items-center rounded-full bg-[#2d4a6b] px-2 py-0.5 text-[10px] font-semibold text-white">
+                      <span className="inline-flex items-center rounded-full bg-[#35475D] px-2 py-0.5 text-[10px] font-semibold text-white">
                         Record
                       </span>
                     </div>
                     <ChevronDown
                       size={18}
-                      className={`text-[#2d4a6b] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+                      className={`text-[#35475D] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                       aria-hidden
                     />
                   </div>

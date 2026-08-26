@@ -38,7 +38,7 @@ export function PrintReceiptButton({ txRef }: { txRef: string }) {
         type="button"
         onClick={downloadPdf}
         disabled={isPending}
-        className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+        className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
       >
         <Download size={13} />
         {isPending ? "Preparing PDF…" : "Download PDF"}

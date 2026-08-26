@@ -125,7 +125,7 @@ export function LoginForm({ googleEnabled = false }: LoginFormProps) {
           <label htmlFor="password" className="block text-sm font-medium text-zinc-700">
             Password
           </label>
-          <Link href="/forgot-password" className="text-xs text-[#2d4a6b] hover:underline">
+          <Link href="/forgot-password" className="text-xs text-[#35475D] hover:underline">
             Forgot password?
           </Link>
         </div>
@@ -138,7 +138,7 @@ export function LoginForm({ googleEnabled = false }: LoginFormProps) {
             onChange={update("password")}
             required
             autoComplete="current-password"
-            className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#2d4a6b] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
+            className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#35475D] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
               errors.password
                 ? "border-red-400 focus:border-red-400 focus:ring-red-100"
                 : "border-zinc-200 focus:border-zinc-400 focus:ring-zinc-200"
@@ -176,7 +176,7 @@ export function LoginForm({ googleEnabled = false }: LoginFormProps) {
 
       <p className="text-center text-sm text-zinc-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-medium text-[#2d4a6b] underline-offset-2 hover:underline">
+        <Link href="/register" className="font-medium text-[#35475D] underline-offset-2 hover:underline">
           Create one
         </Link>
       </p>

@@ -22,7 +22,7 @@ export default async function MarketInsightsPage() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <Clock size={26} strokeWidth={1.8} />
           </div>
-          <h1 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl">
+          <h1 className="mt-5 text-2xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8] sm:text-3xl">
             Market insights are being updated.
           </h1>
           <p className="mx-auto mt-3 max-w-lg text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">
@@ -31,7 +31,7 @@ export default async function MarketInsightsPage() {
           </p>
           <Link
             href="/contact"
-            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#283546]"
           >
             Discuss Your Project
             <ArrowRight size={16} />
@@ -43,7 +43,7 @@ export default async function MarketInsightsPage() {
 
   return (
     <>
-      <section className="bg-[#2d4a6b] py-14 sm:py-24">
+      <section className="bg-[#35475D] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
             {settings.heroTag}
@@ -61,7 +61,7 @@ export default async function MarketInsightsPage() {
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
               <Lightbulb size={24} strokeWidth={1.8} />
             </div>
-            <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl lg:text-4xl">
+            <h2 className="mt-4 text-2xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8] sm:text-3xl lg:text-4xl">
               {settings.snapshotTitle}
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">
@@ -69,11 +69,11 @@ export default async function MarketInsightsPage() {
             </p>
           </div>
 
-          <div className="grid gap-4 rounded-3xl bg-[#2d4a6b] p-4 shadow-xl sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-4 rounded-3xl bg-[#35475D] p-4 shadow-xl sm:grid-cols-2 lg:grid-cols-4">
             {highlights.map((item) => (
               <div key={item.id} className="rounded-2xl bg-white/95 p-5 shadow-sm dark:bg-[var(--surface)]">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{item.label}</p>
-                <p className="mt-2 text-3xl font-extrabold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.value}</p>
+                <p className="mt-2 text-3xl font-extrabold text-[#35475D] dark:text-[#8fb9e8]">{item.value}</p>
                 <p className="mt-1 text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{item.note}</p>
               </div>
             ))}
@@ -90,7 +90,7 @@ export default async function MarketInsightsPage() {
                   <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                     {card.subtitle || "Market Indicator"}
                   </p>
-                  <h3 className="mt-1 text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{card.title}</h3>
+                  <h3 className="mt-1 text-lg font-bold text-[#35475D] dark:text-[#8fb9e8]">{card.title}</h3>
                   <p className="mt-3 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{card.body}</p>
 
                   {card.metrics.length > 0 && (
@@ -98,7 +98,7 @@ export default async function MarketInsightsPage() {
                       {card.metrics.map((metric) => (
                         <div key={metric.label} className="flex items-center justify-between gap-3 text-sm">
                           <span className="text-zinc-500 dark:text-[var(--text-muted)]">{metric.label}</span>
-                          <span className="font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{metric.value}</span>
+                          <span className="font-bold text-[#35475D] dark:text-[#8fb9e8]">{metric.value}</span>
                         </div>
                       ))}
                     </div>
@@ -116,11 +116,11 @@ export default async function MarketInsightsPage() {
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
               {settings.planningTag}
             </span>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">{settings.planningTitle}</h2>
+            <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8]">{settings.planningTitle}</h2>
             <p className="mt-4 text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">{settings.planningDescription}</p>
             <Link
               href={settings.ctaHref}
-              className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+              className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#283546]"
             >
               {settings.ctaLabel}
               <ArrowRight size={16} />
@@ -132,7 +132,7 @@ export default async function MarketInsightsPage() {
             <div className="mt-5 space-y-4">
               {settings.planningNotes.map((note, index) => (
                 <div key={note} className="flex gap-3">
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold text-[#8fb9e8]">
                     {index + 1}
                   </span>
                   <p className="text-sm leading-6 text-zinc-600 dark:text-[var(--text-secondary)]">{note}</p>

@@ -92,7 +92,7 @@ export default async function AdminClientsPage() {
               <UserCheck className="h-5 w-5" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-[#2d4a6b]">Client Management</h1>
+              <h1 className="text-2xl font-bold text-[#35475D]">Client Management</h1>
               <p className="mt-1 text-sm text-zinc-500">
                 View every registered client and open their assigned project work.
               </p>
@@ -102,7 +102,7 @@ export default async function AdminClientsPage() {
 
         <Link
           href="/dashboard/admin/users"
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546]"
         >
           Manage User Access
           <ArrowRight size={15} />

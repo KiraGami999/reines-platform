@@ -31,7 +31,7 @@ export default function GlobalError({
         <div className="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <button
             onClick={reset}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-5 py-2.5 text-sm font-medium text-white hover:bg-[#283546] transition-colors"
           >
             <RefreshCw size={14} /> Try again
           </button>

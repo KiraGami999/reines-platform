@@ -51,7 +51,7 @@ export default async function HomepageAdsPage() {
             <ImageIcon className="h-5 w-5 text-zinc-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Homepage Ads</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Homepage Ads</h1>
             <p className="mt-1 text-sm text-zinc-500">
               Choose which promotional images and copy appear on the public homepage (up to {MAX_HOMEPAGE_ADS} ads).
             </p>

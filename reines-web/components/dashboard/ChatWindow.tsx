@@ -47,7 +47,7 @@ function MessageBubble({
         className={cn(
           "max-w-[78%] rounded-2xl px-4 py-2.5 text-sm leading-relaxed shadow-sm transition-opacity",
           isOwn
-            ? "rounded-br-sm bg-[#2d4a6b] text-white"
+            ? "rounded-br-sm bg-[#35475D] text-white"
             : "rounded-bl-sm border border-zinc-100 bg-white text-zinc-800",
           isPending && "opacity-60"
         )}
@@ -150,12 +150,12 @@ function ChatInput({ onSend, disabled, sending }: ChatInputProps) {
           placeholder="Type a message… (Enter to send · Shift+Enter for new line)"
           rows={1}
           maxLength={MSG_MAX + 50}
-          className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 caret-[#2d4a6b] placeholder:text-zinc-400 focus:border-zinc-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-100 disabled:opacity-50"
+          className="flex-1 resize-none rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-sm text-zinc-900 caret-[#35475D] placeholder:text-zinc-400 focus:border-zinc-300 focus:bg-white focus:outline-none focus:ring-2 focus:ring-zinc-100 disabled:opacity-50"
         />
         <button
           onClick={handleSend}
           disabled={!text.trim() || disabled || sending || charsLeft < 0}
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b] text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D] text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
           aria-label="Send message"
         >
           {sending

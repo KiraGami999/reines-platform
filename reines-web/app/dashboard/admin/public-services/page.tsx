@@ -15,7 +15,7 @@ export default async function AdminPublicServicesPage() {
             <Wrench className="h-5 w-5 text-zinc-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Public Services</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Public Services</h1>
             <p className="mt-1 text-sm text-zinc-500">
               Manage the services, descriptions, feature lists, icons, and ordering shown on the public Services page.
             </p>

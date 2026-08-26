@@ -158,7 +158,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-amber-50 text-amber-500">
             <Clock className="h-7 w-7 animate-pulse" />
           </div>
-          <h2 className="mt-4 text-xl font-bold text-[#2d4a6b]">Verification Under Review</h2>
+          <h2 className="mt-4 text-xl font-bold text-[#35475D]">Verification Under Review</h2>
           <p className="mt-2 text-sm text-zinc-500 max-w-md">
             Thank you for submitting your identity verification documents. Our administrators are currently reviewing your details.
           </p>
@@ -207,10 +207,10 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
     <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
       <div className="flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-zinc-500">
-          <ShieldCheck className="h-5 w-5 text-[#2d4a6b]" />
+          <ShieldCheck className="h-5 w-5 text-[#35475D]" />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-[#2d4a6b]">KYC Identity Verification</h2>
+          <h2 className="text-xl font-bold text-[#35475D]">KYC Identity Verification</h2>
           <p className="text-xs text-zinc-500">Verify your profile to unlock all client features.</p>
         </div>
       </div>
@@ -315,7 +315,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
           {documentUrl ? (
             <div className="flex items-center justify-between rounded-xl border border-zinc-200 bg-zinc-50 p-4">
               <div className="flex items-center gap-3 min-w-0">
-                <FileText className="h-6 w-6 shrink-0 text-[#2d4a6b]" />
+                <FileText className="h-6 w-6 shrink-0 text-[#35475D]" />
                 <span className="truncate text-xs font-semibold text-zinc-900">
                   {fileName ?? "Identity_Document_Uploaded.jpg"}
                 </span>
@@ -343,7 +343,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
               />
               {uploading ? (
                 <>
-                  <Loader2 className="h-7 w-7 animate-spin text-[#2d4a6b]" />
+                  <Loader2 className="h-7 w-7 animate-spin text-[#35475D]" />
                   <p className="mt-3 text-xs font-semibold text-zinc-900">Uploading document...</p>
                 </>
               ) : (
@@ -371,7 +371,7 @@ export default function VerificationPortal({ initialUser }: VerificationPortalPr
         <button
           type="submit"
           disabled={submitting || uploading}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] py-3 text-sm font-semibold text-white transition hover:bg-[#1a2f4a] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#35475D] py-3 text-sm font-semibold text-white transition hover:bg-[#283546] disabled:opacity-50"
         >
           {submitting ? (
             <>

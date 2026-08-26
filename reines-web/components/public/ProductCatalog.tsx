@@ -71,7 +71,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
             <PackageCheck size={26} strokeWidth={1.8} />
           </div>
-          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8]">
             Products are being updated
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-zinc-500">
@@ -79,7 +79,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           </p>
           <Link
             href="/quote"
-            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+            className="mt-8 inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#283546]"
           >
             Request a quote <ArrowRight size={16} />
           </Link>
@@ -130,7 +130,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                     }`}
                   >
                     <div className="flex items-start gap-3">
-                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${active ? "bg-[#2d4a6b] text-[#8fb9e8]" : "bg-zinc-100 text-zinc-500 dark:bg-[var(--surface-muted)]"}`}>
+                      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${active ? "bg-[#35475D] text-[#8fb9e8]" : "bg-zinc-100 text-zinc-500 dark:bg-[var(--surface-muted)]"}`}>
                         <Icon size={18} strokeWidth={1.8} />
                       </div>
                       <div className="min-w-0">
@@ -160,7 +160,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
           </div>
 
           {activeProduct && (
-            <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-[#2d4a6b] shadow-xl dark:border-transparent">
+            <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-[#35475D] shadow-xl dark:border-transparent">
               <div className="grid min-h-[520px] md:grid-cols-[0.8fr_1.2fr]">
                 <div className="relative flex flex-col justify-center p-8 text-white sm:p-10">
                   <div className="pointer-events-none absolute -left-24 top-12 h-56 w-56 rounded-full bg-[#8fb9e8]/20 blur-3xl" />
@@ -208,7 +208,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
 
                     <Link
                       href="/quote"
-                      className="mt-8 [#8fb9e8] px-5 py-3 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
+                      className="mt-8 [#8fb9e8] px-5 py-3 text-sm font-semibold text-[#35475D] transition-colors hover:bg-[#b8d4f2]"
                     >
                       Request product quote
                       <ArrowRight size={16} />
@@ -231,7 +231,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                       }`}
                     />
                   ))}
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#2d4a6b] via-[#2d4a6b]/10 to-transparent md:from-[#2d4a6b]/45" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#35475D] via-[#35475D]/10 to-transparent md:from-[#35475D]/45" />
 
                   <div className="absolute bottom-5 left-5 right-5 grid grid-cols-3 gap-3">
                     {visibleProducts.slice(0, 3).map((product) => (
@@ -272,7 +272,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.label}</h3>
+                  <h3 className="text-sm font-semibold text-[#35475D] dark:text-[#8fb9e8]">{item.label}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.description}</p>
                 </div>
               </div>
@@ -293,7 +293,7 @@ export function ProductCatalog({ products }: { products: ProductCatalogItem[] })
                   <Icon size={18} strokeWidth={1.8} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.title}</h3>
+                  <h3 className="text-sm font-semibold text-[#35475D] dark:text-[#8fb9e8]">{item.title}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-zinc-500">{item.body}</p>
                 </div>
               </div>

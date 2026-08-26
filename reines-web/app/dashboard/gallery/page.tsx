@@ -41,7 +41,7 @@ function ProjectSection({
           {canUpload && (
             <Link
               href={`/dashboard/projects/${project.id}/gallery?tab=upload`}
-              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#1a2f4a] sm:flex-none"
+              className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-[#283546] sm:flex-none"
             >
               <Plus size={12} /> Add Update
             </Link>
@@ -78,7 +78,7 @@ function EmptyGallery({ canUpload }: { canUpload: boolean }) {
       {canUpload && (
         <Link
           href="/dashboard/manage/projects"
-          className="mt-6 [#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="mt-6 [#35475D] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
         >
           <FolderKanban size={14} /> Go to Projects
         </Link>
@@ -112,7 +112,7 @@ export default async function GalleryPage() {
       {/* ── Page header ── */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Progress Gallery</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">Progress Gallery</h1>
           <p className="mt-0.5 text-sm text-zinc-500">
             {totalPhotos} photo{totalPhotos !== 1 ? "s" : ""} across {totalProjects} project{totalProjects !== 1 ? "s" : ""}
           </p>
@@ -133,7 +133,7 @@ export default async function GalleryPage() {
               key={s.label}
               className={`flex items-center gap-3 rounded-xl border p-4 ${
                 s.accent
-                  ? "border-[#8fb9e8]/30 bg-[#2d4a6b]"
+                  ? "border-[#8fb9e8]/30 bg-[#35475D]"
                   : "border-zinc-200 bg-white"
               }`}
             >
@@ -145,7 +145,7 @@ export default async function GalleryPage() {
                 <Icon size={16} className="text-zinc-500" />
               </div>
               <div>
-                <p className={`text-xl font-extrabold ${s.accent ? "text-white" : "text-[#2d4a6b]"}`}>
+                <p className={`text-xl font-extrabold ${s.accent ? "text-white" : "text-[#35475D]"}`}>
                   {s.value}
                 </p>
                 <p className={`text-xs ${s.accent ? "text-zinc-400" : "text-zinc-400"}`}>

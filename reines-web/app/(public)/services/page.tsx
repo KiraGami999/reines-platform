@@ -22,7 +22,7 @@ export default async function ServicesPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-14 sm:py-24">
+      <section className="bg-[#35475D] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">What We Offer</span>
           <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -52,7 +52,7 @@ export default async function ServicesPage() {
                     <p className="mt-4 text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                       {service.tagline}
                     </p>
-                    <h2 className="mt-1 text-2xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{service.title}</h2>
+                    <h2 className="mt-1 text-2xl font-bold text-[#35475D] dark:text-[#8fb9e8]">{service.title}</h2>
                     <p className="mt-3 leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{service.description}</p>
                   </div>
                   <div className="w-full rounded-xl bg-zinc-50 p-6 dark:bg-[var(--surface-muted)] lg:w-72">
@@ -78,13 +78,13 @@ export default async function ServicesPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">How It Works</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Our Process</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Our Process</h2>
           </div>
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
             {process.map((step) => (
               <div key={step.step} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                 <span className="text-3xl font-extrabold text-[#8fb9e8]/40">{step.step}</span>
-                <h3 className="mt-3 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{step.title}</h3>
+                <h3 className="mt-3 font-semibold text-[#35475D] dark:text-[#8fb9e8]">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{step.body}</p>
               </div>
             ))}
@@ -93,13 +93,13 @@ export default async function ServicesPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#2d4a6b] py-16">
+      <section className="bg-[#35475D] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold text-white">Let&apos;s build something together.</h2>
           <p className="mt-3 text-zinc-400">Request a quote or ask a question — our team responds within 24 hours.</p>
           <Link
             href="/quote"
-            className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]"
+            className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#35475D] hover:bg-[#b8d4f2]"
           >
             Request a Quote
           </Link>

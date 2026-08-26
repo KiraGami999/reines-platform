@@ -51,7 +51,7 @@ function AnimatedStat({ value, label }: { value: number; label: string }) {
   const { count, ref } = useCountUp(value);
   return (
     <div ref={ref} className="text-center">
-      <p className="text-2xl sm:text-4xl font-extrabold text-[#2d4a6b] dark:text-[#8fb9e8]">{count}+</p>
+      <p className="text-2xl sm:text-4xl font-extrabold text-[#35475D] dark:text-[#8fb9e8]">{count}+</p>
       <p className="mt-1 text-xs sm:text-sm text-zinc-500 dark:text-[var(--text-muted)]">{label}</p>
     </div>
   );
@@ -77,7 +77,7 @@ export function CurrentProjectsBanner({ projects }: { projects: Project[] }) {
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75" />
             <span className="relative inline-flex h-3 w-3 rounded-full bg-blue-500" />
           </span>
-          <span className="text-sm font-semibold uppercase tracking-widest text-[#2d4a6b] dark:text-[#8fb9e8]">
+          <span className="text-sm font-semibold uppercase tracking-widest text-[#35475D] dark:text-[#8fb9e8]">
             Current Projects
           </span>
         </div>
@@ -106,7 +106,7 @@ export function CurrentProjectsBanner({ projects }: { projects: Project[] }) {
                       <span className="text-xs font-semibold text-zinc-500 uppercase tracking-wide dark:text-[var(--text-muted)]">{cfg.label}</span>
                       <span className="ml-auto text-xs text-zinc-400">{i + 1} / {active.length}</span>
                     </div>
-                    <p className="text-base font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{p.title}</p>
+                    <p className="text-base font-bold text-[#35475D] dark:text-[#8fb9e8]">{p.title}</p>
                     <p className="text-sm text-zinc-500 mt-0.5 dark:text-[var(--text-muted)]">{p.type} · {p.location} · {p.year}</p>
 
                     {/* Progress dots */}
@@ -115,7 +115,7 @@ export function CurrentProjectsBanner({ projects }: { projects: Project[] }) {
                         <button
                           key={di}
                           onClick={() => setVisible(di)}
-                          className={`h-1.5 rounded-full transition-all duration-300 ${di === visible ? "w-6 bg-[#2d4a6b] dark:bg-[#8fb9e8]" : "w-1.5 bg-zinc-300 dark:bg-[var(--border)]"}`}
+                          className={`h-1.5 rounded-full transition-all duration-300 ${di === visible ? "w-6 bg-[#35475D] dark:bg-[#8fb9e8]" : "w-1.5 bg-zinc-300 dark:bg-[var(--border)]"}`}
                         />
                       ))}
                     </div>

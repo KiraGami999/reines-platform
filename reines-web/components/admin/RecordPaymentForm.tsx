@@ -216,7 +216,7 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
                 setError("");
               }}
               disabled={submitting}
-              className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.receiptType === value ? "border-[#2d4a6b] bg-[#2d4a6b] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
+              className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.receiptType === value ? "border-[#35475D] bg-[#35475D] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
             >
               {label}
             </button>
@@ -259,7 +259,7 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
                     setError("");
                   }}
                   disabled={submitting}
-                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.productBuyer === value ? "border-[#2d4a6b] bg-[#2d4a6b] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
+                  className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${form.productBuyer === value ? "border-[#35475D] bg-[#35475D] text-white" : "border-zinc-200 text-zinc-600 hover:bg-zinc-50"}`}
                 >
                   {label}
                 </button>
@@ -399,7 +399,7 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
             type="button"
             onClick={() => fileRef.current?.click()}
             disabled={uploading || submitting}
-            className="mt-1 flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-zinc-200 px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#2d4a6b] hover:text-[#2d4a6b] disabled:opacity-50"
+            className="mt-1 flex w-full flex-col items-center gap-2 rounded-xl border-2 border-dashed border-zinc-200 px-4 py-5 text-sm text-zinc-400 transition-colors hover:border-[#35475D] hover:text-[#35475D] disabled:opacity-50"
           >
             <ImageIcon size={20} className="text-zinc-400" />
             <span className="font-medium">Click to upload receipt image</span>
@@ -442,7 +442,7 @@ export default function RecordPaymentForm({ projects, clients, onCancel }: Recor
         <button
           type="submit"
           disabled={submitting || uploading}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#35475D] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <><Loader2 size={14} className="animate-spin" /> Recording…</>

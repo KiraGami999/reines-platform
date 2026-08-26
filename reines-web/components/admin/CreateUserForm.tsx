@@ -183,7 +183,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
               key={r.value}
               className={`flex cursor-pointer items-start gap-3 rounded-xl border-2 p-3.5 transition-all ${
                 form.role === r.value
-                  ? `border-[#2d4a6b] bg-[#2d4a6b]/3`
+                  ? `border-[#35475D] bg-[#35475D]/3`
                   : "border-zinc-200 bg-white hover:border-zinc-300"
               }`}
             >
@@ -193,7 +193,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
                 value={r.value}
                 checked={form.role === r.value}
                 onChange={() => set("role", r.value)}
-                className="mt-0.5 accent-[#2d4a6b]"
+                className="mt-0.5 accent-[#35475D]"
               />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
@@ -215,7 +215,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
         <button
           type="submit"
           disabled={loading}
-          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#35475D] py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
         >
           {loading
             ? <><Loader2 size={14} className="animate-spin" /> {isEdit ? "Saving…" : "Creating…"}</>

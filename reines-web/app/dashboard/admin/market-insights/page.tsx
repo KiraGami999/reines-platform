@@ -15,7 +15,7 @@ export default async function AdminMarketInsightsPage() {
             <LineChart className="h-5 w-5 text-zinc-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Market Insights</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Market Insights</h1>
             <p className="mt-1 text-sm text-zinc-500">
               Update the rates, indices, and copy shown on the public Market Insights page, or hide the whole page
               while figures are out of date.

@@ -15,7 +15,7 @@ export default async function AdminClientLogosPage() {
           <Building className="h-5 w-5 text-zinc-500" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-[#2d4a6b]">Client Logos</h1>
+          <h1 className="text-2xl font-bold text-[#35475D]">Client Logos</h1>
           <p className="mt-1 text-sm text-zinc-500">
             Manage the &quot;Clients We&apos;ve Worked With&quot; logo strip shown on the public homepage.
           </p>

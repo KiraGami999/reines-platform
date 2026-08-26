@@ -17,7 +17,7 @@ export default async function ProjectsPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-14 sm:py-24">
+      <section className="bg-[#35475D] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Our Portfolio</span>
           <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -40,11 +40,11 @@ export default async function ProjectsPage() {
       </section>
 
       {/* CTA */}
-      <section className="bg-[#2d4a6b] py-16">
+      <section className="bg-[#35475D] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <h2 className="text-3xl font-bold text-white">Your project could be next.</h2>
           <p className="mt-3 text-zinc-400">Reach out and let&apos;s discuss what you&apos;re building.</p>
-          <Link href="/contact" className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/contact" className="mt-6 inline-block rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#35475D] hover:bg-[#b8d4f2]">
             Start a Conversation
           </Link>
         </div>

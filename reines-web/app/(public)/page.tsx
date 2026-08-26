@@ -73,7 +73,7 @@ const features = [
 
 function Hero({ ads }: { ads: HomepageAd[] }) {
   return (
-    <section className="relative overflow-hidden bg-[#243040] lg:flex lg:min-h-[92vh] lg:items-center">
+    <section className="relative overflow-hidden bg-[#35475D] lg:flex lg:min-h-[92vh] lg:items-center">
       <div className="relative mx-auto w-full max-w-7xl px-4 py-12 pb-10 sm:px-6 sm:py-16 sm:pb-12 lg:px-8 lg:py-24 lg:pb-20">
         <div className="grid grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 lg:items-stretch lg:gap-12 xl:gap-16">
           {/* Left — ad carousel + compact featured strip (aligned with CTAs) */}
@@ -144,7 +144,7 @@ function ClientsAndStats({ logos, showLogos }: { logos: ClientLogoItem[]; showLo
         <div className={`grid grid-cols-2 gap-4 sm:gap-8 md:grid-cols-4 ${hasLogos ? "pt-10 sm:pt-14" : ""}`}>
           {stats.map((s) => (
             <div key={s.label} className="text-center">
-              <p className="text-2xl font-extrabold text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-3xl md:text-4xl">{s.value}</p>
+              <p className="text-2xl font-extrabold text-[#35475D] dark:text-[#8fb9e8] sm:text-3xl md:text-4xl">{s.value}</p>
               <p className="mt-1 text-xs font-medium text-zinc-500 dark:text-[var(--text-muted)] sm:text-sm">{s.label}</p>
             </div>
           ))}
@@ -160,7 +160,7 @@ function Services() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">What We Do</span>
-          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-4xl">Our Core Services</h2>
+          <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8] sm:text-4xl">Our Core Services</h2>
           <p className="mx-auto mt-4 max-w-2xl text-zinc-500 dark:text-[var(--text-muted)]">
             From development planning to construction manufacturing, Reines builds an integrated value chain for Malawi&apos;s growth.
           </p>
@@ -174,7 +174,7 @@ function Services() {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <Icon size={22} strokeWidth={1.8} />
                 </div>
-              <h3 className="mt-4 text-base font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{s.title}</h3>
+              <h3 className="mt-4 text-base font-semibold text-[#35475D] dark:text-[#8fb9e8]">{s.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{s.description}</p>
               </div>
             );
@@ -199,7 +199,7 @@ function WhyReines() {
           {/* Text */}
           <div className="min-w-0">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Why Choose Us</span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8] sm:text-4xl">
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-[#35475D] dark:text-[#8fb9e8] sm:text-4xl">
               Built on values.<br />Strengthened by execution.
             </h2>
             <p className="mt-4 text-zinc-500 dark:text-[var(--text-muted)]">
@@ -228,7 +228,7 @@ function WhyReines() {
                     <span className="h-2 w-2 rounded-full bg-[#8fb9e8]" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{f.title}</h4>
+                    <h4 className="font-semibold text-[#35475D] dark:text-[#8fb9e8]">{f.title}</h4>
                     <p className="mt-1 text-sm text-zinc-500 dark:text-[var(--text-muted)]">{f.body}</p>
                   </div>
                 </div>
@@ -245,7 +245,7 @@ function WhyReines() {
 
           {/* Visual block */}
           <div className="relative">
-            <div className="overflow-hidden rounded-2xl bg-[#2d4a6b] p-8 shadow-xl">
+            <div className="overflow-hidden rounded-2xl bg-[#35475D] p-8 shadow-xl">
               <div className="space-y-4">
                 {["Investment Opportunity Identified", "Planning & Design Complete", "Financing & Procurement Active", "Execution Across Sites", "In-house Materials Support"].map((step, i) => (
                   <div key={i} className={`flex items-center gap-3 rounded-lg px-4 py-3 text-sm ${i < 2 ? "bg-[#8fb9e8]/15 text-[#8fb9e8]" : i === 2 ? "bg-white/10 text-white" : "bg-white/5 text-zinc-500"}`}>
@@ -266,7 +266,7 @@ function WhyReines() {
 
 function CtaBanner() {
   return (
-    <section className="bg-[#2d4a6b] py-14 sm:py-20">
+    <section className="bg-[#35475D] py-14 sm:py-20">
       <div className="mx-auto max-w-4xl px-4 text-center sm:px-6">
         <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
           Ready to build with Reines?
@@ -275,7 +275,7 @@ function CtaBanner() {
           Partner with a development, construction, and sustainable construction manufacturing company focused on strong foundations and long-term value.
         </p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-          <Link href="/quote" className="rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#2d4a6b] hover:bg-[#b8d4f2]">
+          <Link href="/quote" className="rounded-xl bg-[#8fb9e8] px-8 py-3 text-sm font-semibold text-[#35475D] hover:bg-[#b8d4f2]">
             Get a Quote
           </Link>
           <Link href="/projects" className="rounded-xl border border-zinc-600 px-8 py-3 text-sm font-medium text-zinc-300 hover:border-zinc-400 hover:text-white">

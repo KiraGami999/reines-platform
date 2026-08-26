@@ -89,8 +89,8 @@ function RewardForm({
         </div>
         <div className="flex items-center gap-2 pt-4">
           <label className="text-xs font-semibold text-zinc-600">Active</label>
-          <button type="button" onClick={() => set("active", !form.active)} className="text-zinc-400 hover:text-[#2d4a6b]">
-            {form.active ? <ToggleRight size={22} className="text-[#2d4a6b]" /> : <ToggleLeft size={22} />}
+          <button type="button" onClick={() => set("active", !form.active)} className="text-zinc-400 hover:text-[#35475D]">
+            {form.active ? <ToggleRight size={22} className="text-[#35475D]" /> : <ToggleLeft size={22} />}
           </button>
         </div>
       </div>
@@ -98,7 +98,7 @@ function RewardForm({
       {error && <p className="text-xs text-red-600">{error}</p>}
 
       <div className="flex gap-2">
-        <button onClick={handleSubmit} disabled={saving} className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60">
+        <button onClick={handleSubmit} disabled={saving} className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white hover:bg-[#283546] transition-colors disabled:opacity-60">
           {saving ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
           Save Reward
         </button>
@@ -188,7 +188,7 @@ export function RewardCatalogueManager({ rewards: initial }: { rewards: RewardIt
         {!adding && (
           <button
             onClick={() => setAdding(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-medium text-white hover:bg-[#283546] transition-colors"
           >
             <Plus size={13} /> Add Reward
           </button>
@@ -240,7 +240,7 @@ export function RewardCatalogueManager({ rewards: initial }: { rewards: RewardIt
                             {CATEGORY_LABELS[rw.category] ?? rw.category}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-semibold text-[#2d4a6b]">{rw.pointsCost} pts</td>
+                        <td className="px-4 py-3 font-semibold text-[#35475D]">{rw.pointsCost} pts</td>
                         <td className="px-4 py-3">
                           <button
                             onClick={() => toggleActive(rw.id, !rw.active)}
@@ -260,7 +260,7 @@ export function RewardCatalogueManager({ rewards: initial }: { rewards: RewardIt
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <button onClick={() => setEditing(rw.id)} className="text-zinc-400 hover:text-[#2d4a6b] transition-colors">
+                            <button onClick={() => setEditing(rw.id)} className="text-zinc-400 hover:text-[#35475D] transition-colors">
                               <Pencil size={14} />
                             </button>
                             <button

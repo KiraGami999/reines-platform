@@ -91,7 +91,7 @@ export function ReinesChatbot() {
     <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
       {open && (
         <section className="mb-3 flex h-[520px] w-[min(92vw,380px)] flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-2xl shadow-black/20 dark:border-[var(--border)] dark:bg-[var(--surface)]">
-          <header className="flex items-center justify-between bg-[#2d4a6b] px-4 py-3 text-white">
+          <header className="flex items-center justify-between bg-[#35475D] px-4 py-3 text-white">
             <div className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
                 <Bot size={19} />
@@ -118,7 +118,7 @@ export function ReinesChatbot() {
                 className={cn(
                   "max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed",
                   message.role === "user"
-                    ? "ml-auto bg-[#2d4a6b] text-white"
+                    ? "ml-auto bg-[#35475D] text-white"
                     : "mr-auto border border-zinc-200 bg-white text-zinc-700 dark:border-[var(--border)] dark:bg-[var(--surface)] dark:text-[var(--text-secondary)]"
                 )}
               >
@@ -146,12 +146,12 @@ export function ReinesChatbot() {
               onChange={(event) => setInput(event.target.value)}
               placeholder="Ask about Reines..."
               maxLength={600}
-              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 caret-[#2d4a6b] outline-none placeholder:text-zinc-400 focus:border-[#8fb9e8] focus:ring-2 focus:ring-[#8fb9e8]/20 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] dark:text-[var(--foreground)] dark:placeholder:text-[var(--text-muted)]"
+              className="min-w-0 flex-1 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 caret-[#35475D] outline-none placeholder:text-zinc-400 focus:border-[#8fb9e8] focus:ring-2 focus:ring-[#8fb9e8]/20 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] dark:text-[var(--foreground)] dark:placeholder:text-[var(--text-muted)]"
             />
             <button
               type="submit"
               disabled={loading || !input.trim()}
-              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8] text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2] disabled:cursor-not-allowed disabled:opacity-50"
+              className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#8fb9e8] text-[#35475D] transition-colors hover:bg-[#b8d4f2] disabled:cursor-not-allowed disabled:opacity-50"
               aria-label="Send message"
             >
               {loading ? <Loader2 size={17} className="animate-spin" /> : <Send size={17} />}
@@ -163,7 +163,7 @@ export function ReinesChatbot() {
       <button
         type="button"
         onClick={() => setOpen((current) => !current)}
-        className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-[#1a2f4a]"
+        className="inline-flex items-center gap-2 rounded-xl bg-[#35475D] px-4 py-3 text-sm font-semibold text-white shadow-xl shadow-black/20 transition-all hover:-translate-y-0.5 hover:bg-[#283546]"
         aria-label="Open Reines AI chatbot"
       >
         <MessageCircle size={18} />

@@ -85,7 +85,7 @@ function VerifyEmailForm() {
   return (
     <div className="flex min-h-screen">
       {/* Left brand panel */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#2d4a6b] p-12">
+      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#35475D] p-12">
         <AuthDesktopBrandLogo />
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">Verify your email</h2>
@@ -108,13 +108,13 @@ function VerifyEmailForm() {
           {done ? (
             <div className="text-center space-y-4">
               <CheckCircle2 size={48} className="mx-auto text-green-500" />
-              <h1 className="text-xl font-bold text-[#2d4a6b]">Email verified!</h1>
+              <h1 className="text-xl font-bold text-[#35475D]">Email verified!</h1>
               <p className="text-sm text-zinc-500">Redirecting you to sign in…</p>
             </div>
           ) : (
             <>
               <div className="mb-8">
-                <h1 className="text-2xl font-bold text-[#2d4a6b]">Verify your email</h1>
+                <h1 className="text-2xl font-bold text-[#35475D]">Verify your email</h1>
                 <p className="mt-1 text-sm text-zinc-500">
                   Enter the 6-digit code we sent to{" "}
                   {emailParam
@@ -140,7 +140,7 @@ function VerifyEmailForm() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10"
+                      className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10"
                     />
                   </div>
                 )}
@@ -155,13 +155,13 @@ function VerifyEmailForm() {
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="000000"
-                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-center tracking-[0.4em] placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10 font-mono text-lg"
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-center tracking-[0.4em] placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10 font-mono text-lg"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? "Verifying…" : "Verify email"}

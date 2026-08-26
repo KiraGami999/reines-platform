@@ -38,7 +38,7 @@ export default async function SettingsPage() {
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Settings</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">Settings</h1>
         <p className="mt-0.5 text-sm text-zinc-500">
           Manage your account, appearance, and portal preferences.
         </p>
@@ -47,7 +47,7 @@ export default async function SettingsPage() {
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-zinc-800 dark:text-zinc-400">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D] dark:bg-zinc-800 dark:text-zinc-400">
               <Moon size={18} />
             </div>
             <div>
@@ -67,7 +67,7 @@ export default async function SettingsPage() {
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="rounded-2xl border border-zinc-200 bg-white p-6 lg:col-span-2">
           <div className="flex items-start gap-4">
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#2d4a6b] text-base font-bold text-[#8fb9e8]">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#35475D] text-base font-bold text-[#8fb9e8]">
               {initials}
             </div>
             <div className="min-w-0">
@@ -109,7 +109,7 @@ export default async function SettingsPage() {
             <div className="mt-3 flex flex-col gap-2">
               <Link
                 href="/dashboard/messages"
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#2d4a6b] hover:underline"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#35475D] hover:underline"
               >
                 <MessageSquare size={13} />
                 Open Messages

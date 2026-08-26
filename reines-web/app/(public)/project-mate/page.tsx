@@ -190,8 +190,8 @@ function PortalMock() {
       </div>
 
       <div className="absolute -right-3 top-10 hidden items-center gap-2 rounded-full bg-white px-3 py-1.5 shadow-lg dark:bg-[var(--surface)] sm:-right-10 sm:flex">
-        <Bell size={13} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
-        <span className="text-[11px] font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">New milestone update</span>
+        <Bell size={13} className="text-[#35475D] dark:text-[#8fb9e8]" />
+        <span className="text-[11px] font-semibold text-[#35475D] dark:text-[#8fb9e8]">New milestone update</span>
       </div>
     </div>
   );
@@ -205,11 +205,11 @@ function GuideList({ items }: { items: { title: string; body: string }[] }) {
           key={item.title}
           className="flex gap-3 border-b border-zinc-100 pb-4 last:border-b-0 last:pb-0 dark:border-[var(--border)]"
         >
-          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
+          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold text-white">
             {index + 1}
           </span>
           <div>
-            <p className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{item.title}</p>
+            <p className="text-sm font-semibold text-[#35475D] dark:text-[#8fb9e8]">{item.title}</p>
             <p className="mt-1 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{item.body}</p>
           </div>
         </li>
@@ -222,7 +222,7 @@ export default function ProjectMatePage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-[#2d4a6b] py-14 sm:py-20">
+      <section className="relative overflow-hidden bg-[#35475D] py-14 sm:py-20">
         <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-[#8fb9e8]/10 blur-3xl" />
         <div className="pointer-events-none absolute -right-16 bottom-0 h-80 w-80 rounded-full bg-white/5 blur-3xl" />
 
@@ -243,7 +243,7 @@ export default function ProjectMatePage() {
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+                className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#35475D] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
               >
                 <LogIn size={16} strokeWidth={2.2} />
                 Sign in to your portal
@@ -273,7 +273,7 @@ export default function ProjectMatePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Getting Started</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">How It Works</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#35475D] dark:text-[#8fb9e8]">How It Works</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               From first sign-in to your latest site update, Project Mate keeps clients and managers aligned.
             </p>
@@ -282,13 +282,13 @@ export default function ProjectMatePage() {
           <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {steps.map((step, index) => (
               <div key={step.title} className="relative rounded-2xl border border-zinc-200 bg-zinc-50 p-6 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
-                <span className="absolute -top-3 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-white">
+                <span className="absolute -top-3 -left-1 flex h-7 w-7 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold text-white">
                   {index + 1}
                 </span>
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <step.icon size={22} strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-4 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{step.title}</h3>
+                <h3 className="mt-4 font-semibold text-[#35475D] dark:text-[#8fb9e8]">{step.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{step.body}</p>
               </div>
             ))}
@@ -303,7 +303,7 @@ export default function ProjectMatePage() {
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
               Portal Guides
             </span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">How to Use Your Portal</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#35475D] dark:text-[#8fb9e8]">How to Use Your Portal</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               Follow the path that matches your role. Both portals share the same Reines account system — what
               you see depends on whether you are a client or a project manager.
@@ -317,7 +317,7 @@ export default function ProjectMatePage() {
                   <Wallet size={20} strokeWidth={1.8} />
                 </span>
                 <div>
-                  <h3 className="text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">As a Client</h3>
+                  <h3 className="text-lg font-bold text-[#35475D] dark:text-[#8fb9e8]">As a Client</h3>
                   <p className="text-xs text-zinc-500 dark:text-[var(--text-muted)]">Track your build without chasing updates</p>
                 </div>
               </div>
@@ -330,7 +330,7 @@ export default function ProjectMatePage() {
                   <LayoutDashboard size={20} strokeWidth={1.8} />
                 </span>
                 <div>
-                  <h3 className="text-lg font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">As a Project Manager</h3>
+                  <h3 className="text-lg font-bold text-[#35475D] dark:text-[#8fb9e8]">As a Project Manager</h3>
                   <p className="text-xs text-zinc-500 dark:text-[var(--text-muted)]">Keep assigned projects moving and visible</p>
                 </div>
               </div>
@@ -341,7 +341,7 @@ export default function ProjectMatePage() {
           <div className="mt-8 flex justify-center">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#243c58]"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#35475D] px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#2A3A4D]"
             >
               <LogIn size={16} strokeWidth={2.2} />
               Go to portal sign-in
@@ -355,7 +355,7 @@ export default function ProjectMatePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Features</span>
-            <h2 className="mt-2 text-3xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Everything in One Portal</h2>
+            <h2 className="mt-2 text-3xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Everything in One Portal</h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-zinc-500 dark:text-[var(--text-muted)]">
               The same capabilities you&apos;ll get in the mobile app later are already available through the
               web portals today.
@@ -368,7 +368,7 @@ export default function ProjectMatePage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#8fb9e8]/10 text-[#8fb9e8]">
                   <feature.icon size={20} strokeWidth={1.8} />
                 </div>
-                <h3 className="mt-3 font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{feature.title}</h3>
+                <h3 className="mt-3 font-semibold text-[#35475D] dark:text-[#8fb9e8]">{feature.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{feature.body}</p>
               </div>
             ))}
@@ -377,7 +377,7 @@ export default function ProjectMatePage() {
       </section>
 
       {/* Mobile app coming soon + CTA */}
-      <section className="bg-[#2d4a6b] py-16">
+      <section className="bg-[#35475D] py-16">
         <div className="mx-auto max-w-3xl px-4 text-center">
           <Image
             src="/logo-project-mate.png"
@@ -394,7 +394,7 @@ export default function ProjectMatePage() {
           <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
+              className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#35475D] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-black/20"
             >
               <LogIn size={16} strokeWidth={2.2} />
               Sign in to your portal

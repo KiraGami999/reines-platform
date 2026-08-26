@@ -125,7 +125,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-[#2d4a6b]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-100 text-[#35475D]">
               <MessageSquareText className="h-5 w-5" />
             </div>
             <div>
@@ -146,7 +146,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
                 setMessage("");
                 setError("");
               }}
-              className="h-4 w-4 rounded border-zinc-300 text-[#2d4a6b] focus:ring-[#2d4a6b]"
+              className="h-4 w-4 rounded border-zinc-300 text-[#35475D] focus:ring-[#35475D]"
             />
             {enabled ? "Enabled" : "Disabled (use Welcome)"}
           </label>
@@ -241,7 +241,7 @@ export default function PortalGreetingsForm({ initialSettings }: Props) {
         <button
           type="submit"
           disabled={saving}
-          className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#1a2f4a] disabled:opacity-60"
+          className="inline-flex items-center gap-2 rounded-xl bg-[#35475D] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#283546] disabled:opacity-60"
         >
           {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           {saving ? "Saving…" : "Save greetings"}

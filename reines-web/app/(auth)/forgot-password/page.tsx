@@ -70,7 +70,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className="flex min-h-screen">
       {/* Left brand panel */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#2d4a6b] p-12">
+      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#35475D] p-12">
         <AuthDesktopBrandLogo />
         <div className="space-y-4">
           <h2 className="text-2xl font-bold text-white">Reset your password</h2>
@@ -93,13 +93,13 @@ export default function ForgotPasswordPage() {
           {done ? (
             <div className="text-center space-y-4">
               <CheckCircle2 size={48} className="mx-auto text-green-500" />
-              <h1 className="text-xl font-bold text-[#2d4a6b]">Password updated!</h1>
+              <h1 className="text-xl font-bold text-[#35475D]">Password updated!</h1>
               <p className="text-sm text-zinc-500">Redirecting you to sign in…</p>
             </div>
           ) : phase === "email" ? (
             <>
               <div className="mb-8">
-                <h1 className="text-2xl font-bold text-[#2d4a6b]">Forgot password?</h1>
+                <h1 className="text-2xl font-bold text-[#35475D]">Forgot password?</h1>
                 <p className="mt-1 text-sm text-zinc-500">
                   Enter your account email and we&apos;ll send a reset code.
                 </p>
@@ -121,13 +121,13 @@ export default function ForgotPasswordPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@example.com"
-                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10"
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? "Sending…" : "Send reset code"}
@@ -143,7 +143,7 @@ export default function ForgotPasswordPage() {
           ) : (
             <>
               <div className="mb-8">
-                <h1 className="text-2xl font-bold text-[#2d4a6b]">Enter your code</h1>
+                <h1 className="text-2xl font-bold text-[#35475D]">Enter your code</h1>
                 <p className="mt-1 text-sm text-zinc-500">
                   We sent a 6-digit code to <span className="font-medium text-zinc-700">{email}</span>.
                   It expires in 15 minutes.
@@ -168,7 +168,7 @@ export default function ForgotPasswordPage() {
                     value={code}
                     onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
                     placeholder="000000"
-                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-center tracking-[0.4em] placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10 font-mono text-lg"
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm text-center tracking-[0.4em] placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10 font-mono text-lg"
                   />
                 </div>
                 <div>
@@ -179,7 +179,7 @@ export default function ForgotPasswordPage() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Min 8 chars, uppercase, number"
-                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10"
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10"
                   />
                 </div>
                 <div>
@@ -190,13 +190,13 @@ export default function ForgotPasswordPage() {
                     value={confirm}
                     onChange={(e) => setConfirm(e.target.value)}
                     placeholder="Repeat new password"
-                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#2d4a6b] focus:ring-2 focus:ring-[#2d4a6b]/10"
+                    className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm placeholder-zinc-400 outline-none focus:border-[#35475D] focus:ring-2 focus:ring-[#35475D]/10"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={loading}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#243d5a] disabled:opacity-60 transition-colors"
                 >
                   {loading && <Loader2 size={15} className="animate-spin" />}
                   {loading ? "Updating…" : "Set new password"}

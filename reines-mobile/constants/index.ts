@@ -38,13 +38,13 @@ export const QUERY_STALE_TIME_MS = 30_000;
 export const APP_NAME = "Reines Project Mate";
 
 export const COLORS = {
-  primary:      "#2d4a6b",
-  primaryDark:  "#1a2f4a",
+  primary:      "#35475D",
+  primaryDark:  "#283546",
   primaryHover: "#243d5a",
   accent:       "#8fb9e8",
   accentHover:  "#b8d4f2",
   accentMuted:  "rgba(143, 185, 232, 0.15)",
-  hero:         "#243040",
+  hero:         "#35475D",
   white:        "#ffffff",
   zinc50:       "#fafafa",
   zinc100:      "#f4f4f5",
@@ -117,7 +117,7 @@ export const PROJECT_STATUS_CONFIG: Record<string, { label: string; color: strin
   PLANNING:    { label: "Planning",     color: "#8fb9e8" },
   IN_PROGRESS: { label: "In Progress",  color: "#16a34a" },
   ON_HOLD:     { label: "On Hold",      color: "#ca8a04" },
-  COMPLETED:   { label: "Completed",    color: "#2d4a6b" },
+  COMPLETED:   { label: "Completed",    color: "#35475D" },
   CANCELLED:   { label: "Cancelled",    color: "#dc2626" },
 };
 

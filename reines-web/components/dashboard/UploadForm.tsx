@@ -307,7 +307,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
           {galleryHref && (
             <a
               href={galleryHref}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white hover:bg-[#243d5a] transition-colors"
             >
               <Images size={14} /> View Gallery
             </a>
@@ -345,7 +345,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               Applies to this entire batch upload.
             </p>
           </div>
-          <span className="shrink-0 rounded-full bg-[#8fb9e8]/10 px-3 py-1 text-sm font-bold text-[#2d4a6b]">
+          <span className="shrink-0 rounded-full bg-[#8fb9e8]/10 px-3 py-1 text-sm font-bold text-[#35475D]">
             {progressPercent}%
           </span>
         </div>
@@ -361,7 +361,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
             type="range" min={0} max={100} step={1}
             value={progressPercent}
             onChange={(ev) => setProgressPercent(Number(ev.target.value))}
-            className="w-full accent-[#2d4a6b]"
+            className="w-full accent-[#35475D]"
           />
           <div className="mt-1 flex justify-between text-[11px] text-zinc-400">
             <span>0%</span><span>50%</span><span>100%</span>
@@ -402,7 +402,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               type="button"
               disabled={isSubmitting}
               onClick={() => photoInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#35475D] disabled:opacity-50"
             >
               <FileImage size={15} />
               Add photos
@@ -411,7 +411,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
               type="button"
               disabled={isSubmitting}
               onClick={() => docInputRef.current?.click()}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-[#8fb9e8] hover:text-[#35475D] disabled:opacity-50"
             >
               <FileText size={15} />
               Add documents
@@ -471,7 +471,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
                         <Image src={entry.preview} alt="" fill className="object-cover" sizes="48px" />
                       </div>
                     ) : (
-                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#2d4a6b]/10 text-[#2d4a6b]">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#35475D]/10 text-[#35475D]">
                         {entry.kind === "image" ? <FileImage size={20} /> : <FileText size={20} />}
                       </div>
                     )}
@@ -493,7 +493,7 @@ export function UploadForm({ projectId, projectTitle, galleryHref }: UploadFormP
 
                     {/* Status / remove */}
                     <div className="shrink-0">
-                      {isUploading && <Loader2 size={16} className="animate-spin text-[#2d4a6b]" />}
+                      {isUploading && <Loader2 size={16} className="animate-spin text-[#35475D]" />}
                       {isDone      && <CheckCircle2 size={16} className="text-green-500" />}
                       {isError     && <AlertCircle  size={16} className="text-red-500" />}
                       {isPending && !isSubmitting && (

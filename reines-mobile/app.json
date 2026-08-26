@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#2d4a6b"
+      "backgroundColor": "#35475D"
     },
     "ios": {
       "supportsTablet": false,
@@ -23,7 +23,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/android-icon-foreground.png",
-        "backgroundColor": "#2d4a6b"
+        "backgroundColor": "#35475D"
       },
       "package": "mw.co.reines.portal",
       "permissions": [
@@ -52,7 +52,7 @@
         "expo-notifications",
         {
           "icon": "./assets/android-icon-monochrome.png",
-          "color": "#2d4a6b",
+          "color": "#35475D",
           "sounds": []
         }
       ]

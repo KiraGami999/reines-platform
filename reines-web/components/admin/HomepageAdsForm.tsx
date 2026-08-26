@@ -296,14 +296,14 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
                       />
                       <span
                         className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-xs font-semibold ${
-                          selected ? "bg-[#8fb9e8] text-[#2d4a6b]" : "bg-black/50 text-white"
+                          selected ? "bg-[#8fb9e8] text-[#35475D]" : "bg-black/50 text-white"
                         }`}
                       >
                         {selected ? "Selected" : "Select"}
                       </span>
                     </div>
                     <div className="p-4">
-                      <p className="text-sm font-semibold text-[#2d4a6b]">{image.defaultTitle}</p>
+                      <p className="text-sm font-semibold text-[#35475D]">{image.defaultTitle}</p>
                       <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-zinc-500">
                         {image.defaultSubtitle}
                       </p>
@@ -339,7 +339,7 @@ export default function HomepageAdsForm({ initialLibraryImages, initialAds, usin
             type="button"
             onClick={save}
             disabled={saving}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             Save Selection

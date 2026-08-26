@@ -61,7 +61,7 @@ export default async function AdminLoyaltyPage() {
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">Loyalty Management</h1>
+        <h1 className="text-2xl font-bold text-[#35475D]">Loyalty Management</h1>
         <p className="mt-1 text-sm text-zinc-500">
           Configure point rules, manage rewards, track client spend and allocate points.
         </p>
@@ -77,7 +77,7 @@ export default async function AdminLoyaltyPage() {
         ].map((s) => (
           <div
             key={s.label}
-            className={`rounded-xl p-5 flex items-center gap-4 ${s.dark ? "bg-[#2d4a6b] text-white" : "bg-white border border-zinc-200"}`}
+            className={`rounded-xl p-5 flex items-center gap-4 ${s.dark ? "bg-[#35475D] text-white" : "bg-white border border-zinc-200"}`}
           >
             <div className={`w-11 h-11 rounded-xl flex items-center justify-center shrink-0 ${s.dark ? "bg-zinc-100 text-zinc-500" : "bg-zinc-100 text-zinc-500"}`}>
               {s.icon}
@@ -147,13 +147,13 @@ export default async function AdminLoyaltyPage() {
                             {tier.label}
                           </span>
                         </td>
-                        <td className="px-4 py-3 font-bold text-[#2d4a6b]">
+                        <td className="px-4 py-3 font-bold text-[#35475D]">
                           {c.totalPoints.toLocaleString()} pts
                         </td>
                         <td className="px-4 py-3">
                           <Link
                             href={`/dashboard/admin/loyalty/${c.clientId}`}
-                            className="flex items-center gap-1 text-xs text-zinc-400 hover:text-[#2d4a6b] transition-colors"
+                            className="flex items-center gap-1 text-xs text-zinc-400 hover:text-[#35475D] transition-colors"
                           >
                             Manage <ChevronRight size={12} />
                           </Link>
@@ -201,7 +201,7 @@ export default async function AdminLoyaltyPage() {
                         <p className="text-xs text-zinc-400">{r.client.email}</p>
                       </td>
                       <td className="px-4 py-3 text-zinc-700">{r.reward.name}</td>
-                      <td className="px-4 py-3 font-semibold text-[#2d4a6b]">{r.pointsUsed} pts</td>
+                      <td className="px-4 py-3 font-semibold text-[#35475D]">{r.pointsUsed} pts</td>
                       <td className="px-4 py-3">
                         <span className={`inline-flex rounded-full border px-2.5 py-0.5 text-xs font-semibold ${
                           r.status === "FULFILLED"  ? "bg-green-50 border-green-200 text-green-700" :

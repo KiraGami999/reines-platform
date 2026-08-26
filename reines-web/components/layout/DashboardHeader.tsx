@@ -309,7 +309,7 @@ function UserMenu({ user }: UserMenuProps) {
         aria-label="User menu"
         aria-expanded={open}
       >
-        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#2d4a6b] text-[10px] font-bold uppercase text-[#8fb9e8]">
+        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-[#35475D] text-[10px] font-bold uppercase text-[#8fb9e8]">
           {initials}
         </div>
         <span className="hidden max-w-[120px] truncate font-medium text-zinc-700 dark:text-[var(--text-secondary)] sm:block">
@@ -323,7 +323,7 @@ function UserMenu({ user }: UserMenuProps) {
           {/* User info header */}
           <div className="border-b border-zinc-100 px-4 py-3 dark:border-[var(--border)]">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-sm font-bold text-[#8fb9e8]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-sm font-bold text-[#8fb9e8]">
                 {initials}
               </div>
               <div className="min-w-0">

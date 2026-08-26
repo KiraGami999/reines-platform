@@ -43,7 +43,7 @@ function HeroBar({ project }: { project: Project }) {
   const days   = daysRemaining(project.endDate);
 
   return (
-    <div className="overflow-hidden rounded-2xl bg-[#2d4a6b]">
+    <div className="overflow-hidden rounded-2xl bg-[#35475D]">
       {/* Top accent */}
       <div
         className={`h-1 w-full ${
@@ -304,7 +304,7 @@ function UpdateDocument({
       href={url}
       target="_blank"
       rel="noopener noreferrer"
-      className="mt-3 inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-[#2d4a6b] transition-colors hover:bg-zinc-50"
+      className="mt-3 inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-xs font-medium text-[#35475D] transition-colors hover:bg-zinc-50"
     >
       <FileText size={14} className="shrink-0 text-zinc-500" />
       <span className="truncate">{name ?? "Project document"}</span>
@@ -345,7 +345,7 @@ function UpdatesSection({ updates }: { updates: ProjectUpdate[] }) {
               className="rounded-xl border border-zinc-100 bg-zinc-50 p-4"
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold text-[#8fb9e8]">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold text-[#8fb9e8]">
                   {batches.length - i}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -353,7 +353,7 @@ function UpdatesSection({ updates }: { updates: ProjectUpdate[] }) {
                     <div className="mb-3">
                       <div className="mb-1 flex items-center justify-between text-xs">
                         <span className="font-medium text-zinc-500">Estimated progress</span>
-                        <span className="font-bold text-[#2d4a6b]">{batch.progressPercent}%</span>
+                        <span className="font-bold text-[#35475D]">{batch.progressPercent}%</span>
                       </div>
                       <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
                         <div
@@ -422,7 +422,7 @@ function QuickActions({ project, role }: { project: Project; role: string }) {
   if (role === "PROJECT_MANAGER" && !project.managerAccepted) {
     return (
       <div className="rounded-2xl border border-blue-200 bg-blue-50/70 p-5">
-        <h2 className="text-sm font-semibold text-[#2d4a6b]">Pending Assignment</h2>
+        <h2 className="text-sm font-semibold text-[#35475D]">Pending Assignment</h2>
         <p className="mt-2 text-sm leading-relaxed text-blue-700">
           Accept this project to activate your connection with the client and unlock messaging and progress updates.
         </p>

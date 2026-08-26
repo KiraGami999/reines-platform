@@ -157,7 +157,7 @@ function Lightbox({ updates, index, projectId, canDelete, onClose, onDeleted }: 
         onClick={onClose}
       >
         <div
-          className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-[#2d4a6b] shadow-2xl"
+          className="relative flex w-full max-w-4xl flex-col overflow-hidden rounded-2xl bg-[#35475D] shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Action row */}
@@ -400,7 +400,7 @@ function TabBar({
             <span
               className={cn(
                 "rounded-full px-1.5 py-0.5 text-[11px] font-semibold leading-none",
-                active ? "bg-[#8fb9e8]/20 text-[#2d4a6b]" : "bg-zinc-200 text-zinc-500"
+                active ? "bg-[#8fb9e8]/20 text-[#35475D]" : "bg-zinc-200 text-zinc-500"
               )}
             >
               {t.count}
@@ -476,7 +476,7 @@ function BatchUpdateCard({
             <div className="mt-3 max-w-md">
               <div className="mb-1 flex items-center justify-between text-xs">
                 <span className="font-medium text-zinc-500">Estimated progress</span>
-                <span className="font-bold text-[#2d4a6b]">{batch.progressPercent}%</span>
+                <span className="font-bold text-[#35475D]">{batch.progressPercent}%</span>
               </div>
               <div className="h-1.5 overflow-hidden rounded-full bg-zinc-200">
                 <div
@@ -526,15 +526,15 @@ function BatchUpdateCard({
                 key={u.id}
                 className="flex items-start gap-3 rounded-xl border border-zinc-100 bg-zinc-50 p-3"
               >
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10">
-                  <FileText size={16} strokeWidth={1.8} className="text-[#2d4a6b]" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10">
+                  <FileText size={16} strokeWidth={1.8} className="text-[#35475D]" />
                 </div>
                 <div className="min-w-0 flex-1">
                   <a
                     href={u.documentUrl ?? "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold text-[#2d4a6b] hover:underline"
+                    className="text-sm font-semibold text-[#35475D] hover:underline"
                   >
                     {u.documentName ?? "Project document"}
                   </a>

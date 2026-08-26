@@ -122,7 +122,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
     <div className="space-y-6">
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D]">
             <UserCircle size={18} />
           </div>
           <div className="min-w-0 flex-1">
@@ -164,7 +164,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
               <button
                 type="submit"
                 disabled={savingName || name.trim() === initialName.trim()}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1a2f4a] disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#283546] disabled:opacity-60"
               >
                 {savingName ? <Loader2 size={14} className="animate-spin" /> : null}
                 {savingName ? "Saving…" : "Save name"}
@@ -176,7 +176,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D]">
             <KeyRound size={18} />
           </div>
           <div className="min-w-0 flex-1">
@@ -185,7 +185,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
               <p className="mt-1 text-xs leading-relaxed text-zinc-500">
                 This account signs in with Google and has no password yet. You can create one
                 anytime with{" "}
-                <Link href="/forgot-password" className="font-medium text-[#2d4a6b] underline-offset-2 hover:underline">
+                <Link href="/forgot-password" className="font-medium text-[#35475D] underline-offset-2 hover:underline">
                   Forgot password
                 </Link>
                 .
@@ -194,7 +194,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
               <>
                 <p className="mt-1 text-xs leading-relaxed text-zinc-500">
                   Change your password here, or use{" "}
-                  <Link href="/forgot-password" className="font-medium text-[#2d4a6b] underline-offset-2 hover:underline">
+                  <Link href="/forgot-password" className="font-medium text-[#35475D] underline-offset-2 hover:underline">
                     Forgot password
                   </Link>{" "}
                   if you need an email reset code.
@@ -274,7 +274,7 @@ export function SettingsAccountPanel({ initialName, email }: Props) {
                   <button
                     type="submit"
                     disabled={savingPassword || hasPassword === null}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1a2f4a] disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#283546] disabled:opacity-60"
                   >
                     {savingPassword ? <Loader2 size={14} className="animate-spin" /> : null}
                     {savingPassword ? "Updating…" : "Update password"}

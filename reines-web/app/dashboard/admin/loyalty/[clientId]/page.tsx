@@ -54,7 +54,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
       {/* Back */}
       <Link
         href="/dashboard/admin/loyalty"
-        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[#2d4a6b] transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-[#35475D] transition-colors"
       >
         <ArrowLeft size={14} /> Back to Loyalty Overview
       </Link>
@@ -62,7 +62,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
       {/* Header */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#2d4a6b]">{client.name}</h1>
+          <h1 className="text-2xl font-bold text-[#35475D]">{client.name}</h1>
           <p className="text-sm text-zinc-500">{client.email}</p>
         </div>
         <div className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-sm font-semibold ${meetsMin ? "border-green-200 bg-green-50 text-green-700" : "border-zinc-200 bg-zinc-50 text-zinc-500"}`}>
@@ -142,7 +142,7 @@ export default async function ClientLoyaltyPage({ params }: PageProps) {
                   <p className="text-xs text-zinc-400">{new Date(r.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</p>
                 </div>
                 <div className="flex items-center gap-3">
-                  <p className="text-sm font-semibold text-[#2d4a6b]">-{r.pointsUsed} pts</p>
+                  <p className="text-sm font-semibold text-[#35475D]">-{r.pointsUsed} pts</p>
                   <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
                     r.status === "FULFILLED" ? "bg-green-50 border-green-200 text-green-700" :
                     r.status === "CANCELLED" ? "bg-zinc-100 border-zinc-200 text-zinc-500" :

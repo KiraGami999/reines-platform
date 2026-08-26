@@ -39,7 +39,7 @@ export default async function UsersPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">User Management</h1>
+        <h1 className="text-2xl font-bold text-[#35475D]">User Management</h1>
         <p className="text-zinc-500 mt-1 text-sm">
           Create accounts, assign roles, and manage access for all platform users.
         </p>

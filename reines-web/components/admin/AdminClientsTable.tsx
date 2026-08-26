@@ -62,7 +62,7 @@ export default function AdminClientsTable({ initialClients }: Props) {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <a href={`mailto:${client.email}`} className="inline-flex items-center gap-2 text-zinc-500 hover:text-[#2d4a6b]">
+                      <a href={`mailto:${client.email}`} className="inline-flex items-center gap-2 text-zinc-500 hover:text-[#35475D]">
                         <Mail size={13} />
                         {client.email}
                       </a>

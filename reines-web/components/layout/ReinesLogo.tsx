@@ -7,7 +7,7 @@ import type { PortalLogoMark } from "@/lib/portal-branding";
 export const REINES_LOGO_LEGACY_SRC = "/logo.png";
 /** Current Reines Property Development / Reines Group rebrand — admin portal + public footer. */
 export const REINES_LOGO_SRC = "/logo-nav-rebrand.png";
-/** Pre-rendered navy (#2d4a6b) — Reines Group on light/pale backgrounds. */
+/** Pre-rendered navy (#35475D) — Reines Group on light/pale backgrounds. */
 export const REINES_LOGO_NAVY_SRC = "/logo-nav-rebrand-navy.png";
 export const PROJECT_MATE_LOGO_SRC = "/logo-project-mate.png";
 /** Pre-rendered navy foreground — Project Mate on light/pale backgrounds. */
@@ -103,7 +103,7 @@ const CORPORATE_ACCENT_FILTER =
 const MARK_CONFIG = {
   corporate: {
     src: REINES_LOGO_SRC,
-    /** Navy (#2d4a6b) on pale backgrounds (light admin header). */
+    /** Navy (#35475D) on pale backgrounds (light admin header). */
     lightSrc: REINES_LOGO_NAVY_SRC as string | null,
     accentSrc: null as string | null,
     width: LOGO_WIDTH,

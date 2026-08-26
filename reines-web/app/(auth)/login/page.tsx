@@ -20,7 +20,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   return (
     <div className="flex min-h-screen">
       {/* Left panel — branding */}
-      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#2d4a6b] p-12">
+      <div className="hidden lg:flex w-1/2 flex-col justify-between bg-[#35475D] p-12">
         <AuthDesktopBrandLogo />
 
         <div>

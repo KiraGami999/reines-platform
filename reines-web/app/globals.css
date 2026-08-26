@@ -13,15 +13,15 @@
   --border: #e4e4e7; /* zinc-200 */
   --border-subtle: #f4f4f5; /* zinc-100 */
   --text-muted: #71717a; /* zinc-500 */
-  --brand: #2d4a6b;
-  --brand-hover: #1a2f4a;
+  --brand: #35475D;
+  --brand-hover: #283546;
   --brand-accent: #8fb9e8;
   color-scheme: light;
 }
 
 /* ── Dark (black canvas + brand blues — ~70% black / 30% blue tint) ───────────
  * Pure #000 washes out; a near-black with a cool blue undertone keeps depth.
- * Surfaces lift slightly so cards remain readable. #2d4a6b + #8fb9e8 stay
+ * Surfaces lift slightly so cards remain readable. #35475D + #8fb9e8 stay
  * unchanged as the brand signal on both website and mobile WebViews.
  */
 .dark {
@@ -35,8 +35,8 @@
   --border-subtle: #1e2633;
   --text-muted: #9aa8b8;
   --text-secondary: #c5cfdc;
-  --brand: #2d4a6b;
-  --brand-hover: #1a2f4a;
+  --brand: #35475D;
+  --brand-hover: #283546;
   --brand-accent: #8fb9e8;
   --heading-on-dark: #a8c9eb;
   color-scheme: dark;
@@ -100,7 +100,7 @@ select:disabled {
  * Navy portal sidebar is brand chrome — identical in light and dark.
  */
 .dark [data-portal] .portal-sidebar {
-  background-color: #2d4a6b !important;
+  background-color: #35475D !important;
 }
 /*
  * Catch solid bg-white/NN opacity utilities (upload overlays, etc.).
@@ -148,7 +148,7 @@ select:disabled {
   color: #7d8b9c;
 }
 /* Navy headings → soft brand accent so they stay clear on black */
-.dark [data-portal] :is(.text-\[\#2d4a6b\]) {
+.dark [data-portal] :is(.text-\[\#35475D\]) {
   color: var(--heading-on-dark);
 }
 /*
@@ -160,8 +160,8 @@ select:disabled {
  * Diluted/opacity backgrounds (bg-[#8fb9e8]/10 etc.) are untouched and keep
  * the pale-on-dark remap since they sit on a mostly-dark surface.
  */
-.dark [data-portal] :is(.bg-\[\#8fb9e8\].text-\[\#2d4a6b\]) {
-  color: #2d4a6b;
+.dark [data-portal] :is(.bg-\[\#8fb9e8\].text-\[\#35475D\]) {
+  color: #35475D;
 }
 .dark [data-portal] :is(.hover\:border-zinc-200:hover, .hover\:border-zinc-300:hover, .hover\:border-zinc-400:hover) {
   border-color: #3d4a5e;

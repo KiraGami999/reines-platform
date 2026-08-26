@@ -21,9 +21,9 @@ export default async function MessagesPage() {
       <div className="shrink-0 px-1 pb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">Messages</h1>
+            <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">Messages</h1>
             {totalUnread > 0 && (
-              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#8fb9e8] px-1.5 text-xs font-bold text-[#2d4a6b]">
+              <span className="flex h-6 min-w-6 items-center justify-center rounded-full bg-[#8fb9e8] px-1.5 text-xs font-bold text-[#35475D]">
                 {totalUnread}
               </span>
             )}

@@ -119,7 +119,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
       {pendingAssignments.length > 0 && (
         <section className="mb-6 rounded-2xl border border-blue-200 bg-blue-50/70 p-5">
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-[#2d4a6b]">Pending Projects Assigned To You</h2>
+            <h2 className="text-sm font-semibold text-[#35475D]">Pending Projects Assigned To You</h2>
             <p className="mt-1 text-xs text-blue-700">
               These projects were assigned by an admin. Accept a project to activate your manager-client connection.
             </p>
@@ -160,7 +160,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
         {isAdmin && (
           <button
             onClick={openCreate}
-            className="flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+            className="flex items-center gap-2 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546]"
           >
             <Plus className="w-4 h-4" /> New Project
           </button>
@@ -175,7 +175,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
             onClick={() => setStatusFilter(tab.key)}
             className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${
               statusFilter === tab.key
-                ? "bg-[#2d4a6b] text-white"
+                ? "bg-[#35475D] text-white"
                 : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
             }`}
           >
@@ -274,7 +274,7 @@ export default function ProjectsTable({ initialProjects, clients, managers, isAd
                         {(isAdmin || project.managerAccepted) && (
                           <button
                             onClick={() => openEdit(project)}
-                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#2d4a6b]"
+                            className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#35475D]"
                             title="Edit project"
                           >
                             <Pencil className="h-3.5 w-3.5" />

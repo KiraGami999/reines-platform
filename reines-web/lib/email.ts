@@ -68,7 +68,7 @@ export async function sendMail({ to, subject, html, text }: SendMailParams): Pro
 
 // ─── Branded OTP email ──────────────────────────────────────────────────────
 
-const BRAND_NAVY = "#2d4a6b";
+const BRAND_NAVY = "#35475D";
 const BRAND_BLUE = "#8fb9e8";
 
 function otpEmailHtml(code: string, name?: string): string {

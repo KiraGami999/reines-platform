@@ -55,7 +55,7 @@ export function ConversationList({ conversations, activeProjectId }: Conversatio
                   className={cn(
                     "flex h-10 w-10 items-center justify-center rounded-xl text-sm font-bold",
                     isActive
-                      ? "bg-[#2d4a6b] text-zinc-300"
+                      ? "bg-[#35475D] text-zinc-300"
                       : isUnread
                       ? "bg-zinc-200 text-zinc-600"
                       : "bg-zinc-100 text-zinc-500"
@@ -107,7 +107,7 @@ export function ConversationList({ conversations, activeProjectId }: Conversatio
 
               {/* Unread count badge */}
               {isUnread && conv.unreadCount > 0 && (
-                <span className="ml-1 flex h-5 min-w-[1.25rem] shrink-0 items-center justify-center rounded-full bg-[#8fb9e8] px-1 text-[10px] font-bold text-[#2d4a6b]">
+                <span className="ml-1 flex h-5 min-w-[1.25rem] shrink-0 items-center justify-center rounded-full bg-[#8fb9e8] px-1 text-[10px] font-bold text-[#35475D]">
                   {conv.unreadCount > 9 ? "9+" : conv.unreadCount}
                 </span>
               )}

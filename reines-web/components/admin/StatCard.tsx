@@ -12,7 +12,7 @@ export default function StatCard({ label, value, icon, accent = "bg-zinc-100 tex
         {icon}
       </div>
       <div className="min-w-0 flex-1">
-        <p className="min-w-0 break-words text-lg font-bold tabular-nums leading-tight text-[#2d4a6b] sm:text-xl lg:text-2xl">
+        <p className="min-w-0 break-words text-lg font-bold tabular-nums leading-tight text-[#35475D] sm:text-xl lg:text-2xl">
           {value}
         </p>
         <p className="text-xs text-zinc-500 sm:text-sm">{label}</p>

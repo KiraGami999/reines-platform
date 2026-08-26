@@ -116,7 +116,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
             <button
               type="button"
               onClick={() => setSelectedProject(null)}
-              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#2d4a6b] shadow-sm transition-colors hover:bg-white"
+              className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#35475D] shadow-sm transition-colors hover:bg-white"
               aria-label="Close project details"
             >
               <X size={18} />
@@ -203,7 +203,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                   {statusConfig[selectedProject.status].label}
                 </span>
 
-                <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[#2d4a6b] dark:text-[#8fb9e8]">
+                <h2 className="mt-5 text-3xl font-extrabold tracking-tight text-[#35475D] dark:text-[#8fb9e8]">
                   {selectedProject.title}
                 </h2>
                 <p className="mt-4 text-sm leading-7 text-zinc-500">
@@ -226,7 +226,7 @@ export function PublicProjectsGallery({ projects }: { projects: PublicProjectIte
                 <div className="mt-8">
                   <Link
                     href="/contact"
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#1a2f4a]"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#283546]"
                   >
                     Ask about a similar project <ArrowRight size={15} />
                   </Link>
@@ -286,14 +286,14 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
           />
         ))}
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#2d4a6b]/45 to-transparent" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#35475D]/45 to-transparent" />
 
         {hasMultiple && (
           <>
             <button
               type="button"
               onClick={(event) => { event.stopPropagation(); goTo(-1); }}
-              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[#2d4a6b] shadow-sm transition-colors hover:bg-white"
+              className="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[#35475D] shadow-sm transition-colors hover:bg-white"
               aria-label="Previous photo"
             >
               <ChevronLeft size={16} />
@@ -301,7 +301,7 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
             <button
               type="button"
               onClick={(event) => { event.stopPropagation(); goTo(1); }}
-              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[#2d4a6b] shadow-sm transition-colors hover:bg-white"
+              className="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white/85 text-[#35475D] shadow-sm transition-colors hover:bg-white"
               aria-label="Next photo"
             >
               <ChevronRight size={16} />
@@ -324,7 +324,7 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
           </>
         )}
 
-        <div className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 text-[#2d4a6b] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+        <div className="absolute right-3 top-3 z-10 rounded-full bg-white/90 p-2 text-[#35475D] opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
           <Maximize2 size={15} />
         </div>
       </div>
@@ -333,7 +333,7 @@ function ProjectCard({ project, onOpen }: { project: PublicProjectItem; onOpen: 
         <div className="flex items-start justify-between gap-2">
           <div>
             <p className="text-xs font-medium text-zinc-400">{project.type} · {project.year}</p>
-            <h3 className="mt-1 font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">{project.title}</h3>
+            <h3 className="mt-1 font-bold text-[#35475D] dark:text-[#8fb9e8]">{project.title}</h3>
           </div>
           <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-medium ${badge.classes}`}>
             {badge.label}

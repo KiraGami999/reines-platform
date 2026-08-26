@@ -80,7 +80,7 @@ export default async function ProjectChatPage({ params }: PageProps) {
           <div className="flex shrink-0 items-center justify-between border-b border-zinc-100 bg-white px-5 py-3">
             <div className="flex min-w-0 items-center gap-3">
               {/* Avatar */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-sm font-bold text-[#8fb9e8]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-sm font-bold text-[#8fb9e8]">
                 {project.title.charAt(0)}
               </div>
               {/* Project + other party */}

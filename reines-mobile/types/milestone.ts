@@ -56,7 +56,7 @@ export const MILESTONE_STATUS_CONFIG: Record<
   { label: string; color: string; bg: string }
 > = {
   PENDING:     { label: "Pending",     color: "#71717a", bg: "#f4f4f5" },
-  IN_PROGRESS: { label: "In Progress", color: "#2d4a6b", bg: "#dbeafe" },
+  IN_PROGRESS: { label: "In Progress", color: "#35475D", bg: "#dbeafe" },
   COMPLETED:   { label: "Completed",   color: "#16a34a", bg: "#dcfce7" },
   CANCELLED:   { label: "Cancelled",   color: "#dc2626", bg: "#fee2e2" },
 };

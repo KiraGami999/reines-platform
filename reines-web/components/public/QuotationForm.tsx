@@ -98,7 +98,7 @@ const ERR   = "mt-1 text-xs text-red-500";
 function SectionHeading({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle?: string }) {
   return (
     <div className="flex items-start gap-3 border-b border-zinc-100 pb-3 dark:border-[var(--border)]">
-      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
         {icon}
       </div>
       <div>
@@ -373,7 +373,7 @@ export function QuotationForm({ products = [] }: Props) {
                 : "border-zinc-200 hover:bg-zinc-50 dark:border-[var(--border)] dark:hover:bg-[var(--surface-hover)]"
             }`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
               <HardHat size={16} strokeWidth={1.8} />
             </div>
             <div>
@@ -391,7 +391,7 @@ export function QuotationForm({ products = [] }: Props) {
                 : "border-zinc-200 hover:bg-zinc-50 dark:border-[var(--border)] dark:hover:bg-[var(--surface-hover)]"
             }`}
           >
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]">
               <Package size={16} strokeWidth={1.8} />
             </div>
             <div>
@@ -557,7 +557,7 @@ export function QuotationForm({ products = [] }: Props) {
               <button
                 type="button"
                 onClick={addProductItem}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-600 hover:border-[#8fb9e8] hover:text-[#2d4a6b]"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-dashed border-zinc-300 px-3 py-2 text-xs font-medium text-zinc-600 hover:border-[#8fb9e8] hover:text-[#35475D]"
               >
                 <Plus size={13} /> Add another product
               </button>
@@ -672,7 +672,7 @@ export function QuotationForm({ products = [] }: Props) {
       <button
         type="submit"
         disabled={state === "loading"}
-        className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#2d4a6b]/20 hover:bg-[#1a2f4a] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
+        className="w-full inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-6 py-3.5 text-base font-semibold text-white shadow-lg shadow-[#35475D]/20 hover:bg-[#283546] transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
       >
         {state === "loading" ? (
           <><Loader2 size={16} className="animate-spin" /> Submitting…</>

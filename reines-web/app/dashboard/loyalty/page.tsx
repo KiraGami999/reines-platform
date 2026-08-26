@@ -47,14 +47,14 @@ export default async function ClientLoyaltyPage() {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">Rewards &amp; Loyalty</h1>
+        <h1 className="text-2xl font-bold text-[#35475D]">Rewards &amp; Loyalty</h1>
         <p className="mt-1 text-sm text-zinc-500">
           Earn points with every payment and redeem them for exclusive rewards.
         </p>
       </div>
 
       {/* Hero card */}
-      <div className="rounded-2xl bg-[#2d4a6b] p-6 text-white">
+      <div className="rounded-2xl bg-[#35475D] p-6 text-white">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Your Balance</p>

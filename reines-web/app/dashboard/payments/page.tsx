@@ -71,7 +71,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
 
       {/* Page header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">Payments</h1>
+        <h1 className="text-2xl font-bold text-[#35475D]">Payments</h1>
         <p className="mt-1 text-sm text-zinc-500">
           {role === "CLIENT"
             ? "Your project payment history and receipts."
@@ -86,7 +86,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
             label: "Total Collected",
             value: fmtPaymentAmount(total),
             icon:  <Wallet size={18} />,
-            bg:    "bg-[#2d4a6b] text-white",
+            bg:    "bg-[#35475D] text-white",
             iconBg: "bg-white/15 text-zinc-300",
           },
           {
@@ -116,10 +116,10 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
               {s.icon}
             </div>
             <div className="min-w-0 flex-1">
-              <p className={`min-w-0 break-words text-base font-bold tabular-nums leading-tight sm:text-lg lg:text-xl ${s.bg.includes("[#2d4a6b]") ? "text-white" : "text-zinc-900"}`}>
+              <p className={`min-w-0 break-words text-base font-bold tabular-nums leading-tight sm:text-lg lg:text-xl ${s.bg.includes("[#35475D]") ? "text-white" : "text-zinc-900"}`}>
                 {s.value}
               </p>
-              <p className={`text-[10px] sm:text-xs ${s.bg.includes("[#2d4a6b]") ? "text-zinc-300" : "text-zinc-500"}`}>
+              <p className={`text-[10px] sm:text-xs ${s.bg.includes("[#35475D]") ? "text-zinc-300" : "text-zinc-500"}`}>
                 {s.label}
               </p>
             </div>
@@ -131,7 +131,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
       {role === "CLIENT" && (
         <div className="rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 space-y-1.5">
           <p className="text-sm text-zinc-700">
-            <span className="font-semibold text-[#2d4a6b]">About your payments:</span>{" "}
+            <span className="font-semibold text-[#35475D]">About your payments:</span>{" "}
             Pay online via Paychangu from any project with an outstanding balance (Mobile Money, bank transfer, or card).
             You can also pay by direct bank transfer or cash — your project manager or the Reines office records those, and an admin confirms them against your balance.
             This page shows your payment history and receipts.
@@ -153,7 +153,7 @@ export default async function PaymentsPage({ searchParams }: PageProps) {
         <div className="text-center pt-2">
           <Link
             href="/dashboard/projects"
-            className="inline-flex items-center gap-2 text-sm font-medium text-[#2d4a6b] hover:underline"
+            className="inline-flex items-center gap-2 text-sm font-medium text-[#35475D] hover:underline"
           >
             View your projects →
           </Link>

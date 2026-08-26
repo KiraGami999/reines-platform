@@ -48,7 +48,7 @@ export default async function QuotationPage() {
   return (
     <>
       {/* ── Hero ── */}
-      <section className="bg-[#2d4a6b] py-14 sm:py-24">
+      <section className="bg-[#35475D] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
             Project Quotation
@@ -83,8 +83,8 @@ export default async function QuotationPage() {
               const Icon = step.icon;
               return (
                 <div key={step.title} className="relative flex flex-col items-start gap-3 rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
-                    <Icon size={17} strokeWidth={1.8} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#35475D]/10 dark:bg-[#8fb9e8]/15">
+                    <Icon size={17} strokeWidth={1.8} className="text-[#35475D] dark:text-[#8fb9e8]" />
                   </div>
                   <div className="absolute right-4 top-4 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-400 dark:bg-[var(--surface-muted)]">
                     {i + 1}
@@ -106,7 +106,7 @@ export default async function QuotationPage() {
             {/* ── Left sidebar info ── */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Ready to get started?</h2>
+                <h2 className="text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Ready to get started?</h2>
                 <p className="mt-2 text-sm text-zinc-500 leading-relaxed dark:text-[var(--text-muted)]">
                   Use this form to tell us about your project. The more detail you provide, the
                   more accurate your quotation will be. Just need to order products, not a full
@@ -139,7 +139,7 @@ export default async function QuotationPage() {
                 </p>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#35475D] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
                 >
                   Go to Contact <ArrowRight size={12} />
                 </Link>
@@ -152,7 +152,7 @@ export default async function QuotationPage() {
                 </p>
                 <Link
                   href="/login"
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#2d4a6b] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-[#35475D] hover:text-[#8fb9e8] transition-colors dark:text-[#8fb9e8]"
                 >
                   Log In <ArrowRight size={12} />
                 </Link>
@@ -161,7 +161,7 @@ export default async function QuotationPage() {
 
             {/* ── Right form ── */}
             <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-8 shadow-sm dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
-              <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Request a Quotation</h2>
+              <h2 className="text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Request a Quotation</h2>
               <p className="mt-1 text-sm text-zinc-500 dark:text-[var(--text-muted)]">
                 Fields marked <span className="text-red-400 font-medium">*</span> are required.
               </p>
@@ -177,7 +177,7 @@ export default async function QuotationPage() {
       {/* ── FAQ strip ── */}
       <section className="bg-zinc-50 py-16 border-t border-zinc-100 dark:border-[var(--border)] dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Quotation FAQs</h2>
+          <h2 className="text-center text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Quotation FAQs</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
             {[
               {
@@ -206,7 +206,7 @@ export default async function QuotationPage() {
               },
             ].map((faq) => (
               <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
-                <h3 className="font-semibold text-[#2d4a6b] text-sm dark:text-[#8fb9e8]">{faq.q}</h3>
+                <h3 className="font-semibold text-[#35475D] text-sm dark:text-[#8fb9e8]">{faq.q}</h3>
                 <p className="mt-2 text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{faq.a}</p>
               </div>
             ))}

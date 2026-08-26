@@ -191,7 +191,7 @@ export function CashPaymentForm({
             onClick={() => setMethod("CASH")}
             className={`flex items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
               method === "CASH"
-                ? "border-[#2d4a6b] bg-[#2d4a6b]/5 text-[#2d4a6b]"
+                ? "border-[#35475D] bg-[#35475D]/5 text-[#35475D]"
                 : "border-zinc-200 text-zinc-600 hover:border-zinc-300"
             }`}
           >
@@ -203,7 +203,7 @@ export function CashPaymentForm({
             onClick={() => setMethod("BANK_TRANSFER")}
             className={`flex items-center justify-center gap-1.5 rounded-xl border-2 px-3 py-2.5 text-sm font-semibold transition-colors ${
               method === "BANK_TRANSFER"
-                ? "border-[#2d4a6b] bg-[#2d4a6b]/5 text-[#2d4a6b]"
+                ? "border-[#35475D] bg-[#35475D]/5 text-[#35475D]"
                 : "border-zinc-200 text-zinc-600 hover:border-zinc-300"
             }`}
           >
@@ -324,7 +324,7 @@ export function CashPaymentForm({
         <button
           onClick={handleSubmit}
           disabled={submitting || uploading}
-          className="flex-1 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+          className="flex-1 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#283546] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {submitting ? (
             <><Loader2 size={13} className="animate-spin" /> Submitting…</>

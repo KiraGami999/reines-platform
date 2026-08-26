@@ -2,7 +2,7 @@ export const THEME_STORAGE_KEY = "reines-theme";
 export const THEME_COOKIE_KEY  = "reines-theme";
 
 /** Brand navy — mobile browser chrome (`theme-color`) + status bar tint. */
-export const BRAND_THEME_COLOR = "#2d4a6b";
+export const BRAND_THEME_COLOR = "#35475D";
 
 export type ThemePreference = "system" | "light" | "dark";
 export type ResolvedTheme   = "light" | "dark";

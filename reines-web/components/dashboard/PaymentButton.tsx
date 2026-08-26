@@ -123,7 +123,7 @@ export default function PaymentButton({
         type="button"
         onClick={() => setStep("choose")}
         disabled={disabled}
-        className={`inline-flex items-center justify-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
+        className={`inline-flex items-center justify-center gap-2 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:cursor-not-allowed disabled:opacity-50 ${className}`}
       >
         <CreditCard size={15} />
         Make a Payment
@@ -152,7 +152,7 @@ export default function PaymentButton({
             onClick={() => setStep("online-confirm")}
             className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b] text-white transition-colors group-hover:bg-[#1a2f4a]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D] text-white transition-colors group-hover:bg-[#283546]">
               <CreditCard size={18} />
             </div>
             <div className="min-w-0">
@@ -170,7 +170,7 @@ export default function PaymentButton({
             }}
             className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#35475D]">
               <Building2 size={18} />
             </div>
             <div className="min-w-0">
@@ -192,7 +192,7 @@ export default function PaymentButton({
             }}
             className="group flex items-center gap-3 rounded-xl border-2 border-zinc-200 bg-white p-4 text-left transition-all hover:border-[#8fb9e8] hover:bg-[#8fb9e8]/5"
           >
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#2d4a6b]">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-100 text-zinc-600 transition-colors group-hover:bg-[#8fb9e8]/20 group-hover:text-[#35475D]">
               <Banknote size={18} />
             </div>
             <div className="min-w-0">
@@ -233,7 +233,7 @@ export default function PaymentButton({
           </h3>
         </div>
         <div className="flex items-start gap-2.5 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-4 py-3 text-sm text-zinc-700">
-          <Info size={16} className="mt-0.5 shrink-0 text-[#2d4a6b]" />
+          <Info size={16} className="mt-0.5 shrink-0 text-[#35475D]" />
           <p>
             {isBank
               ? "Transfer funds directly to Reines using our bank details (ask your project manager if you need them). Once the transfer is received, your project manager or an admin will record it in the portal so your project balance stays accurate."
@@ -245,7 +245,7 @@ export default function PaymentButton({
           <button
             type="button"
             onClick={() => setStep("online-confirm")}
-            className="font-semibold text-[#2d4a6b] underline-offset-2 hover:underline"
+            className="font-semibold text-[#35475D] underline-offset-2 hover:underline"
           >
             Pay Online via Paychangu
           </button>
@@ -312,7 +312,7 @@ export default function PaymentButton({
           <button
             type="button"
             onClick={handleOnlinePay}
-            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+            className="inline-flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#283546]"
           >
             <ExternalLink size={13} />
             {editAmount && Number(editAmount) > 0 ? `Pay ${fmt(Number(editAmount))}` : "Pay Now"}

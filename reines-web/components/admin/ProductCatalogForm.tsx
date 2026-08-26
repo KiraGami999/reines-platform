@@ -348,7 +348,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               <button
                 type="button"
                 onClick={addProduct}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
               >
                 <Plus size={14} /> Add
               </button>
@@ -407,7 +407,7 @@ export default function ProductCatalogForm({ initialProducts, initialLibraryImag
               type="button"
               onClick={save}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a] disabled:opacity-60"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Catalogue

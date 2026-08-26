@@ -28,7 +28,7 @@ export default async function ProfilePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">My Profile</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">My Profile</h1>
         <p className="mt-0.5 text-sm text-zinc-500">
           Your Reines portal identity — update your display name and password below.
         </p>
@@ -36,7 +36,7 @@ export default async function ProfilePage() {
 
       <section className="rounded-2xl border border-zinc-200 bg-white p-6">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#2d4a6b] text-xl font-bold text-[#8fb9e8]">
+          <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-[#35475D] text-xl font-bold text-[#8fb9e8]">
             {initials}
           </div>
           <div className="min-w-0">

@@ -44,7 +44,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#2d4a6b] py-14 sm:py-24">
+      <section className="bg-[#35475D] py-14 sm:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <span className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">Get In Touch</span>
           <h1 className="mt-3 max-w-2xl text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -64,7 +64,7 @@ export default function ContactPage() {
             {/* Contact details */}
             <div className="space-y-8">
               <div>
-                <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Contact Information</h2>
+                <h2 className="text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Contact Information</h2>
                 <p className="mt-2 text-sm text-zinc-500 dark:text-[var(--text-muted)]">Multiple ways to reach us — choose what works best for you.</p>
               </div>
 
@@ -78,7 +78,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{c.title}</p>
                     {c.href ? (
-                      <a href={c.href} className="mt-1 block text-sm font-medium text-[#2d4a6b] hover:text-[#8fb9e8] dark:text-[#8fb9e8]">
+                      <a href={c.href} className="mt-1 block text-sm font-medium text-[#35475D] hover:text-[#8fb9e8] dark:text-[#8fb9e8]">
                         {c.lines[0]}
                       </a>
                     ) : (
@@ -104,7 +104,7 @@ export default function ContactPage() {
                 <div className="flex items-start gap-2 border-t border-zinc-100 bg-white px-4 py-3 dark:border-[var(--border)] dark:bg-[var(--surface)]">
                   <Map size={16} strokeWidth={1.8} className="mt-0.5 shrink-0 text-[#8fb9e8]" />
                   <div>
-                    <p className="text-xs font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">Blantyre, Malawi</p>
+                    <p className="text-xs font-semibold text-[#35475D] dark:text-[#8fb9e8]">Blantyre, Malawi</p>
                     <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">
                       Map is currently centered on Blantyre. The exact Kristwick Mandala pin can be added once confirmed.
                     </p>
@@ -118,14 +118,14 @@ export default function ContactPage() {
 
               {/* Quote callout */}
               <div className="flex items-start gap-4 rounded-xl border border-[#8fb9e8]/30 bg-[#8fb9e8]/5 px-5 py-4 dark:border-[#8fb9e8]/25 dark:bg-[#8fb9e8]/10">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 dark:bg-[#8fb9e8]/15">
-                  <ArrowRight size={16} className="text-[#2d4a6b] dark:text-[#8fb9e8]" />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 dark:bg-[#8fb9e8]/15">
+                  <ArrowRight size={16} className="text-[#35475D] dark:text-[#8fb9e8]" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">Starting a new project?</p>
+                  <p className="text-sm font-semibold text-[#35475D] dark:text-[#8fb9e8]">Starting a new project?</p>
                   <p className="mt-0.5 text-xs leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">
                     If you&apos;d like a detailed quotation for a project, use our dedicated{" "}
-                    <Link href="/quote" className="font-medium text-[#2d4a6b] underline underline-offset-2 hover:text-[#8fb9e8] dark:text-[#8fb9e8]">
+                    <Link href="/quote" className="font-medium text-[#35475D] underline underline-offset-2 hover:text-[#8fb9e8] dark:text-[#8fb9e8]">
                       Get a Quote
                     </Link>{" "}
                     page. It allows you to provide a full project brief so we can prepare an accurate estimate.
@@ -134,7 +134,7 @@ export default function ContactPage() {
               </div>
 
               <div className="rounded-2xl border border-zinc-100 bg-zinc-50 p-4 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] sm:p-8">
-                <h2 className="text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Send us a message</h2>
+                <h2 className="text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Send us a message</h2>
                 <p className="mt-1 text-sm text-zinc-500 dark:text-[var(--text-muted)]">For general enquiries, questions, or feedback. All messages are responded to within 24 hours.</p>
                 <div className="mt-6">
                   <ContactForm />
@@ -148,7 +148,7 @@ export default function ContactPage() {
       {/* FAQ strip */}
       <section className="bg-zinc-50 py-16 dark:bg-[var(--surface-muted)]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <h2 className="text-center text-xl font-bold text-[#2d4a6b] dark:text-[#8fb9e8]">Common Questions</h2>
+          <h2 className="text-center text-xl font-bold text-[#35475D] dark:text-[#8fb9e8]">Common Questions</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
             {[
               { q: "How long does a quote take?", a: "We provide detailed quotations within 3–5 business days of an initial consultation." },
@@ -156,7 +156,7 @@ export default function ContactPage() {
               { q: "What payment terms do you offer?", a: "We use a milestone-based payment structure — either 50/25/25 or 75/25 — depending on what the client decides." },
             ].map((faq) => (
               <div key={faq.q} className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-[var(--border)] dark:bg-[var(--surface)]">
-                <h3 className="font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{faq.q}</h3>
+                <h3 className="font-semibold text-[#35475D] dark:text-[#8fb9e8]">{faq.q}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-500 dark:text-[var(--text-muted)]">{faq.a}</p>
               </div>
             ))}

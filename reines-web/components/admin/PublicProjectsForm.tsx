@@ -404,7 +404,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
             <button
               type="button"
               onClick={addProject}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-xs font-semibold text-white hover:bg-[#1a2f4a]"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
             >
               <Plus size={14} /> Add
             </button>
@@ -425,7 +425,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                 onClick={() => setSelectedId(project.id)}
                 className={`w-full rounded-xl border p-3 text-left transition-colors ${
                   selectedProject?.id === project.id
-                    ? "border-[#2d4a6b] bg-blue-50"
+                    ? "border-[#35475D] bg-blue-50"
                     : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"
                 }`}
               >
@@ -458,7 +458,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
           <section className="rounded-2xl border border-zinc-200 bg-white p-6">
             <div className="mb-6 flex flex-col gap-3 border-b border-zinc-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 className="text-lg font-bold text-[#2d4a6b]">Edit Project</h2>
+                <h2 className="text-lg font-bold text-[#35475D]">Edit Project</h2>
                 <p className="mt-1 text-sm text-zinc-500">
                   This controls what appears on the public Projects page. Use &quot;Feature on homepage&quot; to also
                   show it in the homepage slideshow.
@@ -502,7 +502,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   onClick={() => toggleFeatured(selectedProject)}
                   className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-2 text-xs font-semibold transition-colors ${
                     selectedProject.featured
-                      ? "border-[#8fb9e8] bg-[#8fb9e8]/10 text-[#2d4a6b]"
+                      ? "border-[#8fb9e8] bg-[#8fb9e8]/10 text-[#35475D]"
                       : "border-zinc-200 text-zinc-500 hover:bg-zinc-50"
                   }`}
                   aria-pressed={selectedProject.featured}
@@ -603,7 +603,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       return (
                         <div
                           key={imageUrl}
-                          className={`overflow-hidden rounded-xl border ${isCover ? "border-[#2d4a6b] ring-2 ring-blue-100" : "border-zinc-200"}`}
+                          className={`overflow-hidden rounded-xl border ${isCover ? "border-[#35475D] ring-2 ring-blue-100" : "border-zinc-200"}`}
                         >
                           <div className="relative h-28 bg-zinc-100">
                             <Image
@@ -615,7 +615,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                               sizes="320px"
                             />
                             {isCover && (
-                              <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-[#2d4a6b] px-2 py-0.5 text-[10px] font-semibold text-white">
+                              <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-[#35475D] px-2 py-0.5 text-[10px] font-semibold text-white">
                                 <Star size={10} /> Cover
                               </span>
                             )}
@@ -708,7 +708,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                   type="button"
                   onClick={() => fileRef.current?.click()}
                   disabled={uploading || selectedProject.imageUrls.length >= MAX_PUBLIC_PROJECT_IMAGES}
-                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#2d4a6b] disabled:opacity-50"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-zinc-300 px-4 py-3 text-sm text-zinc-500 transition-colors hover:border-[#8fb9e8] hover:text-[#35475D] disabled:opacity-50"
                 >
                   {uploading ? <Loader2 size={16} className="animate-spin" /> : <UploadIcon size={16} />}
                   {uploading ? "Uploading…" : "Upload images"}
@@ -736,8 +736,8 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
           disabled={saving}
           className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all disabled:opacity-60 ${
             isDirty
-              ? "bg-[#2d4a6b] shadow-[#2d4a6b]/30 ring-4 ring-[#8fb9e8]/40 hover:bg-[#1a2f4a]"
-              : "bg-[#2d4a6b] shadow-zinc-900/10 hover:bg-[#1a2f4a]"
+              ? "bg-[#35475D] shadow-[#35475D]/30 ring-4 ring-[#8fb9e8]/40 hover:bg-[#283546]"
+              : "bg-[#35475D] shadow-zinc-900/10 hover:bg-[#283546]"
           }`}
         >
           {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}

@@ -100,7 +100,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
             onClick={() => { setTab(t.id); setSuccess(null); setError(""); setConfirmed(null); }}
             className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all ${
               tab === t.id
-                ? "bg-white text-[#2d4a6b] shadow-sm"
+                ? "bg-white text-[#35475D] shadow-sm"
                 : "text-zinc-500 hover:text-zinc-700"
             }`}
           >
@@ -149,7 +149,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                     className={`rounded-xl border bg-white p-5 space-y-3 transition-all ${canAfford ? "border-zinc-200" : "border-zinc-100 opacity-60"}`}
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#2d4a6b]/10 text-[#2d4a6b]">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D]">
                         <Gift size={18} />
                       </div>
                       <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold ${CATEGORY_COLORS[rw.category] ?? CATEGORY_COLORS.OTHER}`}>
@@ -163,7 +163,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                     </div>
 
                     <div className="flex items-center justify-between pt-1">
-                      <div className="flex items-center gap-1 text-[#2d4a6b] font-bold text-sm">
+                      <div className="flex items-center gap-1 text-[#35475D] font-bold text-sm">
                         <Star size={13} className="text-zinc-500" />
                         {rw.pointsCost} pts
                       </div>
@@ -173,7 +173,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                             <button
                               onClick={() => handleRedeem(rw)}
                               disabled={isRedeeming}
-                              className="inline-flex items-center gap-1 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors disabled:opacity-60"
+                              className="inline-flex items-center gap-1 rounded-xl bg-[#35475D] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#283546] transition-colors disabled:opacity-60"
                             >
                               {isRedeeming ? <Loader2 size={11} className="animate-spin" /> : <CheckCircle2 size={11} />}
                               Confirm
@@ -188,7 +188,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                         ) : (
                           <button
                             onClick={() => handleRedeem(rw)}
-                            className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#1a2f4a] transition-colors"
+                            className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#283546] transition-colors"
                           >
                             <Gift size={11} /> Redeem
                           </button>
@@ -225,7 +225,7 @@ export function ClientRewardsView({ rewards, redemptions, pointsHistory, current
                     <p className="text-xs text-zinc-400">{fmtDate(r.createdAt)}</p>
                   </div>
                   <div className="flex items-center gap-3">
-                    <p className="text-sm font-semibold text-[#2d4a6b]">-{r.pointsUsed} pts</p>
+                    <p className="text-sm font-semibold text-[#35475D]">-{r.pointsUsed} pts</p>
                     <span className={`rounded-full border px-2 py-0.5 text-xs font-semibold ${
                       r.status === "FULFILLED" ? "bg-green-50 border-green-200 text-green-700" :
                       r.status === "CANCELLED" ? "bg-zinc-100 border-zinc-200 text-zinc-500" :

@@ -4,7 +4,7 @@ import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from "pdf
 import { ORGANIZATION, REGISTERED_OFFICE_FULL, SITE_NAME } from "@/lib/site";
 import { fmtPaymentAmount, PAYMENT_STATUS_META } from "@/lib/paychangu";
 
-const NAVY = rgb(27 / 255, 51 / 255, 79 / 255);
+const NAVY = rgb(53 / 255, 71 / 255, 93 / 255);
 const ZINC_400 = rgb(161 / 255, 161 / 255, 170 / 255);
 const ZINC_500 = rgb(113 / 255, 113 / 255, 122 / 255);
 const ZINC_900 = rgb(24 / 255, 24 / 255, 27 / 255);

@@ -47,7 +47,7 @@ export default async function ProjectGalleryPage({ params, searchParams }: PageP
       </Link>
 
       {/* ── Hero ── */}
-      <div className="overflow-hidden rounded-2xl bg-[#2d4a6b]">
+      <div className="overflow-hidden rounded-2xl bg-[#35475D]">
         <div className="h-1 bg-[#8fb9e8]" />
         <div className="p-4 sm:p-6">
           <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
@@ -74,7 +74,7 @@ export default async function ProjectGalleryPage({ params, searchParams }: PageP
           href={`/dashboard/projects/${id}/gallery`}
           className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
             activeTab === "gallery"
-              ? "bg-[#2d4a6b] text-white"
+              ? "bg-[#35475D] text-white"
               : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
           }`}
         >
@@ -96,7 +96,7 @@ export default async function ProjectGalleryPage({ params, searchParams }: PageP
             href={`/dashboard/projects/${id}/gallery?tab=upload`}
             className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
               activeTab === "upload"
-                ? "bg-[#2d4a6b] text-white"
+                ? "bg-[#35475D] text-white"
                 : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
             }`}
           >

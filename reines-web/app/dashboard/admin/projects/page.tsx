@@ -69,7 +69,7 @@ export default async function AdminProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">Project Management</h1>
+        <h1 className="text-2xl font-bold text-[#35475D]">Project Management</h1>
         <p className="text-zinc-500 mt-1 text-sm">
           Create projects, assign clients and managers, and track progress across all active work.
         </p>

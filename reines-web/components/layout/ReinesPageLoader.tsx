@@ -43,7 +43,7 @@ export function ReinesPageLoader({ phase, progress, onExitComplete }: ReinesPage
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[9999] flex items-center justify-center bg-[#2d4a6b] transition-opacity duration-500 ease-out",
+        "fixed inset-0 z-[9999] flex items-center justify-center bg-[#35475D] transition-opacity duration-500 ease-out",
         phase === "exiting" ? "pointer-events-none opacity-0" : "opacity-100"
       )}
       aria-hidden={phase === "hidden"}

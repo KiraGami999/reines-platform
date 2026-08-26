@@ -40,7 +40,7 @@ function StatCard({
   const valueColour = accent ? "text-white" : (valueClassName ?? "text-zinc-900");
 
   return (
-    <div className={`min-w-0 rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#2d4a6b]" : "border-zinc-200 bg-white"}`}>
+    <div className={`min-w-0 rounded-xl border p-3 sm:p-5 ${accent ? "border-[#8fb9e8]/30 bg-[#35475D]" : "border-zinc-200 bg-white"}`}>
       <div className="flex items-start justify-between">
         <div className={`rounded-lg p-2 ${accent ? "bg-white/10" : "bg-zinc-100"}`}>
           <Icon size={18} className={accent ? "text-zinc-300" : "text-zinc-500"} />
@@ -58,7 +58,7 @@ function StatCard({
 function SectionHeader({ title, description }: { title: ReactNode; description?: string }) {
   return (
     <div className="mb-6">
-      <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">{title}</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">{title}</h1>
       {description && <p className="mt-1 text-sm text-zinc-500">{description}</p>}
     </div>
   );
@@ -442,7 +442,7 @@ function ManagerProjectCard({ project }: { project: ManagerProject }) {
           <AcceptProjectButton projectId={project.id} className="flex-1" />
         ) : (
           <>
-            <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+            <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-sm font-medium text-white hover:bg-[#283546]">
               View project <ArrowRight size={14} />
             </Link>
             <Link href={`/dashboard/projects/${project.id}/gallery?tab=upload`} className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
@@ -508,7 +508,7 @@ function ManagerDashboard({
           {pendingAssignments.length > 0 && (
             <section className="rounded-2xl border border-blue-200 bg-blue-50/60 p-5">
               <div className="mb-4">
-                <h2 className="text-sm font-semibold text-[#2d4a6b]">Pending Projects Assigned To You</h2>
+                <h2 className="text-sm font-semibold text-[#35475D]">Pending Projects Assigned To You</h2>
                 <p className="mt-1 text-xs text-blue-700">
                   Accept a project to activate your project manager connection with the client and begin updates.
                 </p>
@@ -557,7 +557,7 @@ function ManagerDashboard({
                 <div className="divide-y divide-zinc-50 px-5">
                   {recentUpdates.map((update) => (
                     <Link key={update.id} href={`/dashboard/projects/${update.projectId}/gallery`} className="block py-4 hover:bg-zinc-50">
-                      <p className="text-xs font-semibold text-[#2d4a6b]">{update.projectTitle}</p>
+                      <p className="text-xs font-semibold text-[#35475D]">{update.projectTitle}</p>
                       <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-zinc-600">{update.note}</p>
                       <p className="mt-1 text-xs text-zinc-400">{fmtDate(update.createdAt)}</p>
                     </Link>
@@ -658,7 +658,7 @@ function ClientProjectCard({ project }: { project: Project }) {
       </div>
 
       <div className="mt-5 flex flex-wrap gap-2">
-        <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#2d4a6b] px-3 py-2 text-sm font-medium text-white hover:bg-[#1a2f4a]">
+        <Link href={`/dashboard/projects/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-sm font-medium text-white hover:bg-[#283546]">
           View project <ArrowRight size={14} />
         </Link>
         <Link href={`/dashboard/messages/${project.id}`} className="inline-flex items-center gap-1.5 rounded-xl border border-zinc-200 px-3 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50">
@@ -710,7 +710,7 @@ function ClientDashboard({
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <StatCard icon={Banknote} label="Total Contract Value" value={fmtMWK(totalBudget)} sub="All assigned projects" />
-        <StatCard icon={CheckCircle2} label="Paid To Date" value={fmtMWK(paidToDate)} sub="Confirmed project payments" valueClassName="text-[#2d4a6b]" />
+        <StatCard icon={CheckCircle2} label="Paid To Date" value={fmtMWK(paidToDate)} sub="Confirmed project payments" valueClassName="text-[#35475D]" />
       </div>
 
       {projects.length === 0 ? (
@@ -749,7 +749,7 @@ function ClientDashboard({
                 <div className="divide-y divide-zinc-50 px-5">
                   {recentUpdates.map((update) => (
                     <Link key={update.id} href={`/dashboard/projects/${update.projectId}`} className="block py-4 hover:bg-zinc-50">
-                      <p className="text-xs font-semibold text-[#2d4a6b]">{update.projectTitle}</p>
+                      <p className="text-xs font-semibold text-[#35475D]">{update.projectTitle}</p>
                       <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-zinc-600">{update.note}</p>
                       <p className="mt-1 text-xs text-zinc-400">{fmtDate(update.createdAt)}</p>
                     </Link>

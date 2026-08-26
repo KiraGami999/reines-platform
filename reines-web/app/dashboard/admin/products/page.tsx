@@ -19,7 +19,7 @@ export default async function AdminProductsPage() {
             <PackageCheck className="h-5 w-5 text-zinc-500" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2d4a6b]">Product Catalogue</h1>
+            <h1 className="text-2xl font-bold text-[#35475D]">Product Catalogue</h1>
             <p className="mt-1 text-sm text-zinc-500">
               Manage products by Reines subsidiary, including images, pricing labels, promotions, and catalogue copy shown on the public Products page.
             </p>

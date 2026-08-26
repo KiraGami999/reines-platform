@@ -38,7 +38,7 @@ OUT = Path(__file__).resolve().parents[1] / "public" / "logo-project-mate.png"
 # to just before that gap so the trademark circle never enters the crop.
 MAX_X = 819
 
-# Luminance of the brand navy (~#2d4a6b) and of a white canvas — pixels are
+# Luminance of the brand navy (~#35475D) and of a white canvas — pixels are
 # mapped linearly between these two so anti-aliased edges stay smooth.
 NAVY_LUMINANCE = 0.299 * 45 + 0.587 * 74 + 0.114 * 107  # ≈ 69
 WHITE_LUMINANCE = 255.0

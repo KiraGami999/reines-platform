@@ -38,7 +38,7 @@ function mobileNavItemClass(active: boolean) {
   return cn(
     "group relative overflow-hidden rounded-xl px-3 py-2.5 text-sm font-semibold transition-all duration-300",
     active
-      ? "bg-[#8fb9e8]/15 text-[#2d4a6b] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]"
+      ? "bg-[#8fb9e8]/15 text-[#35475D] dark:bg-[#8fb9e8]/15 dark:text-[#8fb9e8]"
       : "text-zinc-600 hover:bg-zinc-50 hover:text-zinc-900 dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)] dark:hover:text-[var(--foreground)]"
   );
 }
@@ -60,7 +60,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
     : ALL_LINKS.filter((l) => l.href !== "/market-insights");
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#2d4a6b] shadow-lg shadow-black/5">
+    <header className="sticky top-0 z-50 w-full border-b border-white/10 bg-[#35475D] shadow-lg shadow-black/5">
       <div className="mx-auto flex h-20 max-w-screen-2xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
 
         {/* Logo — rebranded Reines Group mark (navbar only) */}
@@ -121,7 +121,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
               </span>
               <Link
                 href="/dashboard"
-                className="rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
+                className="rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#35475D] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20"
               >
                 Dashboard
               </Link>
@@ -149,7 +149,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
               </Link>
               <Link
                 href="/quote"
-                className="hidden rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#2d4a6b] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
+                className="hidden rounded-xl bg-[#8fb9e8] px-3.5 py-2 text-sm font-semibold text-[#35475D] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#b8d4f2] hover:shadow-lg hover:shadow-[#8fb9e8]/20 xl:block"
               >
                 Get a Quote
               </Link>
@@ -192,12 +192,12 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                 <>
                   <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm text-zinc-500 dark:border-[var(--border)] dark:bg-[var(--surface-muted)] dark:text-[var(--text-muted)]">
                     <span>Signed in as </span>
-                    <span className="font-semibold text-[#2d4a6b] dark:text-[#8fb9e8]">{userRole}</span>
+                    <span className="font-semibold text-[#35475D] dark:text-[#8fb9e8]">{userRole}</span>
                   </div>
                   <Link
                     href="/dashboard"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
+                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#35475D] transition-colors hover:bg-[#b8d4f2]"
                   >
                     Dashboard
                   </Link>
@@ -224,14 +224,14 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                   <Link
                     href="/register"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl border border-[#8fb9e8]/40 px-4 py-2.5 text-sm font-medium text-[#2d4a6b] transition-colors hover:bg-[#8fb9e8]/10 dark:text-[#8fb9e8]"
+                    className="inline-flex items-center justify-center rounded-xl border border-[#8fb9e8]/40 px-4 py-2.5 text-sm font-medium text-[#35475D] transition-colors hover:bg-[#8fb9e8]/10 dark:text-[#8fb9e8]"
                   >
                     Sign Up
                   </Link>
                   <Link
                     href="/quote"
                     onClick={() => setOpen(false)}
-                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
+                    className="inline-flex items-center justify-center rounded-xl bg-[#8fb9e8] px-4 py-2.5 text-sm font-semibold text-[#35475D] transition-colors hover:bg-[#b8d4f2]"
                   >
                     Get a Quote
                   </Link>

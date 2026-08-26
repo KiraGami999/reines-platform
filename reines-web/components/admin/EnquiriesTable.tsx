@@ -92,7 +92,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
             onClick={() => setFilter(f)}
             className={`shrink-0 px-4 py-1.5 rounded-full text-sm font-medium capitalize transition-colors ${
               filter === f
-                ? "bg-[#2d4a6b] text-white"
+                ? "bg-[#35475D] text-white"
                 : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200"
             }`}
           >
@@ -129,7 +129,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`font-semibold text-sm ${enq.read ? "text-zinc-700" : "text-[#2d4a6b]"}`}>
+                    <span className={`font-semibold text-sm ${enq.read ? "text-zinc-700" : "text-[#35475D]"}`}>
                       {enq.name}
                     </span>
                     {!enq.read && (
@@ -174,7 +174,7 @@ export default function EnquiriesTable({ initialEnquiries }: { initialEnquiries:
                   <div className="flex gap-2 mt-3">
                     <a
                       href={`mailto:${enq.email}?subject=Re: ${encodeURIComponent(enq.subject)}`}
-                      className="inline-flex items-center gap-1.5 bg-[#2d4a6b] hover:bg-[#1a2f4a] text-white text-xs font-medium px-3 py-2 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1.5 bg-[#35475D] hover:bg-[#283546] text-white text-xs font-medium px-3 py-2 rounded-lg transition-colors"
                     >
                       <Mail className="w-3.5 h-3.5" /> Reply by Email
                     </a>

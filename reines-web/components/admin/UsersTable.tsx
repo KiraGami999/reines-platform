@@ -101,7 +101,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 rounded-xl bg-[#2d4a6b] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#1a2f4a]"
+          className="flex items-center gap-2 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546]"
         >
           <Plus className="w-4 h-4" /> Add User
         </button>
@@ -115,7 +115,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
             onClick={() => setRoleFilter(tab.key)}
             className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${
               roleFilter === tab.key
-                ? "bg-[#2d4a6b] text-white"
+                ? "bg-[#35475D] text-white"
                 : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
             }`}
           >
@@ -160,7 +160,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
                   <tr key={user.id} className="group transition-colors hover:bg-zinc-50">
                     <td className="px-2.5 py-2 sm:px-4 sm:py-3">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#2d4a6b] text-xs font-bold uppercase text-[#8fb9e8]">
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#35475D] text-xs font-bold uppercase text-[#8fb9e8]">
                           {user.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
                         </div>
                         <span className="font-medium text-zinc-900">{user.name}</span>
@@ -173,7 +173,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: AdminUser[]
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => openEdit(user)}
-                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#2d4a6b]"
+                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-[#35475D]"
                           title="Edit user"
                         >
                           <Pencil className="h-3.5 w-3.5" />

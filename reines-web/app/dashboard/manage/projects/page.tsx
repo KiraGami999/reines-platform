@@ -90,7 +90,7 @@ export default async function ManageProjectsPage() {
   return (
     <div className="max-w-7xl mx-auto">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[#2d4a6b]">
+        <h1 className="text-2xl font-bold text-[#35475D]">
           {isAdmin ? "Manage All Projects" : "My Projects"}
         </h1>
         <p className="text-zinc-500 mt-1 text-sm">

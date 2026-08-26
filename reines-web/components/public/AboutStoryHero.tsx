@@ -59,7 +59,7 @@ export function AboutStoryHero() {
   }
 
   return (
-    <section ref={sectionRef} className="relative overflow-hidden bg-[#2d4a6b]">
+    <section ref={sectionRef} className="relative overflow-hidden bg-[#35475D]">
       <div className="relative mx-auto max-w-3xl px-4 pt-10 sm:px-6 sm:pt-14 lg:px-8 lg:pt-16">
         <div
           className={`flex justify-center transition-all duration-700 ease-out ${
@@ -72,7 +72,7 @@ export function AboutStoryHero() {
             onPointerEnter={() => setHovering(true)}
             onPointerMove={handlePointerMove}
             onPointerLeave={resetTilt}
-            className="relative aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#1a2f4a] shadow-2xl shadow-black/35 will-change-transform"
+            className="relative aspect-[16/9] w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-[#283546] shadow-2xl shadow-black/35 will-change-transform"
             style={{
               transform: `rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${hovering ? 1.03 : 1})`,
               transition: hovering

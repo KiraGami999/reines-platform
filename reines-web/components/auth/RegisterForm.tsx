@@ -170,7 +170,7 @@ export function RegisterForm({ googleEnabled = false }: { googleEnabled?: boolea
               onChange={update("password")}
               required
               autoComplete="new-password"
-              className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#2d4a6b] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
+              className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#35475D] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
                 fieldErrors.password
                   ? "border-blue-400 focus:border-blue-400 focus:ring-blue-100"
                   : "border-zinc-200 focus:border-zinc-400 focus:ring-zinc-200"
@@ -205,7 +205,7 @@ export function RegisterForm({ googleEnabled = false }: { googleEnabled?: boolea
             onChange={update("confirmPassword")}
             required
             autoComplete="new-password"
-            className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#2d4a6b] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
+            className={`block w-full rounded-lg border bg-white px-3 py-2 pr-10 text-sm text-zinc-900 caret-[#35475D] placeholder:text-zinc-400 focus:outline-none focus:ring-2 ${
               fieldErrors.confirmPassword
                 ? "border-blue-400 focus:border-blue-400 focus:ring-blue-100"
                 : "border-zinc-200 focus:border-zinc-400 focus:ring-zinc-200"
@@ -245,7 +245,7 @@ export function RegisterForm({ googleEnabled = false }: { googleEnabled?: boolea
 
       <p className="text-center text-sm text-zinc-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-[#2d4a6b] underline-offset-2 hover:underline">
+        <Link href="/login" className="font-medium text-[#35475D] underline-offset-2 hover:underline">
           Sign in
         </Link>
       </p>

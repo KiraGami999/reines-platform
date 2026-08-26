@@ -168,7 +168,7 @@ export function FeaturedProjectsSlideshow({ projects }: { projects: PublicProjec
 
               <Link
                 href="/projects"
-                className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#8fb9e8] px-5 py-2.5 text-sm font-semibold text-[#2d4a6b] transition-colors hover:bg-[#b8d4f2]"
+                className="mt-6 inline-flex items-center gap-1.5 rounded-xl bg-[#8fb9e8] px-5 py-2.5 text-sm font-semibold text-[#35475D] transition-colors hover:bg-[#b8d4f2]"
               >
                 View Project <ArrowRight size={14} />
               </Link>

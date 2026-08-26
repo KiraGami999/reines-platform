@@ -74,7 +74,7 @@ function ProjectCard({ project }: { project: Project }) {
               <span className={`h-1.5 w-1.5 rounded-full ${status.dot}`} />
               {status.label}
             </span>
-            <h2 className="mt-2 truncate text-base font-bold text-zinc-900 group-hover:text-[#2d4a6b]">
+            <h2 className="mt-2 truncate text-base font-bold text-zinc-900 group-hover:text-[#35475D]">
               {project.title}
             </h2>
             <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-zinc-500">
@@ -103,7 +103,7 @@ function ProjectCard({ project }: { project: Project }) {
               <Banknote size={10} /> Budget
             </div>
             <p className="mt-0.5 break-words font-semibold tabular-nums text-zinc-800">{fmtMWK(project.budget)}</p>
-            <p className="text-[10px] text-[#2d4a6b]">{paidPct}% paid</p>
+            <p className="text-[10px] text-[#35475D]">{paidPct}% paid</p>
           </div>
 
           <div>
@@ -183,7 +183,7 @@ function EmptyState({ filtered, role }: { filtered: boolean; role: string }) {
       {!filtered && (
         <Link
           href="/dashboard/messages"
-          className="mt-6 [#2d4a6b] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="mt-6 [#35475D] px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
         >
           <MessageSquare size={14} />
           {role === "PROJECT_MANAGER" ? "Open messages" : "Message your manager"}
@@ -240,7 +240,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
       {/* ── Page header ── */}
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[#2d4a6b]">My Projects</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-[#35475D]">My Projects</h1>
           <p className="mt-0.5 text-sm text-zinc-500">
             {counts.ALL} project{counts.ALL !== 1 ? "s" : ""} assigned
             {counts.IN_PROGRESS > 0 && ` · ${counts.IN_PROGRESS} active`}
@@ -253,7 +253,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
       {pendingAssignments.length > 0 && (
         <section className="rounded-2xl border border-blue-200 bg-blue-50/70 p-5">
           <div className="mb-4">
-            <h2 className="text-sm font-semibold text-[#2d4a6b]">Pending Projects Assigned To You</h2>
+            <h2 className="text-sm font-semibold text-[#35475D]">Pending Projects Assigned To You</h2>
             <p className="mt-1 text-xs text-blue-700">
               Accept a project to activate the manager-client connection and begin collaboration.
             </p>
@@ -279,13 +279,13 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
               key={s.label}
               className={`min-w-0 rounded-xl border p-3 text-center sm:p-4 ${
                 s.accent
-                  ? "border-[#8fb9e8]/30 bg-[#2d4a6b]"
+                  ? "border-[#8fb9e8]/30 bg-[#35475D]"
                   : "border-zinc-200 bg-white"
               }`}
             >
               <p
                 className={`min-w-0 break-words text-base font-extrabold tabular-nums leading-snug min-[400px]:text-lg sm:text-xl lg:text-2xl ${
-                  s.accent ? "text-white" : s.paid ? "text-[#2d4a6b]" : "text-[#2d4a6b]"
+                  s.accent ? "text-white" : s.paid ? "text-[#35475D]" : "text-[#35475D]"
                 }`}
               >
                 {s.value}
@@ -310,7 +310,7 @@ export default async function ProjectsPage({ searchParams }: PageProps) {
                 href={tab.key === "ALL" ? "/dashboard/projects" : `/dashboard/projects?status=${tab.key}`}
                 className={`flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium transition-colors ${
                   isActive
-                    ? "bg-[#2d4a6b] text-white"
+                    ? "bg-[#35475D] text-white"
                     : "text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
                 }`}
               >

@@ -47,7 +47,7 @@ export default function SlidePanel({ open, onClose, title, subtitle, children, w
         {/* Header */}
         <div className="flex items-start justify-between gap-4 px-6 py-5 border-b border-zinc-200 bg-zinc-50">
           <div>
-            <h2 className="text-lg font-semibold text-[#2d4a6b]">{title}</h2>
+            <h2 className="text-lg font-semibold text-[#35475D]">{title}</h2>
             {subtitle && <p className="text-sm text-zinc-500 mt-0.5">{subtitle}</p>}
           </div>
           <button

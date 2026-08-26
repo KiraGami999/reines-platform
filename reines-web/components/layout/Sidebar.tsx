@@ -236,7 +236,7 @@ export function Sidebar({
       {/* Sidebar panel — brand navy chrome; same look in light and dark themes */}
       <aside
         className={cn(
-          "portal-sidebar fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-[#2d4a6b] print:hidden",
+          "portal-sidebar fixed inset-y-0 left-0 z-30 flex flex-col overflow-hidden bg-[#35475D] print:hidden",
           "transition-all duration-200 ease-in-out",
           /* Mobile: slides in/out as a full 256px panel. The vw-based cap only
              matters for very narrow viewports, so it's dropped again at lg —
