@@ -42,7 +42,9 @@ type Props = {
   usingFallback: boolean;
 };
 
-const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
+/* text-base on mobile avoids iOS Safari auto-zoom on focus (which feels stuck zoomed-in). */
+const FIELD =
+  "block w-full min-w-0 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-base text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100 sm:py-2 sm:text-sm";
 const LABEL = "mb-1.5 block text-xs font-semibold uppercase tracking-widest text-zinc-400";
 
 function syncCoverImage(imageUrls: string[]): Pick<PublicProjectItem, "imageUrl" | "imageUrls"> {
@@ -366,7 +368,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 max-w-full space-y-6">
       {usingFallback && (
         <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
           Showing starter project data until the saved public project list is available.
@@ -394,17 +396,17 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[330px_1fr]">
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,330px)_minmax(0,1fr)]">
+        <section className="min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 sm:p-5">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
               <h2 className="text-sm font-semibold text-zinc-900">Public Projects</h2>
               <p className="mt-1 text-xs text-zinc-400">Add, reorder, hide, or edit project cards.</p>
             </div>
             <button
               type="button"
               onClick={addProject}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
             >
               <Plus size={14} /> Add
             </button>
@@ -412,7 +414,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
 
           <div className="mb-4 flex items-center gap-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-500">
             <Sparkles size={13} className="shrink-0 text-[#8fb9e8]" />
-            <span>
+            <span className="min-w-0">
               <span className="font-semibold text-zinc-700">{featuredCount}/{MAX_FEATURED_PUBLIC_PROJECTS}</span> featured on homepage slideshow
             </span>
           </div>
@@ -423,22 +425,22 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                 type="button"
                 key={project.id}
                 onClick={() => setSelectedId(project.id)}
-                className={`w-full rounded-xl border p-3 text-left transition-colors ${
+                className={`w-full min-w-0 rounded-xl border p-3 text-left transition-colors ${
                   selectedProject?.id === project.id
                     ? "border-[#35475D] bg-blue-50"
                     : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50"
                 }`}
               >
-                <div className="flex items-start gap-3">
-                  <div className="relative h-12 w-14 overflow-hidden rounded-lg bg-zinc-100">
+                <div className="flex min-w-0 items-start gap-3">
+                  <div className="relative h-12 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-100">
                     <Image src={mediaSrc(project.imageUrl)} alt={project.title} fill unoptimized={mediaSrc(project.imageUrl).startsWith("/api/media")} className="object-cover" sizes="56px" />
                   </div>
-                  <div className="min-w-0 flex-1">
+                  <div className="min-w-0 flex-1 overflow-hidden">
                     <p className="truncate text-sm font-semibold text-zinc-900">{project.title}</p>
                     <p className="mt-0.5 truncate text-xs text-zinc-500">{project.type}</p>
-                    <div className="mt-1 flex items-center gap-2 text-[11px] text-zinc-400">
+                    <div className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[11px] text-zinc-400">
                       <span>#{index + 1}</span>
-                      <span>{project.status.replace("_", " ")}</span>
+                      <span className="uppercase">{project.status.replace("_", " ")}</span>
                       <span>{project.imageUrls.length} img</span>
                       {project.featured && (
                         <span className="inline-flex items-center gap-0.5 font-semibold text-[#8fb9e8]">
@@ -455,9 +457,9 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
         </section>
 
         {selectedProject ? (
-          <section className="rounded-2xl border border-zinc-200 bg-white p-6">
+          <section className="min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-4 sm:p-6">
             <div className="mb-6 flex flex-col gap-3 border-b border-zinc-100 pb-5 sm:flex-row sm:items-start sm:justify-between">
-              <div>
+              <div className="min-w-0">
                 <h2 className="text-lg font-bold text-[#35475D]">Edit Project</h2>
                 <p className="mt-1 text-sm text-zinc-500">
                   This controls what appears on the public Projects page. Use &quot;Feature on homepage&quot; to also
@@ -522,8 +524,8 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
               </div>
             </div>
 
-            <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
-              <div className="space-y-4">
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,320px)]">
+              <div className="min-w-0 space-y-4">
                 <div>
                   <label className={LABEL}>Project title</label>
                   <input
@@ -532,8 +534,8 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                     className={FIELD}
                   />
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="min-w-0">
                     <label className={LABEL}>Location</label>
                     <input
                       value={selectedProject.location}
@@ -541,7 +543,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       className={FIELD}
                     />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label className={LABEL}>Project type</label>
                     <input
                       value={selectedProject.type}
@@ -550,8 +552,8 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                     />
                   </div>
                 </div>
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <div>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="min-w-0">
                     <label className={LABEL}>Status</label>
                     <select
                       value={selectedProject.status}
@@ -563,7 +565,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                       ))}
                     </select>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <label className={LABEL}>Year / date range</label>
                     <input
                       value={selectedProject.year}
@@ -583,7 +585,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="min-w-0 space-y-4">
                 <div>
                   <div className="mb-1.5 flex items-center justify-between gap-2">
                     <label className={LABEL}>Project gallery</label>
@@ -720,13 +722,13 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
             </div>
           </section>
         ) : (
-          <section className="rounded-2xl border border-dashed border-zinc-200 bg-white p-10 text-center">
+          <section className="min-w-0 rounded-2xl border border-dashed border-zinc-200 bg-white p-10 text-center">
             <p className="text-sm text-zinc-500">Add a project to begin.</p>
           </section>
         )}
       </div>
 
-      <div className="sticky bottom-4 flex items-center justify-end gap-3">
+      <div className="sticky bottom-4 flex w-full min-w-0 items-center justify-stretch gap-3 sm:justify-end">
         {isDirty && !saving && (
           <span className="hidden text-xs font-medium text-amber-700 sm:inline">Unsaved changes</span>
         )}
@@ -734,7 +736,7 @@ export default function PublicProjectsForm({ initialProjects, availableImages, u
           type="button"
           onClick={save}
           disabled={saving}
-          className={`inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all disabled:opacity-60 ${
+          className={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold text-white shadow-lg transition-all disabled:opacity-60 sm:w-auto ${
             isDirty
               ? "bg-[#35475D] shadow-[#35475D]/30 ring-4 ring-[#8fb9e8]/40 hover:bg-[#283546]"
               : "bg-[#35475D] shadow-zinc-900/10 hover:bg-[#283546]"

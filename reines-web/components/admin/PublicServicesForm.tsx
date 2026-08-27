@@ -27,8 +27,9 @@ type Props = {
   usingFallback: boolean;
 };
 
+/* text-base on mobile avoids iOS Safari auto-zoom on focus (which feels stuck zoomed-in). */
 const FIELD =
-  "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
+  "block w-full min-w-0 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-base text-zinc-900 placeholder-zinc-400 focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100 sm:py-2 sm:text-sm";
 const LABEL = "mb-1.5 block text-xs font-semibold uppercase tracking-widest text-zinc-400";
 
 function joinList(items: string[]) {
@@ -171,7 +172,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full min-w-0 max-w-full space-y-6">
       {usingFallback && (
         <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
           Showing default services until the saved admin catalogue is available.
@@ -191,17 +192,17 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5">
-          <div className="mb-4 flex items-center justify-between gap-4">
-            <div>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+        <section className="min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 sm:p-5">
+          <div className="mb-4 flex items-start justify-between gap-3">
+            <div className="min-w-0">
               <h2 className="text-sm font-semibold text-zinc-900">Public Services</h2>
               <p className="mt-1 text-xs text-zinc-400">Add, reorder, hide, or edit services.</p>
             </div>
             <button
               type="button"
               onClick={addService}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-xl bg-[#35475D] px-3 py-2 text-xs font-semibold text-white hover:bg-[#283546]"
             >
               <Plus size={14} /> Add
             </button>
@@ -215,19 +216,19 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                   key={service.id}
                   type="button"
                   onClick={() => setSelectedId(service.id)}
-                  className={`w-full rounded-xl border p-3 text-left transition ${
+                  className={`w-full min-w-0 rounded-xl border p-3 text-left transition ${
                     service.id === selectedService?.id
                       ? "border-[#8fb9e8] bg-[#8fb9e8]/10"
                       : "border-zinc-200 hover:bg-zinc-50"
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex min-w-0 items-start gap-3">
                     <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#35475D]/10 text-[#35475D]">
                       <Icon size={18} strokeWidth={1.8} />
                     </div>
-                    <div className="min-w-0 flex-1">
+                    <div className="min-w-0 flex-1 overflow-hidden">
                       <p className="truncate text-sm font-semibold text-zinc-900">{service.title}</p>
-                      <p className="mt-0.5 text-xs text-zinc-400">
+                      <p className="mt-0.5 truncate text-xs text-zinc-400">
                         Position {index + 1} · {service.active ? "Visible" : "Hidden"}
                       </p>
                       <p className="mt-1 truncate text-xs text-zinc-500">{service.tagline}</p>
@@ -239,9 +240,9 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
           </div>
         </section>
 
-        <section className="rounded-2xl border border-zinc-200 bg-white p-5">
+        <section className="min-w-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 sm:p-5">
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-            <div>
+            <div className="min-w-0">
               <h2 className="text-sm font-semibold text-zinc-900">Service Details</h2>
               <p className="mt-1 text-xs text-zinc-400">Edit the selected service shown on the public Services page.</p>
             </div>
@@ -249,7 +250,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
               type="button"
               onClick={save}
               disabled={saving}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60"
+              className="inline-flex w-full shrink-0 items-center justify-center gap-1.5 rounded-xl bg-[#35475D] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#283546] disabled:opacity-60 sm:w-auto"
             >
               {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
               Save Services
@@ -312,8 +313,8 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                 </label>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                <div className="min-w-0">
                   <label className={LABEL}>Service Title</label>
                   <input
                     className={FIELD}
@@ -323,7 +324,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                     }
                   />
                 </div>
-                <div>
+                <div className="min-w-0">
                   <label className={LABEL}>Icon</label>
                   <select
                     className={FIELD}
@@ -379,7 +380,7 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
 
               <div className="rounded-xl border border-zinc-100 bg-zinc-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Preview</p>
-                <div className="mt-3 flex items-start gap-3">
+                <div className="mt-3 flex min-w-0 items-start gap-3">
                   {(() => {
                     const Icon = getServiceIcon(selectedService.iconKey);
                     return (
@@ -388,12 +389,12 @@ export default function PublicServicesForm({ initialServices, usingFallback }: P
                       </div>
                     );
                   })()}
-                  <div>
-                    <p className="text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
+                  <div className="min-w-0 overflow-hidden">
+                    <p className="break-words text-xs font-semibold uppercase tracking-widest text-[#8fb9e8]">
                       {selectedService.tagline}
                     </p>
-                    <p className="mt-1 text-lg font-bold text-[#35475D]">{selectedService.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                    <p className="mt-1 break-words text-lg font-bold text-[#35475D]">{selectedService.title}</p>
+                    <p className="mt-2 break-words text-sm leading-relaxed text-zinc-500">
                       {selectedService.description}
                     </p>
                   </div>
