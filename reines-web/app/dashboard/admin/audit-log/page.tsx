@@ -161,7 +161,6 @@ export default async function AuditLogPage({ searchParams }: PageProps) {
         <>
           <div className="mb-3 text-xs text-zinc-500">
             Showing {(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, total)} of {total}
-            {` · up to ${MAX_ADMINS} admin seats`}
           </div>
 
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
