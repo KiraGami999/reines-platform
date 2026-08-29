@@ -93,17 +93,26 @@ export type EnquiryInput = z.infer<typeof enquirySchema>;
 // ─── Admin schemas ─────────────────────────────────────────────────────────────
 
 export const createUserSchema = z.object({
-  name:     z.string().min(2, "Name must be at least 2 characters"),
-  email:    z.string().email("Enter a valid email address"),
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  email: z
+    .string()
+    .trim()
+    .email("Enter a valid email address")
+    .transform((value) => value.toLowerCase()),
   password: z.string().min(8, "Password must be at least 8 characters"),
-  role:     z.enum(["ADMIN", "PROJECT_MANAGER", "CLIENT"] as const).refine(Boolean, "Select a valid role"),
+  role: z.enum(["ADMIN", "PROJECT_MANAGER", "CLIENT"] as const).refine(Boolean, "Select a valid role"),
 });
 
 export const updateUserSchema = z.object({
-  name:     z.string().min(2).optional(),
-  email:    z.string().email().optional(),
+  name: z.string().min(2).optional(),
+  email: z
+    .string()
+    .trim()
+    .email()
+    .transform((value) => value.toLowerCase())
+    .optional(),
   password: z.string().min(8, "Password must be at least 8 characters").optional(),
-  role:     z.enum(["ADMIN", "PROJECT_MANAGER", "CLIENT"] as const).optional(),
+  role: z.enum(["ADMIN", "PROJECT_MANAGER", "CLIENT"] as const).optional(),
 });
 
 export const projectStatusEnum = z.enum(

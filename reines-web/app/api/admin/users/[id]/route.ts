@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { updateUserSchema } from "@/lib/validations";
+import { ADMIN_CAP_MESSAGE, wouldExceedAdminCap } from "@/lib/admin-users";
 import { ok, forbidden, badRequest, notFound, validationError, conflict } from "@/lib/api-response";
 
 async function requireAdmin() {
@@ -32,6 +33,15 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       if (adminCount <= 1) {
         return badRequest("You cannot remove the last admin account.");
       }
+    }
+
+    if (
+      await wouldExceedAdminCap({
+        nextRole: parsed.data.role,
+        currentRole: currentUser.role,
+      })
+    ) {
+      return badRequest(ADMIN_CAP_MESSAGE);
     }
 
     const { password, ...rest } = parsed.data;

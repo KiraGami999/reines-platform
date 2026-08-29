@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import UsersTable from "@/components/admin/UsersTable";
 import type { AdminUser } from "@/lib/mock-admin";
+import { MAX_ADMINS } from "@/lib/admin-users-shared";
 
 type DataResult =
   | { ok: true;  users: AdminUser[] }
@@ -41,7 +42,8 @@ export default async function UsersPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-[#35475D]">User Management</h1>
         <p className="text-zinc-500 mt-1 text-sm">
-          Create accounts, assign roles, and manage access for all platform users.
+          Create accounts with name, email, and password. Assign Client, Project Manager,
+          or Admin (max {MAX_ADMINS} admin seats, including the demo account).
         </p>
       </div>
 

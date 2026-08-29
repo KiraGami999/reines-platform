@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { createUserSchema } from "@/lib/validations";
-import { ok, created, forbidden, conflict, validationError } from "@/lib/api-response";
+import { ADMIN_CAP_MESSAGE, wouldExceedAdminCap } from "@/lib/admin-users";
+import { ok, created, forbidden, conflict, validationError, badRequest } from "@/lib/api-response";
 
 async function requireAdmin() {
   const session = await auth();
@@ -42,6 +43,10 @@ export async function POST(req: NextRequest) {
   const { name, email, password, role } = parsed.data;
 
   try {
+    if (await wouldExceedAdminCap({ nextRole: role })) {
+      return badRequest(ADMIN_CAP_MESSAGE);
+    }
+
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) return conflict("An account with this email already exists.");
 

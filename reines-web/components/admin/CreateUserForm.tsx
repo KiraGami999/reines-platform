@@ -3,9 +3,12 @@
 import { useState } from "react";
 import { Eye, EyeOff, Loader2, ShieldCheck, HardHat, UserCheck } from "lucide-react";
 import type { AdminUser } from "@/lib/mock-admin";
+import { MAX_ADMINS } from "@/lib/admin-users-shared";
 
 interface Props {
   editUser?: AdminUser | null;
+  /** Current number of ADMIN accounts — used to disable the Admin role at the cap. */
+  adminCount: number;
   onSuccess: (user: AdminUser) => void;
   onCancel:  () => void;
 }
@@ -43,8 +46,11 @@ const ROLES: {
 const FIELD = "block w-full rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 transition focus:border-zinc-400 focus:outline-none focus:ring-2 focus:ring-zinc-100";
 const LABEL = "mb-1.5 block text-sm font-medium text-zinc-700";
 
-export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props) {
+export default function CreateUserForm({ editUser, adminCount, onSuccess, onCancel }: Props) {
   const isEdit = Boolean(editUser);
+  const editingAdmin = editUser?.role === "ADMIN";
+  // Creating a new admin, or promoting a non-admin, needs a free seat.
+  const adminRoleLocked = adminCount >= MAX_ADMINS && !editingAdmin;
 
   const [form, setForm] = useState({
     name:     editUser?.name  ?? "",
@@ -73,6 +79,8 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
       e.password = "Password must be at least 8 characters.";
     if (isEdit && form.password && form.password.length < 8)
       e.password = "New password must be at least 8 characters.";
+    if (form.role === "ADMIN" && adminRoleLocked)
+      e.role = `Admin limit reached (${MAX_ADMINS}). Demote or delete an existing admin first.`;
     return e;
   }
 
@@ -88,7 +96,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
     const method = isEdit ? "PATCH" : "POST";
     const body: Record<string, string> = {
       name:  form.name.trim(),
-      email: form.email.trim(),
+      email: form.email.trim().toLowerCase(),
       role:  form.role,
     };
     if (!isEdit || form.password) body.password = form.password;
@@ -112,14 +120,12 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
 
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Server error */}
       {serverError && (
         <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
           {serverError}
         </div>
       )}
 
-      {/* Name */}
       <div>
         <label className={LABEL}>Full Name</label>
         <input
@@ -128,24 +134,24 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
           placeholder="e.g. John Chirwa"
           value={form.name}
           onChange={(e) => set("name", e.target.value)}
+          autoComplete="name"
         />
         {errors.name && <p className="mt-1 text-xs text-blue-600">{errors.name}</p>}
       </div>
 
-      {/* Email */}
       <div>
         <label className={LABEL}>Email Address</label>
         <input
           className={`${FIELD} ${errors.email ? "border-blue-300 focus:ring-blue-100" : ""}`}
           type="email"
-          placeholder="john@example.com"
+          placeholder="name@example.com"
           value={form.email}
           onChange={(e) => set("email", e.target.value)}
+          autoComplete="email"
         />
         {errors.email && <p className="mt-1 text-xs text-blue-600">{errors.email}</p>}
       </div>
 
-      {/* Password */}
       <div>
         <label className={LABEL}>
           {isEdit ? "New Password" : "Password"}
@@ -160,6 +166,7 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
             placeholder="Min. 8 characters"
             value={form.password}
             onChange={(e) => set("password", e.target.value)}
+            autoComplete={isEdit ? "new-password" : "new-password"}
           />
           <button
             type="button"
@@ -174,43 +181,57 @@ export default function CreateUserForm({ editUser, onSuccess, onCancel }: Props)
         {errors.password && <p className="mt-1 text-xs text-blue-600">{errors.password}</p>}
       </div>
 
-      {/* Role — card selector */}
       <div>
-        <label className={LABEL}>Role</label>
-        <div className="space-y-2">
-          {ROLES.map((r) => (
-            <label
-              key={r.value}
-              className={`flex cursor-pointer items-start gap-3 rounded-xl border-2 p-3.5 transition-all ${
-                form.role === r.value
-                  ? `border-[#35475D] bg-[#35475D]/3`
-                  : "border-zinc-200 bg-white hover:border-zinc-300"
-              }`}
-            >
-              <input
-                type="radio"
-                name="role"
-                value={r.value}
-                checked={form.role === r.value}
-                onChange={() => set("role", r.value)}
-                className="mt-0.5 accent-[#35475D]"
-              />
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ring-1 ${r.ring}`}
-                  >
-                    {r.icon} {r.label}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs text-zinc-500">{r.desc}</p>
-              </div>
-            </label>
-          ))}
+        <div className="mb-1.5 flex items-center justify-between gap-2">
+          <label className="block text-sm font-medium text-zinc-700">Role</label>
+          <span className="text-xs text-zinc-400">
+            Admins {adminCount}/{MAX_ADMINS}
+          </span>
         </div>
+        <div className="space-y-2">
+          {ROLES.map((r) => {
+            const disabled = r.value === "ADMIN" && adminRoleLocked;
+            return (
+              <label
+                key={r.value}
+                className={`flex items-start gap-3 rounded-xl border-2 p-3.5 transition-all ${
+                  disabled
+                    ? "cursor-not-allowed border-zinc-100 bg-zinc-50 opacity-60"
+                    : form.role === r.value
+                      ? "cursor-pointer border-[#35475D] bg-[#35475D]/3"
+                      : "cursor-pointer border-zinc-200 bg-white hover:border-zinc-300"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name="role"
+                  value={r.value}
+                  checked={form.role === r.value}
+                  disabled={disabled}
+                  onChange={() => set("role", r.value)}
+                  className="mt-0.5 accent-[#35475D]"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium ring-1 ${r.ring}`}
+                    >
+                      {r.icon} {r.label}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {disabled
+                      ? `Limit reached (${MAX_ADMINS}). Demote or delete an admin to free a seat.`
+                      : r.desc}
+                  </p>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+        {errors.role && <p className="mt-1 text-xs text-blue-600">{errors.role}</p>}
       </div>
 
-      {/* Actions */}
       <div className="flex gap-3 pt-2">
         <button
           type="submit"
