@@ -29,6 +29,16 @@ export const TRUSTED_DEVICE_TTL = "12h";
 /** How long the client has to exchange a cleared challenge for a session. */
 const PASS_TOKEN_TTL = "5m";
 
+/**
+ * Seed / demo accounts that cannot receive OTP mail. Password still required;
+ * remove entries once real admin emails replace them.
+ */
+const TWO_FACTOR_SKIP_EMAILS = new Set(["reines.admin1@gmail.com"]);
+
+export function skipsTwoFactor(email: string): boolean {
+  return TWO_FACTOR_SKIP_EMAILS.has(email.trim().toLowerCase());
+}
+
 export function issuePassToken(userId: string): Promise<string> {
   return signTwoFactorToken(userId, "2fa-pass", PASS_TOKEN_TTL);
 }

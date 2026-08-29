@@ -4,7 +4,7 @@ import { createLoginOtp } from "@/lib/otp";
 import { isEmailConfigured, sendLoginOtpEmail } from "@/lib/email";
 import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 import { INVALID_CREDENTIALS, verifyLoginCredentials } from "@/lib/login-credentials";
-import { isTrustedDevice, issuePassToken } from "@/lib/two-factor";
+import { isTrustedDevice, issuePassToken, skipsTwoFactor } from "@/lib/two-factor";
 
 /**
  * POST /api/auth/login/challenge
@@ -71,6 +71,14 @@ export async function POST(req: NextRequest) {
 
   if (twoFactorDisabled()) {
     console.warn("[login/challenge] DISABLE_LOGIN_2FA is set — signing in without a code.");
+    return NextResponse.json({
+      twoFactorRequired: false,
+      passToken: await issuePassToken(user.id),
+    });
+  }
+
+  // Demo / seed accounts (e.g. reines.admin1@gmail.com) skip the emailed code.
+  if (skipsTwoFactor(email)) {
     return NextResponse.json({
       twoFactorRequired: false,
       passToken: await issuePassToken(user.id),
