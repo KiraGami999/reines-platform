@@ -63,6 +63,53 @@ export async function verifyToken(token: string): Promise<TokenPayload | null> {
   }
 }
 
+/**
+ * Two-factor tokens.
+ *
+ * `2fa-pass`   — proves the sign-in attempt cleared the email code. Minted by the
+ *                2FA routes and handed to the credentials provider, which refuses
+ *                to issue a session without it.
+ * `2fa-device` — remembers that this browser already cleared 2FA, so an idle
+ *                logout followed by a re-login doesn't ask for a second code.
+ *
+ * Both carry only a `sub` (user id) and a `purpose`. They deliberately omit the
+ * `id` claim that access tokens use, so they can never satisfy `verifyToken()`
+ * callers that gate on `payload.id`.
+ */
+export type TwoFactorPurpose = "2fa-pass" | "2fa-device";
+
+export interface TwoFactorTokenPayload extends JWTPayload {
+  sub: string;
+  purpose: TwoFactorPurpose;
+}
+
+export async function signTwoFactorToken(
+  userId: string,
+  purpose: TwoFactorPurpose,
+  expiresIn: string
+): Promise<string> {
+  return new SignJWT({ purpose })
+    .setProtectedHeader({ alg: ALGORITHM })
+    .setSubject(userId)
+    .setIssuedAt()
+    .setExpirationTime(expiresIn)
+    .sign(SECRET);
+}
+
+export async function verifyTwoFactorToken(
+  token: string,
+  purpose: TwoFactorPurpose
+): Promise<TwoFactorTokenPayload | null> {
+  try {
+    const { payload } = await jwtVerify(token, SECRET);
+    if (payload.purpose !== purpose) return null;
+    if (typeof payload.sub !== "string" || !payload.sub) return null;
+    return payload as TwoFactorTokenPayload;
+  } catch {
+    return null;
+  }
+}
+
 export function extractBearer(authHeader: string | null): string | null {
   if (!authHeader?.startsWith("Bearer ")) return null;
   return authHeader.slice(7);

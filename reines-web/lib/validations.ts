@@ -34,6 +34,16 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+/**
+ * Second step of two-factor sign-in. The password is re-sent alongside the code
+ * so an intercepted code is useless on its own.
+ */
+export const twoFactorVerifySchema = loginSchema.extend({
+  code: z.string().trim().regex(/^\d{6}$/, "Enter the 6-digit code"),
+});
+
+export type TwoFactorVerifyInput = z.infer<typeof twoFactorVerifySchema>;
+
 
 const passwordField = z
   .string()

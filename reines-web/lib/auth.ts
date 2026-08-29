@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
 import { verifyPassword } from "@/lib/password";
-import { verifyToken } from "@/lib/jwt";
+import { verifyToken, verifyTwoFactorToken } from "@/lib/jwt";
 import { loginSchema } from "@/lib/validations";
 import {
   authConfig,
@@ -60,11 +60,20 @@ const fullAuthConfig = {
       credentials: {
         email:    { label: "Email",    type: "email"    },
         password: { label: "Password", type: "password" },
+        // Proof that this attempt cleared the emailed 2FA code. Minted by
+        // /api/auth/login/challenge or /api/auth/2fa/verify.
+        passToken: { label: "Sign-in token", type: "text" },
       },
       async authorize(credentials) {
         try {
           const parsed = loginSchema.safeParse(credentials);
           if (!parsed.success) return null;
+
+          const passToken =
+            typeof credentials?.passToken === "string" ? credentials.passToken : "";
+          // Bail before bcrypt when the token is absent — this is the shape a
+          // request that posted straight to the callback to skip 2FA takes.
+          if (!passToken) return null;
 
           const email = parsed.data.email.trim().toLowerCase();
           const { password } = parsed.data;
@@ -86,6 +95,11 @@ const fullAuthConfig = {
 
           const passwordValid = await verifyPassword(password, user.password);
           if (!passwordValid) return null;
+
+          // The token is bound to a user id, so one account's token can never
+          // authorise a session for another.
+          const pass = await verifyTwoFactorToken(passToken, "2fa-pass");
+          if (pass?.sub !== user.id) return null;
 
           return {
             id: user.id,

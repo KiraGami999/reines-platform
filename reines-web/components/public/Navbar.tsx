@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
+import { signOutAndForgetDevice } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
 import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
@@ -127,7 +128,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
               </Link>
               <button
                 type="button"
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => void signOutAndForgetDevice({ callbackUrl: "/" })}
                 className="rounded-xl border border-white/10 px-3.5 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-white/25 hover:bg-white/5 hover:text-white"
               >
                 Log out
@@ -205,7 +206,7 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
                     type="button"
                     onClick={() => {
                       setOpen(false);
-                      signOut({ callbackUrl: "/" });
+                      void signOutAndForgetDevice({ callbackUrl: "/" });
                     }}
                     className="inline-flex items-center justify-center rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-50 dark:border-[var(--border)] dark:text-[var(--text-muted)] dark:hover:bg-[var(--surface-hover)]"
                   >

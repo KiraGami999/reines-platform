@@ -1,6 +1,6 @@
 "use client";
 
-import { signOut } from "next-auth/react";
+import { signOutAndForgetDevice } from "@/lib/auth-client";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import {
@@ -287,7 +287,7 @@ function UserMenu({ user }: UserMenuProps) {
     .join("")
     .toUpperCase();
 
-  function handleSignOut() {
+  async function handleSignOut() {
     // Inside the mobile app's WebView, a plain next-auth signOut() redirects
     // to /login, but the app still holds a valid native JWT and immediately
     // re-bridges the session back in — so it looks like the button does
@@ -298,7 +298,7 @@ function UserMenu({ user }: UserMenuProps) {
     // next time someone signs in, rather than staying suppressed forever.
     clearIntroLoaderFlag();
     if (postToNativeApp({ type: "reines-signout" })) return;
-    signOut({ callbackUrl: "/login" });
+    await signOutAndForgetDevice({ callbackUrl: "/login" });
   }
 
   return (
