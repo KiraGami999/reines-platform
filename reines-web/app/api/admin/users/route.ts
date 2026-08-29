@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { createUserSchema } from "@/lib/validations";
 import { ADMIN_CAP_MESSAGE, wouldExceedAdminCap } from "@/lib/admin-users";
+import { recordAdminAction } from "@/lib/audit-log";
 import { ok, created, forbidden, conflict, validationError, badRequest } from "@/lib/api-response";
 
 async function requireAdmin() {
@@ -55,6 +56,16 @@ export async function POST(req: NextRequest) {
       data:   { name, email, password: hashed, role },
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
+
+    recordAdminAction({
+      actor: session.user,
+      action: "user.create",
+      entityType: "User",
+      entityId: user.id,
+      summary: `Created user ${user.name} (${user.email}) as ${user.role}`,
+      metadata: { role: user.role, email: user.email },
+    });
+
     return created(user);
   } catch (err) {
     console.error("[POST /api/admin/users]", err);

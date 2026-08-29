@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { ok, forbidden, notFound, serverError, badRequest } from "@/lib/api-response";
 import { autoAwardPointsForPayment } from "@/lib/loyalty";
 import { notifyPaymentApproved } from "@/lib/push";
+import { recordAdminAction } from "@/lib/audit-log";
 import { z } from "zod";
 
 const schema = z.object({
@@ -70,6 +71,20 @@ export async function PATCH(
         amount:       Number(updated.amount).toLocaleString(),
       }).catch(console.warn);
     }
+
+    recordAdminAction({
+      actor: session.user,
+      action: "payment.approve",
+      entityType: "Payment",
+      entityId: updated.id,
+      summary: `Approved ${updated.method.toLowerCase().replace("_", " ")} payment ${updated.txRef} (${Number(updated.amount).toLocaleString()} ${updated.currency})`,
+      metadata: {
+        txRef: updated.txRef,
+        amount: Number(updated.amount),
+        currency: updated.currency,
+        projectId: updated.projectId,
+      },
+    });
 
     return ok({
       id:            updated.id,

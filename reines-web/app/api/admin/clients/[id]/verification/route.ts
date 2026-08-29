@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendVerificationApprovedEmail, sendVerificationRejectedEmail } from "@/lib/email";
+import { recordAdminAction } from "@/lib/audit-log";
 import { z } from "zod";
 
 type RouteContext = { params: Promise<{ id: string }> };
@@ -60,6 +61,18 @@ export async function POST(req: NextRequest, { params }: RouteContext) {
       sendVerificationRejectedEmail(client.email, client.name || undefined, notes)
         .catch((err) => console.error("[verification-mail] Failed to send rejection email:", err));
     }
+
+    recordAdminAction({
+      actor: session.user,
+      action: action === "APPROVE" ? "verification.approve" : "verification.reject",
+      entityType: "User",
+      entityId: clientId,
+      summary:
+        action === "APPROVE"
+          ? `Approved KYC for ${client.name} (${client.email})`
+          : `Rejected KYC for ${client.name} (${client.email})`,
+      metadata: { status, notes: notes ?? null },
+    });
 
     return NextResponse.json({
       success: true,

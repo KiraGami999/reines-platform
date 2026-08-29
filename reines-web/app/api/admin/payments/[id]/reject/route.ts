@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ok, forbidden, notFound, serverError, badRequest } from "@/lib/api-response";
 import { notifyPaymentRejected } from "@/lib/push";
+import { recordAdminAction } from "@/lib/audit-log";
 import { z } from "zod";
 
 const schema = z.object({
@@ -56,6 +57,19 @@ export async function PATCH(
         reason:       parsed.data.notes,
       }).catch(console.warn);
     }
+
+    recordAdminAction({
+      actor: session.user,
+      action: "payment.reject",
+      entityType: "Payment",
+      entityId: updated.id,
+      summary: `Rejected ${updated.method.toLowerCase().replace("_", " ")} payment ${updated.txRef}`,
+      metadata: {
+        txRef: updated.txRef,
+        amount: Number(updated.amount),
+        notes: parsed.data.notes,
+      },
+    });
 
     return ok({
       id:      updated.id,

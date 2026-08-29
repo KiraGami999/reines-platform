@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Building, MessageSquareText } from "lucide-react";
+import { Users, FolderKanban, MessageSquare, ArrowRight, ShieldCheck, CreditCard, ImageIcon, UserCheck, PackageCheck, Wrench, LineChart, Building, MessageSquareText, ClipboardList } from "lucide-react";
 import { MOCK_USERS, MOCK_ADMIN_PROJECTS, MOCK_ENQUIRIES } from "@/lib/mock-admin";
 import { prisma } from "@/lib/prisma";
 import { isMarketInsightsVisible } from "@/lib/market-insights";
@@ -145,6 +145,15 @@ export default async function AdminOverviewPage() {
       title:   "Portal Greetings",
       desc:    "Set morning, afternoon, and evening welcome text for the portal landing screen, with up to three language variants each.",
       stat:    "Dashboard welcome",
+      accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
+      iconBg:  "bg-zinc-100 text-zinc-500",
+    },
+    {
+      href:    "/dashboard/admin/audit-log",
+      icon:    <ClipboardList className="w-7 h-7" />,
+      title:   "Change Log",
+      desc:    "See which admin changed what, with name, email, and date/time — built for handovers between admins.",
+      stat:    "Admin activity",
       accent:  "from-blue-500/10 to-blue-500/5 border-blue-200",
       iconBg:  "bg-zinc-100 text-zinc-500",
     },

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { hashPassword } from "@/lib/password";
 import { updateUserSchema } from "@/lib/validations";
 import { ADMIN_CAP_MESSAGE, wouldExceedAdminCap } from "@/lib/admin-users";
+import { recordAdminAction } from "@/lib/audit-log";
 import { ok, forbidden, badRequest, notFound, validationError, conflict } from "@/lib/api-response";
 
 async function requireAdmin() {
@@ -24,7 +25,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   try {
     const currentUser = await prisma.user.findUnique({
       where: { id },
-      select: { id: true, role: true },
+      select: { id: true, name: true, email: true, role: true },
     });
     if (!currentUser) return notFound("User");
 
@@ -55,6 +56,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       data:   updateData,
       select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
+
+    const changed = Object.keys(rest);
+    if (password) changed.push("password");
+    recordAdminAction({
+      actor: session.user,
+      action: "user.update",
+      entityType: "User",
+      entityId: user.id,
+      summary: `Updated user ${user.name} (${user.email})${parsed.data.role && parsed.data.role !== currentUser.role ? ` — role ${currentUser.role} → ${parsed.data.role}` : ""}`,
+      metadata: {
+        fields: changed,
+        previousRole: currentUser.role,
+        role: user.role,
+      },
+    });
+
     return ok(user);
   } catch (error) {
     if (typeof error === "object" && error !== null && "code" in error && error.code === "P2002") {
@@ -77,7 +94,7 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
   try {
     const target = await prisma.user.findUnique({
       where: { id },
-      select: { role: true },
+      select: { role: true, name: true, email: true },
     });
     if (!target) return notFound("User");
 
@@ -89,6 +106,16 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     }
 
     await prisma.user.delete({ where: { id } });
+
+    recordAdminAction({
+      actor: session.user,
+      action: "user.delete",
+      entityType: "User",
+      entityId: id,
+      summary: `Deleted user ${target.name} (${target.email}) — was ${target.role}`,
+      metadata: { role: target.role, email: target.email },
+    });
+
     return ok({ success: true });
   } catch {
     return notFound("User");

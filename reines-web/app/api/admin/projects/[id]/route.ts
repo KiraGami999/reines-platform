@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { updateProjectSchema } from "@/lib/validations";
 import { ok, forbidden, notFound, validationError } from "@/lib/api-response";
 import { notifyProjectUpdate } from "@/lib/push";
+import { recordAdminAction } from "@/lib/audit-log";
 
 async function requireAdminOrManager() {
   const session = await auth();
@@ -66,6 +67,22 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       }).catch(console.warn);
     }
 
+    recordAdminAction({
+      actor: session.user,
+      action: "project.update",
+      entityType: "Project",
+      entityId: project.id,
+      summary:
+        status !== undefined && status !== existing.status
+          ? `Updated project “${project.title}” — status ${existing.status} → ${status}`
+          : `Updated project “${project.title}”`,
+      metadata: {
+        previousStatus: existing.status,
+        status: project.status,
+        fields: Object.keys(parsed.data),
+      },
+    });
+
     return ok(project);
   } catch {
     return notFound("Project");
@@ -82,7 +99,22 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
 
   const { id } = await params;
   try {
+    const existing = await prisma.project.findUnique({
+      where: { id },
+      select: { id: true, title: true },
+    });
+    if (!existing) return notFound("Project");
+
     await prisma.project.delete({ where: { id } });
+
+    recordAdminAction({
+      actor: session.user,
+      action: "project.delete",
+      entityType: "Project",
+      entityId: id,
+      summary: `Deleted project “${existing.title}”`,
+    });
+
     return ok({ success: true });
   } catch {
     return notFound("Project");

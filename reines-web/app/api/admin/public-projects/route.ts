@@ -15,6 +15,7 @@ import {
 } from "@/lib/public-projects";
 import { forbidden, ok, serverError } from "@/lib/api-response";
 import { isVercelBlobUrl } from "@/lib/storage";
+import { recordAdminAction } from "@/lib/audit-log";
 
 const statusValues = PUBLIC_PROJECT_STATUS_OPTIONS.map((status) => status.value) as [
   PublicProjectItem["status"],
@@ -207,6 +208,14 @@ export async function PUT(req: NextRequest) {
     revalidatePath("/projects");
     revalidatePath("/");
     revalidatePath("/dashboard/admin/public-projects");
+
+    recordAdminAction({
+      actor: session.user,
+      action: "content.public_projects.save",
+      entityType: "PublicProject",
+      summary: `Saved public projects catalogue (${savedProjects.length} projects)`,
+      metadata: { count: savedProjects.length, featuredCount },
+    });
 
     return ok({ projects: savedProjects.map(serializeProject), usingFallback: false });
   } catch (err) {

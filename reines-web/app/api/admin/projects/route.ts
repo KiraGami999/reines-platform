@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { createProjectSchema } from "@/lib/validations";
+import { recordAdminAction } from "@/lib/audit-log";
 import { ok, created, forbidden, validationError } from "@/lib/api-response";
 
 async function requireAdminOrManager() {
@@ -66,6 +67,20 @@ export async function POST(req: NextRequest) {
         manager: { select: { id: true, name: true, email: true } },
       },
     });
+
+    recordAdminAction({
+      actor: session.user,
+      action: "project.create",
+      entityType: "Project",
+      entityId: project.id,
+      summary: `Created project “${project.title}” for ${project.client.name}`,
+      metadata: {
+        status: project.status,
+        clientId: project.clientId,
+        managerId: project.managerId,
+      },
+    });
+
     return created(project);
   } catch (err) {
     console.error("[POST /api/admin/projects]", err);

@@ -154,6 +154,7 @@ model User {
   awardedPointEntries ClientPointEntry[] @relation("AwardedPointEntries")
   rewardRedemptions   RewardRedemption[]
   pushDevices         PushDevice[]
+  auditLogs           AuditLog[]
 }
 
 // ---------------------------------------------------------------------------
@@ -700,6 +701,34 @@ model AdminOverviewPreference {
   id                      String    @id @default("global")
   recentActivityClearedAt DateTime?
   updatedAt               DateTime  @updatedAt
+}
+
+// ---------------------------------------------------------------------------
+// AuditLog
+// Append-only record of admin mutations for handover / accountability.
+// Actor name/email are snapshotted so history survives account edits/deletes.
+// ---------------------------------------------------------------------------
+model AuditLog {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+
+  actorId    String?
+  actorName  String?
+  actorEmail String?
+  actorRole  String?
+
+  action     String // e.g. "user.create", "payment.approve"
+  entityType String // e.g. "User", "Payment", "Project"
+  entityId   String?
+  summary    String
+  metadata   Json?
+
+  actor User? @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([actorId])
+  @@index([entityType, entityId])
+  @@index([action])
 }
 
 // ---------------------------------------------------------------------------

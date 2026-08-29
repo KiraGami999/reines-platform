@@ -11,6 +11,7 @@ import {
 import { getProductImageLibrary } from "@/lib/product-image-library";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
 import { isAssignableProductImageUrl } from "@/lib/storage";
+import { recordAdminAction } from "@/lib/audit-log";
 
 const subsidiaryValues = PRODUCT_SUBSIDIARY_OPTIONS.map((item) => item.value) as [
   ProductCatalogItem["subsidiary"],
@@ -130,6 +131,14 @@ export async function PUT(req: NextRequest) {
 
     revalidatePath("/products");
     revalidatePath("/dashboard/admin/products");
+
+    recordAdminAction({
+      actor: session.user,
+      action: "content.products.save",
+      entityType: "Product",
+      summary: `Saved product catalogue (${savedProducts.length} products)`,
+      metadata: { count: savedProducts.length },
+    });
 
     return ok({ products: savedProducts.map(serializeProduct) });
   } catch (error) {

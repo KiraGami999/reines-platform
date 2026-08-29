@@ -81,8 +81,9 @@ const adminNav: NavSection[] = [
   {
     heading: "System",
     items: [
-      { label: "Admin Panel", href: "/dashboard/admin",    icon: ShieldCheck },
-      { label: "Settings",    href: "/dashboard/settings", icon: Settings    },
+      { label: "Admin Panel", href: "/dashboard/admin",           icon: ShieldCheck  },
+      { label: "Change Log",  href: "/dashboard/admin/audit-log", icon: ClipboardList },
+      { label: "Settings",    href: "/dashboard/settings",        icon: Settings     },
     ],
   },
 ];

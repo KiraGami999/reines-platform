@@ -5,6 +5,7 @@ import { generateTxRef } from "@/lib/paychangu";
 import { created, forbidden, validationError, serverError, notFound, badRequest } from "@/lib/api-response";
 import { autoAwardPointsForPayment } from "@/lib/loyalty";
 import { notifyPaymentApproved } from "@/lib/push";
+import { recordAdminAction } from "@/lib/audit-log";
 import { z } from "zod";
 
 const schema = z.object({
@@ -150,6 +151,21 @@ export async function POST(req: NextRequest) {
         console.warn("[manualPayment:notifyPaymentApproved]", err);
       });
     }
+
+    recordAdminAction({
+      actor: session.user,
+      action: "payment.record",
+      entityType: "Payment",
+      entityId: payment.id,
+      summary: `Recorded manual payment ${payment.txRef} (${Number(payment.amount).toLocaleString()} ${payment.currency})`,
+      metadata: {
+        txRef: payment.txRef,
+        amount: Number(payment.amount),
+        currency: payment.currency,
+        projectId: payment.projectId,
+        description,
+      },
+    });
 
     return created({
       id:            payment.id,

@@ -7,6 +7,7 @@ import { AVAILABLE_HOMEPAGE_IMAGES, FALLBACK_HOMEPAGE_ADS, MAX_HOMEPAGE_ADS } fr
 import { getHomepageImageLibrary } from "@/lib/homepage-image-library";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
 import { isAssignableHomepageAdImageUrl } from "@/lib/storage";
+import { recordAdminAction } from "@/lib/audit-log";
 
 const homepageAdSchema = z.object({
   imageUrl: z.string().refine(isAssignableHomepageAdImageUrl, "Select or upload a valid homepage image"),
@@ -106,6 +107,14 @@ export async function PUT(req: NextRequest) {
 
     revalidatePath("/");
     revalidatePath("/dashboard/admin/homepage");
+
+    recordAdminAction({
+      actor: session.user,
+      action: "content.homepage_ads.save",
+      entityType: "HomepageAd",
+      summary: `Saved homepage ads (${selectedAds.length} ads)`,
+      metadata: { count: selectedAds.length },
+    });
 
     return ok({ selectedAds: selectedAds.map(serializeAd), usingFallback: false });
   } catch {

@@ -8,6 +8,7 @@ import {
 } from "@/lib/public-services";
 import { SERVICE_ICON_OPTIONS } from "@/lib/service-icons";
 import { forbidden, ok, serverError, validationError } from "@/lib/api-response";
+import { recordAdminAction } from "@/lib/audit-log";
 
 const iconValues = SERVICE_ICON_OPTIONS.map((icon) => icon.value) as [
   PublicServiceItem["iconKey"],
@@ -106,6 +107,14 @@ export async function PUT(req: NextRequest) {
 
     const savedServices = await prisma.publicService.findMany({
       orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+    });
+
+    recordAdminAction({
+      actor: session.user,
+      action: "content.public_services.save",
+      entityType: "PublicService",
+      summary: `Saved public services catalogue (${savedServices.length} services)`,
+      metadata: { count: savedServices.length },
     });
 
     return ok({ services: savedServices.map(serializeService), usingFallback: false });
