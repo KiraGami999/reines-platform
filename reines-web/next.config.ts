@@ -15,6 +15,8 @@ const ContentSecurityPolicy = [
   isDev
     ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
     : "script-src 'self' 'unsafe-inline'",
+  // Service worker + web workers (PWA /sw.js). Falls back to script-src if omitted.
+  "worker-src 'self'",
   // Styles: Tailwind uses inline styles; Google Fonts stylesheet is external.
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   // Fonts: self (woff2 in /public) + Google Fonts CDN.

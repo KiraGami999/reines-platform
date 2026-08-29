@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import { SessionProvider } from "@/components/auth/SessionProvider";
 import { ReinesLoaderProvider } from "@/components/layout/ReinesLoaderProvider";
+import { PwaRegister } from "@/components/pwa/PwaRegister";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { BRAND_THEME_COLOR, THEME_BOOTSTRAP_SCRIPT } from "@/lib/theme";
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site";
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full bg-background font-[family-name:var(--font-montserrat)] text-foreground">
         <SessionProvider>
           <ThemeProvider>
+            <PwaRegister />
             <ReinesLoaderProvider>{children}</ReinesLoaderProvider>
           </ThemeProvider>
         </SessionProvider>

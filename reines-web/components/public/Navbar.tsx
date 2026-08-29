@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { signOutAndForgetDevice } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
+import { InstallAppButton } from "@/components/pwa/InstallAppButton";
 import { ThemeIconButton } from "@/components/theme/ThemeIconButton";
 
 /** Cropped Reines Group rebrand mark — public navbar only (navy bg matches bar). */
@@ -156,6 +157,9 @@ export function Navbar({ showMarketInsights = true }: NavbarProps) {
               </Link>
             </>
           )}
+
+          {/* Install PWA — shown when Chrome fires beforeinstallprompt */}
+          <InstallAppButton variant="on-dark" />
 
           {/* Theme: sun ↔ moon — same chrome on navy; no dark fill */}
           <ThemeIconButton variant="on-dark" />
